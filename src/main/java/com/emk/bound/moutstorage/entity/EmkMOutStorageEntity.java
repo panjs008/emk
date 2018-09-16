@@ -84,12 +84,6 @@ public class EmkMOutStorageEntity implements java.io.Serializable {
 	/**供应商代码*/
 	@Excel(name="供应商代码",width=15)
 	private String gysCode;
-	/**供应商*/
-	@Excel(name="供应商",width=15)
-	private String gys;
-	/**供应商代码*/
-	@Excel(name="供应商代码",width=15)
-	private String gysCode;
 	/**类型*/
 	@Excel(name="类型",width=15)
 	private String type;
@@ -396,40 +390,7 @@ public class EmkMOutStorageEntity implements java.io.Serializable {
 	public void setYhtNum(String yhtNum){
 		this.yhtNum = yhtNum;
 	}
-	/**
-	 *方法: 取得java.lang.String
-	 *@return: java.lang.String  供应商
-	 */
 
-	@Column(name ="GYS",nullable=true,length=32)
-	public String getGys(){
-		return this.gys;
-	}
-
-	/**
-	 *方法: 设置java.lang.String
-	 *@param: java.lang.String  供应商
-	 */
-	public void setGys(String gys){
-		this.gys = gys;
-	}
-	/**
-	 *方法: 取得java.lang.String
-	 *@return: java.lang.String  供应商代码
-	 */
-
-	@Column(name ="GYS_CODE",nullable=true,length=32)
-	public String getGysCode(){
-		return this.gysCode;
-	}
-
-	/**
-	 *方法: 设置java.lang.String
-	 *@param: java.lang.String  供应商代码
-	 */
-	public void setGysCode(String gysCode){
-		this.gysCode = gysCode;
-	}
 	/**
 	 *方法: 取得java.lang.String
 	 *@return: java.lang.String  供应商

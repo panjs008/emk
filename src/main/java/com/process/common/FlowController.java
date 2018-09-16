@@ -145,12 +145,12 @@ public class FlowController {
         RepositoryService repositoryService = processEngine.getRepositoryService();
 
         //获取在classpath下的流程文件
-        InputStream in = this.getClass().getClassLoader().getResourceAsStream("repairProcess.zip");
+        InputStream in = this.getClass().getClassLoader().getResourceAsStream("outstorage.zip");
         ZipInputStream zipInputStream = new ZipInputStream(in);
         //使用deploy方法发布流程
         repositoryService.createDeployment()
                 .addZipInputStream(zipInputStream)
-                .name("repairProcess")
+                .name("outstorage")
                 .deploy();
       /*  Map<String, Object> variables = new HashMap<String,Object>();
         variables.put("inputUser", "panjs");//表示惟一用户
