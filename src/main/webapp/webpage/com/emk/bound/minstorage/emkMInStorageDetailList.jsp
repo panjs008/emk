@@ -88,10 +88,10 @@
             width:'auto',
             fixFooter:false
         });
-        <c:if test="${param.contractId eq null}">
+        <c:if test="${param.inStorageId eq null}">
         $('#addBtn').click();
         </c:if>
-        <c:if test="${param.contractId ne null}">
+        <c:if test="${param.inStorageId ne null}">
         flag = ${fn:length(rkglMxList)};
         </c:if>
     });

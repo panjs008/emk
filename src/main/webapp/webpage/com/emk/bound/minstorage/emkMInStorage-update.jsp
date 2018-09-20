@@ -30,9 +30,9 @@
 			});
 		}
 		$(document).ready(function(){
-			$("#detailId").load("emkMInStorageController.do?emkMInStorageDetailList&selectType=0&orderId=${emkMInStoragePage.id }");
+			$("#detailId").load("emkMInStorageController.do?emkMInStorageDetailList&selectType=0&inStorageId=${emkMInStoragePage.id }");
+			BindSelect("gysId","ymkCustomController.do?findSupplierList",1,"${emkMInStoragePage.gysCode},${emkMInStoragePage.gys}");
 
-			BindSelect("gysId","ymkCustomController.do?findSupplierList",0,"");
 			$("#gysId").change(function(){
 				var itemarr = $("#gysId").val().split(","); //字符分割
 				$("#gysCode").val(itemarr[0]);
@@ -68,7 +68,9 @@
 				$.each(data.obj, function (i, item) {
 					control.append("<option value='" + item.supplierCode + ","+item.supplier +"'>" + item.supplier + "</option>");
 				});
-
+				if(type ==1){
+					$("#"+ctrlName).select2('val',categoryId);
+				}
 			});
 		}
 
@@ -106,8 +108,8 @@
 				</label>
 			</td>
 			<td class="value" colspan="3">
-				<input id="realName" name="realName" type="text" readonly style="width: 150px" class="inputxt" >
-				<input name="userName"   type="hidden"  id="userName" type="text"  />
+				<input id="realName" name="realName" value="${emkMInStoragePage.appler }"  type="text" readonly style="width: 150px" class="inputxt" >
+				<input name="userName"   type="hidden" value="${emkMInStoragePage.applerId }"   id="userName" type="text"  />
 				<t:choose  hiddenName="userName"  hiddenid="userName" url="userController.do?userSelect0" name="userList0" width="700px" height="500px"
 						   icon="icon-search" title="选择处理人" textname="realName" isclear="true" isInit="true"></t:choose>
 			</td>
@@ -134,8 +136,8 @@
 				</label>
 			</td>
 			<td class="value" colspan="3">
-				<input id="sender" name="sender" type="text" value="${LOCAL_CLINET_USER.realName}" readonly style="width: 150px" class="inputxt" >
-				<input name="senderUserNames"   type="hidden" value="${LOCAL_CLINET_USER.userName}"  id="senderUserNames" type="text"  />
+				<input id="sender" name="sender" type="text" value="${emkMInStoragePage.rker }"  readonly style="width: 150px" class="inputxt" >
+				<input name="senderUserNames"   type="hidden" value="${emkMInStoragePage.rkerId }"  id="senderUserNames" type="text"  />
 				<t:choose  hiddenName="senderUserNames"  hiddenid="userName" url="userController.do?userdept0" name="userList0" width="700px" height="500px"
 						   icon="icon-search" title="选择处理人" textname="sender,sendDeptName,sendDeptCode" isclear="true" isInit="true"></t:choose>
 			</td>

@@ -6,6 +6,7 @@ import com.emk.bill.proorderbox.service.EmkProOrderBoxServiceI;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.jeecgframework.core.beanvalidator.BeanValidators;
@@ -54,274 +56,230 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.UriComponentsBuilder;
 
-@Api(value="EmkProOrderBox", description="纸箱尺寸表", tags={"emkProOrderBoxController"})
+@Api(value = "EmkProOrderBox", description = "纸箱尺寸表", tags = {"emkProOrderBoxController"})
 @Controller
 @RequestMapping({"/emkProOrderBoxController"})
 public class EmkProOrderBoxController
-  extends BaseController
-{
-  private static final Logger logger = Logger.getLogger(EmkProOrderBoxController.class);
-  @Autowired
-  private EmkProOrderBoxServiceI emkProOrderBoxService;
-  @Autowired
-  private SystemService systemService;
-  @Autowired
-  private Validator validator;
-  
-  @RequestMapping(params={"list"})
-  public ModelAndView list(HttpServletRequest request)
-  {
-    return new ModelAndView("com/emk/bill/proorderbox/emkProOrderBoxList");
-  }
-  
-  @RequestMapping(params={"datagrid"})
-  public void datagrid(EmkProOrderBoxEntity emkProOrderBox, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid)
-  {
-    CriteriaQuery cq = new CriteriaQuery(EmkProOrderBoxEntity.class, dataGrid);
-    
-    HqlGenerateUtil.installHql(cq, emkProOrderBox, request.getParameterMap());
-    
+        extends BaseController {
+    private static final Logger logger = Logger.getLogger(EmkProOrderBoxController.class);
+    @Autowired
+    private EmkProOrderBoxServiceI emkProOrderBoxService;
+    @Autowired
+    private SystemService systemService;
+    @Autowired
+    private Validator validator;
+
+    @RequestMapping(params = {"list"})
+    public ModelAndView list(HttpServletRequest request) {
+        return new ModelAndView("com/emk/bill/proorderbox/emkProOrderBoxList");
+    }
+
+    @RequestMapping(params = {"datagrid"})
+    public void datagrid(EmkProOrderBoxEntity emkProOrderBox, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid) {
+        CriteriaQuery cq = new CriteriaQuery(EmkProOrderBoxEntity.class, dataGrid);
+
+        HqlGenerateUtil.installHql(cq, emkProOrderBox, request.getParameterMap());
 
 
+        cq.add();
+        this.emkProOrderBoxService.getDataGridReturn(cq, true);
+        TagUtil.datagrid(response, dataGrid);
+    }
+
+    @RequestMapping(params = {"doDel"})
+    @ResponseBody
+    public AjaxJson doDel(EmkProOrderBoxEntity emkProOrderBox, HttpServletRequest request) {
+        String message = null;
+        AjaxJson j = new AjaxJson();
+        emkProOrderBox = (EmkProOrderBoxEntity) this.systemService.getEntity(EmkProOrderBoxEntity.class, emkProOrderBox.getId());
+        message = "纸箱尺寸表删除成功";
+        try {
+            this.emkProOrderBoxService.delete(emkProOrderBox);
+            this.systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
+        } catch (Exception e) {
+            e.printStackTrace();
+            message = "纸箱尺寸表删除失败";
+            throw new BusinessException(e.getMessage());
+        }
+        j.setMsg(message);
+        return j;
+    }
+
+    @RequestMapping(params = {"doBatchDel"})
+    @ResponseBody
+    public AjaxJson doBatchDel(String ids, HttpServletRequest request) {
+        String message = null;
+        AjaxJson j = new AjaxJson();
+        message = "纸箱尺寸表删除成功";
+        try {
+            for (String id : ids.split(",")) {
+                EmkProOrderBoxEntity emkProOrderBox = (EmkProOrderBoxEntity) this.systemService.getEntity(EmkProOrderBoxEntity.class, id);
 
 
-    cq.add();
-    this.emkProOrderBoxService.getDataGridReturn(cq, true);
-    TagUtil.datagrid(response, dataGrid);
-  }
-  
-  @RequestMapping(params={"doDel"})
-  @ResponseBody
-  public AjaxJson doDel(EmkProOrderBoxEntity emkProOrderBox, HttpServletRequest request)
-  {
-    String message = null;
-    AjaxJson j = new AjaxJson();
-    emkProOrderBox = (EmkProOrderBoxEntity)this.systemService.getEntity(EmkProOrderBoxEntity.class, emkProOrderBox.getId());
-    message = "纸箱尺寸表删除成功";
-    try
-    {
-      this.emkProOrderBoxService.delete(emkProOrderBox);
-      this.systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
+                this.emkProOrderBoxService.delete(emkProOrderBox);
+                this.systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            message = "纸箱尺寸表删除失败";
+            throw new BusinessException(e.getMessage());
+        }
+        j.setMsg(message);
+        return j;
     }
-    catch (Exception e)
-    {
-      e.printStackTrace();
-      message = "纸箱尺寸表删除失败";
-      throw new BusinessException(e.getMessage());
-    }
-    j.setMsg(message);
-    return j;
-  }
-  
-  @RequestMapping(params={"doBatchDel"})
-  @ResponseBody
-  public AjaxJson doBatchDel(String ids, HttpServletRequest request)
-  {
-    String message = null;
-    AjaxJson j = new AjaxJson();
-    message = "纸箱尺寸表删除成功";
-    try
-    {
-      for (String id : ids.split(","))
-      {
-        EmkProOrderBoxEntity emkProOrderBox = (EmkProOrderBoxEntity)this.systemService.getEntity(EmkProOrderBoxEntity.class, id);
-        
 
-        this.emkProOrderBoxService.delete(emkProOrderBox);
-        this.systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
-      }
+    @RequestMapping(params = {"doAdd"})
+    @ResponseBody
+    public AjaxJson doAdd(EmkProOrderBoxEntity emkProOrderBox, HttpServletRequest request) {
+        String message = null;
+        AjaxJson j = new AjaxJson();
+        message = "纸箱尺寸表添加成功";
+        try {
+            this.emkProOrderBoxService.save(emkProOrderBox);
+            this.systemService.addLog(message, Globals.Log_Type_INSERT, Globals.Log_Leavel_INFO);
+        } catch (Exception e) {
+            e.printStackTrace();
+            message = "纸箱尺寸表添加失败";
+            throw new BusinessException(e.getMessage());
+        }
+        j.setMsg(message);
+        return j;
     }
-    catch (Exception e)
-    {
-      e.printStackTrace();
-      message = "纸箱尺寸表删除失败";
-      throw new BusinessException(e.getMessage());
-    }
-    j.setMsg(message);
-    return j;
-  }
-  
-  @RequestMapping(params={"doAdd"})
-  @ResponseBody
-  public AjaxJson doAdd(EmkProOrderBoxEntity emkProOrderBox, HttpServletRequest request)
-  {
-    String message = null;
-    AjaxJson j = new AjaxJson();
-    message = "纸箱尺寸表添加成功";
-    try
-    {
-      this.emkProOrderBoxService.save(emkProOrderBox);
-      this.systemService.addLog(message, Globals.Log_Type_INSERT, Globals.Log_Leavel_INFO);
-    }
-    catch (Exception e)
-    {
-      e.printStackTrace();
-      message = "纸箱尺寸表添加失败";
-      throw new BusinessException(e.getMessage());
-    }
-    j.setMsg(message);
-    return j;
-  }
-  
-  @RequestMapping(params={"doUpdate"})
-  @ResponseBody
-  public AjaxJson doUpdate(EmkProOrderBoxEntity emkProOrderBox, HttpServletRequest request)
-  {
-    String message = null;
-    AjaxJson j = new AjaxJson();
-    message = "纸箱尺寸表更新成功";
-    EmkProOrderBoxEntity t = (EmkProOrderBoxEntity)this.emkProOrderBoxService.get(EmkProOrderBoxEntity.class, emkProOrderBox.getId());
-    try
-    {
-      MyBeanUtils.copyBeanNotNull2Bean(emkProOrderBox, t);
-      this.emkProOrderBoxService.saveOrUpdate(t);
-      this.systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
-    }
-    catch (Exception e)
-    {
-      e.printStackTrace();
-      message = "纸箱尺寸表更新失败";
-      throw new BusinessException(e.getMessage());
-    }
-    j.setMsg(message);
-    return j;
-  }
-  
-  @RequestMapping(params={"goAdd"})
-  public ModelAndView goAdd(EmkProOrderBoxEntity emkProOrderBox, HttpServletRequest req)
-  {
-    if (StringUtil.isNotEmpty(emkProOrderBox.getId()))
-    {
-      emkProOrderBox = (EmkProOrderBoxEntity)this.emkProOrderBoxService.getEntity(EmkProOrderBoxEntity.class, emkProOrderBox.getId());
-      req.setAttribute("emkProOrderBoxPage", emkProOrderBox);
-    }
-    return new ModelAndView("com/emk/bill/proorderbox/emkProOrderBox-add");
-  }
-  
-  @RequestMapping(params={"goUpdate"})
-  public ModelAndView goUpdate(EmkProOrderBoxEntity emkProOrderBox, HttpServletRequest req)
-  {
-    if (StringUtil.isNotEmpty(emkProOrderBox.getId()))
-    {
-      emkProOrderBox = (EmkProOrderBoxEntity)this.emkProOrderBoxService.getEntity(EmkProOrderBoxEntity.class, emkProOrderBox.getId());
-      req.setAttribute("emkProOrderBoxPage", emkProOrderBox);
-    }
-    return new ModelAndView("com/emk/bill/proorderbox/emkProOrderBox-update");
-  }
-  
-  @RequestMapping(params={"upload"})
-  public ModelAndView upload(HttpServletRequest req)
-  {
-    req.setAttribute("controller_name", "emkProOrderBoxController");
-    return new ModelAndView("common/upload/pub_excel_upload");
-  }
-  
-  @RequestMapping(params={"exportXls"})
-  public String exportXls(EmkProOrderBoxEntity emkProOrderBox, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid, ModelMap modelMap)
-  {
-    CriteriaQuery cq = new CriteriaQuery(EmkProOrderBoxEntity.class, dataGrid);
-    HqlGenerateUtil.installHql(cq, emkProOrderBox, request.getParameterMap());
-    List<EmkProOrderBoxEntity> emkProOrderBoxs = this.emkProOrderBoxService.getListByCriteriaQuery(cq, Boolean.valueOf(false));
-    modelMap.put("fileName", "纸箱尺寸表");
-    modelMap.put("entity", EmkProOrderBoxEntity.class);
-    modelMap.put("params", new ExportParams("纸箱尺寸表列表", "导出人:" + ResourceUtil.getSessionUser().getRealName(), "导出信息"));
-    
-    modelMap.put("data", emkProOrderBoxs);
-    return "jeecgExcelView";
-  }
-  
-  @RequestMapping(params={"exportXlsByT"})
-  public String exportXlsByT(EmkProOrderBoxEntity emkProOrderBox, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid, ModelMap modelMap)
-  {
-    modelMap.put("fileName", "纸箱尺寸表");
-    modelMap.put("entity", EmkProOrderBoxEntity.class);
-    modelMap.put("params", new ExportParams("纸箱尺寸表列表", "导出人:" + ResourceUtil.getSessionUser().getRealName(), "导出信息"));
-    
-    modelMap.put("data", new ArrayList());
-    return "jeecgExcelView";
-  }
 
-  @RequestMapping(method={org.springframework.web.bind.annotation.RequestMethod.GET})
-  @ResponseBody
-  @ApiOperation(value="纸箱尺寸表列表信息", produces="application/json", httpMethod="GET")
-  public ResponseMessage<List<EmkProOrderBoxEntity>> list()
-  {
-    List<EmkProOrderBoxEntity> listEmkProOrderBoxs = this.emkProOrderBoxService.getList(EmkProOrderBoxEntity.class);
-    return Result.success(listEmkProOrderBoxs);
-  }
-  
-  @RequestMapping(value={"/{id}"}, method={org.springframework.web.bind.annotation.RequestMethod.GET})
-  @ResponseBody
-  @ApiOperation(value="根据ID获取纸箱尺寸表信息", notes="根据ID获取纸箱尺寸表信息", httpMethod="GET", produces="application/json")
-  public ResponseMessage<?> get(@ApiParam(required=true, name="id", value="ID") @PathVariable("id") String id)
-  {
-    EmkProOrderBoxEntity task = (EmkProOrderBoxEntity)this.emkProOrderBoxService.get(EmkProOrderBoxEntity.class, id);
-    if (task == null) {
-      return Result.error("根据ID获取纸箱尺寸表信息为空");
+    @RequestMapping(params = {"doUpdate"})
+    @ResponseBody
+    public AjaxJson doUpdate(EmkProOrderBoxEntity emkProOrderBox, HttpServletRequest request) {
+        String message = null;
+        AjaxJson j = new AjaxJson();
+        message = "纸箱尺寸表更新成功";
+        EmkProOrderBoxEntity t = (EmkProOrderBoxEntity) this.emkProOrderBoxService.get(EmkProOrderBoxEntity.class, emkProOrderBox.getId());
+        try {
+            MyBeanUtils.copyBeanNotNull2Bean(emkProOrderBox, t);
+            this.emkProOrderBoxService.saveOrUpdate(t);
+            this.systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
+        } catch (Exception e) {
+            e.printStackTrace();
+            message = "纸箱尺寸表更新失败";
+            throw new BusinessException(e.getMessage());
+        }
+        j.setMsg(message);
+        return j;
     }
-    return Result.success(task);
-  }
-  
-  @RequestMapping(method={org.springframework.web.bind.annotation.RequestMethod.POST}, consumes={"application/json"})
-  @ResponseBody
-  @ApiOperation("创建纸箱尺寸表")
-  public ResponseMessage<?> create(@ApiParam(name="纸箱尺寸表对象") @RequestBody EmkProOrderBoxEntity emkProOrderBox, UriComponentsBuilder uriBuilder)
-  {
-    Set<ConstraintViolation<EmkProOrderBoxEntity>> failures = this.validator.validate(emkProOrderBox, new Class[0]);
-    if (!failures.isEmpty()) {
-      return Result.error(JSONArray.toJSONString(BeanValidators.extractPropertyAndMessage(failures)));
+
+    @RequestMapping(params = {"goAdd"})
+    public ModelAndView goAdd(EmkProOrderBoxEntity emkProOrderBox, HttpServletRequest req) {
+        if (StringUtil.isNotEmpty(emkProOrderBox.getId())) {
+            emkProOrderBox = (EmkProOrderBoxEntity) this.emkProOrderBoxService.getEntity(EmkProOrderBoxEntity.class, emkProOrderBox.getId());
+            req.setAttribute("emkProOrderBoxPage", emkProOrderBox);
+        }
+        return new ModelAndView("com/emk/bill/proorderbox/emkProOrderBox-add");
     }
-    try
-    {
-      this.emkProOrderBoxService.save(emkProOrderBox);
+
+    @RequestMapping(params = {"goUpdate"})
+    public ModelAndView goUpdate(EmkProOrderBoxEntity emkProOrderBox, HttpServletRequest req) {
+        if (StringUtil.isNotEmpty(emkProOrderBox.getId())) {
+            emkProOrderBox = (EmkProOrderBoxEntity) this.emkProOrderBoxService.getEntity(EmkProOrderBoxEntity.class, emkProOrderBox.getId());
+            req.setAttribute("emkProOrderBoxPage", emkProOrderBox);
+        }
+        return new ModelAndView("com/emk/bill/proorderbox/emkProOrderBox-update");
     }
-    catch (Exception e)
-    {
-      e.printStackTrace();
-      return Result.error("纸箱尺寸表信息保存失败");
+
+    @RequestMapping(params = {"upload"})
+    public ModelAndView upload(HttpServletRequest req) {
+        req.setAttribute("controller_name", "emkProOrderBoxController");
+        return new ModelAndView("common/upload/pub_excel_upload");
     }
-    return Result.success(emkProOrderBox);
-  }
-  
-  @RequestMapping(value={"/{id}"}, method={org.springframework.web.bind.annotation.RequestMethod.PUT}, consumes={"application/json"})
-  @ResponseBody
-  @ApiOperation(value="更新纸箱尺寸表", notes="更新纸箱尺寸表")
-  public ResponseMessage<?> update(@ApiParam(name="纸箱尺寸表对象") @RequestBody EmkProOrderBoxEntity emkProOrderBox)
-  {
-    Set<ConstraintViolation<EmkProOrderBoxEntity>> failures = this.validator.validate(emkProOrderBox, new Class[0]);
-    if (!failures.isEmpty()) {
-      return Result.error(JSONArray.toJSONString(BeanValidators.extractPropertyAndMessage(failures)));
+
+    @RequestMapping(params = {"exportXls"})
+    public String exportXls(EmkProOrderBoxEntity emkProOrderBox, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid, ModelMap modelMap) {
+        CriteriaQuery cq = new CriteriaQuery(EmkProOrderBoxEntity.class, dataGrid);
+        HqlGenerateUtil.installHql(cq, emkProOrderBox, request.getParameterMap());
+        List<EmkProOrderBoxEntity> emkProOrderBoxs = this.emkProOrderBoxService.getListByCriteriaQuery(cq, Boolean.valueOf(false));
+        modelMap.put("fileName", "纸箱尺寸表");
+        modelMap.put("entity", EmkProOrderBoxEntity.class);
+        modelMap.put("params", new ExportParams("纸箱尺寸表列表", "导出人:" + ResourceUtil.getSessionUser().getRealName(), "导出信息"));
+
+        modelMap.put("data", emkProOrderBoxs);
+        return "jeecgExcelView";
     }
-    try
-    {
-      this.emkProOrderBoxService.saveOrUpdate(emkProOrderBox);
+
+    @RequestMapping(params = {"exportXlsByT"})
+    public String exportXlsByT(EmkProOrderBoxEntity emkProOrderBox, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid, ModelMap modelMap) {
+        modelMap.put("fileName", "纸箱尺寸表");
+        modelMap.put("entity", EmkProOrderBoxEntity.class);
+        modelMap.put("params", new ExportParams("纸箱尺寸表列表", "导出人:" + ResourceUtil.getSessionUser().getRealName(), "导出信息"));
+
+        modelMap.put("data", new ArrayList());
+        return "jeecgExcelView";
     }
-    catch (Exception e)
-    {
-      e.printStackTrace();
-      return Result.error("更新纸箱尺寸表信息失败");
+
+    @RequestMapping(method = {org.springframework.web.bind.annotation.RequestMethod.GET})
+    @ResponseBody
+    @ApiOperation(value = "纸箱尺寸表列表信息", produces = "application/json", httpMethod = "GET")
+    public ResponseMessage<List<EmkProOrderBoxEntity>> list() {
+        List<EmkProOrderBoxEntity> listEmkProOrderBoxs = this.emkProOrderBoxService.getList(EmkProOrderBoxEntity.class);
+        return Result.success(listEmkProOrderBoxs);
     }
-    return Result.success("更新纸箱尺寸表信息成功");
-  }
-  
-  @RequestMapping(value={"/{id}"}, method={org.springframework.web.bind.annotation.RequestMethod.DELETE})
-  @ResponseStatus(HttpStatus.NO_CONTENT)
-  @ApiOperation("删除纸箱尺寸表")
-  public ResponseMessage<?> delete(@ApiParam(name="id", value="ID", required=true) @PathVariable("id") String id)
-  {
-    logger.info("delete[{}]" + id);
-    if (StringUtils.isEmpty(id)) {
-      return Result.error("ID不能为空");
+
+    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.GET})
+    @ResponseBody
+    @ApiOperation(value = "根据ID获取纸箱尺寸表信息", notes = "根据ID获取纸箱尺寸表信息", httpMethod = "GET", produces = "application/json")
+    public ResponseMessage<?> get(@ApiParam(required = true, name = "id", value = "ID") @PathVariable("id") String id) {
+        EmkProOrderBoxEntity task = (EmkProOrderBoxEntity) this.emkProOrderBoxService.get(EmkProOrderBoxEntity.class, id);
+        if (task == null) {
+            return Result.error("根据ID获取纸箱尺寸表信息为空");
+        }
+        return Result.success(task);
     }
-    try
-    {
-      this.emkProOrderBoxService.deleteEntityById(EmkProOrderBoxEntity.class, id);
+
+    @RequestMapping(method = {org.springframework.web.bind.annotation.RequestMethod.POST}, consumes = {"application/json"})
+    @ResponseBody
+    @ApiOperation("创建纸箱尺寸表")
+    public ResponseMessage<?> create(@ApiParam(name = "纸箱尺寸表对象") @RequestBody EmkProOrderBoxEntity emkProOrderBox, UriComponentsBuilder uriBuilder) {
+        Set<ConstraintViolation<EmkProOrderBoxEntity>> failures = this.validator.validate(emkProOrderBox, new Class[0]);
+        if (!failures.isEmpty()) {
+            return Result.error(JSONArray.toJSONString(BeanValidators.extractPropertyAndMessage(failures)));
+        }
+        try {
+            this.emkProOrderBoxService.save(emkProOrderBox);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("纸箱尺寸表信息保存失败");
+        }
+        return Result.success(emkProOrderBox);
     }
-    catch (Exception e)
-    {
-      e.printStackTrace();
-      return Result.error("纸箱尺寸表删除失败");
+
+    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.PUT}, consumes = {"application/json"})
+    @ResponseBody
+    @ApiOperation(value = "更新纸箱尺寸表", notes = "更新纸箱尺寸表")
+    public ResponseMessage<?> update(@ApiParam(name = "纸箱尺寸表对象") @RequestBody EmkProOrderBoxEntity emkProOrderBox) {
+        Set<ConstraintViolation<EmkProOrderBoxEntity>> failures = this.validator.validate(emkProOrderBox, new Class[0]);
+        if (!failures.isEmpty()) {
+            return Result.error(JSONArray.toJSONString(BeanValidators.extractPropertyAndMessage(failures)));
+        }
+        try {
+            this.emkProOrderBoxService.saveOrUpdate(emkProOrderBox);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("更新纸箱尺寸表信息失败");
+        }
+        return Result.success("更新纸箱尺寸表信息成功");
     }
-    return Result.success();
-  }
+
+    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.DELETE})
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ApiOperation("删除纸箱尺寸表")
+    public ResponseMessage<?> delete(@ApiParam(name = "id", value = "ID", required = true) @PathVariable("id") String id) {
+        logger.info("delete[{}]" + id);
+        if (StringUtils.isEmpty(id)) {
+            return Result.error("ID不能为空");
+        }
+        try {
+            this.emkProOrderBoxService.deleteEntityById(EmkProOrderBoxEntity.class, id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("纸箱尺寸表删除失败");
+        }
+        return Result.success();
+    }
 }

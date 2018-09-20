@@ -3,9 +3,9 @@
   <process id="instorage" name="instorage" isExecutable="true">
     <startEvent id="startevent1" name="Start"></startEvent>
     <endEvent id="endevent1" name="End"></endEvent>
-    <userTask id="instorageTask" name="入库申请单" activiti:async="true" activiti:assignee="${inputUser}"></userTask>
-    <userTask id="checkTask" name="领导审核" activiti:assignee="${inputUser}"></userTask>
-    <userTask id="cwTask" name="财务" activiti:assignee="${inputUser}"></userTask>
+    <userTask id="instorageTask" name="入库申请单" activiti:assignee="${optUser}"></userTask>
+    <userTask id="checkTask" name="领导审核" activiti:assignee="${optUser}"></userTask>
+    <userTask id="cwTask" name="财务" activiti:assignee="${optUser}"></userTask>
     <sequenceFlow id="flow1" sourceRef="startevent1" targetRef="instorageTask"></sequenceFlow>
     <exclusiveGateway id="isPass" name="是否通过"></exclusiveGateway>
     <sequenceFlow id="flow2" sourceRef="instorageTask" targetRef="checkTask"></sequenceFlow>

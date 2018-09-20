@@ -7,400 +7,340 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
 import org.hibernate.annotations.GenericGenerator;
 import org.jeecgframework.poi.excel.annotation.Excel;
 
 @Entity
-@Table(name="emk_sample_detail", schema="")
+@Table(name = "emk_sample_detail", schema = "")
 public class EmkSampleDetailEntity
-  implements Serializable
-{
-  private String id;
-  private String createName;
-  private String createBy;
-  private Date createDate;
-  private String sysOrgCode;
-  @Excel(name="品名", width=15.0D)
-  private String proZnName;
-  @Excel(name="物料ID", width=15.0D)
-  private String proId;
-  @Excel(name="物料编号", width=15.0D)
-  private String proNum;
-  @Excel(name="规格", width=15.0D)
-  private String brand;
-  @Excel(name="数量", width=15.0D)
-  private String signTotal;
-  @Excel(name="单位", width=15.0D)
-  private String unit;
-  @Excel(name="单价", width=15.0D)
-  private String signPrice;
-  @Excel(name="备注", width=15.0D)
-  private String remark;
-  @Excel(name="款号", width=15.0D)
-  private String hsCode;
-  @Excel(name="款号名称", width=15.0D)
-  private String hsName;
-  @Excel(name="样品ID", width=15.0D)
-  private String sampleId;
-  @Excel(name="物料类型", width=15.0D)
-  private String type;
-  @Excel(name="比例", width=15.0D)
-  private String precent;
-  @Excel(name="单件用量", width=15.0D)
-  private Double yongliang;
-  @Excel(name="损耗率", width=15.0D)
-  private Double sunhaoPrecent;
-  @Excel(name="成本", width=15.0D)
-  private Double chengben;
-  @Excel(name="捻向", width=15.0D)
-  private String direction;
-  @Excel(name="批号", width=15.0D)
-  private String betchNum;
-  @Excel(name="幅宽", width=15.0D)
-  private String width;
-  @Excel(name="颜色", width=15.0D)
-  private String color;
-  @Excel(name="克重", width=15.0D)
-  private String weight;
-  @Excel(name="位置", width=15.0D)
-  private String position;
-  @Excel(name="供应商", width=15.0D)
-  private String gys;
-  @Excel(name="供应商Code", width=15.0D)
-  private String gysCode;
-  @Excel(name="入库状态", width=15.0D)
-  private String rkState;
-  
-  @Id
-  @GeneratedValue(generator="paymentableGenerator")
-  @GenericGenerator(name="paymentableGenerator", strategy="uuid")
-  @Column(name="ID", nullable=false, length=36)
-  public String getId()
-  {
-    return this.id;
-  }
-  
-  public void setId(String id)
-  {
-    this.id = id;
-  }
-  
-  @Column(name="CREATE_NAME", nullable=true, length=50)
-  public String getCreateName()
-  {
-    return this.createName;
-  }
-  
-  public void setCreateName(String createName)
-  {
-    this.createName = createName;
-  }
-  
-  @Column(name="CREATE_BY", nullable=true, length=50)
-  public String getCreateBy()
-  {
-    return this.createBy;
-  }
-  
-  public void setCreateBy(String createBy)
-  {
-    this.createBy = createBy;
-  }
-  
-  @Column(name="CREATE_DATE", nullable=true, length=20)
-  public Date getCreateDate()
-  {
-    return this.createDate;
-  }
-  
-  public void setCreateDate(Date createDate)
-  {
-    this.createDate = createDate;
-  }
-  
-  @Column(name="SYS_ORG_CODE", nullable=true, length=50)
-  public String getSysOrgCode()
-  {
-    return this.sysOrgCode;
-  }
-  
-  public void setSysOrgCode(String sysOrgCode)
-  {
-    this.sysOrgCode = sysOrgCode;
-  }
-  
-  @Column(name="PRO_ZN_NAME", nullable=true, length=56)
-  public String getProZnName()
-  {
-    return this.proZnName;
-  }
-  
-  public void setProZnName(String proZnName)
-  {
-    this.proZnName = proZnName;
-  }
-  
-  @Column(name="PRO_ID", nullable=true, length=32)
-  public String getProId()
-  {
-    return this.proId;
-  }
-  
-  public void setProId(String proId)
-  {
-    this.proId = proId;
-  }
-  
-  @Column(name="PRO_NUM", nullable=true, length=32)
-  public String getProNum()
-  {
-    return this.proNum;
-  }
-  
-  public void setProNum(String proNum)
-  {
-    this.proNum = proNum;
-  }
-  
-  @Column(name="SIGN_TOTAL", nullable=true, length=32)
-  public String getSignTotal()
-  {
-    return this.signTotal;
-  }
-  
-  public void setSignTotal(String signTotal)
-  {
-    this.signTotal = signTotal;
-  }
-  
-  @Column(name="UNIT", nullable=true, length=32)
-  public String getUnit()
-  {
-    return this.unit;
-  }
-  
-  public void setUnit(String unit)
-  {
-    this.unit = unit;
-  }
-  
-  @Column(name="SIGN_PRICE", nullable=true, length=32)
-  public String getSignPrice()
-  {
-    return this.signPrice;
-  }
-  
-  public void setSignPrice(String signPrice)
-  {
-    this.signPrice = signPrice;
-  }
-  
-  @Column(name="REMARK", nullable=true, length=32)
-  public String getRemark()
-  {
-    return this.remark;
-  }
-  
-  public void setRemark(String remark)
-  {
-    this.remark = remark;
-  }
-  
-  @Column(name="HS_CODE", nullable=true, length=32)
-  public String getHsCode()
-  {
-    return this.hsCode;
-  }
-  
-  public void setHsCode(String hsCode)
-  {
-    this.hsCode = hsCode;
-  }
-  
-  @Column(name="HS_NAME", nullable=true, length=32)
-  public String getHsName()
-  {
-    return this.hsName;
-  }
-  
-  public void setHsName(String hsName)
-  {
-    this.hsName = hsName;
-  }
-  
-  @Column(name="SAMPLE_ID", nullable=true, length=32)
-  public String getSampleId()
-  {
-    return this.sampleId;
-  }
-  
-  public void setSampleId(String sampleId)
-  {
-    this.sampleId = sampleId;
-  }
-  
-  @Column(name="TYPE", nullable=true, length=6)
-  public String getType()
-  {
-    return this.type;
-  }
-  
-  public void setType(String type)
-  {
-    this.type = type;
-  }
-  
-  @Column(name="PRECENT", nullable=true, length=32)
-  public String getPrecent()
-  {
-    return this.precent;
-  }
-  
-  public void setPrecent(String precent)
-  {
-    this.precent = precent;
-  }
-  
-  @Column(name="YONGLIANG", nullable=true, scale=2, length=32)
-  public Double getYongliang()
-  {
-    return this.yongliang;
-  }
-  
-  public void setYongliang(Double yongliang)
-  {
-    this.yongliang = yongliang;
-  }
-  
-  @Column(name="SUNHAO_PRECENT", nullable=true, scale=2, length=32)
-  public Double getSunhaoPrecent()
-  {
-    return this.sunhaoPrecent;
-  }
-  
-  public void setSunhaoPrecent(Double sunhaoPrecent)
-  {
-    this.sunhaoPrecent = sunhaoPrecent;
-  }
-  
-  @Column(name="CHENGBEN", nullable=true, scale=2, length=32)
-  public Double getChengben()
-  {
-    return this.chengben;
-  }
-  
-  public void setChengben(Double chengben)
-  {
-    this.chengben = chengben;
-  }
-  
-  @Column(name="DIRECTION", nullable=true, length=32)
-  public String getDirection()
-  {
-    return this.direction;
-  }
-  
-  public void setDirection(String direction)
-  {
-    this.direction = direction;
-  }
-  
-  @Column(name="BETCH_NUM", nullable=true, length=32)
-  public String getBetchNum()
-  {
-    return this.betchNum;
-  }
-  
-  public void setBetchNum(String betchNum)
-  {
-    this.betchNum = betchNum;
-  }
-  
-  @Column(name="WIDTH", nullable=true, length=32)
-  public String getWidth()
-  {
-    return this.width;
-  }
-  
-  public void setWidth(String width)
-  {
-    this.width = width;
-  }
-  
-  @Column(name="COLOR", nullable=true, length=32)
-  public String getColor()
-  {
-    return this.color;
-  }
-  
-  public void setColor(String color)
-  {
-    this.color = color;
-  }
-  
-  @Column(name="WEIGHT", nullable=true, length=32)
-  public String getWeight()
-  {
-    return this.weight;
-  }
-  
-  public void setWeight(String weight)
-  {
-    this.weight = weight;
-  }
-  
-  @Column(name="POSITION", nullable=true, length=32)
-  public String getPosition()
-  {
-    return this.position;
-  }
-  
-  public void setPosition(String position)
-  {
-    this.position = position;
-  }
-  
-  @Column(name="BRAND", nullable=true, length=56)
-  public String getBrand()
-  {
-    return this.brand;
-  }
-  
-  public void setBrand(String brand)
-  {
-    this.brand = brand;
-  }
-  
-  @Column(name="GYS", nullable=true, length=32)
-  public String getGys()
-  {
-    return this.gys;
-  }
-  
-  public void setGys(String gys)
-  {
-    this.gys = gys;
-  }
-  
-  @Column(name="GYS_CODE", nullable=true, length=32)
-  public String getGysCode()
-  {
-    return this.gysCode;
-  }
-  
-  public void setGysCode(String gysCode)
-  {
-    this.gysCode = gysCode;
-  }
-  
-  @Column(name="RK_STATE", nullable=true, length=32)
-  public String getRkState()
-  {
-    return this.rkState;
-  }
-  
-  public void setRkState(String rkState)
-  {
-    this.rkState = rkState;
-  }
+        implements Serializable {
+    private String id;
+    private String createName;
+    private String createBy;
+    private Date createDate;
+    private String sysOrgCode;
+    @Excel(name = "品名", width = 15)
+    private String proZnName;
+    @Excel(name = "物料ID", width = 15)
+    private String proId;
+    @Excel(name = "物料编号", width = 15)
+    private String proNum;
+    @Excel(name = "规格", width = 15)
+    private String brand;
+    @Excel(name = "数量", width = 15)
+    private String signTotal;
+    @Excel(name = "单位", width = 15)
+    private String unit;
+    @Excel(name = "单价", width = 15)
+    private String signPrice;
+    @Excel(name = "备注", width = 15)
+    private String remark;
+    @Excel(name = "款号", width = 15)
+    private String hsCode;
+    @Excel(name = "款号名称", width = 15)
+    private String hsName;
+    @Excel(name = "样品ID", width = 15)
+    private String sampleId;
+    @Excel(name = "物料类型", width = 15)
+    private String type;
+    @Excel(name = "比例", width = 15)
+    private String precent;
+    @Excel(name = "单件用量", width = 15)
+    private Double yongliang;
+    @Excel(name = "损耗率", width = 15)
+    private Double sunhaoPrecent;
+    @Excel(name = "成本", width = 15)
+    private Double chengben;
+    @Excel(name = "捻向", width = 15)
+    private String direction;
+    @Excel(name = "批号", width = 15)
+    private String betchNum;
+    @Excel(name = "幅宽", width = 15)
+    private String width;
+    @Excel(name = "颜色", width = 15)
+    private String color;
+    @Excel(name = "克重", width = 15)
+    private String weight;
+    @Excel(name = "位置", width = 15)
+    private String position;
+    @Excel(name = "供应商", width = 15)
+    private String gys;
+    @Excel(name = "供应商Code", width = 15)
+    private String gysCode;
+    @Excel(name = "入库状态", width = 15)
+    private String rkState;
+
+    @Id
+    @GeneratedValue(generator = "paymentableGenerator")
+    @GenericGenerator(name = "paymentableGenerator", strategy = "uuid")
+    @Column(name = "ID", nullable = false, length = 36)
+    public String getId() {
+        return this.id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    @Column(name = "CREATE_NAME", nullable = true, length = 50)
+    public String getCreateName() {
+        return this.createName;
+    }
+
+    public void setCreateName(String createName) {
+        this.createName = createName;
+    }
+
+    @Column(name = "CREATE_BY", nullable = true, length = 50)
+    public String getCreateBy() {
+        return this.createBy;
+    }
+
+    public void setCreateBy(String createBy) {
+        this.createBy = createBy;
+    }
+
+    @Column(name = "CREATE_DATE", nullable = true, length = 20)
+    public Date getCreateDate() {
+        return this.createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
+
+    @Column(name = "SYS_ORG_CODE", nullable = true, length = 50)
+    public String getSysOrgCode() {
+        return this.sysOrgCode;
+    }
+
+    public void setSysOrgCode(String sysOrgCode) {
+        this.sysOrgCode = sysOrgCode;
+    }
+
+    @Column(name = "PRO_ZN_NAME", nullable = true, length = 56)
+    public String getProZnName() {
+        return this.proZnName;
+    }
+
+    public void setProZnName(String proZnName) {
+        this.proZnName = proZnName;
+    }
+
+    @Column(name = "PRO_ID", nullable = true, length = 32)
+    public String getProId() {
+        return this.proId;
+    }
+
+    public void setProId(String proId) {
+        this.proId = proId;
+    }
+
+    @Column(name = "PRO_NUM", nullable = true, length = 32)
+    public String getProNum() {
+        return this.proNum;
+    }
+
+    public void setProNum(String proNum) {
+        this.proNum = proNum;
+    }
+
+    @Column(name = "SIGN_TOTAL", nullable = true, length = 32)
+    public String getSignTotal() {
+        return this.signTotal;
+    }
+
+    public void setSignTotal(String signTotal) {
+        this.signTotal = signTotal;
+    }
+
+    @Column(name = "UNIT", nullable = true, length = 32)
+    public String getUnit() {
+        return this.unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
+
+    @Column(name = "SIGN_PRICE", nullable = true, length = 32)
+    public String getSignPrice() {
+        return this.signPrice;
+    }
+
+    public void setSignPrice(String signPrice) {
+        this.signPrice = signPrice;
+    }
+
+    @Column(name = "REMARK", nullable = true, length = 32)
+    public String getRemark() {
+        return this.remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
+    @Column(name = "HS_CODE", nullable = true, length = 32)
+    public String getHsCode() {
+        return this.hsCode;
+    }
+
+    public void setHsCode(String hsCode) {
+        this.hsCode = hsCode;
+    }
+
+    @Column(name = "HS_NAME", nullable = true, length = 32)
+    public String getHsName() {
+        return this.hsName;
+    }
+
+    public void setHsName(String hsName) {
+        this.hsName = hsName;
+    }
+
+    @Column(name = "SAMPLE_ID", nullable = true, length = 32)
+    public String getSampleId() {
+        return this.sampleId;
+    }
+
+    public void setSampleId(String sampleId) {
+        this.sampleId = sampleId;
+    }
+
+    @Column(name = "TYPE", nullable = true, length = 6)
+    public String getType() {
+        return this.type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    @Column(name = "PRECENT", nullable = true, length = 32)
+    public String getPrecent() {
+        return this.precent;
+    }
+
+    public void setPrecent(String precent) {
+        this.precent = precent;
+    }
+
+    @Column(name = "YONGLIANG", nullable = true, scale = 2, length = 32)
+    public Double getYongliang() {
+        return this.yongliang;
+    }
+
+    public void setYongliang(Double yongliang) {
+        this.yongliang = yongliang;
+    }
+
+    @Column(name = "SUNHAO_PRECENT", nullable = true, scale = 2, length = 32)
+    public Double getSunhaoPrecent() {
+        return this.sunhaoPrecent;
+    }
+
+    public void setSunhaoPrecent(Double sunhaoPrecent) {
+        this.sunhaoPrecent = sunhaoPrecent;
+    }
+
+    @Column(name = "CHENGBEN", nullable = true, scale = 2, length = 32)
+    public Double getChengben() {
+        return this.chengben;
+    }
+
+    public void setChengben(Double chengben) {
+        this.chengben = chengben;
+    }
+
+    @Column(name = "DIRECTION", nullable = true, length = 32)
+    public String getDirection() {
+        return this.direction;
+    }
+
+    public void setDirection(String direction) {
+        this.direction = direction;
+    }
+
+    @Column(name = "BETCH_NUM", nullable = true, length = 32)
+    public String getBetchNum() {
+        return this.betchNum;
+    }
+
+    public void setBetchNum(String betchNum) {
+        this.betchNum = betchNum;
+    }
+
+    @Column(name = "WIDTH", nullable = true, length = 32)
+    public String getWidth() {
+        return this.width;
+    }
+
+    public void setWidth(String width) {
+        this.width = width;
+    }
+
+    @Column(name = "COLOR", nullable = true, length = 32)
+    public String getColor() {
+        return this.color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    @Column(name = "WEIGHT", nullable = true, length = 32)
+    public String getWeight() {
+        return this.weight;
+    }
+
+    public void setWeight(String weight) {
+        this.weight = weight;
+    }
+
+    @Column(name = "POSITION", nullable = true, length = 32)
+    public String getPosition() {
+        return this.position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
+    }
+
+    @Column(name = "BRAND", nullable = true, length = 56)
+    public String getBrand() {
+        return this.brand;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
+
+    @Column(name = "GYS", nullable = true, length = 32)
+    public String getGys() {
+        return this.gys;
+    }
+
+    public void setGys(String gys) {
+        this.gys = gys;
+    }
+
+    @Column(name = "GYS_CODE", nullable = true, length = 32)
+    public String getGysCode() {
+        return this.gysCode;
+    }
+
+    public void setGysCode(String gysCode) {
+        this.gysCode = gysCode;
+    }
+
+    @Column(name = "RK_STATE", nullable = true, length = 32)
+    public String getRkState() {
+        return this.rkState;
+    }
+
+    public void setRkState(String rkState) {
+        this.rkState = rkState;
+    }
 }

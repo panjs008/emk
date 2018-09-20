@@ -179,11 +179,11 @@ public class FlowController {
     @RequestMapping(params = "test")
     public void test(HttpServletResponse response) throws Exception {
         // 部署流程，只要是符合BPMN2规范的XML文件，理论上都可以被ACTIVITI部署
-        repositoryService.createDeployment().addClasspathResource("repairProcess.bpmn").deploy();
+        //repositoryService.createDeployment().addClasspathResource("repairProcess.bpmn").deploy();
         // 开启流程，myprocess是流程的ID
         System.out.println("流程【启动】，环节推动到【一次审批】环节");
         Map<String, Object> variables = new HashMap<String,Object>();
-        variables.put("inputUser", "panjs");//表示惟一用户
+        variables.put("optUser", "panjs");//表示惟一用户
         runtimeService.startProcessInstanceByKey("repair", "uRepair",variables);
         // 查询历史表中的Task
         List<Task> task = taskService.createTaskQuery().list();

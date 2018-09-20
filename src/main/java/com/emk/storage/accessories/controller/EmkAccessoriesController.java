@@ -7,6 +7,7 @@ import com.emk.util.ParameterUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.tools.ant.util.DateUtils;
@@ -59,279 +61,235 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.UriComponentsBuilder;
 
-@Api(value="EmkAccessories", description="缝制辅料需求开发单", tags={"emkAccessoriesController"})
+@Api(value = "EmkAccessories", description = "缝制辅料需求开发单", tags = {"emkAccessoriesController"})
 @Controller
 @RequestMapping({"/emkAccessoriesController"})
 public class EmkAccessoriesController
-  extends BaseController
-{
-  private static final Logger logger = Logger.getLogger(EmkAccessoriesController.class);
-  @Autowired
-  private EmkAccessoriesServiceI emkAccessoriesService;
-  @Autowired
-  private SystemService systemService;
-  @Autowired
-  private Validator validator;
-  
-  @RequestMapping(params={"list"})
-  public ModelAndView list(HttpServletRequest request)
-  {
-    return new ModelAndView("com/emk/storage/accessories/emkAccessoriesList");
-  }
-  
-  @RequestMapping(params={"datagrid"})
-  public void datagrid(EmkAccessoriesEntity emkAccessories, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid)
-  {
-    CriteriaQuery cq = new CriteriaQuery(EmkAccessoriesEntity.class, dataGrid);
-    
-    HqlGenerateUtil.installHql(cq, emkAccessories, request.getParameterMap());
-    
+        extends BaseController {
+    private static final Logger logger = Logger.getLogger(EmkAccessoriesController.class);
+    @Autowired
+    private EmkAccessoriesServiceI emkAccessoriesService;
+    @Autowired
+    private SystemService systemService;
+    @Autowired
+    private Validator validator;
+
+    @RequestMapping(params = {"list"})
+    public ModelAndView list(HttpServletRequest request) {
+        return new ModelAndView("com/emk/storage/accessories/emkAccessoriesList");
+    }
+
+    @RequestMapping(params = {"datagrid"})
+    public void datagrid(EmkAccessoriesEntity emkAccessories, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid) {
+        CriteriaQuery cq = new CriteriaQuery(EmkAccessoriesEntity.class, dataGrid);
+
+        HqlGenerateUtil.installHql(cq, emkAccessories, request.getParameterMap());
 
 
+        cq.add();
+        this.emkAccessoriesService.getDataGridReturn(cq, true);
+        TagUtil.datagrid(response, dataGrid);
+    }
+
+    @RequestMapping(params = {"doDel"})
+    @ResponseBody
+    public AjaxJson doDel(EmkAccessoriesEntity emkAccessories, HttpServletRequest request) {
+        String message = null;
+        AjaxJson j = new AjaxJson();
+        emkAccessories = (EmkAccessoriesEntity) this.systemService.getEntity(EmkAccessoriesEntity.class, emkAccessories.getId());
+        message = "缝制辅料需求开发单删除成功";
+        try {
+            this.emkAccessoriesService.delete(emkAccessories);
+            this.systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
+        } catch (Exception e) {
+            e.printStackTrace();
+            message = "缝制辅料需求开发单删除失败";
+            throw new BusinessException(e.getMessage());
+        }
+        j.setMsg(message);
+        return j;
+    }
+
+    @RequestMapping(params = {"doBatchDel"})
+    @ResponseBody
+    public AjaxJson doBatchDel(String ids, HttpServletRequest request) {
+        String message = null;
+        AjaxJson j = new AjaxJson();
+        message = "缝制辅料需求开发单删除成功";
+        try {
+            for (String id : ids.split(",")) {
+                EmkAccessoriesEntity emkAccessories = (EmkAccessoriesEntity) this.systemService.getEntity(EmkAccessoriesEntity.class, id);
 
 
-    cq.add();
-    this.emkAccessoriesService.getDataGridReturn(cq, true);
-    TagUtil.datagrid(response, dataGrid);
-  }
-  
-  @RequestMapping(params={"doDel"})
-  @ResponseBody
-  public AjaxJson doDel(EmkAccessoriesEntity emkAccessories, HttpServletRequest request)
-  {
-    String message = null;
-    AjaxJson j = new AjaxJson();
-    emkAccessories = (EmkAccessoriesEntity)this.systemService.getEntity(EmkAccessoriesEntity.class, emkAccessories.getId());
-    message = "缝制辅料需求开发单删除成功";
-    try
-    {
-      this.emkAccessoriesService.delete(emkAccessories);
-      this.systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
+                this.emkAccessoriesService.delete(emkAccessories);
+                this.systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            message = "缝制辅料需求开发单删除失败";
+            throw new BusinessException(e.getMessage());
+        }
+        j.setMsg(message);
+        return j;
     }
-    catch (Exception e)
-    {
-      e.printStackTrace();
-      message = "缝制辅料需求开发单删除失败";
-      throw new BusinessException(e.getMessage());
-    }
-    j.setMsg(message);
-    return j;
-  }
-  
-  @RequestMapping(params={"doBatchDel"})
-  @ResponseBody
-  public AjaxJson doBatchDel(String ids, HttpServletRequest request)
-  {
-    String message = null;
-    AjaxJson j = new AjaxJson();
-    message = "缝制辅料需求开发单删除成功";
-    try
-    {
-      for (String id : ids.split(","))
-      {
-        EmkAccessoriesEntity emkAccessories = (EmkAccessoriesEntity)this.systemService.getEntity(EmkAccessoriesEntity.class, id);
-        
 
-        this.emkAccessoriesService.delete(emkAccessories);
-        this.systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
-      }
+    @RequestMapping(params = {"doAdd"})
+    @ResponseBody
+    public AjaxJson doAdd(EmkAccessoriesEntity emkAccessories, HttpServletRequest request) {
+        String message = null;
+        AjaxJson j = new AjaxJson();
+        message = "缝制辅料需求开发单添加成功";
+        try {
+            TSUser user = (TSUser) request.getSession().getAttribute("LOCAL_CLINET_USER");
+            Map map = ParameterUtil.getParamMaps(request.getParameterMap());
+            Map orderNum = this.systemService.findOneForJdbc("select count(0)+1 orderNum from emk_accessories where sys_org_code=?", new Object[]{user.getCurrentDepart().getOrgCode()});
+            emkAccessories.setMaterialNo("SY" + DateUtils.format(new Date(), "yyMMdd") + "B" + String.format("%02d", new Object[]{Integer.valueOf(Integer.parseInt(orderNum.get("orderNum").toString()))}));
+            this.emkAccessoriesService.save(emkAccessories);
+            this.systemService.addLog(message, Globals.Log_Type_INSERT, Globals.Log_Leavel_INFO);
+        } catch (Exception e) {
+            e.printStackTrace();
+            message = "缝制辅料需求开发单添加失败";
+            throw new BusinessException(e.getMessage());
+        }
+        j.setMsg(message);
+        return j;
     }
-    catch (Exception e)
-    {
-      e.printStackTrace();
-      message = "缝制辅料需求开发单删除失败";
-      throw new BusinessException(e.getMessage());
-    }
-    j.setMsg(message);
-    return j;
-  }
-  
-  @RequestMapping(params={"doAdd"})
-  @ResponseBody
-  public AjaxJson doAdd(EmkAccessoriesEntity emkAccessories, HttpServletRequest request)
-  {
-    String message = null;
-    AjaxJson j = new AjaxJson();
-    message = "缝制辅料需求开发单添加成功";
-    try
-    {
-      TSUser user = (TSUser)request.getSession().getAttribute("LOCAL_CLINET_USER");
-      Map map = ParameterUtil.getParamMaps(request.getParameterMap());
-      Map orderNum = this.systemService.findOneForJdbc("select count(0)+1 orderNum from emk_accessories where sys_org_code=?", new Object[] { user.getCurrentDepart().getOrgCode() });
-      emkAccessories.setMaterialNo("SY" + DateUtils.format(new Date(), "yyMMdd") + "B" + String.format("%02d", new Object[] { Integer.valueOf(Integer.parseInt(orderNum.get("orderNum").toString())) }));
-      this.emkAccessoriesService.save(emkAccessories);
-      this.systemService.addLog(message, Globals.Log_Type_INSERT, Globals.Log_Leavel_INFO);
-    }
-    catch (Exception e)
-    {
-      e.printStackTrace();
-      message = "缝制辅料需求开发单添加失败";
-      throw new BusinessException(e.getMessage());
-    }
-    j.setMsg(message);
-    return j;
-  }
-  
-  @RequestMapping(params={"doUpdate"})
-  @ResponseBody
-  public AjaxJson doUpdate(EmkAccessoriesEntity emkAccessories, HttpServletRequest request)
-  {
-    String message = null;
-    AjaxJson j = new AjaxJson();
-    message = "缝制辅料需求开发单更新成功";
-    EmkAccessoriesEntity t = (EmkAccessoriesEntity)this.emkAccessoriesService.get(EmkAccessoriesEntity.class, emkAccessories.getId());
-    try
-    {
-      MyBeanUtils.copyBeanNotNull2Bean(emkAccessories, t);
-      this.emkAccessoriesService.saveOrUpdate(t);
-      this.systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
-    }
-    catch (Exception e)
-    {
-      e.printStackTrace();
-      message = "缝制辅料需求开发单更新失败";
-      throw new BusinessException(e.getMessage());
-    }
-    j.setMsg(message);
-    return j;
-  }
-  
-  @RequestMapping(params={"goAdd"})
-  public ModelAndView goAdd(EmkAccessoriesEntity emkAccessories, HttpServletRequest req)
-  {
-    if (StringUtil.isNotEmpty(emkAccessories.getId()))
-    {
-      emkAccessories = (EmkAccessoriesEntity)this.emkAccessoriesService.getEntity(EmkAccessoriesEntity.class, emkAccessories.getId());
-      req.setAttribute("emkAccessoriesPage", emkAccessories);
-    }
-    return new ModelAndView("com/emk/storage/accessories/emkAccessories-add");
-  }
-  
-  @RequestMapping(params={"goUpdate"})
-  public ModelAndView goUpdate(EmkAccessoriesEntity emkAccessories, HttpServletRequest req)
-  {
-    if (StringUtil.isNotEmpty(emkAccessories.getId()))
-    {
-      emkAccessories = (EmkAccessoriesEntity)this.emkAccessoriesService.getEntity(EmkAccessoriesEntity.class, emkAccessories.getId());
-      req.setAttribute("emkAccessoriesPage", emkAccessories);
-    }
-    return new ModelAndView("com/emk/storage/accessories/emkAccessories-update");
-  }
-  
-  @RequestMapping(params={"upload"})
-  public ModelAndView upload(HttpServletRequest req)
-  {
-    req.setAttribute("controller_name", "emkAccessoriesController");
-    return new ModelAndView("common/upload/pub_excel_upload");
-  }
-  
-  @RequestMapping(params={"exportXls"})
-  public String exportXls(EmkAccessoriesEntity emkAccessories, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid, ModelMap modelMap)
-  {
-    CriteriaQuery cq = new CriteriaQuery(EmkAccessoriesEntity.class, dataGrid);
-    HqlGenerateUtil.installHql(cq, emkAccessories, request.getParameterMap());
-    List<EmkAccessoriesEntity> emkAccessoriess = this.emkAccessoriesService.getListByCriteriaQuery(cq, Boolean.valueOf(false));
-    modelMap.put("fileName", "缝制辅料需求开发单");
-    modelMap.put("entity", EmkAccessoriesEntity.class);
-    modelMap.put("params", new ExportParams("缝制辅料需求开发单列表", "导出人:" + ResourceUtil.getSessionUser().getRealName(), "导出信息"));
-    
-    modelMap.put("data", emkAccessoriess);
-    return "jeecgExcelView";
-  }
-  
-  @RequestMapping(params={"exportXlsByT"})
-  public String exportXlsByT(EmkAccessoriesEntity emkAccessories, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid, ModelMap modelMap)
-  {
-    modelMap.put("fileName", "缝制辅料需求开发单");
-    modelMap.put("entity", EmkAccessoriesEntity.class);
-    modelMap.put("params", new ExportParams("缝制辅料需求开发单列表", "导出人:" + ResourceUtil.getSessionUser().getRealName(), "导出信息"));
-    
-    modelMap.put("data", new ArrayList());
-    return "jeecgExcelView";
-  }
 
-  
-  @RequestMapping(method={org.springframework.web.bind.annotation.RequestMethod.GET})
-  @ResponseBody
-  @ApiOperation(value="缝制辅料需求开发单列表信息", produces="application/json", httpMethod="GET")
-  public ResponseMessage<List<EmkAccessoriesEntity>> list()
-  {
-    List<EmkAccessoriesEntity> listEmkAccessoriess = this.emkAccessoriesService.getList(EmkAccessoriesEntity.class);
-    return Result.success(listEmkAccessoriess);
-  }
-  
-  @RequestMapping(value={"/{id}"}, method={org.springframework.web.bind.annotation.RequestMethod.GET})
-  @ResponseBody
-  @ApiOperation(value="根据ID获取缝制辅料需求开发单信息", notes="根据ID获取缝制辅料需求开发单信息", httpMethod="GET", produces="application/json")
-  public ResponseMessage<?> get(@ApiParam(required=true, name="id", value="ID") @PathVariable("id") String id)
-  {
-    EmkAccessoriesEntity task = (EmkAccessoriesEntity)this.emkAccessoriesService.get(EmkAccessoriesEntity.class, id);
-    if (task == null) {
-      return Result.error("根据ID获取缝制辅料需求开发单信息为空");
+    @RequestMapping(params = {"doUpdate"})
+    @ResponseBody
+    public AjaxJson doUpdate(EmkAccessoriesEntity emkAccessories, HttpServletRequest request) {
+        String message = null;
+        AjaxJson j = new AjaxJson();
+        message = "缝制辅料需求开发单更新成功";
+        EmkAccessoriesEntity t = (EmkAccessoriesEntity) this.emkAccessoriesService.get(EmkAccessoriesEntity.class, emkAccessories.getId());
+        try {
+            MyBeanUtils.copyBeanNotNull2Bean(emkAccessories, t);
+            this.emkAccessoriesService.saveOrUpdate(t);
+            this.systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
+        } catch (Exception e) {
+            e.printStackTrace();
+            message = "缝制辅料需求开发单更新失败";
+            throw new BusinessException(e.getMessage());
+        }
+        j.setMsg(message);
+        return j;
     }
-    return Result.success(task);
-  }
-  
-  @RequestMapping(method={org.springframework.web.bind.annotation.RequestMethod.POST}, consumes={"application/json"})
-  @ResponseBody
-  @ApiOperation("创建缝制辅料需求开发单")
-  public ResponseMessage<?> create(@ApiParam(name="缝制辅料需求开发单对象") @RequestBody EmkAccessoriesEntity emkAccessories, UriComponentsBuilder uriBuilder)
-  {
-    Set<ConstraintViolation<EmkAccessoriesEntity>> failures = this.validator.validate(emkAccessories, new Class[0]);
-    if (!failures.isEmpty()) {
-      return Result.error(JSONArray.toJSONString(BeanValidators.extractPropertyAndMessage(failures)));
+
+    @RequestMapping(params = {"goAdd"})
+    public ModelAndView goAdd(EmkAccessoriesEntity emkAccessories, HttpServletRequest req) {
+        if (StringUtil.isNotEmpty(emkAccessories.getId())) {
+            emkAccessories = (EmkAccessoriesEntity) this.emkAccessoriesService.getEntity(EmkAccessoriesEntity.class, emkAccessories.getId());
+            req.setAttribute("emkAccessoriesPage", emkAccessories);
+        }
+        return new ModelAndView("com/emk/storage/accessories/emkAccessories-add");
     }
-    try
-    {
-      this.emkAccessoriesService.save(emkAccessories);
+
+    @RequestMapping(params = {"goUpdate"})
+    public ModelAndView goUpdate(EmkAccessoriesEntity emkAccessories, HttpServletRequest req) {
+        if (StringUtil.isNotEmpty(emkAccessories.getId())) {
+            emkAccessories = (EmkAccessoriesEntity) this.emkAccessoriesService.getEntity(EmkAccessoriesEntity.class, emkAccessories.getId());
+            req.setAttribute("emkAccessoriesPage", emkAccessories);
+        }
+        return new ModelAndView("com/emk/storage/accessories/emkAccessories-update");
     }
-    catch (Exception e)
-    {
-      e.printStackTrace();
-      return Result.error("缝制辅料需求开发单信息保存失败");
+
+    @RequestMapping(params = {"upload"})
+    public ModelAndView upload(HttpServletRequest req) {
+        req.setAttribute("controller_name", "emkAccessoriesController");
+        return new ModelAndView("common/upload/pub_excel_upload");
     }
-    return Result.success(emkAccessories);
-  }
-  
-  @RequestMapping(value={"/{id}"}, method={org.springframework.web.bind.annotation.RequestMethod.PUT}, consumes={"application/json"})
-  @ResponseBody
-  @ApiOperation(value="更新缝制辅料需求开发单", notes="更新缝制辅料需求开发单")
-  public ResponseMessage<?> update(@ApiParam(name="缝制辅料需求开发单对象") @RequestBody EmkAccessoriesEntity emkAccessories)
-  {
-    Set<ConstraintViolation<EmkAccessoriesEntity>> failures = this.validator.validate(emkAccessories, new Class[0]);
-    if (!failures.isEmpty()) {
-      return Result.error(JSONArray.toJSONString(BeanValidators.extractPropertyAndMessage(failures)));
+
+    @RequestMapping(params = {"exportXls"})
+    public String exportXls(EmkAccessoriesEntity emkAccessories, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid, ModelMap modelMap) {
+        CriteriaQuery cq = new CriteriaQuery(EmkAccessoriesEntity.class, dataGrid);
+        HqlGenerateUtil.installHql(cq, emkAccessories, request.getParameterMap());
+        List<EmkAccessoriesEntity> emkAccessoriess = this.emkAccessoriesService.getListByCriteriaQuery(cq, Boolean.valueOf(false));
+        modelMap.put("fileName", "缝制辅料需求开发单");
+        modelMap.put("entity", EmkAccessoriesEntity.class);
+        modelMap.put("params", new ExportParams("缝制辅料需求开发单列表", "导出人:" + ResourceUtil.getSessionUser().getRealName(), "导出信息"));
+
+        modelMap.put("data", emkAccessoriess);
+        return "jeecgExcelView";
     }
-    try
-    {
-      this.emkAccessoriesService.saveOrUpdate(emkAccessories);
+
+    @RequestMapping(params = {"exportXlsByT"})
+    public String exportXlsByT(EmkAccessoriesEntity emkAccessories, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid, ModelMap modelMap) {
+        modelMap.put("fileName", "缝制辅料需求开发单");
+        modelMap.put("entity", EmkAccessoriesEntity.class);
+        modelMap.put("params", new ExportParams("缝制辅料需求开发单列表", "导出人:" + ResourceUtil.getSessionUser().getRealName(), "导出信息"));
+
+        modelMap.put("data", new ArrayList());
+        return "jeecgExcelView";
     }
-    catch (Exception e)
-    {
-      e.printStackTrace();
-      return Result.error("更新缝制辅料需求开发单信息失败");
+
+
+    @RequestMapping(method = {org.springframework.web.bind.annotation.RequestMethod.GET})
+    @ResponseBody
+    @ApiOperation(value = "缝制辅料需求开发单列表信息", produces = "application/json", httpMethod = "GET")
+    public ResponseMessage<List<EmkAccessoriesEntity>> list() {
+        List<EmkAccessoriesEntity> listEmkAccessoriess = this.emkAccessoriesService.getList(EmkAccessoriesEntity.class);
+        return Result.success(listEmkAccessoriess);
     }
-    return Result.success("更新缝制辅料需求开发单信息成功");
-  }
-  
-  @RequestMapping(value={"/{id}"}, method={org.springframework.web.bind.annotation.RequestMethod.DELETE})
-  @ResponseStatus(HttpStatus.NO_CONTENT)
-  @ApiOperation("删除缝制辅料需求开发单")
-  public ResponseMessage<?> delete(@ApiParam(name="id", value="ID", required=true) @PathVariable("id") String id)
-  {
-    logger.info("delete[{}]" + id);
-    if (StringUtils.isEmpty(id)) {
-      return Result.error("ID不能为空");
+
+    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.GET})
+    @ResponseBody
+    @ApiOperation(value = "根据ID获取缝制辅料需求开发单信息", notes = "根据ID获取缝制辅料需求开发单信息", httpMethod = "GET", produces = "application/json")
+    public ResponseMessage<?> get(@ApiParam(required = true, name = "id", value = "ID") @PathVariable("id") String id) {
+        EmkAccessoriesEntity task = (EmkAccessoriesEntity) this.emkAccessoriesService.get(EmkAccessoriesEntity.class, id);
+        if (task == null) {
+            return Result.error("根据ID获取缝制辅料需求开发单信息为空");
+        }
+        return Result.success(task);
     }
-    try
-    {
-      this.emkAccessoriesService.deleteEntityById(EmkAccessoriesEntity.class, id);
+
+    @RequestMapping(method = {org.springframework.web.bind.annotation.RequestMethod.POST}, consumes = {"application/json"})
+    @ResponseBody
+    @ApiOperation("创建缝制辅料需求开发单")
+    public ResponseMessage<?> create(@ApiParam(name = "缝制辅料需求开发单对象") @RequestBody EmkAccessoriesEntity emkAccessories, UriComponentsBuilder uriBuilder) {
+        Set<ConstraintViolation<EmkAccessoriesEntity>> failures = this.validator.validate(emkAccessories, new Class[0]);
+        if (!failures.isEmpty()) {
+            return Result.error(JSONArray.toJSONString(BeanValidators.extractPropertyAndMessage(failures)));
+        }
+        try {
+            this.emkAccessoriesService.save(emkAccessories);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("缝制辅料需求开发单信息保存失败");
+        }
+        return Result.success(emkAccessories);
     }
-    catch (Exception e)
-    {
-      e.printStackTrace();
-      return Result.error("缝制辅料需求开发单删除失败");
+
+    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.PUT}, consumes = {"application/json"})
+    @ResponseBody
+    @ApiOperation(value = "更新缝制辅料需求开发单", notes = "更新缝制辅料需求开发单")
+    public ResponseMessage<?> update(@ApiParam(name = "缝制辅料需求开发单对象") @RequestBody EmkAccessoriesEntity emkAccessories) {
+        Set<ConstraintViolation<EmkAccessoriesEntity>> failures = this.validator.validate(emkAccessories, new Class[0]);
+        if (!failures.isEmpty()) {
+            return Result.error(JSONArray.toJSONString(BeanValidators.extractPropertyAndMessage(failures)));
+        }
+        try {
+            this.emkAccessoriesService.saveOrUpdate(emkAccessories);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("更新缝制辅料需求开发单信息失败");
+        }
+        return Result.success("更新缝制辅料需求开发单信息成功");
     }
-    return Result.success();
-  }
+
+    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.DELETE})
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ApiOperation("删除缝制辅料需求开发单")
+    public ResponseMessage<?> delete(@ApiParam(name = "id", value = "ID", required = true) @PathVariable("id") String id) {
+        logger.info("delete[{}]" + id);
+        if (StringUtils.isEmpty(id)) {
+            return Result.error("ID不能为空");
+        }
+        try {
+            this.emkAccessoriesService.deleteEntityById(EmkAccessoriesEntity.class, id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("缝制辅料需求开发单删除失败");
+        }
+        return Result.success();
+    }
 }

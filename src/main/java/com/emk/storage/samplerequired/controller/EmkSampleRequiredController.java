@@ -8,6 +8,7 @@ import com.emk.util.ParameterUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.tools.ant.util.DateUtils;
@@ -60,300 +62,256 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.UriComponentsBuilder;
 
-@Api(value="EmkSampleRequired", description="样品需求单", tags={"emkSampleRequiredController"})
+@Api(value = "EmkSampleRequired", description = "样品需求单", tags = {"emkSampleRequiredController"})
 @Controller
 @RequestMapping({"/emkSampleRequiredController"})
 public class EmkSampleRequiredController
-  extends BaseController
-{
-  private static final Logger logger = Logger.getLogger(EmkSampleRequiredController.class);
-  @Autowired
-  private EmkSampleRequiredServiceI emkSampleRequiredService;
-  @Autowired
-  private SystemService systemService;
-  @Autowired
-  private Validator validator;
-  
-  @RequestMapping(params={"list"})
-  public ModelAndView list(HttpServletRequest request)
-  {
-    return new ModelAndView("com/emk/storage/samplerequired/emkSampleRequiredList");
-  }
-  
-  @RequestMapping(params={"datagrid"})
-  public void datagrid(EmkSampleRequiredEntity emkSampleRequired, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid)
-  {
-    CriteriaQuery cq = new CriteriaQuery(EmkSampleRequiredEntity.class, dataGrid);
-    
-    HqlGenerateUtil.installHql(cq, emkSampleRequired, request.getParameterMap());
-    
+        extends BaseController {
+    private static final Logger logger = Logger.getLogger(EmkSampleRequiredController.class);
+    @Autowired
+    private EmkSampleRequiredServiceI emkSampleRequiredService;
+    @Autowired
+    private SystemService systemService;
+    @Autowired
+    private Validator validator;
+
+    @RequestMapping(params = {"list"})
+    public ModelAndView list(HttpServletRequest request) {
+        return new ModelAndView("com/emk/storage/samplerequired/emkSampleRequiredList");
+    }
+
+    @RequestMapping(params = {"datagrid"})
+    public void datagrid(EmkSampleRequiredEntity emkSampleRequired, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid) {
+        CriteriaQuery cq = new CriteriaQuery(EmkSampleRequiredEntity.class, dataGrid);
+
+        HqlGenerateUtil.installHql(cq, emkSampleRequired, request.getParameterMap());
 
 
+        cq.add();
+        this.emkSampleRequiredService.getDataGridReturn(cq, true);
+        TagUtil.datagrid(response, dataGrid);
+    }
+
+    @RequestMapping(params = {"doDel"})
+    @ResponseBody
+    public AjaxJson doDel(EmkSampleRequiredEntity emkSampleRequired, HttpServletRequest request) {
+        String message = null;
+        AjaxJson j = new AjaxJson();
+        emkSampleRequired = (EmkSampleRequiredEntity) this.systemService.getEntity(EmkSampleRequiredEntity.class, emkSampleRequired.getId());
+        message = "样品需求单删除成功";
+        try {
+            this.emkSampleRequiredService.delete(emkSampleRequired);
+            this.systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
+        } catch (Exception e) {
+            e.printStackTrace();
+            message = "样品需求单删除失败";
+            throw new BusinessException(e.getMessage());
+        }
+        j.setMsg(message);
+        return j;
+    }
+
+    @RequestMapping(params = {"doBatchDel"})
+    @ResponseBody
+    public AjaxJson doBatchDel(String ids, HttpServletRequest request) {
+        String message = null;
+        AjaxJson j = new AjaxJson();
+        message = "样品需求单删除成功";
+        try {
+            for (String id : ids.split(",")) {
+                EmkSampleRequiredEntity emkSampleRequired = (EmkSampleRequiredEntity) this.systemService.getEntity(EmkSampleRequiredEntity.class, id);
 
 
-    cq.add();
-    this.emkSampleRequiredService.getDataGridReturn(cq, true);
-    TagUtil.datagrid(response, dataGrid);
-  }
-  
-  @RequestMapping(params={"doDel"})
-  @ResponseBody
-  public AjaxJson doDel(EmkSampleRequiredEntity emkSampleRequired, HttpServletRequest request)
-  {
-    String message = null;
-    AjaxJson j = new AjaxJson();
-    emkSampleRequired = (EmkSampleRequiredEntity)this.systemService.getEntity(EmkSampleRequiredEntity.class, emkSampleRequired.getId());
-    message = "样品需求单删除成功";
-    try
-    {
-      this.emkSampleRequiredService.delete(emkSampleRequired);
-      this.systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
+                this.emkSampleRequiredService.delete(emkSampleRequired);
+                this.systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            message = "样品需求单删除失败";
+            throw new BusinessException(e.getMessage());
+        }
+        j.setMsg(message);
+        return j;
     }
-    catch (Exception e)
-    {
-      e.printStackTrace();
-      message = "样品需求单删除失败";
-      throw new BusinessException(e.getMessage());
-    }
-    j.setMsg(message);
-    return j;
-  }
-  
-  @RequestMapping(params={"doBatchDel"})
-  @ResponseBody
-  public AjaxJson doBatchDel(String ids, HttpServletRequest request)
-  {
-    String message = null;
-    AjaxJson j = new AjaxJson();
-    message = "样品需求单删除成功";
-    try
-    {
-      for (String id : ids.split(","))
-      {
-        EmkSampleRequiredEntity emkSampleRequired = (EmkSampleRequiredEntity)this.systemService.getEntity(EmkSampleRequiredEntity.class, id);
-        
 
-        this.emkSampleRequiredService.delete(emkSampleRequired);
-        this.systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
-      }
-    }
-    catch (Exception e)
-    {
-      e.printStackTrace();
-      message = "样品需求单删除失败";
-      throw new BusinessException(e.getMessage());
-    }
-    j.setMsg(message);
-    return j;
-  }
-  
-  @RequestMapping(params={"doAdd"})
-  @ResponseBody
-  public AjaxJson doAdd(EmkSampleRequiredEntity emkSampleRequired, HttpServletRequest request)
-  {
-    String message = null;
-    AjaxJson j = new AjaxJson();
-    message = "样品需求单添加成功";
-    try
-    {
-      TSUser user = (TSUser)request.getSession().getAttribute("LOCAL_CLINET_USER");
-      Map map = ParameterUtil.getParamMaps(request.getParameterMap());
-      Map orderNum = this.systemService.findOneForJdbc("select count(0)+1 orderNum from emk_sample_required where sys_org_code=?", new Object[] { user.getCurrentDepart().getOrgCode() });
-      emkSampleRequired.setRequiredNo("YPXP" + emkSampleRequired.getCusNum() + DateUtils.format(new Date(), "yyMMdd") + String.format("%03d", new Object[] { Integer.valueOf(Integer.parseInt(orderNum.get("orderNum").toString())) }));
-      this.emkSampleRequiredService.save(emkSampleRequired);
-      
-      EmkSamplePriceEntity samplePriceEntity = new EmkSamplePriceEntity();
-      samplePriceEntity.setMoney(Double.valueOf(Double.parseDouble(map.get("money").toString())));
-      samplePriceEntity.setBz(map.get("pbz").toString());
-      samplePriceEntity.setEnquiryId(emkSampleRequired.getId());
-      samplePriceEntity.setState(map.get("pstate").toString());
-      this.systemService.save(samplePriceEntity);
-      this.systemService.addLog(message, Globals.Log_Type_INSERT, Globals.Log_Leavel_INFO);
-    }
-    catch (Exception e)
-    {
-      e.printStackTrace();
-      message = "样品需求单添加失败";
-      throw new BusinessException(e.getMessage());
-    }
-    j.setMsg(message);
-    return j;
-  }
-  
-  @RequestMapping(params={"doUpdate"})
-  @ResponseBody
-  public AjaxJson doUpdate(EmkSampleRequiredEntity emkSampleRequired, HttpServletRequest request)
-  {
-    String message = null;
-    AjaxJson j = new AjaxJson();
-    message = "样品需求单更新成功";
-    EmkSampleRequiredEntity t = (EmkSampleRequiredEntity)this.emkSampleRequiredService.get(EmkSampleRequiredEntity.class, emkSampleRequired.getId());
-    try
-    {
-      Map map = ParameterUtil.getParamMaps(request.getParameterMap());
-      
-      MyBeanUtils.copyBeanNotNull2Bean(emkSampleRequired, t);
-      this.emkSampleRequiredService.saveOrUpdate(t);
-      
-      this.systemService.executeSql("delete from emk_sample_price where ENQUIRY_ID=?", new Object[] { emkSampleRequired.getId() });
-      EmkSamplePriceEntity samplePriceEntity = new EmkSamplePriceEntity();
-      samplePriceEntity.setMoney(Double.valueOf(Double.parseDouble(map.get("money").toString())));
-      samplePriceEntity.setBz(map.get("pbz").toString());
-      samplePriceEntity.setEnquiryId(emkSampleRequired.getId());
-      samplePriceEntity.setState(map.get("pstate").toString());
-      this.systemService.save(samplePriceEntity);
-      this.systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
-    }
-    catch (Exception e)
-    {
-      e.printStackTrace();
-      message = "样品需求单更新失败";
-      throw new BusinessException(e.getMessage());
-    }
-    j.setMsg(message);
-    return j;
-  }
-  
-  @RequestMapping(params={"goAdd"})
-  public ModelAndView goAdd(EmkSampleRequiredEntity emkSampleRequired, HttpServletRequest req)
-  {
-    req.setAttribute("kdDate", DateUtils.format(new Date(), "yyyy-MM-dd"));
-    if (StringUtil.isNotEmpty(emkSampleRequired.getId()))
-    {
-      emkSampleRequired = (EmkSampleRequiredEntity)this.emkSampleRequiredService.getEntity(EmkSampleRequiredEntity.class, emkSampleRequired.getId());
-      req.setAttribute("emkSampleRequiredPage", emkSampleRequired);
-    }
-    return new ModelAndView("com/emk/storage/samplerequired/emkSampleRequired-add");
-  }
-  
-  @RequestMapping(params={"goUpdate"})
-  public ModelAndView goUpdate(EmkSampleRequiredEntity emkSampleRequired, HttpServletRequest req)
-  {
-    if (StringUtil.isNotEmpty(emkSampleRequired.getId()))
-    {
-      emkSampleRequired = (EmkSampleRequiredEntity)this.emkSampleRequiredService.getEntity(EmkSampleRequiredEntity.class, emkSampleRequired.getId());
-      req.setAttribute("emkSampleRequiredPage", emkSampleRequired);
-      
-      EmkSamplePriceEntity samplePriceEntity = (EmkSamplePriceEntity)this.systemService.findUniqueByProperty(EmkSamplePriceEntity.class, "enquiryId", emkSampleRequired.getId());
-      req.setAttribute("samplePriceEntity", samplePriceEntity);
-    }
-    return new ModelAndView("com/emk/storage/samplerequired/emkSampleRequired-update");
-  }
-  
-  @RequestMapping(params={"upload"})
-  public ModelAndView upload(HttpServletRequest req)
-  {
-    req.setAttribute("controller_name", "emkSampleRequiredController");
-    return new ModelAndView("common/upload/pub_excel_upload");
-  }
-  
-  @RequestMapping(params={"exportXls"})
-  public String exportXls(EmkSampleRequiredEntity emkSampleRequired, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid, ModelMap modelMap)
-  {
-    CriteriaQuery cq = new CriteriaQuery(EmkSampleRequiredEntity.class, dataGrid);
-    HqlGenerateUtil.installHql(cq, emkSampleRequired, request.getParameterMap());
-    List<EmkSampleRequiredEntity> emkSampleRequireds = this.emkSampleRequiredService.getListByCriteriaQuery(cq, Boolean.valueOf(false));
-    modelMap.put("fileName", "样品需求单");
-    modelMap.put("entity", EmkSampleRequiredEntity.class);
-    modelMap.put("params", new ExportParams("样品需求单列表", "导出人:" + ResourceUtil.getSessionUser().getRealName(), "导出信息"));
-    
-    modelMap.put("data", emkSampleRequireds);
-    return "jeecgExcelView";
-  }
-  
-  @RequestMapping(params={"exportXlsByT"})
-  public String exportXlsByT(EmkSampleRequiredEntity emkSampleRequired, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid, ModelMap modelMap)
-  {
-    modelMap.put("fileName", "样品需求单");
-    modelMap.put("entity", EmkSampleRequiredEntity.class);
-    modelMap.put("params", new ExportParams("样品需求单列表", "导出人:" + ResourceUtil.getSessionUser().getRealName(), "导出信息"));
-    
-    modelMap.put("data", new ArrayList());
-    return "jeecgExcelView";
-  }
+    @RequestMapping(params = {"doAdd"})
+    @ResponseBody
+    public AjaxJson doAdd(EmkSampleRequiredEntity emkSampleRequired, HttpServletRequest request) {
+        String message = null;
+        AjaxJson j = new AjaxJson();
+        message = "样品需求单添加成功";
+        try {
+            TSUser user = (TSUser) request.getSession().getAttribute("LOCAL_CLINET_USER");
+            Map map = ParameterUtil.getParamMaps(request.getParameterMap());
+            Map orderNum = this.systemService.findOneForJdbc("select count(0)+1 orderNum from emk_sample_required where sys_org_code=?", new Object[]{user.getCurrentDepart().getOrgCode()});
+            emkSampleRequired.setRequiredNo("YPXP" + emkSampleRequired.getCusNum() + DateUtils.format(new Date(), "yyMMdd") + String.format("%03d", new Object[]{Integer.valueOf(Integer.parseInt(orderNum.get("orderNum").toString()))}));
+            this.emkSampleRequiredService.save(emkSampleRequired);
 
-  
-  @RequestMapping(method={org.springframework.web.bind.annotation.RequestMethod.GET})
-  @ResponseBody
-  @ApiOperation(value="样品需求单列表信息", produces="application/json", httpMethod="GET")
-  public ResponseMessage<List<EmkSampleRequiredEntity>> list()
-  {
-    List<EmkSampleRequiredEntity> listEmkSampleRequireds = this.emkSampleRequiredService.getList(EmkSampleRequiredEntity.class);
-    return Result.success(listEmkSampleRequireds);
-  }
-  
-  @RequestMapping(value={"/{id}"}, method={org.springframework.web.bind.annotation.RequestMethod.GET})
-  @ResponseBody
-  @ApiOperation(value="根据ID获取样品需求单信息", notes="根据ID获取样品需求单信息", httpMethod="GET", produces="application/json")
-  public ResponseMessage<?> get(@ApiParam(required=true, name="id", value="ID") @PathVariable("id") String id)
-  {
-    EmkSampleRequiredEntity task = (EmkSampleRequiredEntity)this.emkSampleRequiredService.get(EmkSampleRequiredEntity.class, id);
-    if (task == null) {
-      return Result.error("根据ID获取样品需求单信息为空");
+            EmkSamplePriceEntity samplePriceEntity = new EmkSamplePriceEntity();
+            samplePriceEntity.setMoney(Double.valueOf(Double.parseDouble(map.get("money").toString())));
+            samplePriceEntity.setBz(map.get("pbz").toString());
+            samplePriceEntity.setEnquiryId(emkSampleRequired.getId());
+            samplePriceEntity.setState(map.get("pstate").toString());
+            this.systemService.save(samplePriceEntity);
+            this.systemService.addLog(message, Globals.Log_Type_INSERT, Globals.Log_Leavel_INFO);
+        } catch (Exception e) {
+            e.printStackTrace();
+            message = "样品需求单添加失败";
+            throw new BusinessException(e.getMessage());
+        }
+        j.setMsg(message);
+        return j;
     }
-    return Result.success(task);
-  }
-  
-  @RequestMapping(method={org.springframework.web.bind.annotation.RequestMethod.POST}, consumes={"application/json"})
-  @ResponseBody
-  @ApiOperation("创建样品需求单")
-  public ResponseMessage<?> create(@ApiParam(name="样品需求单对象") @RequestBody EmkSampleRequiredEntity emkSampleRequired, UriComponentsBuilder uriBuilder)
-  {
-    Set<ConstraintViolation<EmkSampleRequiredEntity>> failures = this.validator.validate(emkSampleRequired, new Class[0]);
-    if (!failures.isEmpty()) {
-      return Result.error(JSONArray.toJSONString(BeanValidators.extractPropertyAndMessage(failures)));
+
+    @RequestMapping(params = {"doUpdate"})
+    @ResponseBody
+    public AjaxJson doUpdate(EmkSampleRequiredEntity emkSampleRequired, HttpServletRequest request) {
+        String message = null;
+        AjaxJson j = new AjaxJson();
+        message = "样品需求单更新成功";
+        EmkSampleRequiredEntity t = (EmkSampleRequiredEntity) this.emkSampleRequiredService.get(EmkSampleRequiredEntity.class, emkSampleRequired.getId());
+        try {
+            Map map = ParameterUtil.getParamMaps(request.getParameterMap());
+
+            MyBeanUtils.copyBeanNotNull2Bean(emkSampleRequired, t);
+            this.emkSampleRequiredService.saveOrUpdate(t);
+
+            this.systemService.executeSql("delete from emk_sample_price where ENQUIRY_ID=?", new Object[]{emkSampleRequired.getId()});
+            EmkSamplePriceEntity samplePriceEntity = new EmkSamplePriceEntity();
+            samplePriceEntity.setMoney(Double.valueOf(Double.parseDouble(map.get("money").toString())));
+            samplePriceEntity.setBz(map.get("pbz").toString());
+            samplePriceEntity.setEnquiryId(emkSampleRequired.getId());
+            samplePriceEntity.setState(map.get("pstate").toString());
+            this.systemService.save(samplePriceEntity);
+            this.systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
+        } catch (Exception e) {
+            e.printStackTrace();
+            message = "样品需求单更新失败";
+            throw new BusinessException(e.getMessage());
+        }
+        j.setMsg(message);
+        return j;
     }
-    try
-    {
-      this.emkSampleRequiredService.save(emkSampleRequired);
+
+    @RequestMapping(params = {"goAdd"})
+    public ModelAndView goAdd(EmkSampleRequiredEntity emkSampleRequired, HttpServletRequest req) {
+        req.setAttribute("kdDate", DateUtils.format(new Date(), "yyyy-MM-dd"));
+        if (StringUtil.isNotEmpty(emkSampleRequired.getId())) {
+            emkSampleRequired = (EmkSampleRequiredEntity) this.emkSampleRequiredService.getEntity(EmkSampleRequiredEntity.class, emkSampleRequired.getId());
+            req.setAttribute("emkSampleRequiredPage", emkSampleRequired);
+        }
+        return new ModelAndView("com/emk/storage/samplerequired/emkSampleRequired-add");
     }
-    catch (Exception e)
-    {
-      e.printStackTrace();
-      return Result.error("样品需求单信息保存失败");
+
+    @RequestMapping(params = {"goUpdate"})
+    public ModelAndView goUpdate(EmkSampleRequiredEntity emkSampleRequired, HttpServletRequest req) {
+        if (StringUtil.isNotEmpty(emkSampleRequired.getId())) {
+            emkSampleRequired = (EmkSampleRequiredEntity) this.emkSampleRequiredService.getEntity(EmkSampleRequiredEntity.class, emkSampleRequired.getId());
+            req.setAttribute("emkSampleRequiredPage", emkSampleRequired);
+
+            EmkSamplePriceEntity samplePriceEntity = (EmkSamplePriceEntity) this.systemService.findUniqueByProperty(EmkSamplePriceEntity.class, "enquiryId", emkSampleRequired.getId());
+            req.setAttribute("samplePriceEntity", samplePriceEntity);
+        }
+        return new ModelAndView("com/emk/storage/samplerequired/emkSampleRequired-update");
     }
-    return Result.success(emkSampleRequired);
-  }
-  
-  @RequestMapping(value={"/{id}"}, method={org.springframework.web.bind.annotation.RequestMethod.PUT}, consumes={"application/json"})
-  @ResponseBody
-  @ApiOperation(value="更新样品需求单", notes="更新样品需求单")
-  public ResponseMessage<?> update(@ApiParam(name="样品需求单对象") @RequestBody EmkSampleRequiredEntity emkSampleRequired)
-  {
-    Set<ConstraintViolation<EmkSampleRequiredEntity>> failures = this.validator.validate(emkSampleRequired, new Class[0]);
-    if (!failures.isEmpty()) {
-      return Result.error(JSONArray.toJSONString(BeanValidators.extractPropertyAndMessage(failures)));
+
+    @RequestMapping(params = {"upload"})
+    public ModelAndView upload(HttpServletRequest req) {
+        req.setAttribute("controller_name", "emkSampleRequiredController");
+        return new ModelAndView("common/upload/pub_excel_upload");
     }
-    try
-    {
-      this.emkSampleRequiredService.saveOrUpdate(emkSampleRequired);
+
+    @RequestMapping(params = {"exportXls"})
+    public String exportXls(EmkSampleRequiredEntity emkSampleRequired, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid, ModelMap modelMap) {
+        CriteriaQuery cq = new CriteriaQuery(EmkSampleRequiredEntity.class, dataGrid);
+        HqlGenerateUtil.installHql(cq, emkSampleRequired, request.getParameterMap());
+        List<EmkSampleRequiredEntity> emkSampleRequireds = this.emkSampleRequiredService.getListByCriteriaQuery(cq, Boolean.valueOf(false));
+        modelMap.put("fileName", "样品需求单");
+        modelMap.put("entity", EmkSampleRequiredEntity.class);
+        modelMap.put("params", new ExportParams("样品需求单列表", "导出人:" + ResourceUtil.getSessionUser().getRealName(), "导出信息"));
+
+        modelMap.put("data", emkSampleRequireds);
+        return "jeecgExcelView";
     }
-    catch (Exception e)
-    {
-      e.printStackTrace();
-      return Result.error("更新样品需求单信息失败");
+
+    @RequestMapping(params = {"exportXlsByT"})
+    public String exportXlsByT(EmkSampleRequiredEntity emkSampleRequired, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid, ModelMap modelMap) {
+        modelMap.put("fileName", "样品需求单");
+        modelMap.put("entity", EmkSampleRequiredEntity.class);
+        modelMap.put("params", new ExportParams("样品需求单列表", "导出人:" + ResourceUtil.getSessionUser().getRealName(), "导出信息"));
+
+        modelMap.put("data", new ArrayList());
+        return "jeecgExcelView";
     }
-    return Result.success("更新样品需求单信息成功");
-  }
-  
-  @RequestMapping(value={"/{id}"}, method={org.springframework.web.bind.annotation.RequestMethod.DELETE})
-  @ResponseStatus(HttpStatus.NO_CONTENT)
-  @ApiOperation("删除样品需求单")
-  public ResponseMessage<?> delete(@ApiParam(name="id", value="ID", required=true) @PathVariable("id") String id)
-  {
-    logger.info("delete[{}]" + id);
-    if (StringUtils.isEmpty(id)) {
-      return Result.error("ID不能为空");
+
+
+    @RequestMapping(method = {org.springframework.web.bind.annotation.RequestMethod.GET})
+    @ResponseBody
+    @ApiOperation(value = "样品需求单列表信息", produces = "application/json", httpMethod = "GET")
+    public ResponseMessage<List<EmkSampleRequiredEntity>> list() {
+        List<EmkSampleRequiredEntity> listEmkSampleRequireds = this.emkSampleRequiredService.getList(EmkSampleRequiredEntity.class);
+        return Result.success(listEmkSampleRequireds);
     }
-    try
-    {
-      this.emkSampleRequiredService.deleteEntityById(EmkSampleRequiredEntity.class, id);
+
+    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.GET})
+    @ResponseBody
+    @ApiOperation(value = "根据ID获取样品需求单信息", notes = "根据ID获取样品需求单信息", httpMethod = "GET", produces = "application/json")
+    public ResponseMessage<?> get(@ApiParam(required = true, name = "id", value = "ID") @PathVariable("id") String id) {
+        EmkSampleRequiredEntity task = (EmkSampleRequiredEntity) this.emkSampleRequiredService.get(EmkSampleRequiredEntity.class, id);
+        if (task == null) {
+            return Result.error("根据ID获取样品需求单信息为空");
+        }
+        return Result.success(task);
     }
-    catch (Exception e)
-    {
-      e.printStackTrace();
-      return Result.error("样品需求单删除失败");
+
+    @RequestMapping(method = {org.springframework.web.bind.annotation.RequestMethod.POST}, consumes = {"application/json"})
+    @ResponseBody
+    @ApiOperation("创建样品需求单")
+    public ResponseMessage<?> create(@ApiParam(name = "样品需求单对象") @RequestBody EmkSampleRequiredEntity emkSampleRequired, UriComponentsBuilder uriBuilder) {
+        Set<ConstraintViolation<EmkSampleRequiredEntity>> failures = this.validator.validate(emkSampleRequired, new Class[0]);
+        if (!failures.isEmpty()) {
+            return Result.error(JSONArray.toJSONString(BeanValidators.extractPropertyAndMessage(failures)));
+        }
+        try {
+            this.emkSampleRequiredService.save(emkSampleRequired);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("样品需求单信息保存失败");
+        }
+        return Result.success(emkSampleRequired);
     }
-    return Result.success();
-  }
+
+    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.PUT}, consumes = {"application/json"})
+    @ResponseBody
+    @ApiOperation(value = "更新样品需求单", notes = "更新样品需求单")
+    public ResponseMessage<?> update(@ApiParam(name = "样品需求单对象") @RequestBody EmkSampleRequiredEntity emkSampleRequired) {
+        Set<ConstraintViolation<EmkSampleRequiredEntity>> failures = this.validator.validate(emkSampleRequired, new Class[0]);
+        if (!failures.isEmpty()) {
+            return Result.error(JSONArray.toJSONString(BeanValidators.extractPropertyAndMessage(failures)));
+        }
+        try {
+            this.emkSampleRequiredService.saveOrUpdate(emkSampleRequired);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("更新样品需求单信息失败");
+        }
+        return Result.success("更新样品需求单信息成功");
+    }
+
+    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.DELETE})
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ApiOperation("删除样品需求单")
+    public ResponseMessage<?> delete(@ApiParam(name = "id", value = "ID", required = true) @PathVariable("id") String id) {
+        logger.info("delete[{}]" + id);
+        if (StringUtils.isEmpty(id)) {
+            return Result.error("ID不能为空");
+        }
+        try {
+            this.emkSampleRequiredService.deleteEntityById(EmkSampleRequiredEntity.class, id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("样品需求单删除失败");
+        }
+        return Result.success();
+    }
 }

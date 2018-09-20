@@ -7,6 +7,7 @@ import com.emk.util.ParameterUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.tools.ant.util.DateUtils;
@@ -59,279 +61,235 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.UriComponentsBuilder;
 
-@Api(value="EmkSampleColor", description="色样通知单", tags={"emkSampleColorController"})
+@Api(value = "EmkSampleColor", description = "色样通知单", tags = {"emkSampleColorController"})
 @Controller
 @RequestMapping({"/emkSampleColorController"})
 public class EmkSampleColorController
-  extends BaseController
-{
-  private static final Logger logger = Logger.getLogger(EmkSampleColorController.class);
-  @Autowired
-  private EmkSampleColorServiceI emkSampleColorService;
-  @Autowired
-  private SystemService systemService;
-  @Autowired
-  private Validator validator;
-  
-  @RequestMapping(params={"list"})
-  public ModelAndView list(HttpServletRequest request)
-  {
-    return new ModelAndView("com/emk/storage/samplecolor/emkSampleColorList");
-  }
-  
-  @RequestMapping(params={"datagrid"})
-  public void datagrid(EmkSampleColorEntity emkSampleColor, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid)
-  {
-    CriteriaQuery cq = new CriteriaQuery(EmkSampleColorEntity.class, dataGrid);
-    
-    HqlGenerateUtil.installHql(cq, emkSampleColor, request.getParameterMap());
-    
+        extends BaseController {
+    private static final Logger logger = Logger.getLogger(EmkSampleColorController.class);
+    @Autowired
+    private EmkSampleColorServiceI emkSampleColorService;
+    @Autowired
+    private SystemService systemService;
+    @Autowired
+    private Validator validator;
+
+    @RequestMapping(params = {"list"})
+    public ModelAndView list(HttpServletRequest request) {
+        return new ModelAndView("com/emk/storage/samplecolor/emkSampleColorList");
+    }
+
+    @RequestMapping(params = {"datagrid"})
+    public void datagrid(EmkSampleColorEntity emkSampleColor, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid) {
+        CriteriaQuery cq = new CriteriaQuery(EmkSampleColorEntity.class, dataGrid);
+
+        HqlGenerateUtil.installHql(cq, emkSampleColor, request.getParameterMap());
 
 
+        cq.add();
+        this.emkSampleColorService.getDataGridReturn(cq, true);
+        TagUtil.datagrid(response, dataGrid);
+    }
+
+    @RequestMapping(params = {"doDel"})
+    @ResponseBody
+    public AjaxJson doDel(EmkSampleColorEntity emkSampleColor, HttpServletRequest request) {
+        String message = null;
+        AjaxJson j = new AjaxJson();
+        emkSampleColor = (EmkSampleColorEntity) this.systemService.getEntity(EmkSampleColorEntity.class, emkSampleColor.getId());
+        message = "色样通知单删除成功";
+        try {
+            this.emkSampleColorService.delete(emkSampleColor);
+            this.systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
+        } catch (Exception e) {
+            e.printStackTrace();
+            message = "色样通知单删除失败";
+            throw new BusinessException(e.getMessage());
+        }
+        j.setMsg(message);
+        return j;
+    }
+
+    @RequestMapping(params = {"doBatchDel"})
+    @ResponseBody
+    public AjaxJson doBatchDel(String ids, HttpServletRequest request) {
+        String message = null;
+        AjaxJson j = new AjaxJson();
+        message = "色样通知单删除成功";
+        try {
+            for (String id : ids.split(",")) {
+                EmkSampleColorEntity emkSampleColor = (EmkSampleColorEntity) this.systemService.getEntity(EmkSampleColorEntity.class, id);
 
 
-    cq.add();
-    this.emkSampleColorService.getDataGridReturn(cq, true);
-    TagUtil.datagrid(response, dataGrid);
-  }
-  
-  @RequestMapping(params={"doDel"})
-  @ResponseBody
-  public AjaxJson doDel(EmkSampleColorEntity emkSampleColor, HttpServletRequest request)
-  {
-    String message = null;
-    AjaxJson j = new AjaxJson();
-    emkSampleColor = (EmkSampleColorEntity)this.systemService.getEntity(EmkSampleColorEntity.class, emkSampleColor.getId());
-    message = "色样通知单删除成功";
-    try
-    {
-      this.emkSampleColorService.delete(emkSampleColor);
-      this.systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
+                this.emkSampleColorService.delete(emkSampleColor);
+                this.systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            message = "色样通知单删除失败";
+            throw new BusinessException(e.getMessage());
+        }
+        j.setMsg(message);
+        return j;
     }
-    catch (Exception e)
-    {
-      e.printStackTrace();
-      message = "色样通知单删除失败";
-      throw new BusinessException(e.getMessage());
-    }
-    j.setMsg(message);
-    return j;
-  }
-  
-  @RequestMapping(params={"doBatchDel"})
-  @ResponseBody
-  public AjaxJson doBatchDel(String ids, HttpServletRequest request)
-  {
-    String message = null;
-    AjaxJson j = new AjaxJson();
-    message = "色样通知单删除成功";
-    try
-    {
-      for (String id : ids.split(","))
-      {
-        EmkSampleColorEntity emkSampleColor = (EmkSampleColorEntity)this.systemService.getEntity(EmkSampleColorEntity.class, id);
-        
 
-        this.emkSampleColorService.delete(emkSampleColor);
-        this.systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
-      }
+    @RequestMapping(params = {"doAdd"})
+    @ResponseBody
+    public AjaxJson doAdd(EmkSampleColorEntity emkSampleColor, HttpServletRequest request) {
+        String message = null;
+        AjaxJson j = new AjaxJson();
+        message = "色样通知单添加成功";
+        try {
+            TSUser user = (TSUser) request.getSession().getAttribute("LOCAL_CLINET_USER");
+            Map map = ParameterUtil.getParamMaps(request.getParameterMap());
+            Map orderNum = this.systemService.findOneForJdbc("select count(0)+1 orderNum from emk_sample_color where sys_org_code=?", new Object[]{user.getCurrentDepart().getOrgCode()});
+            emkSampleColor.setSytzdbh("SY" + DateUtils.format(new Date(), "yyMMdd") + "B" + String.format("%02d", new Object[]{Integer.valueOf(Integer.parseInt(orderNum.get("orderNum").toString()))}));
+            this.emkSampleColorService.save(emkSampleColor);
+            this.systemService.addLog(message, Globals.Log_Type_INSERT, Globals.Log_Leavel_INFO);
+        } catch (Exception e) {
+            e.printStackTrace();
+            message = "色样通知单添加失败";
+            throw new BusinessException(e.getMessage());
+        }
+        j.setMsg(message);
+        return j;
     }
-    catch (Exception e)
-    {
-      e.printStackTrace();
-      message = "色样通知单删除失败";
-      throw new BusinessException(e.getMessage());
+
+    @RequestMapping(params = {"doUpdate"})
+    @ResponseBody
+    public AjaxJson doUpdate(EmkSampleColorEntity emkSampleColor, HttpServletRequest request) {
+        String message = null;
+        AjaxJson j = new AjaxJson();
+        message = "色样通知单更新成功";
+        EmkSampleColorEntity t = (EmkSampleColorEntity) this.emkSampleColorService.get(EmkSampleColorEntity.class, emkSampleColor.getId());
+        try {
+            MyBeanUtils.copyBeanNotNull2Bean(emkSampleColor, t);
+            this.emkSampleColorService.saveOrUpdate(t);
+            this.systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
+        } catch (Exception e) {
+            e.printStackTrace();
+            message = "色样通知单更新失败";
+            throw new BusinessException(e.getMessage());
+        }
+        j.setMsg(message);
+        return j;
     }
-    j.setMsg(message);
-    return j;
-  }
-  
-  @RequestMapping(params={"doAdd"})
-  @ResponseBody
-  public AjaxJson doAdd(EmkSampleColorEntity emkSampleColor, HttpServletRequest request)
-  {
-    String message = null;
-    AjaxJson j = new AjaxJson();
-    message = "色样通知单添加成功";
-    try
-    {
-      TSUser user = (TSUser)request.getSession().getAttribute("LOCAL_CLINET_USER");
-      Map map = ParameterUtil.getParamMaps(request.getParameterMap());
-      Map orderNum = this.systemService.findOneForJdbc("select count(0)+1 orderNum from emk_sample_color where sys_org_code=?", new Object[] { user.getCurrentDepart().getOrgCode() });
-      emkSampleColor.setSytzdbh("SY" + DateUtils.format(new Date(), "yyMMdd") + "B" + String.format("%02d", new Object[] { Integer.valueOf(Integer.parseInt(orderNum.get("orderNum").toString())) }));
-      this.emkSampleColorService.save(emkSampleColor);
-      this.systemService.addLog(message, Globals.Log_Type_INSERT, Globals.Log_Leavel_INFO);
+
+    @RequestMapping(params = {"goAdd"})
+    public ModelAndView goAdd(EmkSampleColorEntity emkSampleColor, HttpServletRequest req) {
+        req.setAttribute("kdDate", DateUtils.format(new Date(), "yyyy-MM-dd"));
+        if (StringUtil.isNotEmpty(emkSampleColor.getId())) {
+            emkSampleColor = (EmkSampleColorEntity) this.emkSampleColorService.getEntity(EmkSampleColorEntity.class, emkSampleColor.getId());
+            req.setAttribute("emkSampleColorPage", emkSampleColor);
+        }
+        return new ModelAndView("com/emk/storage/samplecolor/emkSampleColor-add");
     }
-    catch (Exception e)
-    {
-      e.printStackTrace();
-      message = "色样通知单添加失败";
-      throw new BusinessException(e.getMessage());
+
+    @RequestMapping(params = {"goUpdate"})
+    public ModelAndView goUpdate(EmkSampleColorEntity emkSampleColor, HttpServletRequest req) {
+        if (StringUtil.isNotEmpty(emkSampleColor.getId())) {
+            emkSampleColor = (EmkSampleColorEntity) this.emkSampleColorService.getEntity(EmkSampleColorEntity.class, emkSampleColor.getId());
+            req.setAttribute("emkSampleColorPage", emkSampleColor);
+        }
+        return new ModelAndView("com/emk/storage/samplecolor/emkSampleColor-update");
     }
-    j.setMsg(message);
-    return j;
-  }
-  
-  @RequestMapping(params={"doUpdate"})
-  @ResponseBody
-  public AjaxJson doUpdate(EmkSampleColorEntity emkSampleColor, HttpServletRequest request)
-  {
-    String message = null;
-    AjaxJson j = new AjaxJson();
-    message = "色样通知单更新成功";
-    EmkSampleColorEntity t = (EmkSampleColorEntity)this.emkSampleColorService.get(EmkSampleColorEntity.class, emkSampleColor.getId());
-    try
-    {
-      MyBeanUtils.copyBeanNotNull2Bean(emkSampleColor, t);
-      this.emkSampleColorService.saveOrUpdate(t);
-      this.systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
+
+    @RequestMapping(params = {"upload"})
+    public ModelAndView upload(HttpServletRequest req) {
+        req.setAttribute("controller_name", "emkSampleColorController");
+        return new ModelAndView("common/upload/pub_excel_upload");
     }
-    catch (Exception e)
-    {
-      e.printStackTrace();
-      message = "色样通知单更新失败";
-      throw new BusinessException(e.getMessage());
+
+    @RequestMapping(params = {"exportXls"})
+    public String exportXls(EmkSampleColorEntity emkSampleColor, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid, ModelMap modelMap) {
+        CriteriaQuery cq = new CriteriaQuery(EmkSampleColorEntity.class, dataGrid);
+        HqlGenerateUtil.installHql(cq, emkSampleColor, request.getParameterMap());
+        List<EmkSampleColorEntity> emkSampleColors = this.emkSampleColorService.getListByCriteriaQuery(cq, Boolean.valueOf(false));
+        modelMap.put("fileName", "色样通知单");
+        modelMap.put("entity", EmkSampleColorEntity.class);
+        modelMap.put("params", new ExportParams("色样通知单列表", "导出人:" + ResourceUtil.getSessionUser().getRealName(), "导出信息"));
+
+        modelMap.put("data", emkSampleColors);
+        return "jeecgExcelView";
     }
-    j.setMsg(message);
-    return j;
-  }
-  
-  @RequestMapping(params={"goAdd"})
-  public ModelAndView goAdd(EmkSampleColorEntity emkSampleColor, HttpServletRequest req)
-  {
-    req.setAttribute("kdDate", DateUtils.format(new Date(), "yyyy-MM-dd"));
-    if (StringUtil.isNotEmpty(emkSampleColor.getId()))
-    {
-      emkSampleColor = (EmkSampleColorEntity)this.emkSampleColorService.getEntity(EmkSampleColorEntity.class, emkSampleColor.getId());
-      req.setAttribute("emkSampleColorPage", emkSampleColor);
+
+    @RequestMapping(params = {"exportXlsByT"})
+    public String exportXlsByT(EmkSampleColorEntity emkSampleColor, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid, ModelMap modelMap) {
+        modelMap.put("fileName", "色样通知单");
+        modelMap.put("entity", EmkSampleColorEntity.class);
+        modelMap.put("params", new ExportParams("色样通知单列表", "导出人:" + ResourceUtil.getSessionUser().getRealName(), "导出信息"));
+
+        modelMap.put("data", new ArrayList());
+        return "jeecgExcelView";
     }
-    return new ModelAndView("com/emk/storage/samplecolor/emkSampleColor-add");
-  }
-  
-  @RequestMapping(params={"goUpdate"})
-  public ModelAndView goUpdate(EmkSampleColorEntity emkSampleColor, HttpServletRequest req)
-  {
-    if (StringUtil.isNotEmpty(emkSampleColor.getId()))
-    {
-      emkSampleColor = (EmkSampleColorEntity)this.emkSampleColorService.getEntity(EmkSampleColorEntity.class, emkSampleColor.getId());
-      req.setAttribute("emkSampleColorPage", emkSampleColor);
+
+    @RequestMapping(method = {org.springframework.web.bind.annotation.RequestMethod.GET})
+    @ResponseBody
+    @ApiOperation(value = "色样通知单列表信息", produces = "application/json", httpMethod = "GET")
+    public ResponseMessage<List<EmkSampleColorEntity>> list() {
+        List<EmkSampleColorEntity> listEmkSampleColors = this.emkSampleColorService.getList(EmkSampleColorEntity.class);
+        return Result.success(listEmkSampleColors);
     }
-    return new ModelAndView("com/emk/storage/samplecolor/emkSampleColor-update");
-  }
-  
-  @RequestMapping(params={"upload"})
-  public ModelAndView upload(HttpServletRequest req)
-  {
-    req.setAttribute("controller_name", "emkSampleColorController");
-    return new ModelAndView("common/upload/pub_excel_upload");
-  }
-  
-  @RequestMapping(params={"exportXls"})
-  public String exportXls(EmkSampleColorEntity emkSampleColor, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid, ModelMap modelMap)
-  {
-    CriteriaQuery cq = new CriteriaQuery(EmkSampleColorEntity.class, dataGrid);
-    HqlGenerateUtil.installHql(cq, emkSampleColor, request.getParameterMap());
-    List<EmkSampleColorEntity> emkSampleColors = this.emkSampleColorService.getListByCriteriaQuery(cq, Boolean.valueOf(false));
-    modelMap.put("fileName", "色样通知单");
-    modelMap.put("entity", EmkSampleColorEntity.class);
-    modelMap.put("params", new ExportParams("色样通知单列表", "导出人:" + ResourceUtil.getSessionUser().getRealName(), "导出信息"));
-    
-    modelMap.put("data", emkSampleColors);
-    return "jeecgExcelView";
-  }
-  
-  @RequestMapping(params={"exportXlsByT"})
-  public String exportXlsByT(EmkSampleColorEntity emkSampleColor, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid, ModelMap modelMap)
-  {
-    modelMap.put("fileName", "色样通知单");
-    modelMap.put("entity", EmkSampleColorEntity.class);
-    modelMap.put("params", new ExportParams("色样通知单列表", "导出人:" + ResourceUtil.getSessionUser().getRealName(), "导出信息"));
-    
-    modelMap.put("data", new ArrayList());
-    return "jeecgExcelView";
-  }
-  
-  @RequestMapping(method={org.springframework.web.bind.annotation.RequestMethod.GET})
-  @ResponseBody
-  @ApiOperation(value="色样通知单列表信息", produces="application/json", httpMethod="GET")
-  public ResponseMessage<List<EmkSampleColorEntity>> list()
-  {
-    List<EmkSampleColorEntity> listEmkSampleColors = this.emkSampleColorService.getList(EmkSampleColorEntity.class);
-    return Result.success(listEmkSampleColors);
-  }
-  
-  @RequestMapping(value={"/{id}"}, method={org.springframework.web.bind.annotation.RequestMethod.GET})
-  @ResponseBody
-  @ApiOperation(value="根据ID获取色样通知单信息", notes="根据ID获取色样通知单信息", httpMethod="GET", produces="application/json")
-  public ResponseMessage<?> get(@ApiParam(required=true, name="id", value="ID") @PathVariable("id") String id)
-  {
-    EmkSampleColorEntity task = (EmkSampleColorEntity)this.emkSampleColorService.get(EmkSampleColorEntity.class, id);
-    if (task == null) {
-      return Result.error("根据ID获取色样通知单信息为空");
+
+    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.GET})
+    @ResponseBody
+    @ApiOperation(value = "根据ID获取色样通知单信息", notes = "根据ID获取色样通知单信息", httpMethod = "GET", produces = "application/json")
+    public ResponseMessage<?> get(@ApiParam(required = true, name = "id", value = "ID") @PathVariable("id") String id) {
+        EmkSampleColorEntity task = (EmkSampleColorEntity) this.emkSampleColorService.get(EmkSampleColorEntity.class, id);
+        if (task == null) {
+            return Result.error("根据ID获取色样通知单信息为空");
+        }
+        return Result.success(task);
     }
-    return Result.success(task);
-  }
-  
-  @RequestMapping(method={org.springframework.web.bind.annotation.RequestMethod.POST}, consumes={"application/json"})
-  @ResponseBody
-  @ApiOperation("创建色样通知单")
-  public ResponseMessage<?> create(@ApiParam(name="色样通知单对象") @RequestBody EmkSampleColorEntity emkSampleColor, UriComponentsBuilder uriBuilder)
-  {
-    Set<ConstraintViolation<EmkSampleColorEntity>> failures = this.validator.validate(emkSampleColor, new Class[0]);
-    if (!failures.isEmpty()) {
-      return Result.error(JSONArray.toJSONString(BeanValidators.extractPropertyAndMessage(failures)));
+
+    @RequestMapping(method = {org.springframework.web.bind.annotation.RequestMethod.POST}, consumes = {"application/json"})
+    @ResponseBody
+    @ApiOperation("创建色样通知单")
+    public ResponseMessage<?> create(@ApiParam(name = "色样通知单对象") @RequestBody EmkSampleColorEntity emkSampleColor, UriComponentsBuilder uriBuilder) {
+        Set<ConstraintViolation<EmkSampleColorEntity>> failures = this.validator.validate(emkSampleColor, new Class[0]);
+        if (!failures.isEmpty()) {
+            return Result.error(JSONArray.toJSONString(BeanValidators.extractPropertyAndMessage(failures)));
+        }
+        try {
+            this.emkSampleColorService.save(emkSampleColor);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("色样通知单信息保存失败");
+        }
+        return Result.success(emkSampleColor);
     }
-    try
-    {
-      this.emkSampleColorService.save(emkSampleColor);
+
+    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.PUT}, consumes = {"application/json"})
+    @ResponseBody
+    @ApiOperation(value = "更新色样通知单", notes = "更新色样通知单")
+    public ResponseMessage<?> update(@ApiParam(name = "色样通知单对象") @RequestBody EmkSampleColorEntity emkSampleColor) {
+        Set<ConstraintViolation<EmkSampleColorEntity>> failures = this.validator.validate(emkSampleColor, new Class[0]);
+        if (!failures.isEmpty()) {
+            return Result.error(JSONArray.toJSONString(BeanValidators.extractPropertyAndMessage(failures)));
+        }
+        try {
+            this.emkSampleColorService.saveOrUpdate(emkSampleColor);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("更新色样通知单信息失败");
+        }
+        return Result.success("更新色样通知单信息成功");
     }
-    catch (Exception e)
-    {
-      e.printStackTrace();
-      return Result.error("色样通知单信息保存失败");
+
+    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.DELETE})
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ApiOperation("删除色样通知单")
+    public ResponseMessage<?> delete(@ApiParam(name = "id", value = "ID", required = true) @PathVariable("id") String id) {
+        logger.info("delete[{}]" + id);
+        if (StringUtils.isEmpty(id)) {
+            return Result.error("ID不能为空");
+        }
+        try {
+            this.emkSampleColorService.deleteEntityById(EmkSampleColorEntity.class, id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("色样通知单删除失败");
+        }
+        return Result.success();
     }
-    return Result.success(emkSampleColor);
-  }
-  
-  @RequestMapping(value={"/{id}"}, method={org.springframework.web.bind.annotation.RequestMethod.PUT}, consumes={"application/json"})
-  @ResponseBody
-  @ApiOperation(value="更新色样通知单", notes="更新色样通知单")
-  public ResponseMessage<?> update(@ApiParam(name="色样通知单对象") @RequestBody EmkSampleColorEntity emkSampleColor)
-  {
-    Set<ConstraintViolation<EmkSampleColorEntity>> failures = this.validator.validate(emkSampleColor, new Class[0]);
-    if (!failures.isEmpty()) {
-      return Result.error(JSONArray.toJSONString(BeanValidators.extractPropertyAndMessage(failures)));
-    }
-    try
-    {
-      this.emkSampleColorService.saveOrUpdate(emkSampleColor);
-    }
-    catch (Exception e)
-    {
-      e.printStackTrace();
-      return Result.error("更新色样通知单信息失败");
-    }
-    return Result.success("更新色样通知单信息成功");
-  }
-  
-  @RequestMapping(value={"/{id}"}, method={org.springframework.web.bind.annotation.RequestMethod.DELETE})
-  @ResponseStatus(HttpStatus.NO_CONTENT)
-  @ApiOperation("删除色样通知单")
-  public ResponseMessage<?> delete(@ApiParam(name="id", value="ID", required=true) @PathVariable("id") String id)
-  {
-    logger.info("delete[{}]" + id);
-    if (StringUtils.isEmpty(id)) {
-      return Result.error("ID不能为空");
-    }
-    try
-    {
-      this.emkSampleColorService.deleteEntityById(EmkSampleColorEntity.class, id);
-    }
-    catch (Exception e)
-    {
-      e.printStackTrace();
-      return Result.error("色样通知单删除失败");
-    }
-    return Result.success();
-  }
 }

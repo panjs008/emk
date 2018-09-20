@@ -105,8 +105,8 @@
 				</label>
 			</td>
 			<td class="value" colspan="3">
-				<input id="realName" name="realName" type="text" readonly style="width: 150px" class="inputxt" >
-				<input name="userName"   type="hidden"  id="userName" type="text"  />
+				<input id="realName" name="realName" type="text" value="${LOCAL_CLINET_USER.realName}" readonly style="width: 150px" class="inputxt" >
+				<input name="userName"   type="hidden"  id="userName" value="${LOCAL_CLINET_USER.userName}" type="text"  />
 				<t:choose  hiddenName="userName"  hiddenid="userName" url="userController.do?userSelect0" name="userList0" width="700px" height="500px"
 						   icon="icon-search" title="选择处理人" textname="realName" isclear="true" isInit="true"></t:choose>
 			</td>

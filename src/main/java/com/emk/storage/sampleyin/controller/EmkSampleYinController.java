@@ -6,6 +6,7 @@ import com.emk.storage.sampleyin.service.EmkSampleYinServiceI;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.jeecgframework.core.beanvalidator.BeanValidators;
@@ -54,274 +56,230 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.UriComponentsBuilder;
 
-@Api(value="EmkSampleYin", description="样品印花表", tags={"emkSampleYinController"})
+@Api(value = "EmkSampleYin", description = "样品印花表", tags = {"emkSampleYinController"})
 @Controller
 @RequestMapping({"/emkSampleYinController"})
 public class EmkSampleYinController
-  extends BaseController
-{
-  private static final Logger logger = Logger.getLogger(EmkSampleYinController.class);
-  @Autowired
-  private EmkSampleYinServiceI emkSampleYinService;
-  @Autowired
-  private SystemService systemService;
-  @Autowired
-  private Validator validator;
-  
-  @RequestMapping(params={"list"})
-  public ModelAndView list(HttpServletRequest request)
-  {
-    return new ModelAndView("com/emk/storage/sampleyin/emkSampleYinList");
-  }
-  
-  @RequestMapping(params={"datagrid"})
-  public void datagrid(EmkSampleYinEntity emkSampleYin, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid)
-  {
-    CriteriaQuery cq = new CriteriaQuery(EmkSampleYinEntity.class, dataGrid);
-    
-    HqlGenerateUtil.installHql(cq, emkSampleYin, request.getParameterMap());
-    
+        extends BaseController {
+    private static final Logger logger = Logger.getLogger(EmkSampleYinController.class);
+    @Autowired
+    private EmkSampleYinServiceI emkSampleYinService;
+    @Autowired
+    private SystemService systemService;
+    @Autowired
+    private Validator validator;
+
+    @RequestMapping(params = {"list"})
+    public ModelAndView list(HttpServletRequest request) {
+        return new ModelAndView("com/emk/storage/sampleyin/emkSampleYinList");
+    }
+
+    @RequestMapping(params = {"datagrid"})
+    public void datagrid(EmkSampleYinEntity emkSampleYin, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid) {
+        CriteriaQuery cq = new CriteriaQuery(EmkSampleYinEntity.class, dataGrid);
+
+        HqlGenerateUtil.installHql(cq, emkSampleYin, request.getParameterMap());
 
 
+        cq.add();
+        this.emkSampleYinService.getDataGridReturn(cq, true);
+        TagUtil.datagrid(response, dataGrid);
+    }
+
+    @RequestMapping(params = {"doDel"})
+    @ResponseBody
+    public AjaxJson doDel(EmkSampleYinEntity emkSampleYin, HttpServletRequest request) {
+        String message = null;
+        AjaxJson j = new AjaxJson();
+        emkSampleYin = (EmkSampleYinEntity) this.systemService.getEntity(EmkSampleYinEntity.class, emkSampleYin.getId());
+        message = "样品印花表删除成功";
+        try {
+            this.emkSampleYinService.delete(emkSampleYin);
+            this.systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
+        } catch (Exception e) {
+            e.printStackTrace();
+            message = "样品印花表删除失败";
+            throw new BusinessException(e.getMessage());
+        }
+        j.setMsg(message);
+        return j;
+    }
+
+    @RequestMapping(params = {"doBatchDel"})
+    @ResponseBody
+    public AjaxJson doBatchDel(String ids, HttpServletRequest request) {
+        String message = null;
+        AjaxJson j = new AjaxJson();
+        message = "样品印花表删除成功";
+        try {
+            for (String id : ids.split(",")) {
+                EmkSampleYinEntity emkSampleYin = (EmkSampleYinEntity) this.systemService.getEntity(EmkSampleYinEntity.class, id);
 
 
-    cq.add();
-    this.emkSampleYinService.getDataGridReturn(cq, true);
-    TagUtil.datagrid(response, dataGrid);
-  }
-  
-  @RequestMapping(params={"doDel"})
-  @ResponseBody
-  public AjaxJson doDel(EmkSampleYinEntity emkSampleYin, HttpServletRequest request)
-  {
-    String message = null;
-    AjaxJson j = new AjaxJson();
-    emkSampleYin = (EmkSampleYinEntity)this.systemService.getEntity(EmkSampleYinEntity.class, emkSampleYin.getId());
-    message = "样品印花表删除成功";
-    try
-    {
-      this.emkSampleYinService.delete(emkSampleYin);
-      this.systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
+                this.emkSampleYinService.delete(emkSampleYin);
+                this.systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            message = "样品印花表删除失败";
+            throw new BusinessException(e.getMessage());
+        }
+        j.setMsg(message);
+        return j;
     }
-    catch (Exception e)
-    {
-      e.printStackTrace();
-      message = "样品印花表删除失败";
-      throw new BusinessException(e.getMessage());
-    }
-    j.setMsg(message);
-    return j;
-  }
-  
-  @RequestMapping(params={"doBatchDel"})
-  @ResponseBody
-  public AjaxJson doBatchDel(String ids, HttpServletRequest request)
-  {
-    String message = null;
-    AjaxJson j = new AjaxJson();
-    message = "样品印花表删除成功";
-    try
-    {
-      for (String id : ids.split(","))
-      {
-        EmkSampleYinEntity emkSampleYin = (EmkSampleYinEntity)this.systemService.getEntity(EmkSampleYinEntity.class, id);
-        
 
-        this.emkSampleYinService.delete(emkSampleYin);
-        this.systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
-      }
+    @RequestMapping(params = {"doAdd"})
+    @ResponseBody
+    public AjaxJson doAdd(EmkSampleYinEntity emkSampleYin, HttpServletRequest request) {
+        String message = null;
+        AjaxJson j = new AjaxJson();
+        message = "样品印花表添加成功";
+        try {
+            this.emkSampleYinService.save(emkSampleYin);
+            this.systemService.addLog(message, Globals.Log_Type_INSERT, Globals.Log_Leavel_INFO);
+        } catch (Exception e) {
+            e.printStackTrace();
+            message = "样品印花表添加失败";
+            throw new BusinessException(e.getMessage());
+        }
+        j.setMsg(message);
+        return j;
     }
-    catch (Exception e)
-    {
-      e.printStackTrace();
-      message = "样品印花表删除失败";
-      throw new BusinessException(e.getMessage());
-    }
-    j.setMsg(message);
-    return j;
-  }
-  
-  @RequestMapping(params={"doAdd"})
-  @ResponseBody
-  public AjaxJson doAdd(EmkSampleYinEntity emkSampleYin, HttpServletRequest request)
-  {
-    String message = null;
-    AjaxJson j = new AjaxJson();
-    message = "样品印花表添加成功";
-    try
-    {
-      this.emkSampleYinService.save(emkSampleYin);
-      this.systemService.addLog(message, Globals.Log_Type_INSERT, Globals.Log_Leavel_INFO);
-    }
-    catch (Exception e)
-    {
-      e.printStackTrace();
-      message = "样品印花表添加失败";
-      throw new BusinessException(e.getMessage());
-    }
-    j.setMsg(message);
-    return j;
-  }
-  
-  @RequestMapping(params={"doUpdate"})
-  @ResponseBody
-  public AjaxJson doUpdate(EmkSampleYinEntity emkSampleYin, HttpServletRequest request)
-  {
-    String message = null;
-    AjaxJson j = new AjaxJson();
-    message = "样品印花表更新成功";
-    EmkSampleYinEntity t = (EmkSampleYinEntity)this.emkSampleYinService.get(EmkSampleYinEntity.class, emkSampleYin.getId());
-    try
-    {
-      MyBeanUtils.copyBeanNotNull2Bean(emkSampleYin, t);
-      this.emkSampleYinService.saveOrUpdate(t);
-      this.systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
-    }
-    catch (Exception e)
-    {
-      e.printStackTrace();
-      message = "样品印花表更新失败";
-      throw new BusinessException(e.getMessage());
-    }
-    j.setMsg(message);
-    return j;
-  }
-  
-  @RequestMapping(params={"goAdd"})
-  public ModelAndView goAdd(EmkSampleYinEntity emkSampleYin, HttpServletRequest req)
-  {
-    if (StringUtil.isNotEmpty(emkSampleYin.getId()))
-    {
-      emkSampleYin = (EmkSampleYinEntity)this.emkSampleYinService.getEntity(EmkSampleYinEntity.class, emkSampleYin.getId());
-      req.setAttribute("emkSampleYinPage", emkSampleYin);
-    }
-    return new ModelAndView("com/emk/storage/sampleyin/emkSampleYin-add");
-  }
-  
-  @RequestMapping(params={"goUpdate"})
-  public ModelAndView goUpdate(EmkSampleYinEntity emkSampleYin, HttpServletRequest req)
-  {
-    if (StringUtil.isNotEmpty(emkSampleYin.getId()))
-    {
-      emkSampleYin = (EmkSampleYinEntity)this.emkSampleYinService.getEntity(EmkSampleYinEntity.class, emkSampleYin.getId());
-      req.setAttribute("emkSampleYinPage", emkSampleYin);
-    }
-    return new ModelAndView("com/emk/storage/sampleyin/emkSampleYin-update");
-  }
-  
-  @RequestMapping(params={"upload"})
-  public ModelAndView upload(HttpServletRequest req)
-  {
-    req.setAttribute("controller_name", "emkSampleYinController");
-    return new ModelAndView("common/upload/pub_excel_upload");
-  }
-  
-  @RequestMapping(params={"exportXls"})
-  public String exportXls(EmkSampleYinEntity emkSampleYin, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid, ModelMap modelMap)
-  {
-    CriteriaQuery cq = new CriteriaQuery(EmkSampleYinEntity.class, dataGrid);
-    HqlGenerateUtil.installHql(cq, emkSampleYin, request.getParameterMap());
-    List<EmkSampleYinEntity> emkSampleYins = this.emkSampleYinService.getListByCriteriaQuery(cq, Boolean.valueOf(false));
-    modelMap.put("fileName", "样品印花表");
-    modelMap.put("entity", EmkSampleYinEntity.class);
-    modelMap.put("params", new ExportParams("样品印花表列表", "导出人:" + ResourceUtil.getSessionUser().getRealName(), "导出信息"));
-    
-    modelMap.put("data", emkSampleYins);
-    return "jeecgExcelView";
-  }
-  
-  @RequestMapping(params={"exportXlsByT"})
-  public String exportXlsByT(EmkSampleYinEntity emkSampleYin, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid, ModelMap modelMap)
-  {
-    modelMap.put("fileName", "样品印花表");
-    modelMap.put("entity", EmkSampleYinEntity.class);
-    modelMap.put("params", new ExportParams("样品印花表列表", "导出人:" + ResourceUtil.getSessionUser().getRealName(), "导出信息"));
-    
-    modelMap.put("data", new ArrayList());
-    return "jeecgExcelView";
-  }
 
-  @RequestMapping(method={org.springframework.web.bind.annotation.RequestMethod.GET})
-  @ResponseBody
-  @ApiOperation(value="样品印花表列表信息", produces="application/json", httpMethod="GET")
-  public ResponseMessage<List<EmkSampleYinEntity>> list()
-  {
-    List<EmkSampleYinEntity> listEmkSampleYins = this.emkSampleYinService.getList(EmkSampleYinEntity.class);
-    return Result.success(listEmkSampleYins);
-  }
-  
-  @RequestMapping(value={"/{id}"}, method={org.springframework.web.bind.annotation.RequestMethod.GET})
-  @ResponseBody
-  @ApiOperation(value="根据ID获取样品印花表信息", notes="根据ID获取样品印花表信息", httpMethod="GET", produces="application/json")
-  public ResponseMessage<?> get(@ApiParam(required=true, name="id", value="ID") @PathVariable("id") String id)
-  {
-    EmkSampleYinEntity task = (EmkSampleYinEntity)this.emkSampleYinService.get(EmkSampleYinEntity.class, id);
-    if (task == null) {
-      return Result.error("根据ID获取样品印花表信息为空");
+    @RequestMapping(params = {"doUpdate"})
+    @ResponseBody
+    public AjaxJson doUpdate(EmkSampleYinEntity emkSampleYin, HttpServletRequest request) {
+        String message = null;
+        AjaxJson j = new AjaxJson();
+        message = "样品印花表更新成功";
+        EmkSampleYinEntity t = (EmkSampleYinEntity) this.emkSampleYinService.get(EmkSampleYinEntity.class, emkSampleYin.getId());
+        try {
+            MyBeanUtils.copyBeanNotNull2Bean(emkSampleYin, t);
+            this.emkSampleYinService.saveOrUpdate(t);
+            this.systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
+        } catch (Exception e) {
+            e.printStackTrace();
+            message = "样品印花表更新失败";
+            throw new BusinessException(e.getMessage());
+        }
+        j.setMsg(message);
+        return j;
     }
-    return Result.success(task);
-  }
-  
-  @RequestMapping(method={org.springframework.web.bind.annotation.RequestMethod.POST}, consumes={"application/json"})
-  @ResponseBody
-  @ApiOperation("创建样品印花表")
-  public ResponseMessage<?> create(@ApiParam(name="样品印花表对象") @RequestBody EmkSampleYinEntity emkSampleYin, UriComponentsBuilder uriBuilder)
-  {
-    Set<ConstraintViolation<EmkSampleYinEntity>> failures = this.validator.validate(emkSampleYin, new Class[0]);
-    if (!failures.isEmpty()) {
-      return Result.error(JSONArray.toJSONString(BeanValidators.extractPropertyAndMessage(failures)));
+
+    @RequestMapping(params = {"goAdd"})
+    public ModelAndView goAdd(EmkSampleYinEntity emkSampleYin, HttpServletRequest req) {
+        if (StringUtil.isNotEmpty(emkSampleYin.getId())) {
+            emkSampleYin = (EmkSampleYinEntity) this.emkSampleYinService.getEntity(EmkSampleYinEntity.class, emkSampleYin.getId());
+            req.setAttribute("emkSampleYinPage", emkSampleYin);
+        }
+        return new ModelAndView("com/emk/storage/sampleyin/emkSampleYin-add");
     }
-    try
-    {
-      this.emkSampleYinService.save(emkSampleYin);
+
+    @RequestMapping(params = {"goUpdate"})
+    public ModelAndView goUpdate(EmkSampleYinEntity emkSampleYin, HttpServletRequest req) {
+        if (StringUtil.isNotEmpty(emkSampleYin.getId())) {
+            emkSampleYin = (EmkSampleYinEntity) this.emkSampleYinService.getEntity(EmkSampleYinEntity.class, emkSampleYin.getId());
+            req.setAttribute("emkSampleYinPage", emkSampleYin);
+        }
+        return new ModelAndView("com/emk/storage/sampleyin/emkSampleYin-update");
     }
-    catch (Exception e)
-    {
-      e.printStackTrace();
-      return Result.error("样品印花表信息保存失败");
+
+    @RequestMapping(params = {"upload"})
+    public ModelAndView upload(HttpServletRequest req) {
+        req.setAttribute("controller_name", "emkSampleYinController");
+        return new ModelAndView("common/upload/pub_excel_upload");
     }
-    return Result.success(emkSampleYin);
-  }
-  
-  @RequestMapping(value={"/{id}"}, method={org.springframework.web.bind.annotation.RequestMethod.PUT}, consumes={"application/json"})
-  @ResponseBody
-  @ApiOperation(value="更新样品印花表", notes="更新样品印花表")
-  public ResponseMessage<?> update(@ApiParam(name="样品印花表对象") @RequestBody EmkSampleYinEntity emkSampleYin)
-  {
-    Set<ConstraintViolation<EmkSampleYinEntity>> failures = this.validator.validate(emkSampleYin, new Class[0]);
-    if (!failures.isEmpty()) {
-      return Result.error(JSONArray.toJSONString(BeanValidators.extractPropertyAndMessage(failures)));
+
+    @RequestMapping(params = {"exportXls"})
+    public String exportXls(EmkSampleYinEntity emkSampleYin, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid, ModelMap modelMap) {
+        CriteriaQuery cq = new CriteriaQuery(EmkSampleYinEntity.class, dataGrid);
+        HqlGenerateUtil.installHql(cq, emkSampleYin, request.getParameterMap());
+        List<EmkSampleYinEntity> emkSampleYins = this.emkSampleYinService.getListByCriteriaQuery(cq, Boolean.valueOf(false));
+        modelMap.put("fileName", "样品印花表");
+        modelMap.put("entity", EmkSampleYinEntity.class);
+        modelMap.put("params", new ExportParams("样品印花表列表", "导出人:" + ResourceUtil.getSessionUser().getRealName(), "导出信息"));
+
+        modelMap.put("data", emkSampleYins);
+        return "jeecgExcelView";
     }
-    try
-    {
-      this.emkSampleYinService.saveOrUpdate(emkSampleYin);
+
+    @RequestMapping(params = {"exportXlsByT"})
+    public String exportXlsByT(EmkSampleYinEntity emkSampleYin, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid, ModelMap modelMap) {
+        modelMap.put("fileName", "样品印花表");
+        modelMap.put("entity", EmkSampleYinEntity.class);
+        modelMap.put("params", new ExportParams("样品印花表列表", "导出人:" + ResourceUtil.getSessionUser().getRealName(), "导出信息"));
+
+        modelMap.put("data", new ArrayList());
+        return "jeecgExcelView";
     }
-    catch (Exception e)
-    {
-      e.printStackTrace();
-      return Result.error("更新样品印花表信息失败");
+
+    @RequestMapping(method = {org.springframework.web.bind.annotation.RequestMethod.GET})
+    @ResponseBody
+    @ApiOperation(value = "样品印花表列表信息", produces = "application/json", httpMethod = "GET")
+    public ResponseMessage<List<EmkSampleYinEntity>> list() {
+        List<EmkSampleYinEntity> listEmkSampleYins = this.emkSampleYinService.getList(EmkSampleYinEntity.class);
+        return Result.success(listEmkSampleYins);
     }
-    return Result.success("更新样品印花表信息成功");
-  }
-  
-  @RequestMapping(value={"/{id}"}, method={org.springframework.web.bind.annotation.RequestMethod.DELETE})
-  @ResponseStatus(HttpStatus.NO_CONTENT)
-  @ApiOperation("删除样品印花表")
-  public ResponseMessage<?> delete(@ApiParam(name="id", value="ID", required=true) @PathVariable("id") String id)
-  {
-    logger.info("delete[{}]" + id);
-    if (StringUtils.isEmpty(id)) {
-      return Result.error("ID不能为空");
+
+    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.GET})
+    @ResponseBody
+    @ApiOperation(value = "根据ID获取样品印花表信息", notes = "根据ID获取样品印花表信息", httpMethod = "GET", produces = "application/json")
+    public ResponseMessage<?> get(@ApiParam(required = true, name = "id", value = "ID") @PathVariable("id") String id) {
+        EmkSampleYinEntity task = (EmkSampleYinEntity) this.emkSampleYinService.get(EmkSampleYinEntity.class, id);
+        if (task == null) {
+            return Result.error("根据ID获取样品印花表信息为空");
+        }
+        return Result.success(task);
     }
-    try
-    {
-      this.emkSampleYinService.deleteEntityById(EmkSampleYinEntity.class, id);
+
+    @RequestMapping(method = {org.springframework.web.bind.annotation.RequestMethod.POST}, consumes = {"application/json"})
+    @ResponseBody
+    @ApiOperation("创建样品印花表")
+    public ResponseMessage<?> create(@ApiParam(name = "样品印花表对象") @RequestBody EmkSampleYinEntity emkSampleYin, UriComponentsBuilder uriBuilder) {
+        Set<ConstraintViolation<EmkSampleYinEntity>> failures = this.validator.validate(emkSampleYin, new Class[0]);
+        if (!failures.isEmpty()) {
+            return Result.error(JSONArray.toJSONString(BeanValidators.extractPropertyAndMessage(failures)));
+        }
+        try {
+            this.emkSampleYinService.save(emkSampleYin);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("样品印花表信息保存失败");
+        }
+        return Result.success(emkSampleYin);
     }
-    catch (Exception e)
-    {
-      e.printStackTrace();
-      return Result.error("样品印花表删除失败");
+
+    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.PUT}, consumes = {"application/json"})
+    @ResponseBody
+    @ApiOperation(value = "更新样品印花表", notes = "更新样品印花表")
+    public ResponseMessage<?> update(@ApiParam(name = "样品印花表对象") @RequestBody EmkSampleYinEntity emkSampleYin) {
+        Set<ConstraintViolation<EmkSampleYinEntity>> failures = this.validator.validate(emkSampleYin, new Class[0]);
+        if (!failures.isEmpty()) {
+            return Result.error(JSONArray.toJSONString(BeanValidators.extractPropertyAndMessage(failures)));
+        }
+        try {
+            this.emkSampleYinService.saveOrUpdate(emkSampleYin);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("更新样品印花表信息失败");
+        }
+        return Result.success("更新样品印花表信息成功");
     }
-    return Result.success();
-  }
+
+    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.DELETE})
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ApiOperation("删除样品印花表")
+    public ResponseMessage<?> delete(@ApiParam(name = "id", value = "ID", required = true) @PathVariable("id") String id) {
+        logger.info("delete[{}]" + id);
+        if (StringUtils.isEmpty(id)) {
+            return Result.error("ID不能为空");
+        }
+        try {
+            this.emkSampleYinService.deleteEntityById(EmkSampleYinEntity.class, id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("样品印花表删除失败");
+        }
+        return Result.success();
+    }
 }

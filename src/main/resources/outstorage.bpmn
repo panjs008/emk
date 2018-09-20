@@ -3,14 +3,14 @@
   <process id="outstorage" name="outstorage" isExecutable="true">
     <startEvent id="startevent1" name="Start"></startEvent>
     <endEvent id="endevent1" name="End"></endEvent>
-    <userTask id="instorageTask" name="入库申请单" activiti:async="true" activiti:assignee="${inputUser}"></userTask>
+    <userTask id="outstorageTask" name="出库申请单" activiti:assignee="${inputUser}"></userTask>
     <userTask id="checkTask" name="领导审核" activiti:assignee="${inputUser}"></userTask>
     <userTask id="cwTask" name="财务" activiti:assignee="${inputUser}"></userTask>
-    <sequenceFlow id="flow1" sourceRef="startevent1" targetRef="instorageTask"></sequenceFlow>
+    <sequenceFlow id="flow1" sourceRef="startevent1" targetRef="outstorageTask"></sequenceFlow>
     <exclusiveGateway id="isPass" name="是否通过"></exclusiveGateway>
-    <sequenceFlow id="flow2" sourceRef="instorageTask" targetRef="checkTask"></sequenceFlow>
+    <sequenceFlow id="flow2" sourceRef="outstorageTask" targetRef="checkTask"></sequenceFlow>
     <sequenceFlow id="flow3" sourceRef="checkTask" targetRef="isPass"></sequenceFlow>
-    <sequenceFlow id="flow4" name="否" sourceRef="isPass" targetRef="instorageTask">
+    <sequenceFlow id="flow4" name="否" sourceRef="isPass" targetRef="outstorageTask">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${isPass == 1}]]></conditionExpression>
     </sequenceFlow>
     <sequenceFlow id="flow5" name="是" sourceRef="isPass" targetRef="cwTask">
@@ -26,7 +26,7 @@
       <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
         <omgdc:Bounds height="35.0" width="35.0" x="1040.0" y="150.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="instorageTask" id="BPMNShape_instorageTask">
+      <bpmndi:BPMNShape bpmnElement="outstorageTask" id="BPMNShape_outstorageTask">
         <omgdc:Bounds height="55.0" width="105.0" x="240.0" y="140.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="checkTask" id="BPMNShape_checkTask">
