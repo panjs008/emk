@@ -1619,7 +1619,7 @@ SWFUpload.Console.writeLine = function(d) {
 													// finished uploading
 							uploadLimit : 0, // The maximum number of files
 												// you can upload
-							width : 120, // The width of the browse button
+							width : 50, // The width of the browse button
 
 							// Events
 							overrideEvents : []

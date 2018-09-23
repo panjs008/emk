@@ -71,7 +71,7 @@ function addFineuiTab(options){
 			});
 		}
 		if (!isHas) {
-			var tab = "<a href='javascript:;' class='content-tab active' data-id='"+h+"'>"+ label +" <i class='icon-font'>&#xe633;</i></a>";
+			var tab = "<a href='javascript:;' class='content-tab active' data-id='"+h+"' onclick='refreshTab()'>"+ label +" <i class='icon-font'>&#xe633;</i></a>";
 			//<div class='sepmm'></div>
 			$(".content-tab").removeClass("active");
 			
@@ -122,7 +122,19 @@ function addIframe(cur){
 	var options = {url:h,id:m,title:label};
 	addFineuiTab(options);
 }
-
+//刷新iframe
+function refreshTab() {
+	var dataId = $("ul.side-menu").find("li.active").find("a").attr("href");
+	if(!dataId){
+		dataId = "home.html";
+	}
+	var obj = $('.body-iframe[data-id="'+dataId+'"]');
+	var obj_none = obj.css('display');
+	if(obj_none=='none'){
+		obj = $('.body-iframe[data-id="home.html"]');
+	}
+	obj.attr('src', obj.attr('src'));
+}
 //关闭其他选项卡
 function closeOtherTabs(){
     $('#tab-contents-div').children("[data-id]").not(":first").not(".active").each(function () {
