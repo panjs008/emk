@@ -63,8 +63,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Api(value = "EmkExamTime", description = "预计验货时间表", tags = {"emkExamTimeController"})
 @Controller
 @RequestMapping({"/emkExamTimeController"})
-public class EmkExamTimeController
-        extends BaseController {
+public class EmkExamTimeController extends BaseController {
     private static final Logger logger = Logger.getLogger(EmkExamTimeController.class);
     @Autowired
     private EmkExamTimeServiceI emkExamTimeService;

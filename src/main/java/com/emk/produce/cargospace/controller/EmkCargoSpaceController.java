@@ -65,8 +65,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Api(value = "EmkCargoSpace", description = "订舱通知单", tags = {"emkCargoSpaceController"})
 @Controller
 @RequestMapping({"/emkCargoSpaceController"})
-public class EmkCargoSpaceController
-        extends BaseController {
+public class EmkCargoSpaceController extends BaseController {
     private static final Logger logger = Logger.getLogger(EmkCargoSpaceController.class);
     @Autowired
     private EmkCargoSpaceServiceI emkCargoSpaceService;

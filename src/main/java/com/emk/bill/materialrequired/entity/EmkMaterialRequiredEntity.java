@@ -25,7 +25,6 @@ public class EmkMaterialRequiredEntity implements Serializable {
     private String kdDate;
     @Excel(name = "业务员", width = 15)
     private String businesser;
-    @Excel(name = "业务员ID", width = 15)
     private String businesserName;
     @Excel(name = "客户代码", width = 15)
     private String cusNum;
@@ -33,7 +32,6 @@ public class EmkMaterialRequiredEntity implements Serializable {
     private String cusName;
     @Excel(name = "工艺种类", width = 15)
     private String gyzl;
-    @Excel(name = "款式大类", width = 15)
     private String proType;
     @Excel(name = "款式大类", width = 15)
     private String proTypeName;
@@ -47,11 +45,9 @@ public class EmkMaterialRequiredEntity implements Serializable {
     private String factoryCode;
     @Excel(name = "业务部门", width = 15)
     private String businesseDeptName;
-    @Excel(name = "业务部门ID", width = 15)
     private String businesseDeptId;
     @Excel(name = "生产跟单员", width = 15)
     private String developer;
-    @Excel(name = "生产跟单员ID", width = 15)
     private String developerName;
     @Excel(name = "样品交期", width = 15)
     private String ypjqDate;

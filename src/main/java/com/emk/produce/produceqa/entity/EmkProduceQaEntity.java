@@ -13,19 +13,15 @@ import org.jeecgframework.poi.excel.annotation.Excel;
 
 @Entity
 @Table(name = "emk_produce_qa", schema = "")
-public class EmkProduceQaEntity
-        implements Serializable {
+public class EmkProduceQaEntity implements Serializable {
     @Excel(name = "业务员", width = 15)
     private String businesser;
-    @Excel(name = "业务员ID", width = 15)
     private String businesserName;
     @Excel(name = "业务跟单员", width = 15)
     private String tracer;
-    @Excel(name = "业务跟单员ID", width = 15)
     private String tracerName;
     @Excel(name = "业务部门", width = 15)
     private String businesseDeptName;
-    @Excel(name = "业务部门ID", width = 15)
     private String businesseDeptId;
     @Excel(name = "生产跟单员", width = 15)
     private String developer;
@@ -33,7 +29,6 @@ public class EmkProduceQaEntity
     private String developerName;
     @Excel(name = "工艺种类", width = 15)
     private String gyzl;
-    @Excel(name = "款式大类", width = 15)
     private String proType;
     @Excel(name = "款式大类", width = 15)
     private String proTypeName;
@@ -47,15 +42,10 @@ public class EmkProduceQaEntity
     private String outDate;
     @Excel(name = "距交期剩余天数", width = 15)
     private Integer levelDays;
-    @Excel(name = "主键", width = 15)
     private String id;
-    @Excel(name = "创建人名称", width = 15)
     private String createName;
-    @Excel(name = "创建人登录名称", width = 15)
     private String createBy;
-    @Excel(name = "创建日期", width = 15, format = "yyyy-MM-dd")
     private Date createDate;
-    @Excel(name = "所属部门", width = 15)
     private String sysOrgCode;
     @Excel(name = "生产问题函号", width = 15)
     private String qaNo;

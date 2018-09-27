@@ -13,8 +13,7 @@ import org.jeecgframework.poi.excel.annotation.Excel;
 
 @Entity
 @Table(name = "emk_packing_list", schema = "")
-public class EmkPackingListEntity
-        implements Serializable {
+public class EmkPackingListEntity implements Serializable {
     @Excel(name = "款号", width = 15)
     private String sampleNo;
     @Excel(name = "描述", width = 15)
@@ -27,15 +26,10 @@ public class EmkPackingListEntity
     private Double sumBoxJz;
     @Excel(name = "总毛重", width = 15)
     private Double sumBoxMao;
-    @Excel(name = "主键", width = 15)
     private String id;
-    @Excel(name = "创建人名称", width = 15)
     private String createName;
-    @Excel(name = "创建人登录名称", width = 15)
     private String createBy;
-    @Excel(name = "创建日期", width = 15, format = "yyyy-MM-dd")
     private Date createDate;
-    @Excel(name = "所属部门", width = 15)
     private String sysOrgCode;
     @Excel(name = "订单号", width = 15)
     private String orderNo;

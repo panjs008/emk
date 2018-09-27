@@ -13,8 +13,7 @@ import org.jeecgframework.poi.excel.annotation.Excel;
 
 @Entity
 @Table(name = "emk_pack", schema = "")
-public class EmkPackEntity
-        implements Serializable {
+public class EmkPackEntity implements Serializable {
     private String id;
     private String createName;
     private String createBy;
@@ -26,7 +25,6 @@ public class EmkPackEntity
     private String kdDate;
     @Excel(name = "业务跟单员", width = 15)
     private String businesser;
-    @Excel(name = "业务跟单员ID", width = 15)
     private String businesserName;
     @Excel(name = "客户代码", width = 15)
     private String cusNum;
@@ -34,11 +32,9 @@ public class EmkPackEntity
     private String cusName;
     @Excel(name = "工艺种类", width = 15)
     private String gyzl;
-    @Excel(name = "款式大类", width = 15)
     private String proType;
     @Excel(name = "款式大类", width = 15)
     private String proTypeName;
-    @Excel(name = "图片", width = 15)
     private String customSampleUrl;
     @Excel(name = "图片", width = 15)
     private String customSample;
@@ -50,13 +46,11 @@ public class EmkPackEntity
     private String isPrintSample;
     @Excel(name = "是否有原样", width = 15)
     private String isHaveOld;
-    @Excel(name = "原样", width = 15)
     private String oldImageUrl;
     @Excel(name = "原样", width = 15)
     private String oldImage;
     @Excel(name = "是否有设计稿", width = 15)
     private String isHaveDgr;
-    @Excel(name = "计稿", width = 15)
     private String dgrImageUrl;
     @Excel(name = "计稿", width = 15)
     private String dgrImage;
@@ -68,7 +62,6 @@ public class EmkPackEntity
     private String remark;
     @Excel(name = "业务跟单员", width = 15)
     private String tracer;
-    @Excel(name = "业务跟单员ID", width = 15)
     private String tracerName;
     @Excel(name = "订单号", width = 15)
     private String orderNo;
@@ -94,13 +87,11 @@ public class EmkPackEntity
     private String cgAdvice;
     @Excel(name = "是否参考图片", width = 15)
     private String isCkImage;
-    @Excel(name = "参考图片", width = 15)
     private String ckImageUrl;
     @Excel(name = "参考图片", width = 15)
     private String ckImage;
     @Excel(name = "业务部门", width = 15)
     private String businesseDeptName;
-    @Excel(name = "业务部门ID", width = 15)
     private String businesseDeptId;
 
     @Id

@@ -13,8 +13,7 @@ import org.jeecgframework.poi.excel.annotation.Excel;
 
 @Entity
 @Table(name = "emk_color", schema = "")
-public class EmkColorEntity
-        implements Serializable {
+public class EmkColorEntity implements Serializable {
     private String id;
     private String createName;
     private String createBy;
@@ -28,17 +27,14 @@ public class EmkColorEntity
     private String cusName;
     @Excel(name = "是否标准色卡", width = 15)
     private String isColorCard;
-    @Excel(name = "标准色卡URL", width = 15)
     private String colorCardUrl;
     @Excel(name = "标准色卡", width = 15)
     private String colorCard;
-    @Excel(name = "样品ID", width = 15)
     private String sampleId;
     @Excel(name = "色样需求单号", width = 15)
     private String colorNo;
     @Excel(name = "是否标准色号", width = 15)
     private String isColorNum;
-    @Excel(name = "标准色号URL", width = 15)
     private String colorNumUrl;
     @Excel(name = "标准色号", width = 15)
     private String colorNum;
@@ -50,13 +46,11 @@ public class EmkColorEntity
     private String isColorData;
     @Excel(name = "标准色数据", width = 15)
     private String colorData;
-    @Excel(name = "标准色数据", width = 15)
     private String colorDataUrl;
     @Excel(name = "是否QTX", width = 15)
     private String isColorQtx;
     @Excel(name = "QTX", width = 15)
     private String colorQtx;
-    @Excel(name = "QTX", width = 15)
     private String colorQtxUrl;
     @Excel(name = "色样种类", width = 15)
     private String colorType;
@@ -110,25 +104,20 @@ public class EmkColorEntity
     private String jsbAdvice;
     @Excel(name = "业务员", width = 15)
     private String businesser;
-    @Excel(name = "业务员ID", width = 15)
     private String businesserName;
     @Excel(name = "业务跟单员", width = 15)
     private String tracer;
-    @Excel(name = "业务跟单员ID", width = 15)
     private String tracerName;
     @Excel(name = "业务部门", width = 15)
     private String businesseDeptName;
-    @Excel(name = "业务部门ID", width = 15)
     private String businesseDeptId;
     @Excel(name = "寄件日期", width = 15)
     private String sendDate;
     @Excel(name = "工艺种类", width = 15)
     private String gyzl;
-    @Excel(name = "款式大类", width = 15)
     private String proType;
     @Excel(name = "款式大类", width = 15)
     private String proTypeName;
-    @Excel(name = "图片", width = 15)
     private String customSampleUrl;
     @Excel(name = "图片", width = 15)
     private String customSample;

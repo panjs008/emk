@@ -13,8 +13,7 @@ import org.jeecgframework.poi.excel.annotation.Excel;
 
 @Entity
 @Table(name = "emk_accessories", schema = "")
-public class EmkAccessoriesEntity
-        implements Serializable {
+public class EmkAccessoriesEntity implements Serializable {
     private String id;
     private String createName;
     private String createBy;
@@ -34,7 +33,6 @@ public class EmkAccessoriesEntity
     private String cusName;
     @Excel(name = "工艺种类", width = 15)
     private String gyzl;
-    @Excel(name = "款式大类", width = 15)
     private String proType;
     @Excel(name = "款式大类", width = 15)
     private String proTypeName;
@@ -48,15 +46,12 @@ public class EmkAccessoriesEntity
     private String factoryCode;
     @Excel(name = "业务部门", width = 15)
     private String businesseDeptName;
-    @Excel(name = "业务部门ID", width = 15)
     private String businesseDeptId;
     @Excel(name = "生产跟单员", width = 15)
     private String developer;
-    @Excel(name = "生产跟单员ID", width = 15)
     private String developerName;
     @Excel(name = "采购员", width = 15)
     private String cger;
-    @Excel(name = "采购员ID", width = 15)
     private String cgerName;
     @Excel(name = "样品交期", width = 15)
     private String ypjqDate;
@@ -88,7 +83,6 @@ public class EmkAccessoriesEntity
     private String businesseAdvice;
     @Excel(name = "综合意见", width = 15)
     private String zhAdvice;
-    @Excel(name = "图片", width = 15)
     private String customSampleUrl;
     @Excel(name = "图片", width = 15)
     private String customSample;

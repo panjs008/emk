@@ -26,13 +26,11 @@ public class EmkMeetingEntity
     private String meetingDate;
     @Excel(name = "会议记录人", width = 15)
     private String recorder;
-    @Excel(name = "会议记录人ID", width = 15)
     private String recorderId;
     @Excel(name = "会议地点", width = 15)
     private String address;
     @Excel(name = "入会人员", width = 15)
     private String partUsers;
-    @Excel(name = "入会人员", width = 15)
     private String partUserIds;
     @Excel(name = "客户代码", width = 15)
     private String cusNum;
@@ -40,7 +38,6 @@ public class EmkMeetingEntity
     private String cusName;
     @Excel(name = "工艺种类", width = 15)
     private String gyzl;
-    @Excel(name = "款式大类", width = 15)
     private String proType;
     @Excel(name = "款式大类", width = 15)
     private String proTypeName;
@@ -52,19 +49,15 @@ public class EmkMeetingEntity
     private String orderNo;
     @Excel(name = "业务部门", width = 15)
     private String businesseDeptName;
-    @Excel(name = "业务部门ID", width = 15)
     private String businesseDeptId;
     @Excel(name = "业务员", width = 15)
     private String businesser;
-    @Excel(name = "业务员ID", width = 15)
     private String businesserName;
     @Excel(name = "业务跟单员", width = 15)
     private String tracer;
-    @Excel(name = "业务跟单员ID", width = 15)
     private String tracerName;
     @Excel(name = "生产跟单员", width = 15)
     private String developer;
-    @Excel(name = "生产跟单员ID", width = 15)
     private String developerName;
     @Excel(name = "中期检查时间", width = 15)
     private String zqjcDate;

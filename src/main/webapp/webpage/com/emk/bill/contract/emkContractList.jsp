@@ -26,6 +26,8 @@
       <%--<t:dgToolBar title="录入" icon="fa fa-plus" url="emkContractController.do?goAdd&type=0&winTitle=录入购销合同同单" funname="add" height="600" width="1100"></t:dgToolBar>--%>
       <t:dgToolBar title="编辑" icon="fa fa-edit" url="emkContractController.do?goUpdate&type=0&winTitle=编辑购销合同同单" funname="update" height="600" width="1100"></t:dgToolBar>
       <t:dgToolBar title="删除"  icon="fa fa-remove" url="emkContractController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
+      <t:dgToolBar title="导出" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
+
   </t:datagrid>
   </div>
  </div>

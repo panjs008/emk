@@ -22,7 +22,7 @@ import org.jeecgframework.poi.excel.annotation.Excel;
  * @Title: Entity
  * @Description: 运费费
  * @author onlineGenerator
- * @date 2018-09-23 16:41:07
+ * @date 2018-09-24 11:25:26
  * @version V1.0   
  *
  */
@@ -30,29 +30,37 @@ import org.jeecgframework.poi.excel.annotation.Excel;
 @Table(name = "emk_ship_expenses", schema = "")
 @SuppressWarnings("serial")
 public class EmkShipExpensesEntity implements java.io.Serializable {
+	/**订舱通知单号*/
+	@Excel(name="订舱通知单号",width=15)
+	private String cargoNo;
+	/**出货通知单号*/
+	@Excel(name="出货通知单号",width=15)
+	private String outForumNo;
+	/**离厂放行条号*/
+	@Excel(name="离厂放行条号",width=15)
+	private String levealFactoryNo;
+	/**船务员*/
+	@Excel(name="船务员",width=15)
+	private String cwyer;
 	/**业务员*/
 	@Excel(name="业务员",width=15)
 	private String businesser;
 	/**业务员ID*/
-	@Excel(name="业务员ID",width=15)
 	private String businesserName;
 	/**业务跟单员*/
 	@Excel(name="业务跟单员",width=15)
 	private String tracer;
 	/**业务跟单员ID*/
-	@Excel(name="业务跟单员ID",width=15)
 	private String tracerName;
 	/**业务部门*/
 	@Excel(name="业务部门",width=15)
 	private String businesseDeptName;
 	/**业务部门ID*/
-	@Excel(name="业务部门ID",width=15)
 	private String businesseDeptId;
 	/**生产跟单员*/
 	@Excel(name="生产跟单员",width=15)
 	private String developer;
 	/**生产跟单员ID*/
-	@Excel(name="生产跟单员ID",width=15)
 	private String developerName;
 	/**描述*/
 	@Excel(name="描述",width=15)
@@ -70,32 +78,16 @@ public class EmkShipExpensesEntity implements java.io.Serializable {
 	@Excel(name="总毛重",width=15)
 	private Double sumBoxMao;
 	/**主键*/
-	@Excel(name="主键",width=15)
 	private String id;
 	/**创建人名称*/
-	@Excel(name="创建人名称",width=15)
 	private String createName;
 	/**创建人登录名称*/
-	@Excel(name="创建人登录名称",width=15)
 	private String createBy;
 	/**创建日期*/
-	@Excel(name="创建日期",width=15,format = "yyyy-MM-dd")
 	private Date createDate;
 	/**所属部门*/
-	@Excel(name="所属部门",width=15)
 	private String sysOrgCode;
-	/**订舱通知单号*/
-	@Excel(name="订舱通知单号",width=15)
-	private String cargoNo;
-	/**出货通知单号*/
-	@Excel(name="出货通知单号",width=15)
-	private String outForumNo;
-	/**离厂放行条号*/
-	@Excel(name="离厂放行条号",width=15)
-	private String levealFactoryNo;
-	/**船务员*/
-	@Excel(name="船务员",width=15)
-	private String cwyer;
+
 	/**供应商*/
 	@Excel(name="供应商",width=15)
 	private String gysCode;
@@ -138,6 +130,27 @@ public class EmkShipExpensesEntity implements java.io.Serializable {
 	/**开户行*/
 	@Excel(name="开户行",width=15)
 	private String bankName;
+	/**运输费用单号*/
+	@Excel(name="运输费用单号",width=15)
+	private String expensesNum;
+	/**提交日期*/
+	@Excel(name="提交日期",width=15)
+	private String kdDate;
+	/**始发地*/
+	@Excel(name="始发地",width=15)
+	private String startPlace;
+	/**目的地*/
+	@Excel(name="目的地",width=15)
+	private String overPlace;
+	/**数量*/
+	@Excel(name="数量",width=15)
+	private String total;
+	/**客户代码*/
+	@Excel(name="客户代码",width=15)
+	private String cusNum;
+	/**客户名称*/
+	@Excel(name="客户名称",width=15)
+	private String cusName;
 	
 	/**
 	 *方法: 取得java.lang.String
@@ -753,5 +766,124 @@ public class EmkShipExpensesEntity implements java.io.Serializable {
 	 */
 	public void setBankName(String bankName){
 		this.bankName = bankName;
+	}
+	/**
+	 *方法: 取得java.lang.String
+	 *@return: java.lang.String  运输费用单号
+	 */
+
+	@Column(name ="EXPENSES_NUM",nullable=true,length=32)
+	public String getExpensesNum(){
+		return this.expensesNum;
+	}
+
+	/**
+	 *方法: 设置java.lang.String
+	 *@param: java.lang.String  运输费用单号
+	 */
+	public void setExpensesNum(String expensesNum){
+		this.expensesNum = expensesNum;
+	}
+	/**
+	 *方法: 取得java.lang.String
+	 *@return: java.lang.String  提交日期
+	 */
+
+	@Column(name ="KD_DATE",nullable=true,length=32)
+	public String getKdDate(){
+		return this.kdDate;
+	}
+
+	/**
+	 *方法: 设置java.lang.String
+	 *@param: java.lang.String  提交日期
+	 */
+	public void setKdDate(String kdDate){
+		this.kdDate = kdDate;
+	}
+	/**
+	 *方法: 取得java.lang.String
+	 *@return: java.lang.String  始发地
+	 */
+
+	@Column(name ="START_PLACE",nullable=true,length=32)
+	public String getStartPlace(){
+		return this.startPlace;
+	}
+
+	/**
+	 *方法: 设置java.lang.String
+	 *@param: java.lang.String  始发地
+	 */
+	public void setStartPlace(String startPlace){
+		this.startPlace = startPlace;
+	}
+	/**
+	 *方法: 取得java.lang.String
+	 *@return: java.lang.String  目的地
+	 */
+
+	@Column(name ="OVER_PLACE",nullable=true,length=32)
+	public String getOverPlace(){
+		return this.overPlace;
+	}
+
+	/**
+	 *方法: 设置java.lang.String
+	 *@param: java.lang.String  目的地
+	 */
+	public void setOverPlace(String overPlace){
+		this.overPlace = overPlace;
+	}
+	/**
+	 *方法: 取得java.lang.String
+	 *@return: java.lang.String  数量
+	 */
+
+	@Column(name ="TOTAL",nullable=true,length=32)
+	public String getTotal(){
+		return this.total;
+	}
+
+	/**
+	 *方法: 设置java.lang.String
+	 *@param: java.lang.String  数量
+	 */
+	public void setTotal(String total){
+		this.total = total;
+	}
+	/**
+	 *方法: 取得java.lang.String
+	 *@return: java.lang.String  客户代码
+	 */
+
+	@Column(name ="CUS_NUM",nullable=true,length=32)
+	public String getCusNum(){
+		return this.cusNum;
+	}
+
+	/**
+	 *方法: 设置java.lang.String
+	 *@param: java.lang.String  客户代码
+	 */
+	public void setCusNum(String cusNum){
+		this.cusNum = cusNum;
+	}
+	/**
+	 *方法: 取得java.lang.String
+	 *@return: java.lang.String  客户名称
+	 */
+
+	@Column(name ="CUS_NAME",nullable=true,length=32)
+	public String getCusName(){
+		return this.cusName;
+	}
+
+	/**
+	 *方法: 设置java.lang.String
+	 *@param: java.lang.String  客户名称
+	 */
+	public void setCusName(String cusName){
+		this.cusName = cusName;
 	}
 }

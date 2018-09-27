@@ -13,27 +13,21 @@ import org.jeecgframework.poi.excel.annotation.Excel;
 
 @Entity
 @Table(name = "emk_out_forum", schema = "")
-public class EmkOutForumEntity
-        implements Serializable {
+public class EmkOutForumEntity implements Serializable {
     @Excel(name = "业务员", width = 15)
     private String businesser;
-    @Excel(name = "业务员ID", width = 15)
     private String businesserName;
     @Excel(name = "业务跟单员", width = 15)
     private String tracer;
-    @Excel(name = "业务跟单员ID", width = 15)
     private String tracerName;
     @Excel(name = "业务部门", width = 15)
     private String businesseDeptName;
-    @Excel(name = "业务部门ID", width = 15)
     private String businesseDeptId;
     @Excel(name = "生产跟单员", width = 15)
     private String developer;
-    @Excel(name = "生产跟单员ID", width = 15)
     private String developerName;
     @Excel(name = "工艺种类", width = 15)
     private String gyzl;
-    @Excel(name = "款式大类", width = 15)
     private String proType;
     @Excel(name = "款式大类", width = 15)
     private String proTypeName;
@@ -59,15 +53,10 @@ public class EmkOutForumEntity
     private Double sumBoxJz;
     @Excel(name = "总毛重", width = 15)
     private Double sumBoxMao;
-    @Excel(name = "主键", width = 15)
     private String id;
-    @Excel(name = "创建人名称", width = 15)
     private String createName;
-    @Excel(name = "创建人登录名称", width = 15)
     private String createBy;
-    @Excel(name = "创建日期", width = 15, format = "yyyy-MM-dd")
     private Date createDate;
-    @Excel(name = "所属部门", width = 15)
     private String sysOrgCode;
     @Excel(name = "出货通知单号", width = 15)
     private String outForumNo;

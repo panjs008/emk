@@ -84,9 +84,7 @@ public class EmkPassFactoryServiceImpl extends CommonServiceImpl implements EmkP
 		map.put("businesse_dept_id", t.getBusinesseDeptId());
 		map.put("developer", t.getDeveloper());
 		map.put("developer_name", t.getDeveloperName());
-		map.put("gyzl", t.getGyzl());
-		map.put("pro_type", t.getProType());
-		map.put("pro_type_name", t.getProTypeName());
+
 		map.put("sample_no", t.getSampleNo());
 		map.put("sample_no_desc", t.getSampleNoDesc());
 		map.put("id", t.getId());
@@ -128,9 +126,7 @@ public class EmkPassFactoryServiceImpl extends CommonServiceImpl implements EmkP
  		sql  = sql.replace("#{businesse_dept_id}",String.valueOf(t.getBusinesseDeptId()));
  		sql  = sql.replace("#{developer}",String.valueOf(t.getDeveloper()));
  		sql  = sql.replace("#{developer_name}",String.valueOf(t.getDeveloperName()));
- 		sql  = sql.replace("#{gyzl}",String.valueOf(t.getGyzl()));
- 		sql  = sql.replace("#{pro_type}",String.valueOf(t.getProType()));
- 		sql  = sql.replace("#{pro_type_name}",String.valueOf(t.getProTypeName()));
+
  		sql  = sql.replace("#{sample_no}",String.valueOf(t.getSampleNo()));
  		sql  = sql.replace("#{sample_no_desc}",String.valueOf(t.getSampleNoDesc()));
  		sql  = sql.replace("#{id}",String.valueOf(t.getId()));

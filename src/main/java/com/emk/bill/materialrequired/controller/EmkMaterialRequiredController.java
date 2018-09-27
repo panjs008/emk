@@ -59,8 +59,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Api(value = "EmkMaterialRequired", description = "面料采购需求单", tags = {"emkMaterialRequiredController"})
 @Controller
 @RequestMapping({"/emkMaterialRequiredController"})
-public class EmkMaterialRequiredController
-        extends BaseController {
+public class EmkMaterialRequiredController extends BaseController {
     private static final Logger logger = Logger.getLogger(EmkMaterialRequiredController.class);
     @Autowired
     private EmkMaterialRequiredServiceI emkMaterialRequiredService;

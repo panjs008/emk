@@ -63,8 +63,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Api(value = "EmkProduceSchedule", description = "采购生产表", tags = {"emkProduceScheduleController"})
 @Controller
 @RequestMapping({"/emkProduceScheduleController"})
-public class EmkProduceScheduleController
-        extends BaseController {
+public class EmkProduceScheduleController extends BaseController {
     private static final Logger logger = Logger.getLogger(EmkProduceScheduleController.class);
     @Autowired
     private EmkProduceScheduleServiceI emkProduceScheduleService;

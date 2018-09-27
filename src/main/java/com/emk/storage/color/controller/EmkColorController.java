@@ -64,8 +64,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Api(value = "EmkColor", description = "色样需求单", tags = {"emkColorController"})
 @Controller
 @RequestMapping({"/emkColorController"})
-public class EmkColorController
-        extends BaseController {
+public class EmkColorController extends BaseController {
     private static final Logger logger = Logger.getLogger(EmkColorController.class);
     @Autowired
     private EmkColorServiceI emkColorService;

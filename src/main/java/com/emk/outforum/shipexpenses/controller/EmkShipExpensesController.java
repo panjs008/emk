@@ -1,13 +1,14 @@
 package com.emk.outforum.shipexpenses.controller;
 import com.emk.outforum.shipexpenses.entity.EmkShipExpensesEntity;
 import com.emk.outforum.shipexpenses.service.EmkShipExpensesServiceI;
-import java.util.ArrayList;
-import java.util.List;
+
+import java.util.*;
 import java.text.SimpleDateFormat;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
+import org.apache.tools.ant.util.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -43,8 +44,6 @@ import java.io.IOException;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-import java.util.Map;
-import java.util.HashMap;
 import org.jeecgframework.core.util.ExceptionUtil;
 
 import org.springframework.http.ResponseEntity;
@@ -58,7 +57,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.jeecgframework.core.beanvalidator.BeanValidators;
-import java.util.Set;
+
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import java.net.URI;
@@ -245,6 +244,8 @@ public class EmkShipExpensesController extends BaseController {
 	 */
 	@RequestMapping(params = "goAdd")
 	public ModelAndView goAdd(EmkShipExpensesEntity emkShipExpenses, HttpServletRequest req) {
+		req.setAttribute("kdDate", DateUtils.format(new Date(), "yyyy-MM-dd"));
+
 		if (StringUtil.isNotEmpty(emkShipExpenses.getId())) {
 			emkShipExpenses = emkShipExpensesService.getEntity(EmkShipExpensesEntity.class, emkShipExpenses.getId());
 			req.setAttribute("emkShipExpensesPage", emkShipExpenses);

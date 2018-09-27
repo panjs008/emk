@@ -34,40 +34,31 @@ public class EmkFinanceCheckEntity implements java.io.Serializable {
 	@Excel(name="业务员",width=15)
 	private String businesser;
 	/**业务员ID*/
-	@Excel(name="业务员ID",width=15)
 	private String businesserName;
 	/**业务跟单员*/
 	@Excel(name="业务跟单员",width=15)
 	private String tracer;
 	/**业务跟单员ID*/
-	@Excel(name="业务跟单员ID",width=15)
 	private String tracerName;
 	/**业务部门*/
 	@Excel(name="业务部门",width=15)
 	private String businesseDeptName;
 	/**业务部门ID*/
-	@Excel(name="业务部门ID",width=15)
 	private String businesseDeptId;
 	/**生产跟单员*/
 	@Excel(name="生产跟单员",width=15)
 	private String developer;
 	/**生产跟单员ID*/
-	@Excel(name="生产跟单员ID",width=15)
 	private String developerName;
 	/**主键*/
-	@Excel(name="主键",width=15)
 	private String id;
 	/**创建人名称*/
-	@Excel(name="创建人名称",width=15)
 	private String createName;
 	/**创建人登录名称*/
-	@Excel(name="创建人登录名称",width=15)
 	private String createBy;
 	/**创建日期*/
-	@Excel(name="创建日期",width=15,format = "yyyy-MM-dd")
 	private Date createDate;
 	/**所属部门*/
-	@Excel(name="所属部门",width=15)
 	private String sysOrgCode;
 	/**应收通知单号*/
 	@Excel(name="应收通知单号",width=15)

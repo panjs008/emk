@@ -22,7 +22,7 @@ import org.jeecgframework.poi.excel.annotation.Excel;
  * @Title: Entity
  * @Description: 离厂放行单
  * @author onlineGenerator
- * @date 2018-09-20 22:29:12
+ * @date 2018-09-23 19:38:41
  * @version V1.0   
  *
  */
@@ -34,35 +34,22 @@ public class EmkPassFactoryEntity implements java.io.Serializable {
 	@Excel(name="业务员",width=15)
 	private String businesser;
 	/**业务员ID*/
-	@Excel(name="业务员ID",width=15)
 	private String businesserName;
 	/**业务跟单员*/
 	@Excel(name="业务跟单员",width=15)
 	private String tracer;
 	/**业务跟单员ID*/
-	@Excel(name="业务跟单员ID",width=15)
 	private String tracerName;
 	/**业务部门*/
 	@Excel(name="业务部门",width=15)
 	private String businesseDeptName;
 	/**业务部门ID*/
-	@Excel(name="业务部门ID",width=15)
 	private String businesseDeptId;
 	/**生产跟单员*/
 	@Excel(name="生产跟单员",width=15)
 	private String developer;
 	/**生产跟单员ID*/
-	@Excel(name="生产跟单员ID",width=15)
 	private String developerName;
-	/**工艺种类*/
-	@Excel(name="工艺种类",width=15)
-	private String gyzl;
-	/**款式大类*/
-	@Excel(name="款式大类",width=15)
-	private String proType;
-	/**款式大类*/
-	@Excel(name="款式大类",width=15)
-	private String proTypeName;
 	/**款号*/
 	@Excel(name="款号",width=15)
 	private String sampleNo;
@@ -70,19 +57,14 @@ public class EmkPassFactoryEntity implements java.io.Serializable {
 	@Excel(name="描述",width=15)
 	private String sampleNoDesc;
 	/**主键*/
-	@Excel(name="主键",width=15)
 	private String id;
 	/**创建人名称*/
-	@Excel(name="创建人名称",width=15)
 	private String createName;
 	/**创建人登录名称*/
-	@Excel(name="创建人登录名称",width=15)
 	private String createBy;
 	/**创建日期*/
-	@Excel(name="创建日期",width=15,format = "yyyy-MM-dd")
 	private Date createDate;
 	/**所属部门*/
-	@Excel(name="所属部门",width=15)
 	private String sysOrgCode;
 	/**出货通知单号*/
 	@Excel(name="出货通知单号",width=15)
@@ -268,57 +250,6 @@ public class EmkPassFactoryEntity implements java.io.Serializable {
 	 */
 	public void setDeveloperName(String developerName){
 		this.developerName = developerName;
-	}
-	/**
-	 *方法: 取得java.lang.String
-	 *@return: java.lang.String  工艺种类
-	 */
-
-	@Column(name ="GYZL",nullable=true,length=32)
-	public String getGyzl(){
-		return this.gyzl;
-	}
-
-	/**
-	 *方法: 设置java.lang.String
-	 *@param: java.lang.String  工艺种类
-	 */
-	public void setGyzl(String gyzl){
-		this.gyzl = gyzl;
-	}
-	/**
-	 *方法: 取得java.lang.String
-	 *@return: java.lang.String  款式大类
-	 */
-
-	@Column(name ="PRO_TYPE",nullable=true,length=32)
-	public String getProType(){
-		return this.proType;
-	}
-
-	/**
-	 *方法: 设置java.lang.String
-	 *@param: java.lang.String  款式大类
-	 */
-	public void setProType(String proType){
-		this.proType = proType;
-	}
-	/**
-	 *方法: 取得java.lang.String
-	 *@return: java.lang.String  款式大类
-	 */
-
-	@Column(name ="PRO_TYPE_NAME",nullable=true,length=32)
-	public String getProTypeName(){
-		return this.proTypeName;
-	}
-
-	/**
-	 *方法: 设置java.lang.String
-	 *@param: java.lang.String  款式大类
-	 */
-	public void setProTypeName(String proTypeName){
-		this.proTypeName = proTypeName;
 	}
 	/**
 	 *方法: 取得java.lang.String

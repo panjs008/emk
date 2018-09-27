@@ -65,8 +65,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Api(value = "EmkProduceQa", description = "生产问题管理单", tags = {"emkProduceQaController"})
 @Controller
 @RequestMapping({"/emkProduceQaController"})
-public class EmkProduceQaController
-        extends BaseController {
+public class EmkProduceQaController extends BaseController {
     private static final Logger logger = Logger.getLogger(EmkProduceQaController.class);
     @Autowired
     private EmkProduceQaServiceI emkProduceQaService;

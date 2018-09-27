@@ -64,8 +64,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Api(value = "EmkLeaveFactory", description = "离厂通知单", tags = {"emkLeaveFactoryController"})
 @Controller
 @RequestMapping({"/emkLeaveFactoryController"})
-public class EmkLeaveFactoryController
-        extends BaseController {
+public class EmkLeaveFactoryController extends BaseController {
     private static final Logger logger = Logger.getLogger(EmkLeaveFactoryController.class);
     @Autowired
     private EmkLeaveFactoryServiceI emkLeaveFactoryService;

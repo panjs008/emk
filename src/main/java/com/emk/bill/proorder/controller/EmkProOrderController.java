@@ -70,8 +70,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Api(value = "EmkProOrder", description = "生产订单", tags = {"emkProOrderController"})
 @Controller
 @RequestMapping({"/emkProOrderController"})
-public class EmkProOrderController
-        extends BaseController {
+public class EmkProOrderController extends BaseController {
     private static final Logger logger = Logger.getLogger(EmkProOrderController.class);
     @Autowired
     private EmkProOrderServiceI emkProOrderService;

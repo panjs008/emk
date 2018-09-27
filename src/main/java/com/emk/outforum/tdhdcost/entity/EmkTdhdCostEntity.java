@@ -22,7 +22,7 @@ import org.jeecgframework.poi.excel.annotation.Excel;
  * @Title: Entity
  * @Description: 提单货代费用
  * @author onlineGenerator
- * @date 2018-09-23 18:17:42
+ * @date 2018-09-23 22:51:36
  * @version V1.0   
  *
  */
@@ -34,25 +34,21 @@ public class EmkTdhdCostEntity implements java.io.Serializable {
 	@Excel(name="业务员",width=15)
 	private String businesser;
 	/**业务员ID*/
-	@Excel(name="业务员ID",width=15)
 	private String businesserName;
 	/**业务跟单员*/
 	@Excel(name="业务跟单员",width=15)
 	private String tracer;
 	/**业务跟单员ID*/
-	@Excel(name="业务跟单员ID",width=15)
 	private String tracerName;
 	/**业务部门*/
 	@Excel(name="业务部门",width=15)
 	private String businesseDeptName;
 	/**业务部门ID*/
-	@Excel(name="业务部门ID",width=15)
 	private String businesseDeptId;
 	/**生产跟单员*/
 	@Excel(name="生产跟单员",width=15)
 	private String developer;
 	/**生产跟单员ID*/
-	@Excel(name="生产跟单员ID",width=15)
 	private String developerName;
 	/**描述*/
 	@Excel(name="描述",width=15)
@@ -73,22 +69,17 @@ public class EmkTdhdCostEntity implements java.io.Serializable {
 	@Excel(name="总毛重",width=15)
 	private Double sumBoxMao;
 	/**主键*/
-	@Excel(name="主键",width=15)
 	private String id;
 	/**创建人名称*/
-	@Excel(name="创建人名称",width=15)
 	private String createName;
 	/**创建人登录名称*/
-	@Excel(name="创建人登录名称",width=15)
 	private String createBy;
 	/**创建日期*/
-	@Excel(name="创建日期",width=15,format = "yyyy-MM-dd")
 	private Date createDate;
 	/**所属部门*/
-	@Excel(name="所属部门",width=15)
 	private String sysOrgCode;
-	/**订单号*/
-	@Excel(name="订单号",width=15)
+	/**船务员*/
+	@Excel(name="船务员",width=15)
 	private String cwyer;
 	/**订舱通知单号*/
 	@Excel(name="订舱通知单号",width=15)
@@ -147,6 +138,9 @@ public class EmkTdhdCostEntity implements java.io.Serializable {
 	/**海关放行条状态*/
 	@Excel(name="海关放行条状态",width=15)
 	private String hgfxzt;
+	/**订单号*/
+	@Excel(name="订单号",width=15)
+	private String orderNo;
 	
 	/**
 	 *方法: 取得java.lang.String
@@ -476,7 +470,7 @@ public class EmkTdhdCostEntity implements java.io.Serializable {
 	}
 	/**
 	 *方法: 取得java.lang.String
-	 *@return: java.lang.String  订单号
+	 *@return: java.lang.String  船务员
 	 */
 
 	@Column(name ="CWYER",nullable=true,length=32)
@@ -486,7 +480,7 @@ public class EmkTdhdCostEntity implements java.io.Serializable {
 
 	/**
 	 *方法: 设置java.lang.String
-	 *@param: java.lang.String  订单号
+	 *@param: java.lang.String  船务员
 	 */
 	public void setCwyer(String cwyer){
 		this.cwyer = cwyer;
@@ -813,5 +807,22 @@ public class EmkTdhdCostEntity implements java.io.Serializable {
 	 */
 	public void setHgfxzt(String hgfxzt){
 		this.hgfxzt = hgfxzt;
+	}
+	/**
+	 *方法: 取得java.lang.String
+	 *@return: java.lang.String  订单号
+	 */
+
+	@Column(name ="ORDER_NO",nullable=true,length=32)
+	public String getOrderNo(){
+		return this.orderNo;
+	}
+
+	/**
+	 *方法: 设置java.lang.String
+	 *@param: java.lang.String  订单号
+	 */
+	public void setOrderNo(String orderNo){
+		this.orderNo = orderNo;
 	}
 }

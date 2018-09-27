@@ -44,25 +44,21 @@ public class EmkShipEntity implements java.io.Serializable {
 	@Excel(name="业务员",width=15)
 	private String businesser;
 	/**业务员ID*/
-	@Excel(name="业务员ID",width=15)
 	private String businesserName;
 	/**业务跟单员*/
 	@Excel(name="业务跟单员",width=15)
 	private String tracer;
 	/**业务跟单员ID*/
-	@Excel(name="业务跟单员ID",width=15)
 	private String tracerName;
 	/**业务部门*/
 	@Excel(name="业务部门",width=15)
 	private String businesseDeptName;
 	/**业务部门ID*/
-	@Excel(name="业务部门ID",width=15)
 	private String businesseDeptId;
 	/**生产跟单员*/
 	@Excel(name="生产跟单员",width=15)
 	private String developer;
 	/**生产跟单员ID*/
-	@Excel(name="生产跟单员ID",width=15)
 	private String developerName;
 	/**船务员*/
 	@Excel(name="船务员",width=15)

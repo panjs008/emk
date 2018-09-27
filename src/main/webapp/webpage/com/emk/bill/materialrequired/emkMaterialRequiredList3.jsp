@@ -29,6 +29,8 @@
       <t:dgToolBar title="录入" icon="fa fa-plus" url="emkMaterialRequiredController.do?goAdd&type=2&winTitle=录入包装采购需求单" funname="add" height="600" width="1000"></t:dgToolBar>
       <t:dgToolBar title="编辑" icon="fa fa-edit" url="emkMaterialRequiredController.do?goUpdate&type=2&winTitle=编辑包装采购需求单" funname="update" height="600" width="1000"></t:dgToolBar>
       <t:dgToolBar title="删除"  icon="fa fa-remove" url="emkMaterialRequiredController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
+      <t:dgToolBar title="导出" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
+
   </t:datagrid>
   </div>
  </div>

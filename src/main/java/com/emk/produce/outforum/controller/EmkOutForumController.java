@@ -65,8 +65,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Api(value = "EmkOutForum", description = "出货通知单", tags = {"emkOutForumController"})
 @Controller
 @RequestMapping({"/emkOutForumController"})
-public class EmkOutForumController
-        extends BaseController {
+public class EmkOutForumController extends BaseController {
     private static final Logger logger = Logger.getLogger(EmkOutForumController.class);
     @Autowired
     private EmkOutForumServiceI emkOutForumService;

@@ -64,8 +64,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Api(value = "EmkReception", description = "业务接待单", tags = {"emkReceptionController"})
 @Controller
 @RequestMapping({"/emkReceptionController"})
-public class EmkReceptionController
-        extends BaseController {
+public class EmkReceptionController extends BaseController {
     private static final Logger logger = Logger.getLogger(EmkReceptionController.class);
     @Autowired
     private EmkReceptionServiceI emkReceptionService;

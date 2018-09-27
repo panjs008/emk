@@ -58,25 +58,21 @@ public class EmkMInStorageEntity implements java.io.Serializable {
 	@Excel(name="业务员",width=15)
 	private String businesser;
 	/**业务员ID*/
-	@Excel(name="业务员ID",width=15)
 	private String businesserName;
 	/**业务跟单员*/
 	@Excel(name="业务跟单员",width=15)
 	private String tracer;
 	/**业务跟单员ID*/
-	@Excel(name="业务跟单员ID",width=15)
 	private String tracerName;
 	/**业务部门*/
 	@Excel(name="业务部门",width=15)
 	private String businesseDeptName;
 	/**业务部门ID*/
-	@Excel(name="业务部门ID",width=15)
 	private String businesseDeptId;
 	/**生产跟单员*/
 	@Excel(name="生产跟单员",width=15)
 	private String developer;
 	/**生产跟单员ID*/
-	@Excel(name="生产跟单员ID",width=15)
 	private String developerName;
 	/**出货日期*/
 	@Excel(name="出货日期",width=15)
@@ -106,13 +102,11 @@ public class EmkMInStorageEntity implements java.io.Serializable {
 	@Excel(name="申请人",width=15)
 	private String appler;
 	/**申请人ID*/
-	@Excel(name="申请人ID",width=15)
 	private String applerId;
 	/**入库人*/
 	@Excel(name="入库人",width=15)
 	private String rker;
 	/**入库人ID*/
-	@Excel(name="入库人ID",width=15)
 	private String rkerId;
 	@Excel(name="审核意见", width=15.0D)
 	private String leadAdvice;
@@ -120,11 +114,9 @@ public class EmkMInStorageEntity implements java.io.Serializable {
 	private String financeAdvice;
 	@Excel(name="是否通过", width=15.0D)
 	private String isPass;
-	@Excel(name="审核人ID", width=15.0D)
 	private String leadUserId;
 	@Excel(name="审核人", width=15.0D)
 	private String leader;
-	@Excel(name="财务处理人ID", width=15.0D)
 	private String financeUserId;
 	@Excel(name="财务处理人", width=15.0D)
 	private String financer;

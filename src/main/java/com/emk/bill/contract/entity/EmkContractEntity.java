@@ -21,29 +21,23 @@ public class EmkContractEntity implements Serializable {
     private String sysOrgCode;
     @Excel(name = "业务员", width = 15)
     private String businesser;
-    @Excel(name = "业务员ID", width = 15)
     private String businesserName;
     @Excel(name = "业务部门", width = 15)
     private String businesseDeptName;
-    @Excel(name = "业务部门ID", width = 15)
     private String businesseDeptId;
     @Excel(name = "业务跟单员", width = 15)
     private String tracer;
-    @Excel(name = "业务跟单员ID", width = 15)
     private String tracerName;
     @Excel(name = "生产跟单员", width = 15)
     private String developer;
-    @Excel(name = "生产跟单员ID", width = 15)
     private String developerName;
     @Excel(name = "合同编号", width = 15)
     private String htNum;
     @Excel(name = "甲方", width = 15)
     private String partyA;
-    @Excel(name = "甲方ID", width = 15)
     private String partyAId;
     @Excel(name = "乙方", width = 15)
     private String partyB;
-    @Excel(name = "乙方ID", width = 15)
     private String partyBId;
     @Excel(name = "FOB", width = 15)
     private String fob;

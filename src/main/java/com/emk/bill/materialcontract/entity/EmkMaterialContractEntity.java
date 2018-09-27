@@ -45,7 +45,6 @@ public class EmkMaterialContractEntity implements Serializable {
     private String sampleNoDesc;
     @Excel(name = "总数量", width = 15)
     private Integer sumTotal;
-    @Excel(name = "款式大类", width = 15)
     private String proType;
     @Excel(name = "款式大类", width = 15)
     private String proTypeName;

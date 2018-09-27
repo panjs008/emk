@@ -416,10 +416,14 @@ function createwindow(title, addurl,width,height) {
 		width = window.top.document.body.offsetWidth;
 		height =window.top.document.body.offsetHeight-100;
 	}
-    /*if(addurl.indexOf('emkClauseController.do?goAdd')>=0 || addurl.indexOf('emkClauseController.do?goUpdate')>=0){
+    if(addurl.indexOf('emkQualityCheckController.do?goAdd')>=0 || addurl.indexOf('emkQualityCheckController.do?goUpdate')>=0){
         width =  window.top.document.body.offsetWidth;
         height =window.top.document.body.offsetHeight-100;
-    }*/
+    }
+	if(addurl.indexOf('emkSizeCheckController.do?goAdd')>=0 || addurl.indexOf('emkSizeCheckController.do?goUpdate')>=0){
+		width =  window.top.document.body.offsetWidth;
+		height =window.top.document.body.offsetHeight-100;
+	}
     //--author：JueYue---------date：20140427---------for：弹出bug修改,设置了zindex()函数
 	if(typeof(windowapi) == 'undefined'){
 		$.dialog({

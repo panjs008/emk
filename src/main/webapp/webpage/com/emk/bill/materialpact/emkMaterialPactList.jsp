@@ -29,6 +29,8 @@
    <t:dgToolBar title="录入" icon="fa fa-plus" url="emkMaterialPactController.do?goAdd&type=0&winTitle=录入原料预采购合同单" funname="add" height="600" width="1000"></t:dgToolBar>
    <t:dgToolBar title="编辑" icon="fa fa-edit" url="emkMaterialPactController.do?goUpdate&type=0&winTitle=编辑原料预采购合同单" funname="update" height="600" width="1000"></t:dgToolBar>
    <t:dgToolBar title="删除"  icon="fa fa-remove" url="emkMaterialPactController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
+      <t:dgToolBar title="导出" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
+
   </t:datagrid>
   </div>
  </div>
