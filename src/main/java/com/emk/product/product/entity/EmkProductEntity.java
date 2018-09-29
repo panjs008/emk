@@ -21,16 +21,13 @@ public class EmkProductEntity
     private String createBy;
     private Date createDate;
     private String sysOrgCode;
-    @Excel(name = "款号", width = 15)
     private String hsCode;
-    @Excel(name = "款号名称", width = 15)
     private String hsName;
     @Excel(name = "产品编号", width = 15)
     private String proNum;
     private String proType;
     @Excel(name = "产品类别", width = 15)
     private String proTypeName;
-    @Excel(name = "英文名称", width = 15)
     private String proEnName;
     @Excel(name = "中文名称", width = 15)
     private String proZnName;
@@ -38,16 +35,12 @@ public class EmkProductEntity
     private String brand;
     @Excel(name = "单位", width = 15)
     private String unit;
-    @Excel(name = "英文描述", width = 15)
     private String remarkEn;
-    @Excel(name = "中文描述", width = 15)
     private String remarkZn;
     @Excel(name = "产品备注", width = 15)
     private String proRemark;
     private String hsId;
-    @Excel(name = "增值税率", width = 15)
     private String zzVal;
-    @Excel(name = "退税率", width = 15)
     private String tsVal;
     @Excel(name = "比例", width = 15)
     private String precent;

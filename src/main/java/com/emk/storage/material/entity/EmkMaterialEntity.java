@@ -88,7 +88,6 @@ public class EmkMaterialEntity implements Serializable {
     private String customSample;
     @Excel(name = "业务跟单员", width = 15)
     private String tracer;
-    @Excel(name = "业务跟单员ID", width = 15)
     private String tracerName;
 
     @Id

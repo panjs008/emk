@@ -32,11 +32,9 @@ public class EmkSampleEntity
     private String factoryName;
     @Excel(name = "供应商代码", width = 15)
     private String factoryCode;
-    @Excel(name = "客户原样URL", width = 15)
     private String customSampleUrl;
     @Excel(name = "客户原样", width = 15)
     private String customSample;
-    @Excel(name = "尺寸表URL", width = 15)
     private String sampleSizeUrl;
     @Excel(name = "尺寸表", width = 15)
     private String sampleSize;
@@ -106,19 +104,15 @@ public class EmkSampleEntity
     private Double hdshl;
     @Excel(name = "业务员", width = 15)
     private String businesser;
-    @Excel(name = "业务员ID", width = 15)
     private String businesserName;
     @Excel(name = "业务跟单员", width = 15)
     private String tracer;
-    @Excel(name = "业务跟单员ID", width = 15)
     private String tracerName;
     @Excel(name = "生产跟单员", width = 15)
     private String developer;
-    @Excel(name = "生产跟单员ID", width = 15)
     private String developerName;
     @Excel(name = "业务部门", width = 15)
     private String businesseDeptName;
-    @Excel(name = "业务部门ID", width = 15)
     private String businesseDeptId;
     @Excel(name = "需求单号", width = 15)
     private String xqdh;

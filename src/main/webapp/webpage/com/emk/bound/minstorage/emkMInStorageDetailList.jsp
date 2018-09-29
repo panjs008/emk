@@ -33,7 +33,10 @@
         $("#add_jeecgOrderProduct_table").find("[id='proName00']").attr("id","proName"+flag);
         $("#add_jeecgOrderProduct_table").find("[id='brand00']").attr("id","brand"+flag);
         $("#add_jeecgOrderProduct_table").find("[id='proNum00']").attr("id","proNum"+flag);
-
+        $("#add_jeecgOrderProduct_table").find("[id='htTotal00']").attr("datatype","n");
+        $("#add_jeecgOrderProduct_table").find("[id='totall00']").attr("datatype","n");
+        $("#add_jeecgOrderProduct_table").find("[id='inTotal00']").attr("datatype","n");
+        $("#add_jeecgOrderProduct_table").find("[id='actualTotal00']").attr("datatype","n");
 
 
         idStr = flag;

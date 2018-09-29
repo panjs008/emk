@@ -9,7 +9,7 @@
    <t:dgCol title="创建人登录名称"  hidden="true" field="createBy"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="创建日期"  hidden="true" field="createDate"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="所属部门"  hidden="true" field="sysOrgCode"  queryMode="single"  width="120"></t:dgCol>
-   <t:dgCol title="质量检查编号"  field="qualityCheckNum" query="true"  queryMode="single"  width="80"></t:dgCol>
+   <t:dgCol title="尺寸检查编号"  field="sizeCheckNum" query="true"  queryMode="single"  width="80"></t:dgCol>
    <t:dgCol title="订单号"  field="orderNo"  query="true" queryMode="single"  width="80"></t:dgCol>
    <t:dgCol title="报告日期"  field="kdDate"  query="true" queryMode="single"  width="80"></t:dgCol>
    <t:dgCol title="检查日期"  field="checkDate"  query="true" queryMode="single"  width="80"></t:dgCol>
@@ -22,6 +22,8 @@
    <t:dgToolBar title="录入" icon="fa fa-plus" url="emkSizeCheckController.do?goAdd&winTitle=录入尺寸检查表" funname="add" height="600" width="1200"></t:dgToolBar>
    <t:dgToolBar title="编辑" icon="fa fa-edit" url="emkSizeCheckController.do?goUpdate&winTitle=编辑尺寸检查表" funname="update" height="600" width="1200"></t:dgToolBar>
    <t:dgToolBar title="删除"  icon="fa fa-remove" url="emkSizeCheckController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
+   <t:dgToolBar title="导出" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
+
   </t:datagrid>
   </div>
  </div>

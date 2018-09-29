@@ -185,9 +185,8 @@ public class EmkSizeCheckController extends BaseController {
 		message = "尺寸检查表删除成功";
 		try{
 			for(String id:ids.split(",")){
-				EmkSizeCheckEntity emkSizeCheck = systemService.getEntity(EmkSizeCheckEntity.class, 
-				id
-				);
+				EmkSizeCheckEntity emkSizeCheck = systemService.getEntity(EmkSizeCheckEntity.class, id);
+				this.systemService.executeSql("delete from emk_enquiry_detail where ENQUIRY_ID=?",id);
 				emkSizeCheckService.delete(emkSizeCheck);
 				systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
 			}
@@ -296,7 +295,7 @@ public class EmkSizeCheckController extends BaseController {
 		List<Map<String, Object>> codeList = this.systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", new Object[]{"A03"});
 		req.setAttribute("categoryEntityList", codeList);
 		TSUser user = (TSUser) req.getSession().getAttribute("LOCAL_CLINET_USER");
-		Map orderNum = this.systemService.findOneForJdbc("select count(0)+1 orderNum from emk_quality_check where sys_org_code=?", new Object[]{user.getCurrentDepart().getOrgCode()});
+		Map orderNum = this.systemService.findOneForJdbc("select count(0)+1 orderNum from emk_size_check where sys_org_code=?", new Object[]{user.getCurrentDepart().getOrgCode()});
 		req.setAttribute("sizeCheckNum","CCJC" + DateUtils.format(new Date(), "yyMMdd") + String.format("%04d", new Object[]{Integer.valueOf(Integer.parseInt(orderNum.get("orderNum").toString()))}));
 		if (StringUtil.isNotEmpty(emkSizeCheck.getId())) {
 			emkSizeCheck = emkSizeCheckService.getEntity(EmkSizeCheckEntity.class, emkSizeCheck.getId());

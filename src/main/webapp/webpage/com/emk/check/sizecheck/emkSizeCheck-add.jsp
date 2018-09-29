@@ -20,7 +20,24 @@
 				$("#gys").val(itemarr[1]);
 			});
 		});
-
+		function resetTrNum(tableId) {
+			$tbody = $("#"+tableId+"");
+			$tbody.find('>tr').each(function(i){
+				$(':input, select', this).each(function(){
+					var $this = $(this), name = $this.attr('name'), val = $this.val();
+					if(name!=null){
+						if (name.indexOf("#index#") >= 0){
+							$this.attr("name",name.replace('#index#',i));
+						}else{
+							var s = name.indexOf("[");
+							var e = name.indexOf("]");
+							var new_name = name.substring(s+1,e);
+							$this.attr("name",name.replace(new_name,i));
+						}
+					}
+				});
+			});
+		}
 		function BindSelect(ctrlName, url,type,categoryId) {
 			var control = $('#' + ctrlName);
 			//设置Select2的处理
@@ -62,7 +79,7 @@
 				</label>
 			</td>
 			<td class="value" >
-				<input id="qualityCheckNum" name="qualityCheckNum" value="${qualityCheckNum}" readonly type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="sizeCheckNum" name="sizeCheckNum" value="${sizeCheckNum}" readonly type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">质量检查编号</label>
 			</td>
@@ -213,7 +230,7 @@
 				</label>
 			</td>
 			<td class="value">
-				<input id="version" name="version" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="vesion" name="vesion" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">版次</label>
 			</td>

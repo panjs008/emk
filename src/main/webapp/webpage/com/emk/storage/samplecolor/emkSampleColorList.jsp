@@ -27,6 +27,8 @@
    <t:dgToolBar title="录入" icon="fa fa-plus" url="emkSampleColorController.do?goAdd&winTitle=录入色样通知单" funname="add" height="600" width="1000"></t:dgToolBar>
    <t:dgToolBar title="编辑" icon="fa fa-edit" url="emkSampleColorController.do?goUpdate&winTitle=编辑色样通知单" funname="update" height="600" width="1000"></t:dgToolBar>
    <t:dgToolBar title="删除"  icon="fa fa-remove" url="emkSampleColorController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
+   <t:dgToolBar title="导出" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
+
   </t:datagrid>
   </div>
  </div>

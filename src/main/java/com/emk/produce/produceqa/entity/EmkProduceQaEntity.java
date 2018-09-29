@@ -87,7 +87,6 @@ public class EmkProduceQaEntity implements Serializable {
     private String zjlAdvice;
     @Excel(name = "生产问题函状态", width = 15)
     private String qaState;
-    @Excel(name = "扫描件", width = 15)
     private String scanUrl;
     @Excel(name = "扫描件", width = 15)
     private String scanName;

@@ -34,6 +34,8 @@
       <t:dgToolBar title="录入" icon="fa fa-plus" url="emkPriceController.do?goAdd&winTitle=录入报价单" funname="add" height="600" width="1210"></t:dgToolBar>
       <t:dgToolBar title="编辑" icon="fa fa-edit" url="emkPriceController.do?goUpdate&winTitle=编辑报价单" funname="update" height="600" width="1210"></t:dgToolBar>
       <t:dgToolBar title="删除"  icon="fa fa-remove" url="emkPriceController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
+      <t:dgToolBar title="导出" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
+
   </t:datagrid>
   </div>
  </div>

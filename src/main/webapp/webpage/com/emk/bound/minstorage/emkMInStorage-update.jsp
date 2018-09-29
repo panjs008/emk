@@ -87,7 +87,7 @@
 </head>
 <body>
 <t:formvalid formid="formobj" dialog="true" usePlugin="password" layout="table" action="emkMInStorageController.do?doUpdate" tiptype="1">
-	<input id="id" name="id" type="hidden" value="${emkMInStoragePage.id }"/>
+	<input id="emkMInStorageId" name="emkMInStorageId" type="hidden" value="${emkMInStoragePage.id }"/>
 	<c:set var="selectType" value="0"  scope="session"></c:set>
 
 	<table style="width: 100%;" cellpadding="0" cellspacing="1" class="formtable">
@@ -307,13 +307,13 @@
 			</td>
 			<td align="left"><input id="brand00" nullmsg="请输入规格！"  errormsg="请输入规格" name="rkglMxList[#index#].brand" maxlength="100" type="text" value=""
 									style="width: 95%;"></td>
-			<td align="left"><input id="htTotal00" nullmsg="请输入数量！"  errormsg="请输入数量" name="rkglMxList[#index#].htTotal" maxlength="100" type="text" value=""
+			<td align="left"><input id="htTotal00" nullmsg="请输入数量！"  errormsg="输入数量内容不正确" name="rkglMxList[#index#].htTotal" maxlength="100" type="text" value=""
 									style="width: 95%;"></td>
-			<td align="left"><input id="totall00" nullmsg="请输入采购数量！"  errormsg="请输入采购数量" name="rkglMxList[#index#].total" maxlength="100" type="text" value=""
+			<td align="left"><input id="totall00" nullmsg="请输入采购数量！"  errormsg="输入采购数量内容不正确" name="rkglMxList[#index#].total" maxlength="100" type="text" value=""
 									style="width: 95%;"></td>
-			<td align="left"><input nullmsg="请输入入库数量！" id="inTotal00" errormsg="请输入入库数量" name="rkglMxList[#index#].inTotal" maxlength="100" type="text" value=""
+			<td align="left"><input nullmsg="请输入入库数量！" id="inTotal00" errormsg="输入入库数量内容不正确" name="rkglMxList[#index#].inTotal" maxlength="100" type="text" value=""
 									style="width: 95%;"></td>
-			<td align="left"><input nullmsg="请输入实际入库数量！" id="actualTotal00" errormsg="请输入实际入库数量" name="rkglMxList[#index#].actualTotal" maxlength="100" type="text" value=""
+			<td align="left"><input nullmsg="请输入实际入库数量！" id="actualTotal00" errormsg="输入实际入库数量内容不正确" name="rkglMxList[#index#].actualTotal" maxlength="100" type="text" value=""
 									style="width: 95%;"></td>
 
 		</tr>

@@ -44,7 +44,6 @@ public class EmkCheckEntity implements java.io.Serializable {
 	@Excel(name="业务员",width=15)
 	private String businesser;
 	/**业务员ID*/
-	@Excel(name="业务员ID",width=15)
 	private String businesserName;
 	/**验货申请单号*/
 	@Excel(name="验货申请单号",width=15)
@@ -98,7 +97,6 @@ public class EmkCheckEntity implements java.io.Serializable {
 	@Excel(name="业务部门",width=15)
 	private String businesseDeptName;
 	/**业务部门ID*/
-	@Excel(name="业务部门ID",width=15)
 	private String businesseDeptId;
 	/**状态*/
 	@Excel(name="状态",width=15)

@@ -22,6 +22,8 @@
        <t:dgToolBar title="录入" icon="fa fa-plus" url="emkFinanceCheckController.do?goAdd&winTitle=录入应收核准单" funname="add" height="600" width="1000"></t:dgToolBar>
        <t:dgToolBar title="编辑" icon="fa fa-edit" url="emkFinanceCheckController.do?goUpdate&winTitle=录入应收核准单" funname="update" height="600" width="1000"></t:dgToolBar>
        <t:dgToolBar title="删除"  icon="fa fa-remove" url="emkFinanceCheckController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
+      <t:dgToolBar title="导出" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
+
   </t:datagrid>
   </div>
  </div>

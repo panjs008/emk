@@ -298,17 +298,23 @@ public class EmkMOutStorageController extends BaseController {
 		String message = null;
 		AjaxJson j = new AjaxJson();
 		message = "出库申请表更新成功";
-		EmkMOutStorageEntity t = emkMOutStorageService.get(EmkMOutStorageEntity.class, emkMOutStorage.getId());
+		Map<String, String> map = ParameterUtil.getParamMaps(request.getParameterMap());
+		EmkMOutStorageEntity t = emkMOutStorageService.get(EmkMOutStorageEntity.class,  map.get("emkMOutStorageId"));
 		try {
-			Map<String, String> map = ParameterUtil.getParamMaps(request.getParameterMap());
+			if(!t.getState().equals("0")){
+				j.setMsg("出库单在处理中无法进行修改");
+				j.setSuccess(false);
+				return j;
+			}
 			emkMOutStorage.setState("0");
+			emkMOutStorage.setId(null);
 			emkMOutStorage.setAppler(map.get("realName"));
 			emkMOutStorage.setApplerId(map.get("userName"));
 			emkMOutStorage.setLler(map.get("sender"));
 			emkMOutStorage.setLlerId(map.get("senderUserNames"));
 			MyBeanUtils.copyBeanNotNull2Bean(emkMOutStorage, t);
 			emkMOutStorageService.saveOrUpdate(t);
-			systemService.executeSql("delete from emk_m_in_storage_detail where inStorageId=?", t.getId());
+			systemService.executeSql("delete from emk_m_in_storage_detail where IN_STORAGE_ID=?", t.getId());
 
 			String dataRows = (String)map.get("dataRowsVal");
 			if ((dataRows != null) && (!dataRows.isEmpty())) {
@@ -316,7 +322,7 @@ public class EmkMOutStorageController extends BaseController {
 				for (int i = 0; i < rows; i++) {
 					EmkMInStorageDetailEntity rkglMxEntity = new EmkMInStorageDetailEntity();
 					if (map.get("rkglMxList["+i+"].proName") != null && !map.get("rkglMxList["+i+"].proName").isEmpty()) {
-						rkglMxEntity.setInStorageId(emkMOutStorage.getId());
+						rkglMxEntity.setInStorageId(t.getId());
 						rkglMxEntity.setProZnName((String)map.get("rkglMxList[" + i + "].proName"));
 						rkglMxEntity.setProNum((String)map.get("rkglMxList[" + i + "].proNum"));
 						rkglMxEntity.setBrand((String)map.get("rkglMxList[" + i + "].brand"));
@@ -633,6 +639,16 @@ public class EmkMOutStorageController extends BaseController {
 							taskService.complete(task1.getId(), variables);
 						}
 					}else {
+						EmkStorageLogEntity storageLogEntity = new EmkStorageLogEntity();
+						List<EmkMInStorageDetailEntity> inStorageDetailEntityList = systemService.findHql("from EmkMInStorageDetailEntity where inStorageId=?",t.getId());
+						for(EmkMInStorageDetailEntity inStorageDetailEntity : inStorageDetailEntityList){
+							EmkStorageEntity storageEntity = systemService.findUniqueByProperty(EmkStorageEntity.class,"proNum",inStorageDetailEntity.getProNum());
+							if(Integer.parseInt(storageEntity.getTotal())<Integer.parseInt(inStorageDetailEntity.getActualTotal())){
+								j.setSuccess(false);
+								j.setMsg(inStorageDetailEntity.getProZnName()+","+inStorageDetailEntity.getProNum()+",库存数不够，无法出库操作");
+								return j;
+							}
+						}
 						ProcessInstance pi = processEngine.getRuntimeService().startProcessInstanceByKey("outstorage", "emkMOutStorage", variables);
 						task = taskService.createTaskQuery().taskAssignee(id).list();
 						Task task1 = task.get(task.size() - 1);
@@ -840,7 +856,7 @@ public class EmkMOutStorageController extends BaseController {
 		} else {
 			req.setAttribute("stepProcess", Integer.valueOf(0));
 		}
-		emkMOutStorageEntity = emkMOutStorageService.getEntity(EmkMInStorageEntity.class, emkMOutStorageEntity.getId());
+		emkMOutStorageEntity = emkMOutStorageService.getEntity(EmkMOutStorageEntity.class, emkMOutStorageEntity.getId());
 		req.setAttribute("emkOutStorage", emkMOutStorageEntity);
 		return new ModelAndView("com/emk/bound/moutstorage/time");
 

@@ -183,9 +183,8 @@ public class EmkQualityCheckController extends BaseController {
 		message = "质量检查表删除成功";
 		try{
 			for(String id:ids.split(",")){
-				EmkQualityCheckEntity emkQualityCheck = systemService.getEntity(EmkQualityCheckEntity.class, 
-				id
-				);
+				EmkQualityCheckEntity emkQualityCheck = systemService.getEntity(EmkQualityCheckEntity.class, id);
+				this.systemService.executeSql("delete from emk_enquiry_detail where ENQUIRY_ID=?",id);
 				emkQualityCheckService.delete(emkQualityCheck);
 				systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
 			}

@@ -13,8 +13,7 @@ import org.jeecgframework.poi.excel.annotation.Excel;
 
 @Entity
 @Table(name = "ymk_custom", schema = "")
-public class YmkCustomEntity
-        implements Serializable {
+public class YmkCustomEntity implements Serializable {
     private String id;
     private String createName;
     private String createBy;
@@ -69,15 +68,12 @@ public class YmkCustomEntity
     private String businesseDeptId;
     @Excel(name = "业务员", width = 15)
     private String businesser;
-    @Excel(name = "业务员ID", width = 15)
     private String businesserName;
     @Excel(name = "业务跟单员", width = 15)
     private String tracer;
-    @Excel(name = "业务跟单员ID", width = 15)
     private String tracerName;
     @Excel(name = "生产跟单员", width = 15)
     private String developer;
-    @Excel(name = "生产跟单员ID", width = 15)
     private String developerName;
     @Excel(name = "业务类型", width = 15)
     private String businessType;

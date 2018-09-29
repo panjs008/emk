@@ -22,6 +22,8 @@
    <t:dgToolBar title="录入" icon="fa fa-plus" url="emkQualityCheckController.do?goAdd&winTitle=录入质量检查表" funname="add" height="600" width="1250"></t:dgToolBar>
    <t:dgToolBar title="编辑" icon="fa fa-edit" url="emkQualityCheckController.do?goUpdate&winTitle=编辑质量检查表" funname="update" height="600" width="1250"></t:dgToolBar>
    <t:dgToolBar title="删除"  icon="fa fa-remove" url="emkQualityCheckController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
+   <t:dgToolBar title="导出" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
+
   </t:datagrid>
   </div>
  </div>

@@ -106,19 +106,20 @@ public class FlowController {
         try{
             String sql = "",countsql = "";
             sql = "SELECT t1.*,CASE\n" +
-                    "WHEN t1.TASK_DEF_KEY_='applyTask' THEN t2.user_name\n" +
-                    "WHEN t1.TASK_DEF_KEY_='checkTask' THEN t2.check_user_name\n" +
-                    "WHEN t1.TASK_DEF_KEY_='zxRepair' THEN t2.repair_user_name\n" +
-                    "WHEN t1.TASK_DEF_KEY_='saveRecord' THEN t2.kaohe_user_name\n" +
-                    "WHEN t1.TASK_DEF_KEY_='systemToService' THEN t2.cus_name\n" +
-                    "WHEN t1.TASK_DEF_KEY_='localService' THEN t2.recevie_user_name\n" +
-                    "WHEN t1.TASK_DEF_KEY_='belongService' THEN t2.recevie_user_name\n" +
-                    "WHEN t1.TASK_DEF_KEY_='tjService' THEN t2.recevie_user_name\n" +
-                    "WHEN t1.TASK_DEF_KEY_='homeService' THEN t2.recevie_user_name\n" +
-                    "WHEN t1.TASK_DEF_KEY_='normalRepairTask' THEN t2.repair_user_name\n" +
-                    "ELSE ''\n" +
-                    "END workname FROM act_hi_taskinst t1 \n" +
-                    "LEFT JOIN u_repair t2 ON t1.`ASSIGNEE_` = t2.`id` where ASSIGNEE_='"+map.get("id")+"' ";
+                    " WHEN t1.TASK_DEF_KEY_='orderTask' THEN t2.create_name \n" +
+                    " WHEN t1.TASK_DEF_KEY_='outstorageTask' THEN t2.create_name \n" +
+                    " WHEN t1.TASK_DEF_KEY_='instorageTask' THEN t2.create_name \n" +
+                    " WHEN t1.TASK_DEF_KEY_='checkTask' THEN t2.leader \n" +
+                    " WHEN t1.TASK_DEF_KEY_='cwTask' THEN t2.financer \n" +
+                    " ELSE ''\n" +
+                    " END workname FROM act_hi_taskinst t1 \n";
+            if(map.get("sqlType").equals("outStorage")){
+                sql +=" LEFT JOIN emk_m_out_storage t2 ON t1.`ASSIGNEE_` = t2.`id` where ASSIGNEE_='"+map.get("id")+"' ";
+            }else  if(map.get("sqlType").equals("inStorage")){
+                sql +=" LEFT JOIN emk_m_in_storage t2 ON t1.`ASSIGNEE_` = t2.`id` where ASSIGNEE_='"+map.get("id")+"' ";
+            }else  if(map.get("sqlType").equals("order")){
+                sql +=" LEFT JOIN emk_material_contract t2 ON t1.`ASSIGNEE_` = t2.`id` where ASSIGNEE_='"+map.get("id")+"' ";
+            }
 
             countsql = " SELECT COUNT(1) FROM act_hi_taskinst t1 where ASSIGNEE_='"+map.get("id")+"' ";
 

@@ -26,7 +26,6 @@ public class EmkSampleRequiredEntity
     private String kdDate;
     @Excel(name = "业务员", width = 15)
     private String businesser;
-    @Excel(name = "业务员ID", width = 15)
     private String businesserName;
     @Excel(name = "客户代码", width = 15)
     private String cusNum;
@@ -34,7 +33,6 @@ public class EmkSampleRequiredEntity
     private String cusName;
     @Excel(name = "工艺种类", width = 15)
     private String gyzl;
-    @Excel(name = "款式大类", width = 15)
     private String proType;
     @Excel(name = "款式大类", width = 15)
     private String proTypeName;
@@ -52,19 +50,16 @@ public class EmkSampleRequiredEntity
     private String isGetSample;
     @Excel(name = "是否有原样", width = 15)
     private String isHaveOld;
-    @Excel(name = "原样", width = 15)
     private String oldImageUrl;
     @Excel(name = "原样", width = 15)
     private String oldImage;
     @Excel(name = "是否有设计稿", width = 15)
     private String isHaveDgr;
-    @Excel(name = "设计稿", width = 15)
     private String dgrImageUrl;
     @Excel(name = "设计稿", width = 15)
     private String dgrImage;
     @Excel(name = "是否有尺寸表", width = 15)
     private String isHaveSize;
-    @Excel(name = "尺寸表", width = 15)
     private String sizeImageUrl;
     @Excel(name = "尺寸表", width = 15)
     private String sizeImage;
@@ -74,7 +69,6 @@ public class EmkSampleRequiredEntity
     private Integer levelDays;
     @Excel(name = "业务跟单员", width = 15)
     private String tracer;
-    @Excel(name = "业务跟单员ID", width = 15)
     private String tracerName;
     @Excel(name = "版次", width = 15)
     private String version;
@@ -84,7 +78,6 @@ public class EmkSampleRequiredEntity
     private String chengf;
     @Excel(name = "业务部门", width = 15)
     private String businesseDeptName;
-    @Excel(name = "业务部门ID", width = 15)
     private String businesseDeptId;
     @Excel(name = "颜色英文名称", width = 15)
     private String colorEnName;

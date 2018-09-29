@@ -231,7 +231,7 @@ public class EmkMaterialContractController extends BaseController {
         AjaxJson j = new AjaxJson();
         message = "原料采购合同表更新成功";
         Map<String, String> map = ParameterUtil.getParamMaps(request.getParameterMap());
-        EmkMaterialContractEntity t = emkMaterialContractService.get(EmkMaterialContractEntity.class, (Serializable) map.get("emkMaterialContractId"));
+        EmkMaterialContractEntity t = emkMaterialContractService.get(EmkMaterialContractEntity.class, map.get("emkMaterialContractId"));
         try {
             emkMaterialContract.setId(null);
             MyBeanUtils.copyBeanNotNull2Bean(emkMaterialContract, t);

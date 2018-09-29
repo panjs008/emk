@@ -71,7 +71,6 @@ public class EmkSampleColorEntity
     private String ywyyj;
     @Excel(name = "综合意见", width = 15)
     private String zhyj;
-    @Excel(name = "图片", width = 15)
     private String customSampleUrl;
     @Excel(name = "图片", width = 15)
     private String customSample;
@@ -89,9 +88,7 @@ public class EmkSampleColorEntity
     private String remark;
     @Excel(name = "用途", width = 15)
     private String purpose;
-    @Excel(name = "业务员ID", width = 15)
     private String businesserName;
-    @Excel(name = "业务跟单员ID", width = 15)
     private String tracerName;
     @Excel(name = "业务部门", width = 15)
     private String businesseDeptName;
@@ -109,7 +106,6 @@ public class EmkSampleColorEntity
     private String xqdh;
     @Excel(name = "生产跟单员", width = 15)
     private String developer;
-    @Excel(name = "生产跟单员ID", width = 15)
     private String developerName;
     @Excel(name = "色样需求单日期", width = 15)
     private String syxqdrq;

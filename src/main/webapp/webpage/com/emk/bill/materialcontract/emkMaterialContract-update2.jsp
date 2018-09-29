@@ -5,70 +5,13 @@
 <head>
 	<title>原料采购合同表</title>
 	<t:base type="jquery,easyui,tools,DatePicker"></t:base>
-	<link type="text/css" rel="stylesheet" href="plug-in/select2/css/select2.min.css"/>
-	<script type="text/javascript" src="plug-in/select2/js/select2.js"></script>
-	<script type="text/javascript" src="plug-in/select2/js/pinyin.js"></script>
 	<script type="text/javascript">
 		//编写自定义JS代码
 
-		function resetTrNum(tableId) {
-			$tbody = $("#"+tableId+"");
-			$tbody.find('>tr').each(function(i){
-				$(':input, select', this).each(function(){
-					var $this = $(this), name = $this.attr('name'), val = $this.val();
-					if(name!=null){
-						if (name.indexOf("#index#") >= 0){
-							$this.attr("name",name.replace('#index#',i));
-						}else{
-							var s = name.indexOf("[");
-							var e = name.indexOf("]");
-							var new_name = name.substring(s+1,e);
-							$this.attr("name",name.replace(new_name,i));
-						}
-					}
-				});
-			});
-		}
 		$(document).ready(function(){
 			$("#detailId").load("emkMaterialContractController.do?emkMaterialContractDetailList&contractId=${emkMaterialContractPage.id }&selectType=0");
-			BindSelect("gysId","ymkCustomController.do?findSupplierList",1,"${emkMaterialContractPage.gysCode},${emkMaterialContractPage.gys}");
-			$("#gysId").change(function(){
-				var itemarr = $("#gysId").val().split(","); //字符分割
-				$("#gysCode").val(itemarr[0]);
-				$("#gys").val(itemarr[1]);
-			});
+
 		});
-		function BindSelect(ctrlName, url,type,categoryId) {
-			var control = $('#' + ctrlName);
-			//设置Select2的处理
-			control.select2({
-				formatResult: formatState,
-				formatSelection: formatState,
-				escapeMarkup: function (m) {
-					return m;
-				}
-			});
-			//绑定Ajax的内容
-			$.getJSON(url, function (data) {
-				control.empty();//清空下拉框
-				control.append("<option value=''>请选择</option>");
-				$.each(data.obj, function (i, item) {
-					control.append("<option value='" + item.supplierCode + ","+item.supplier +"'>" + item.supplier + "</option>");
-				});
-				if(type ==1){
-					$("#"+ctrlName).select2('val',categoryId);
-				}
-			});
-		}
-
-		function formatState (state) {
-			if (!state.id) { return state.text; }
-			var $state = $(
-					'<span>' + state.text + '</span>'
-			);
-			return $state;
-		};
-
 
 	</script>
 </head>
@@ -163,8 +106,7 @@
 			</td>
 			<td class="value"  colspan="3">
 				<input id="cusName" name="cusName" readonly type="text" value="${emkMaterialContractPage.cusName }" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<t:choose  hiddenName="cusNum"  hiddenid="cusNum" url="ymkCustomController.do?select" name="ymkCustomList" width="700px" height="500px"
-						   icon="icon-search" title="选择客户" textname="cusName,businesseDeptName,businesseDeptId,businesser,businesserName,tracer,tracerName,developer,developerName,bz" isclear="true" isInit="true"></t:choose>
+
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">客户名称</label>
 			</td>
@@ -211,11 +153,8 @@
 				</label>
 			</td>
 			<td class="value" >
-				<select class="form-control select2" id="gysId"  datatype="*"  >
-					<option value=''>请选择</option>
-				</select>
-				<input id="gysCode" name="gysCode" type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<input id="gys" name="gys" type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="gysCode" name="gysCode" type="hidden" value="${emkMaterialContractPage.gysCode }" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="gys" name="gys" type="text" value="${emkMaterialContractPage.gys }" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">供应商</label>
 			</td>

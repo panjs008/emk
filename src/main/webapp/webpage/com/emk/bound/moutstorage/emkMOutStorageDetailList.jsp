@@ -33,7 +33,10 @@
         $("#add_jeecgOrderProduct_table").find("[id='proName00']").attr("id","proName"+flag);
         $("#add_jeecgOrderProduct_table").find("[id='brand00']").attr("id","brand"+flag);
         $("#add_jeecgOrderProduct_table").find("[id='proNum00']").attr("id","proNum"+flag);
-
+        $("#add_jeecgOrderProduct_table").find("[id='htTotal00']").attr("datatype","n");
+        $("#add_jeecgOrderProduct_table").find("[id='totall00']").attr("datatype","n");
+        $("#add_jeecgOrderProduct_table").find("[id='inTotal00']").attr("datatype","n");
+        $("#add_jeecgOrderProduct_table").find("[id='actualTotal00']").attr("datatype","n");
 
 
         idStr = flag;
@@ -143,13 +146,13 @@
                 </td>
                 <td align="left"><input id="brand${status.index}" nullmsg="请输入规格！" datatype="*" value="${poVal.brand}" errormsg="请输入规格" name="rkglMxList[${status.index}].brand" maxlength="100" type="text" value="0"
                                         style="width: 95%;"></td>
-                <td align="left"><input id="htTotal0" nullmsg="请输入数量！" datatype="*" value="${poVal.htTotal}" errormsg="请输入数量" name="rkglMxList[${status.index}].htTotal" maxlength="100" type="text" value="0"
+                <td align="left"><input id="htTotal0" nullmsg="请输入数量！"value="${poVal.htTotal}" errormsg="输入数量内容不正确" datatype="n" name="rkglMxList[${status.index}].htTotal" maxlength="100" type="text" value="0"
                                         style="width: 95%;"></td>
-                <td align="left"><input nullmsg="请输入采购数量！" id="total0" errormsg="请输入采购数量" value="${poVal.total}" name="rkglMxList[${status.index}].total" maxlength="100" type="text" value=""
+                <td align="left"><input nullmsg="请输入采购数量！" id="total0" errormsg="输入采购数量内容不正确" value="${poVal.total}" datatype="n" name="rkglMxList[${status.index}].total" maxlength="100" type="text" value=""
                                         style="width: 95%;"></td>
-                <td align="left"><input nullmsg="请输入出库数量！" id="inTotal0" errormsg="请输入出库数量" value="${poVal.inTotal}" name="rkglMxList[${status.index}].inTotal" maxlength="100" type="text" value=""
+                <td align="left"><input nullmsg="请输入出库数量！" id="inTotal0" errormsg="输入出库数量内容不正确" value="${poVal.inTotal}" datatype="n" name="rkglMxList[${status.index}].inTotal" maxlength="100" type="text" value=""
                                         style="width: 95%;"></td>
-                <td align="left"><input nullmsg="请输入实际出库数量！" id="actualTotall0" errormsg="请输入实际出库数量" value="${poVal.actualTotal}" name="rkglMxList[${status.index}].actualTotal" maxlength="100" type="text" value=""
+                <td align="left"><input nullmsg="请输入实际出库数量！" id="actualTotall0" errormsg="输入出库数量内容不正确" value="${poVal.actualTotal}" datatype="n" name="rkglMxList[${status.index}].actualTotal" maxlength="100" type="text" value=""
                                     style="width: 95%;"></td>
 
             </tr>

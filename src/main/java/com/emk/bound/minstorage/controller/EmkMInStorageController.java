@@ -300,11 +300,17 @@ public class EmkMInStorageController extends BaseController {
 		String message = null;
 		AjaxJson j = new AjaxJson();
 		message = "入库申请表更新成功";
-		EmkMInStorageEntity t = emkMInStorageService.get(EmkMInStorageEntity.class, emkMInStorage.getId());
-		try {
-			Map<String, String> map = ParameterUtil.getParamMaps(request.getParameterMap());
+		Map<String, String> map = ParameterUtil.getParamMaps(request.getParameterMap());
 
+		EmkMInStorageEntity t = emkMInStorageService.get(EmkMInStorageEntity.class, map.get("emkMInStorageId"));
+		try {
+			if(!t.getState().equals("0")){
+				j.setMsg("入库单在处理中无法进行修改");
+				j.setSuccess(false);
+				return j;
+			}
 			emkMInStorage.setState("0");
+			emkMInStorage.setId(null);
 			emkMInStorage.setAppler(map.get("realName"));
 			emkMInStorage.setApplerId(map.get("userName"));
 			emkMInStorage.setRker(map.get("sender"));
@@ -319,7 +325,7 @@ public class EmkMInStorageController extends BaseController {
 				for (int i = 0; i < rows; i++) {
 					EmkMInStorageDetailEntity rkglMxEntity = new EmkMInStorageDetailEntity();
 					if (map.get("rkglMxList["+i+"].proName") != null && !map.get("rkglMxList["+i+"].proName").isEmpty()) {
-						rkglMxEntity.setInStorageId(emkMInStorage.getId());
+						rkglMxEntity.setInStorageId(t.getId());
 						rkglMxEntity.setProZnName((String)map.get("rkglMxList[" + i + "].proName"));
 						rkglMxEntity.setProNum((String)map.get("rkglMxList[" + i + "].proNum"));
 						rkglMxEntity.setBrand((String)map.get("rkglMxList[" + i + "].brand"));
@@ -628,6 +634,7 @@ public class EmkMInStorageController extends BaseController {
 									storageEntity.setTotal(inStorageDetailEntity.getActualTotal());
 									storageEntity.setUnit(inStorageDetailEntity.getUnit());
 									storageEntity.setBrand(inStorageDetailEntity.getBrand());
+									storageEntity.setProType(inStorageDetailEntity.getType());
 									systemService.save(storageEntity);
 									storageLogEntity.setPreTotal("0");
 									storageLogEntity.setNextTotal(inStorageDetailEntity.getActualTotal().toString());

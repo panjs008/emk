@@ -38,7 +38,6 @@ public class EmkPriceEntity
     private String proType;
     @Excel(name = "款式大类", width = 15)
     private String proTypeName;
-    @Excel(name = "图片", width = 15)
     private String customSampleUrl;
     @Excel(name = "图片", width = 15)
     private String customSample;
@@ -52,25 +51,21 @@ public class EmkPriceEntity
     private String isGetSample;
     @Excel(name = "是否有原样", width = 15)
     private String isHaveOld;
-    @Excel(name = "原样", width = 15)
     private String oldImageUrl;
     @Excel(name = "原样", width = 15)
     private String oldImage;
     @Excel(name = "是否有设计稿", width = 15)
     private String isHaveDgr;
-    @Excel(name = "设计稿", width = 15)
     private String dgrImageUrl;
     @Excel(name = "设计稿", width = 15)
     private String dgrImage;
     @Excel(name = "是否有尺寸表", width = 15)
     private String isHaveSize;
-    @Excel(name = "尺寸表", width = 15)
     private String sizeImageUrl;
     @Excel(name = "尺寸表", width = 15)
     private String sizeImage;
     @Excel(name = "业务跟单员", width = 15)
     private String tracer;
-    @Excel(name = "业务跟单员ID", width = 15)
     private String tracerName;
     @Excel(name = "布面克重", width = 15)
     private String weight;

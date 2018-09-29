@@ -5,82 +5,13 @@
 <head>
 	<title>原料采购合同表</title>
 	<t:base type="jquery,easyui,tools,DatePicker"></t:base>
-	<link type="text/css" rel="stylesheet" href="plug-in/select2/css/select2.min.css"/>
-	<script type="text/javascript" src="plug-in/select2/js/select2.js"></script>
-	<script type="text/javascript" src="plug-in/select2/js/pinyin.js"></script>
 	<script type="text/javascript">
 		//编写自定义JS代码
-
-		function resetTrNum(tableId) {
-			$tbody = $("#"+tableId+"");
-			$tbody.find('>tr').each(function(i){
-				$(':input, select', this).each(function(){
-					var $this = $(this), name = $this.attr('name'), val = $this.val();
-					if(name!=null){
-						if (name.indexOf("#index#") >= 0){
-							$this.attr("name",name.replace('#index#',i));
-						}else{
-							var s = name.indexOf("[");
-							var e = name.indexOf("]");
-							var new_name = name.substring(s+1,e);
-							$this.attr("name",name.replace(new_name,i));
-						}
-					}
-				});
-			});
-		}
 		$(document).ready(function(){
 			$("#detailId").load("emkMOutStorageController.do?emkMOutStorageDetailList&selectType=0&inStorageId=${emkMOutStoragePage.id }");
-			BindSelect("gysId","ymkCustomController.do?findSupplierList",1,"${emkMOutStoragePage.gysCode},${emkMOutStoragePage.gys}");
-
-			$("#gysId").change(function(){
-				var itemarr = $("#gysId").val().split(","); //字符分割
-				$("#gysCode").val(itemarr[0]);
-				$("#gys").val(itemarr[1]);
-			});
 		});
 
-		function changeType(){
-			if($("#type").val() == "0"){
-				<c:set var="selectType" value="0"  scope="session"></c:set>
-			}else if($("#type").val() == "1"){
-				<c:set var="selectType" value="1"  scope="session"></c:set>
-			}else {
-				<c:set var="selectType" value="2"  scope="session"></c:set>
 
-			}
-		}
-
-		function BindSelect(ctrlName, url,type,categoryId) {
-			var control = $('#' + ctrlName);
-			//设置Select2的处理
-			control.select2({
-				formatResult: formatState,
-				formatSelection: formatState,
-				escapeMarkup: function (m) {
-					return m;
-				}
-			});
-			//绑定Ajax的内容
-			$.getJSON(url, function (data) {
-				control.empty();//清空下拉框
-				control.append("<option value=''>请选择</option>");
-				$.each(data.obj, function (i, item) {
-					control.append("<option value='" + item.supplierCode + ","+item.supplier +"'>" + item.supplier + "</option>");
-				});
-				if(type ==1){
-					$("#"+ctrlName).select2('val',categoryId);
-				}
-			});
-		}
-
-		function formatState (state) {
-			if (!state.id) { return state.text; }
-			var $state = $(
-					'<span>' + state.text + '</span>'
-			);
-			return $state;
-		};
 
 
 	</script>
@@ -110,8 +41,7 @@
 			<td class="value" colspan="3">
 				<input id="realName" name="realName" value="${emkMOutStoragePage.appler }"  type="text" readonly style="width: 150px" class="inputxt" >
 				<input name="userName"   type="hidden" value="${emkMOutStoragePage.applerId }"   id="userName" type="text"  />
-				<t:choose  hiddenName="userName"  hiddenid="userName" url="userController.do?userSelect0" name="userList0" width="700px" height="500px"
-						   icon="icon-search" title="选择处理人" textname="realName" isclear="true" isInit="true"></t:choose>
+
 			</td>
 		</tr>
 		<tr>
@@ -138,8 +68,7 @@
 			<td class="value" colspan="3">
 				<input id="ller" name="ller" type="text" value="${emkMOutStoragePage.ller }"  readonly style="width: 150px" class="inputxt" >
 				<input name="llerId"   type="hidden" value="${emkMOutStoragePage.llerId }"  id="llerId" type="text"  />
-				<t:choose  hiddenName="senderUserNames"  hiddenid="userName" url="userController.do?userdept0" name="userList0" width="700px" height="500px"
-						   icon="icon-search" title="选择处理人" textname="sender,sendDeptName,sendDeptCode" isclear="true" isInit="true"></t:choose>
+
 			</td>
 		</tr>
 		<tr>
@@ -230,8 +159,6 @@
 			</td>
 			<td class="value"  colspan="3">
 				<input id="cusName" name="cusName" readonly type="text" value="${emkMOutStoragePage.cusName }" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<t:choose  hiddenName="cusNum"  hiddenid="cusNum" url="ymkCustomController.do?select" name="ymkCustomList" width="700px" height="500px"
-						   icon="icon-search" title="选择客户" textname="cusName,businesseDeptName,businesseDeptId,businesser,businesserName,tracer,tracerName,developer,developerName,bz" isclear="true" isInit="true"></t:choose>
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">客户名称</label>
 			</td>
@@ -255,11 +182,8 @@
 				</label>
 			</td>
 			<td class="value" >
-				<select class="form-control select2" id="gysId"  datatype="*"  >
-					<option value=''>请选择</option>
-				</select>
-				<input id="gysCode" name="gysCode" type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<input id="gys" name="gys" type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="gysCode" name="gysCode" value="${emkMOutStoragePage.gysCode }" type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="gys" name="gys" type="text"value="${emkMOutStoragePage.gys }" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">供应商</label>
 			</td>

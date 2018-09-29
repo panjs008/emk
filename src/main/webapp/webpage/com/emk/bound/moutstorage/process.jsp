@@ -24,7 +24,7 @@
 </div>--%>
 <div class="easyui-layout" fit="true" style="height: 100px">
     <div region="center" style="padding:0px;border:0px;">
-        <t:datagrid name="instorageList" checkbox="false" pagination="true" fitColumns="true" title="" actionUrl="flowController.do?hisProcessDatagrid&id=${param.id}" idField="id" fit="true" btnCls="bootstrap"  queryMode="group">
+        <t:datagrid name="instorageList" checkbox="false" pagination="true" fitColumns="true" title="" actionUrl="flowController.do?hisProcessDatagrid&sqlType=outStorage&id=${param.id}" idField="id" fit="true" btnCls="bootstrap"  queryMode="group">
             <t:dgCol title="流程节点"  field="NAME_"  queryMode="single"  width="120"></t:dgCol>
             <t:dgCol title="操作人"  field="workname"  queryMode="single"  width="120"></t:dgCol>
             <t:dgCol title="开始时间"  field="START_TIME_"  queryMode="single"  width="120"></t:dgCol>

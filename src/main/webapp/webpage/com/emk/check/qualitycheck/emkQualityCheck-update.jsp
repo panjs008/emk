@@ -128,8 +128,8 @@
 				</label>
 			</td>
 			<td class="value" >
-				<input id="businesser" name="businesser" readonly value="${emkQualityCheckPage.qualityCheckNum}"type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<input id="businesserName" name="businesserName"  type="hidden"  />
+				<input id="businesser" name="businesser" readonly value="${emkQualityCheckPage.businesser}" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="businesserName" name="businesserName" value="${emkQualityCheckPage.businesserName}"   type="hidden"  />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">业务员</label>
 			</td>
