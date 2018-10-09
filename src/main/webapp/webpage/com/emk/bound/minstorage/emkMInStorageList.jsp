@@ -28,7 +28,7 @@
 
        <t:dgToolBar title="录入" icon="fa fa-plus" url="emkMInStorageController.do?goAdd&winTitle=添加入库申请单" funname="add" height="600" width="1100"></t:dgToolBar>
        <t:dgToolBar title="编辑" icon="fa fa-edit" url="emkMInStorageController.do?goUpdate&winTitle=编辑入库申请单" funname="update" height="600" width="1100"></t:dgToolBar>
-       <t:dgToolBar title="提交" icon="fa fa-arrow-circle-right" funname="doSubmitV"></t:dgToolBar>
+       <t:dgToolBar title="提交" icon="fa fa-arrow-circle-up" funname="doSubmitV"></t:dgToolBar>
       <t:dgToolBar title="删除"  icon="fa fa-remove" url="emkMInStorageController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
       <t:dgToolBar title="导出" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
 

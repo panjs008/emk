@@ -123,7 +123,7 @@ public class EmkMaterialRequiredController extends BaseController {
         try {
             for (String id : ids.split(",")) {
                 EmkMaterialRequiredEntity emkMaterialRequired = (EmkMaterialRequiredEntity) this.systemService.getEntity(EmkMaterialRequiredEntity.class, id);
-
+                this.systemService.executeSql("delete from emk_sample_detail where SAMPLE_ID=?", id);
 
                 this.emkMaterialRequiredService.delete(emkMaterialRequired);
                 this.systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);

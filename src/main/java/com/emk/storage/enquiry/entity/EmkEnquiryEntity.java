@@ -13,8 +13,7 @@ import org.jeecgframework.poi.excel.annotation.Excel;
 
 @Entity
 @Table(name = "emk_enquiry", schema = "")
-public class EmkEnquiryEntity
-        implements Serializable {
+public class EmkEnquiryEntity implements Serializable {
     private String id;
     private String createName;
     private String createBy;
@@ -22,6 +21,10 @@ public class EmkEnquiryEntity
     private String sysOrgCode;
     @Excel(name = "意向订单号", width = 15)
     private String enquiryNo;
+    @Excel(name="是否先打样",width=15)
+    private String isPrint;
+    @Excel(name="询盘状态",width=15)
+    private String state;
     @Excel(name = "提交日期", width = 15)
     private String kdDate;
     @Excel(name = "业务员", width = 15)
@@ -139,6 +142,32 @@ public class EmkEnquiryEntity
 
     public void setEnquiryNo(String enquiryNo) {
         this.enquiryNo = enquiryNo;
+    }
+
+    @Column(name ="IS_PRINT",nullable=true,length=32)
+    public String getIsPrint(){
+        return this.isPrint;
+    }
+
+    @Column(name ="STATE",nullable=true,length=32)
+    public String getState(){
+        return this.state;
+    }
+
+    /**
+     *方法: 设置java.lang.String
+     *@param: java.lang.String  工单状态
+     */
+    public void setState(String state){
+        this.state = state;
+    }
+
+    /**
+     *方法: 设置java.lang.String
+     *@param: java.lang.String  是否先打样
+     */
+    public void setIsPrint(String isPrint){
+        this.isPrint = isPrint;
     }
 
     @Column(name = "KD_DATE", nullable = true, length = 32)

@@ -424,6 +424,14 @@ function createwindow(title, addurl,width,height) {
 		width =  window.top.document.body.offsetWidth;
 		height =window.top.document.body.offsetHeight-100;
 	}
+	if(addurl.indexOf('emkPriceController.do?goAdd')>=0 || addurl.indexOf('emkPriceController.do?goUpdate')>=0){
+		width =  window.top.document.body.offsetWidth;
+		height =window.top.document.body.offsetHeight-100;
+	}
+	if(addurl.indexOf('emkSampleRequiredController.do?goAdd')>=0 || addurl.indexOf('emkSampleRequiredController.do?goUpdate')>=0){
+		width =  window.top.document.body.offsetWidth;
+		height =window.top.document.body.offsetHeight-100;
+	}
     //--author：JueYue---------date：20140427---------for：弹出bug修改,设置了zindex()函数
 	if(typeof(windowapi) == 'undefined'){
 		$.dialog({

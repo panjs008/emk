@@ -105,20 +105,24 @@ public class FlowController {
         Map map = ParameterUtil.getParamMaps(request.getParameterMap());
         try{
             String sql = "",countsql = "";
-            sql = "SELECT t1.*,CASE\n" +
+            sql = "SELECT DATE_FORMAT(t1.START_TIME_,'%Y-%m-%d %H:%i:%s') startTime,DATE_FORMAT(t1.END_TIME_,'%Y-%m-%d %H:%i:%s') endTime,t1.*,CASE\n" +
                     " WHEN t1.TASK_DEF_KEY_='orderTask' THEN t2.create_name \n" +
                     " WHEN t1.TASK_DEF_KEY_='outstorageTask' THEN t2.create_name \n" +
                     " WHEN t1.TASK_DEF_KEY_='instorageTask' THEN t2.create_name \n" +
-                    " WHEN t1.TASK_DEF_KEY_='checkTask' THEN t2.leader \n" +
-                    " WHEN t1.TASK_DEF_KEY_='cwTask' THEN t2.financer \n" +
-                    " ELSE ''\n" +
-                    " END workname FROM act_hi_taskinst t1 \n";
+                    " WHEN t1.TASK_DEF_KEY_='checkTask' THEN t2.leader \n";
+            if(!map.get("sqlType").equals("bill")){
+                sql +=  " WHEN t1.TASK_DEF_KEY_='cwTask' THEN t2.financer ";
+            }
+            sql +=  " ELSE ''\n" ;
+            sql += " END workname FROM act_hi_taskinst t1 \n";
             if(map.get("sqlType").equals("outStorage")){
                 sql +=" LEFT JOIN emk_m_out_storage t2 ON t1.`ASSIGNEE_` = t2.`id` where ASSIGNEE_='"+map.get("id")+"' ";
             }else  if(map.get("sqlType").equals("inStorage")){
                 sql +=" LEFT JOIN emk_m_in_storage t2 ON t1.`ASSIGNEE_` = t2.`id` where ASSIGNEE_='"+map.get("id")+"' ";
             }else  if(map.get("sqlType").equals("order")){
                 sql +=" LEFT JOIN emk_material_contract t2 ON t1.`ASSIGNEE_` = t2.`id` where ASSIGNEE_='"+map.get("id")+"' ";
+            }else  if(map.get("sqlType").equals("bill")){
+                sql +=" LEFT JOIN emk_pro_order t2 ON t1.`ASSIGNEE_` = t2.`id` where ASSIGNEE_='"+map.get("id")+"' ";
             }
 
             countsql = " SELECT COUNT(1) FROM act_hi_taskinst t1 where ASSIGNEE_='"+map.get("id")+"' ";
@@ -146,12 +150,12 @@ public class FlowController {
         RepositoryService repositoryService = processEngine.getRepositoryService();
 
         //获取在classpath下的流程文件
-        InputStream in = this.getClass().getClassLoader().getResourceAsStream("outstorage.zip");
+        InputStream in = this.getClass().getClassLoader().getResourceAsStream("bill.zip");
         ZipInputStream zipInputStream = new ZipInputStream(in);
         //使用deploy方法发布流程
         repositoryService.createDeployment()
                 .addZipInputStream(zipInputStream)
-                .name("outstorage")
+                .name("bill")
                 .deploy();
       /*  Map<String, Object> variables = new HashMap<String,Object>();
         variables.put("inputUser", "panjs");//表示惟一用户

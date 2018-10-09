@@ -92,7 +92,7 @@
 				</label>
 			</td>
 			<td class="value" >
-				<input id="produceHtNum" name="produceHtNum"  type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="produceHtNum" name="produceHtNum"  type="text" validType="emk_contract,ht_num,id" style="width: 150px" class="inputxt"  />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">生产合同号</label>
 			</td>
@@ -102,7 +102,7 @@
 				</label>
 			</td>
 			<td class="value" >
-				<input id="orderNo" name="orderNo"  type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="orderNo" name="orderNo"  type="text" validType="emk_pro_order,order_no,id" style="width: 150px" class="inputxt"  />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">订单号</label>
 			</td>

@@ -397,7 +397,7 @@
 				&nbsp;&nbsp;<input name="isPrintSample" type="radio" datatype="*"  <c:if test="${emkSampleRequiredPage.isPrintSample eq '1'}">checked="true"</c:if> value="1">
 				否
 				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">是否同意</label>
+				<label class="Validform_label" style="display: none;">是否打过初样</label>
 			</td>
 			<td align="right">
 				<label class="Validform_label">
@@ -410,7 +410,7 @@
 				&nbsp;&nbsp;<input name="isGetSample" onclick="showPriceDiv(1)"  type="radio" datatype="*"  <c:if test="${emkSampleRequiredPage.isGetSample eq '1'}">checked="true"</c:if> value="1">
 				否
 				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">是否同意</label>
+				<label class="Validform_label" style="display: none;">是否收取打样费</label>
 			</td>
 		</tr>
 		<tr id="priceDiv" style="display: none;">
@@ -423,7 +423,7 @@
 							</label>
 						</td>
 						<td class="value">
-							<input id="money" name="money" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+							<input id="money" name="money" datatype="n" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
 							<span class="Validform_checktip"></span>
 							<label class="Validform_label" style="display: none;">金额</label>
 						</td>
@@ -433,7 +433,7 @@
 							</label>
 						</td>
 						<td class="value">
-							<t:dictSelect id="pbz" field="pbz" typeGroupCode="cointype" datatype="*" defaultVal="default" hasLabel="false" title="币种"></t:dictSelect>
+							<t:dictSelect id="pbz" field="pbz" typeGroupCode="cointype"  defaultVal="default" hasLabel="false" title="币种"></t:dictSelect>
 							<span class="Validform_checktip"></span>
 							<label class="Validform_label" style="display: none;">币种</label>
 						</td>
@@ -665,7 +665,7 @@
 				</label>
 			</td>
 			<td class="value">
-				<input id="jtrcl" name="jtrcl"  type="text" style="width: 150px"  ignore="ignore" />
+				<input id="jtrcl" name="jtrcl" datatype="n"  type="text" style="width: 150px"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">机台日产量</label>
 			</td>

@@ -27,7 +27,7 @@
       <t:dgFunOpt funname="goToProcess(id)" title="流程进度" urlclass="ace_button"  urlStyle="background-color:#ec4758;" urlfont="fa-tasks"></t:dgFunOpt>
       <t:dgToolBar title="录入" icon="fa fa-plus" url="emkMOutStorageController.do?goAdd&winTitle=添加出库申请单" funname="add" height="600" width="1100"></t:dgToolBar>
       <t:dgToolBar title="编辑" icon="fa fa-edit" url="emkMOutStorageController.do?goUpdate&winTitle=编辑出库申请单" funname="update" height="600" width="1100"></t:dgToolBar>
-      <t:dgToolBar title="提交" icon="fa fa-arrow-circle-right" funname="doSubmitV"></t:dgToolBar>
+      <t:dgToolBar title="提交" icon="fa fa-arrow-circle-up" funname="doSubmitV"></t:dgToolBar>
       <t:dgToolBar title="删除"  icon="fa fa-remove" url="emkMOutStorageController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
       <t:dgToolBar title="导出" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
 

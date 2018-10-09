@@ -13,8 +13,7 @@ import org.jeecgframework.poi.excel.annotation.Excel;
 
 @Entity
 @Table(name = "emk_sample_detail", schema = "")
-public class EmkSampleDetailEntity
-        implements Serializable {
+public class EmkSampleDetailEntity implements Serializable {
     private String id;
     private String createName;
     private String createBy;

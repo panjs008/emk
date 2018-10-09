@@ -25,12 +25,10 @@ public class EmkSampleColorEntity
     private String sysOrgCode;
     private String sysCompanyCode;
     private String bpmStatus;
-    @Excel(name = "色样单号", width = 15)
+    @Excel(name = "色样通知单号", width = 15)
     private String sytzdbh;
     @Excel(name = "日期", width = 15)
     private String sytzdrq;
-    @Excel(name = "需求单号", width = 15)
-    private String syxqdbh;
     @Excel(name = "工厂", width = 15)
     private String gc;
     @Excel(name = "业务员", width = 15)
@@ -92,7 +90,6 @@ public class EmkSampleColorEntity
     private String tracerName;
     @Excel(name = "业务部门", width = 15)
     private String businesseDeptName;
-    @Excel(name = "业务部门ID", width = 15)
     private String businesseDeptId;
     @Excel(name = "客户代码", width = 15)
     private String cusNum;
@@ -102,7 +99,7 @@ public class EmkSampleColorEntity
     private String proType;
     @Excel(name = "款式大类", width = 15)
     private String proTypeName;
-    @Excel(name = "需求单号", width = 15)
+    @Excel(name = "打样需求单号", width = 15)
     private String xqdh;
     @Excel(name = "生产跟单员", width = 15)
     private String developer;
@@ -219,15 +216,6 @@ public class EmkSampleColorEntity
 
     public void setSytzdrq(String sytzdrq) {
         this.sytzdrq = sytzdrq;
-    }
-
-    @Column(name = "SYXQDBH", nullable = true, length = 32)
-    public String getSyxqdbh() {
-        return this.syxqdbh;
-    }
-
-    public void setSyxqdbh(String syxqdbh) {
-        this.syxqdbh = syxqdbh;
     }
 
     @Column(name = "GC", nullable = true, length = 32)

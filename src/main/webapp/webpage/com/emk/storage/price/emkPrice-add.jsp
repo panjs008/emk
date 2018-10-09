@@ -61,6 +61,28 @@
 	<input id="id" name="id" type="hidden" value="${emkPricePage.id }"/>
 	<table style="width: 100%;" cellpadding="0" cellspacing="1" class="formtable">
 		<tr>
+			<td align="right" >
+				<label class="Validform_label">
+					询盘单号:
+				</label>
+			</td>
+			<td class="value" >
+				<input id="xpNo" name="xpNo" datatype="*"  type="text" style="width: 140px" class="inputxt"  />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">询盘单号</label>
+			</td>
+			<td align="right" >
+				<label class="Validform_label">
+					打样通知单号:
+				</label>
+			</td>
+			<td class="value" colspan="5">
+				<input id="dyNo" name="dyNo"  type="text" style="width: 140px" class="inputxt"  ignore="ignore" />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">打样通知单号</label>
+			</td>
+		</tr>
+		<tr>
 
 			<td align="right" >
 				<label class="Validform_label">
@@ -438,7 +460,7 @@
 				</label>
 			</td>
 			<td class="value">
-				<input id="unit" name="unit"  type="text" style="width: 140px"  ignore="ignore" />
+				<input id="unit" name="unit" datatype="d" type="text" style="width: 140px"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">单位</label>
 			</td>
@@ -448,7 +470,7 @@
 				</label>
 			</td>
 			<td class="value">
-				<input id="jtrcl" name="jtrcl"  type="text" style="width: 140px"  ignore="ignore" />
+				<input id="jtrcl" name="jtrcl" datatype="d" type="text" style="width: 140px"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">机台日产量</label>
 			</td>
@@ -496,7 +518,7 @@
 				</label>
 			</td>
 			<td class="value">
-				<input id="sumFeng" name="sumFeng"  type="text" style="width: 140px"  ignore="ignore" />
+				<input id="sumFeng" name="sumFeng" datatype="d" type="text" style="width: 140px"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">缝制材料成本小计</label>
 			</td>
@@ -506,7 +528,7 @@
 				</label>
 			</td>
 			<td class="value">
-				<input id="sumBao" name="sumBao"  type="text" style="width: 140px"  ignore="ignore" />
+				<input id="sumBao" name="sumBao" datatype="d" type="text" style="width: 140px"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">包装材料成本小计</label>
 			</td>
@@ -516,7 +538,7 @@
 				</label>
 			</td>
 			<td class="value">
-				<input id="sumRg" name="sumRg"  type="text" style="width: 140px"  ignore="ignore" />
+				<input id="sumRg" name="sumRg" datatype="d" type="text" style="width: 140px"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">人工成本小计</label>
 			</td>
@@ -538,7 +560,7 @@
 				</label>
 			</td>
 			<td class="value">
-				<input id="sumYin" name="sumYin"  type="text" style="width: 140px"  ignore="ignore" />
+				<input id="sumYin" name="sumYin" datatype="d" type="text" style="width: 140px"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">印花成本小计</label>
 			</td>
@@ -548,7 +570,7 @@
 				</label>
 			</td>
 			<td class="value">
-				<input id="glMoney" name="glMoney"  type="text" style="width: 140px"  ignore="ignore" />
+				<input id="glMoney" name="glMoney" datatype="d" type="text" style="width: 140px"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">管理成本</label>
 			</td>
@@ -558,7 +580,7 @@
 				</label>
 			</td>
 			<td class="value">
-				<input id="testMoney" name="testMoney"  type="text" style="width: 140px"  ignore="ignore" />
+				<input id="testMoney" datatype="d" name="testMoney"  type="text" style="width: 140px"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">测试成本小计</label>
 			</td>
@@ -580,7 +602,7 @@
 				</label>
 			</td>
 			<td class="value">
-				<input id="tax" name="tax"  type="text" style="width: 140px"  ignore="ignore" />
+				<input id="tax" name="tax" datatype="d" type="text" style="width: 140px"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">税收</label>
 			</td>
@@ -590,7 +612,7 @@
 				</label>
 			</td>
 			<td class="value">
-				<input id="profit" name="profit"  type="text" style="width: 140px"  ignore="ignore" />
+				<input id="profit" name="profit"  datatype="d" type="text" style="width: 140px"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">利润</label>
 			</td>
@@ -600,7 +622,7 @@
 				</label>
 			</td>
 			<td class="value">
-				<input id="sumMoney" name="sumMoney"  type="text" style="width: 140px"  ignore="ignore" />
+				<input id="sumMoney" name="sumMoney" datatype="d" type="text" style="width: 140px"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">总计</label>
 			</td>
@@ -629,6 +651,29 @@
 			</td>
 			<td align="right">
 				<label class="Validform_label">
+					币种:
+				</label>
+			</td>
+			<td class="value">
+				<input id="bizhong" name="bizhong" type="text" style="width: 140px" value="${emkPricePage.bizhong }" ignore="ignore" />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">币种</label>
+			</td>
+			<td align="right">
+				<label class="Validform_label">
+					外币价:
+				</label>
+			</td>
+			<td class="value">
+				<input id="sumWb" name="sumWb" type="text" style="width: 140px" readonly value="${emkPricePage.sumWb }" ignore="ignore" />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">外币价</label>
+			</td>
+
+		</tr>
+		<tr>
+			<td align="right">
+				<label class="Validform_label">
 					实际最终同意价:
 				</label>
 			</td>
@@ -647,9 +692,6 @@
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">实际毛利润率</label>
 			</td>
-
-		</tr>
-		<tr>
 			<td align="right">
 				<label class="Validform_label">
 					供应商同意价:
@@ -666,7 +708,7 @@
 					客户同意价:
 				</label>
 			</td>
-			<td class="value" colspan="5">
+			<td class="value" colspan="3">
 				<input id="cusArgeePrice" name="cusArgeePrice" datatype="d" type="text" style="width: 140px"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">客户同意价</label>

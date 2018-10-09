@@ -4,29 +4,29 @@ import com.alibaba.fastjson.JSONArray;
 import com.emk.storage.enquiry.entity.EmkEnquiryEntity;
 import com.emk.storage.enquiry.service.EmkEnquiryServiceI;
 import com.emk.storage.sampleprice.entity.EmkSamplePriceEntity;
+import com.emk.util.DateUtil;
 import com.emk.util.ParameterUtil;
+import com.emk.workorder.workorder.entity.EmkWorkOrderEntity;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
+import org.activiti.engine.*;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.apache.tools.ant.util.DateUtils;
+import org.jeecgframework.core.util.DateUtils;
 import org.jeecgframework.core.beanvalidator.BeanValidators;
 import org.jeecgframework.core.common.controller.BaseController;
 import org.jeecgframework.core.common.exception.BusinessException;
@@ -73,6 +73,12 @@ public class EmkEnquiryController extends BaseController {
     private SystemService systemService;
     @Autowired
     private Validator validator;
+
+    @Autowired
+    ProcessEngine processEngine;
+    @Autowired
+    TaskService taskService;
+
 
     @RequestMapping(params = {"list"})
     public ModelAndView list(HttpServletRequest request) {
@@ -145,10 +151,11 @@ public class EmkEnquiryController extends BaseController {
         AjaxJson j = new AjaxJson();
         message = "询盘单添加成功";
         try {
+            emkEnquiry.setState("0");
             TSUser user = (TSUser) request.getSession().getAttribute("LOCAL_CLINET_USER");
             Map map = ParameterUtil.getParamMaps(request.getParameterMap());
             Map orderNum = this.systemService.findOneForJdbc("select count(0)+1 orderNum from emk_enquiry where sys_org_code=?", new Object[]{user.getCurrentDepart().getOrgCode()});
-            emkEnquiry.setEnquiryNo("YXDD" + emkEnquiry.getCusNum() + DateUtils.format(new Date(), "yyMMdd") + String.format("%03d", new Object[]{Integer.valueOf(Integer.parseInt(orderNum.get("orderNum").toString()))}));
+            emkEnquiry.setEnquiryNo("YXDD" + emkEnquiry.getCusNum() + DateUtil.format(new Date(), "yyMMdd") + String.format("%03d", new Object[]{Integer.valueOf(Integer.parseInt(orderNum.get("orderNum").toString()))}));
             this.emkEnquiryService.save(emkEnquiry);
 
             EmkSamplePriceEntity samplePriceEntity = new EmkSamplePriceEntity();
@@ -176,8 +183,16 @@ public class EmkEnquiryController extends BaseController {
         message = "询盘单更新成功";
         EmkEnquiryEntity t = (EmkEnquiryEntity) this.emkEnquiryService.get(EmkEnquiryEntity.class, emkEnquiry.getId());
         try {
+            if(!t.getState().equals("0")){
+                j.setMsg("询盘单已提交，不能进行编辑");
+                j.setSuccess(false);
+                return j;
+            }
             Map map = ParameterUtil.getParamMaps(request.getParameterMap());
-
+            emkEnquiry.setState("0");
+            TSUser user = (TSUser) request.getSession().getAttribute("LOCAL_CLINET_USER");
+            Map orderNum = this.systemService.findOneForJdbc("select count(0)+1 orderNum from emk_enquiry where sys_org_code=?", new Object[]{user.getCurrentDepart().getOrgCode()});
+            emkEnquiry.setEnquiryNo("YXDD" + emkEnquiry.getCusNum() + DateUtil.format(new Date(), "yyMMdd") + String.format("%03d", new Object[]{Integer.valueOf(Integer.parseInt(orderNum.get("orderNum").toString()))}));
             MyBeanUtils.copyBeanNotNull2Bean(emkEnquiry, t);
             this.emkEnquiryService.saveOrUpdate(t);
 
@@ -200,7 +215,7 @@ public class EmkEnquiryController extends BaseController {
 
     @RequestMapping(params = {"goAdd"})
     public ModelAndView goAdd(EmkEnquiryEntity emkEnquiry, HttpServletRequest req) {
-        req.setAttribute("kdDate", DateUtils.format(new Date(), "yyyy-MM-dd"));
+        req.setAttribute("kdDate", DateUtil.format(new Date(), "yyyy-MM-dd"));
         if (StringUtil.isNotEmpty(emkEnquiry.getId())) {
             emkEnquiry = (EmkEnquiryEntity) this.emkEnquiryService.getEntity(EmkEnquiryEntity.class, emkEnquiry.getId());
             req.setAttribute("emkEnquiryPage", emkEnquiry);
@@ -214,6 +229,14 @@ public class EmkEnquiryController extends BaseController {
             emkEnquiry = (EmkEnquiryEntity) this.emkEnquiryService.getEntity(EmkEnquiryEntity.class, emkEnquiry.getId());
             req.setAttribute("emkEnquiryPage", emkEnquiry);
 
+            Calendar cal1 = Calendar.getInstance();
+            cal1.setTime(DateUtils.str2Date(emkEnquiry.getYsDate(),DateUtils.date_sdf));
+            Calendar cal2 = Calendar.getInstance();
+            int day = DateUtils.dateDiff('d',cal1,cal2);
+            if(day<0){
+                day = 0;
+            }
+            req.setAttribute("levelDays",day);
             EmkSamplePriceEntity samplePriceEntity = (EmkSamplePriceEntity) this.systemService.findUniqueByProperty(EmkSamplePriceEntity.class, "enquiryId", emkEnquiry.getId());
             req.setAttribute("samplePriceEntity", samplePriceEntity);
         }
@@ -317,5 +340,65 @@ public class EmkEnquiryController extends BaseController {
             return Result.error("询盘单删除失败");
         }
         return Result.success();
+    }
+
+    @RequestMapping(params="doSubmit")
+    @ResponseBody
+    public AjaxJson doSubmit(EmkEnquiryEntity emkEnquiryEntity, HttpServletRequest request) {
+        String message = null;
+        AjaxJson j = new AjaxJson();
+        message = "询盘单提交成功";
+        try {
+            int flag = 0;
+            TSUser user = (TSUser)request.getSession().getAttribute("LOCAL_CLINET_USER");
+            Map map = ParameterUtil.getParamMaps(request.getParameterMap());
+            if ((emkEnquiryEntity.getId() == null) || (emkEnquiryEntity.getId().isEmpty())) {
+                for (String id : map.get("ids").toString().split(",")) {
+                    EmkEnquiryEntity enquiryEntity = systemService.getEntity(EmkEnquiryEntity.class, id);
+                    if (!enquiryEntity.getState().equals("0")) {
+                        message = "存在已提交的询盘单，请重新选择在提交！";
+                        j.setSuccess(false);
+                        flag = 1;
+                        break;
+                    }
+                }
+            }else{
+                map.put("ids", emkEnquiryEntity.getId());
+            }
+            Map<String, Object> variables = new HashMap();
+            if (flag == 0) {
+                for (String id : map.get("ids").toString().split(",")) {
+                    EmkEnquiryEntity t = emkEnquiryService.get(EmkEnquiryEntity.class, id);
+                    t.setState("1");
+
+
+                    EmkWorkOrderEntity emkWorkOrderEntity = new EmkWorkOrderEntity();
+                    emkWorkOrderEntity.setIsPrint(t.getIsPrint());
+                    emkWorkOrderEntity.setAskNo(t.getEnquiryNo());
+                    emkWorkOrderEntity.setState("1");
+                    emkWorkOrderEntity.setCreateName(t.getCreateName());
+                    emkWorkOrderEntity.setKdDate(t.getKdDate());
+                    Map orderNum = this.systemService.findOneForJdbc("select count(0)+1 orderNum from emk_work_order where sys_org_code=?",user.getCurrentDepart().getOrgCode());
+                    emkWorkOrderEntity.setWorkNo("GD" + DateUtil.format(new Date(), "yyMMdd") + String.format("%03d", Integer.parseInt(orderNum.get("orderNum").toString())));
+                    systemService.save(emkWorkOrderEntity);
+                    variables.put("isPrint", emkWorkOrderEntity.getIsPrint());
+                    variables.put("inputUser", emkWorkOrderEntity.getId());
+                    List<Task> task = taskService.createTaskQuery().taskAssignee(emkWorkOrderEntity.getId()).list();
+                    if (task.size()== 0 || task == null) {
+                        ProcessInstance pi = processEngine.getRuntimeService().startProcessInstanceByKey("emk", "emkWorkOrderPage", variables);
+                        task = taskService.createTaskQuery().taskAssignee(emkWorkOrderEntity.getId()).list();
+                    }
+                    systemService.saveOrUpdate(t);
+                }
+            }
+            systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            message = "询盘单提交失败";
+            throw new BusinessException(e.getMessage());
+        }
+        j.setMsg(message);
+        return j;
     }
 }

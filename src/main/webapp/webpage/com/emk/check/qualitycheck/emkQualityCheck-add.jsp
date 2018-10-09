@@ -169,10 +169,23 @@
 						检查日期:
 					</label>
 				</td>
-				<td class="value" colspan="5">
+				<td class="value" >
 					<input id="checkDate" name="checkDate" readonly value="${emkCheckPage.checkDate }" onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})"  type="text" style="width: 150px" class="Wdate"  ignore="ignore" />
 					<span class="Validform_checktip"></span>
 					<label class="Validform_label" style="display: none;">检查日期</label>
+				</td>
+				<td align="right">
+					<label class="Validform_label">
+						查验结果:
+					</label>
+				</td>
+				<td class="value" colspan="3">
+					<input name="cyjg" type="radio" datatype="*"  <c:if test="${emkQualityCheckPage.cyjg eq '0'}">checked="true"</c:if> value="0">
+					通过
+					<input name="cyjg" type="radio" datatype="*"  <c:if test="${emkQualityCheckPage.cyjg eq '1'}">checked="true"</c:if> value="1">
+					不通过
+					<span class="Validform_checktip"></span>
+					<label class="Validform_label" style="display: none;">查验结果</label>
 				</td>
 			</tr>
 			<tr>
@@ -192,7 +205,7 @@
 					</label>
 				</td>
 				<td class="value">
-					<input id="orderNo" name="orderNo" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+					<input id="orderNo" name="orderNo" type="text" validType="emk_quality_check,order_no,id" style="width: 150px" class="inputxt"  ignore="ignore" />
 					<span class="Validform_checktip"></span>
 					<label class="Validform_label" style="display: none;">订单号</label>
 				</td>
@@ -821,21 +834,12 @@
 							包装资料不一:
 						</label>
 					</td>
-					<td class="value">
+					<td class="value" colspan="3">
 						<input id="bzzlby" name="bzzlby" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
 						<span class="Validform_checktip"></span>
 						<label class="Validform_label" style="display: none;">包装资料不一</label>
 					</td>
-					<td align="right">
-						<label class="Validform_label">
-							查验结果:
-						</label>
-					</td>
-					<td class="value">
-						<input id="cyjg" name="cyjg" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
-						<span class="Validform_checktip"></span>
-						<label class="Validform_label" style="display: none;">查验结果</label>
-					</td>
+
 					</tr>
 
 				

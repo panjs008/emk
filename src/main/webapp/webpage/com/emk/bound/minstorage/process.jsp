@@ -27,8 +27,8 @@
         <t:datagrid name="instorageList" checkbox="false" pagination="true" fitColumns="true" title="" actionUrl="flowController.do?hisProcessDatagrid&sqlType=inStorage&id=${param.id}" idField="id" fit="true" btnCls="bootstrap"  queryMode="group">
             <t:dgCol title="流程节点"  field="NAME_"  queryMode="single"  width="120"></t:dgCol>
             <t:dgCol title="操作人"  field="workname"  queryMode="single"  width="120"></t:dgCol>
-            <t:dgCol title="开始时间"  field="START_TIME_"  queryMode="single"  width="120"></t:dgCol>
-            <t:dgCol title="结束时间"  field="END_TIME_"  queryMode="single"  width="120"></t:dgCol>
+            <t:dgCol title="开始时间"  field="START_TIME_"  queryMode="startTime"  width="120"></t:dgCol>
+            <t:dgCol title="结束时间"  field="END_TIME_"  queryMode="endTime"  width="120"></t:dgCol>
             <t:dgCol title="流程状态"  field="DELETE_REASON_" replace="完成_completed"  queryMode="single"  width="120"></t:dgCol>
 
         </t:datagrid>

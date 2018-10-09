@@ -86,7 +86,7 @@
 				</label>
 			</td>
 			<td class="value" style="width: 32%">
-				<input id="enquiryNo" name="enquiryNo" value="${emkEnquiryPage.enquiryNo }" readonly type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="enquiryNo" name="enquiryNo" value="${emkEnquiryPage.enquiryNo }" datatype="n" readonly type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">意向订单号</label>
 			</td>
@@ -217,9 +217,24 @@
 				</label>
 			</td>
 			<td class="value">
-				<input id="levelDays" name="levelDays" type="text" datatype="n" value="${emkEnquiryPage.levelDays }" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="levelDays" name="levelDays" type="text" readonly datatype="n" value="${levelDays}" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">距交期剩余天数</label>
+			</td>
+		</tr>
+		<tr>
+			<td align="right">
+				<label class="Validform_label">
+					是否先打样:
+				</label>
+			</td>
+			<td class="value" colspan="3">
+				<input name="isPrint" type="radio"  datatype="*" <c:if test="${emkEnquiryPage.isPrint eq '0'}">checked="true"</c:if> value="0">
+				否
+				&nbsp;&nbsp;<input name="isPrint"  type="radio" datatype="*"  <c:if test="${emkEnquiryPage.isPrint eq '1'}">checked="true"</c:if> value="1">
+				是
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">是否先打样</label>
 			</td>
 		</tr>
 		<tr>

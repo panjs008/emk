@@ -11,13 +11,8 @@ import io.swagger.annotations.ApiParam;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -178,7 +173,9 @@ public class EmkSampleRequiredController
 
             this.systemService.executeSql("delete from emk_sample_price where ENQUIRY_ID=?", new Object[]{emkSampleRequired.getId()});
             EmkSamplePriceEntity samplePriceEntity = new EmkSamplePriceEntity();
-            samplePriceEntity.setMoney(Double.valueOf(Double.parseDouble(map.get("money").toString())));
+            if(map.get("money") != null && !map.get("money").equals("")){
+                samplePriceEntity.setMoney(Double.valueOf(Double.parseDouble(map.get("money").toString())));
+            }
             samplePriceEntity.setBz(map.get("pbz").toString());
             samplePriceEntity.setEnquiryId(emkSampleRequired.getId());
             samplePriceEntity.setState(map.get("pstate").toString());
@@ -208,7 +205,11 @@ public class EmkSampleRequiredController
         if (StringUtil.isNotEmpty(emkSampleRequired.getId())) {
             emkSampleRequired = (EmkSampleRequiredEntity) this.emkSampleRequiredService.getEntity(EmkSampleRequiredEntity.class, emkSampleRequired.getId());
             req.setAttribute("emkSampleRequiredPage", emkSampleRequired);
-
+            Calendar cal1 = Calendar.getInstance();
+            cal1.setTime(org.jeecgframework.core.util.DateUtils.str2Date(emkSampleRequired.getYsDate(), org.jeecgframework.core.util.DateUtils.date_sdf));
+            Calendar cal2 = Calendar.getInstance();
+            int day = org.jeecgframework.core.util.DateUtils.dateDiff('d',cal1,cal2);
+            req.setAttribute("levelDays",day);
             EmkSamplePriceEntity samplePriceEntity = (EmkSamplePriceEntity) this.systemService.findUniqueByProperty(EmkSamplePriceEntity.class, "enquiryId", emkSampleRequired.getId());
             req.setAttribute("samplePriceEntity", samplePriceEntity);
         }

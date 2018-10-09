@@ -82,6 +82,28 @@
 		<tr>
 			<td align="right" >
 				<label class="Validform_label">
+					询盘单号:
+				</label>
+			</td>
+			<td class="value" >
+				<input id="xpNo" name="xpNo" datatype="*" value="${emkPricePage.xpNo }"  type="text" style="width: 140px" class="inputxt"  />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">询盘单号</label>
+			</td>
+			<td align="right" >
+				<label class="Validform_label">
+					打样通知单号:
+				</label>
+			</td>
+			<td class="value" colspan="5">
+				<input id="dyNo" name="dyNo"  value="${emkPricePage.dyNo }" type="text" style="width: 140px" class="inputxt"  ignore="ignore" />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">打样通知单号</label>
+			</td>
+		</tr>
+		<tr>
+			<td align="right" >
+				<label class="Validform_label">
 					报价单号:
 				</label>
 			</td>
@@ -476,7 +498,7 @@
 				</label>
 			</td>
 			<td class="value">
-				<input id="jtrcl" name="jtrcl"  type="text" style="width: 140px" value="${emkPricePage.jtrcl }" ignore="ignore" />
+				<input id="jtrcl" name="jtrcl" datatype="n" type="text" style="width: 140px" value="${emkPricePage.jtrcl }" ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">机台日产量</label>
 			</td>
@@ -514,7 +536,7 @@
 				</label>
 			</td>
 			<td class="value">
-				<input id="sumYl" name="sumYl" datatype="d" type="text" style="width: 140px" value="${emkPricePage.sumYl }" ignore="ignore" />
+				<input id="sumYl" name="sumYl" datatype="d" readonly type="text" style="width: 140px" value="${emkPricePage.sumYl }" ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">原料面料成本小计</label>
 			</td>
@@ -524,7 +546,7 @@
 				</label>
 			</td>
 			<td class="value">
-				<input id="sumFeng" name="sumFeng"  type="text" style="width: 140px" value="${emkPricePage.sumFeng }" ignore="ignore" />
+				<input id="sumFeng" name="sumFeng" datatype="d" readonly type="text" style="width: 140px" value="${emkPricePage.sumFeng }" ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">缝制材料成本小计</label>
 			</td>
@@ -534,7 +556,7 @@
 				</label>
 			</td>
 			<td class="value">
-				<input id="sumBao" name="sumBao"  type="text" style="width: 140px" value="${emkPricePage.sumBao }" ignore="ignore" />
+				<input id="sumBao" name="sumBao" datatype="d" readonly type="text" style="width: 140px" value="${emkPricePage.sumBao }" ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">包装材料成本小计</label>
 			</td>
@@ -544,7 +566,7 @@
 				</label>
 			</td>
 			<td class="value">
-				<input id="sumRg" name="sumRg"  type="text" style="width: 140px" value="${emkPricePage.sumRg }" ignore="ignore" />
+				<input id="sumRg" name="sumRg" datatype="d" readonly type="text" style="width: 140px" value="${emkPricePage.sumRg }" ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">人工成本小计</label>
 			</td>
@@ -556,7 +578,7 @@
 				</label>
 			</td>
 			<td class="value">
-				<input id="sumRan" name="sumRan" datatype="d" type="text" style="width: 140px" value="${emkPricePage.sumRan }" ignore="ignore" />
+				<input id="sumRan" name="sumRan" datatype="d" readonly type="text" style="width: 140px" value="${emkPricePage.sumRan }" ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">染色成本小计</label>
 			</td>
@@ -566,7 +588,7 @@
 				</label>
 			</td>
 			<td class="value">
-				<input id="sumYin" name="sumYin"  type="text" value="${emkPricePage.sumYin }" style="width: 140px"  ignore="ignore" />
+				<input id="sumYin" name="sumYin" datatype="d"  readonly type="text" value="${emkPricePage.sumYin }" style="width: 140px"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">印花成本小计</label>
 			</td>
@@ -576,7 +598,7 @@
 				</label>
 			</td>
 			<td class="value">
-				<input id="glMoney" name="glMoney"  type="text" value="${emkPricePage.glMoney }" style="width: 140px"  ignore="ignore" />
+				<input id="glMoney" name="glMoney" datatype="d" type="text" value="${emkPricePage.glMoney }" style="width: 140px"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">管理成本</label>
 			</td>
@@ -586,7 +608,7 @@
 				</label>
 			</td>
 			<td class="value">
-				<input id="testMoney" name="testMoney"  type="text" value="${emkPricePage.testMoney }" style="width: 140px"  ignore="ignore" />
+				<input id="testMoney" name="testMoney" datatype="d" type="text" value="${emkPricePage.testMoney }" style="width: 140px"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">测试成本小计</label>
 			</td>
@@ -608,7 +630,7 @@
 				</label>
 			</td>
 			<td class="value">
-				<input id="tax" name="tax"  type="text" style="width: 140px" value="${emkPricePage.tax }" ignore="ignore" />
+				<input id="tax" name="tax"  type="text" datatype="d" readonly style="width: 140px" value="${emkPricePage.tax }" ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">税收</label>
 			</td>
@@ -618,7 +640,7 @@
 				</label>
 			</td>
 			<td class="value">
-				<input id="profit" name="profit"  type="text" style="width: 140px" value="${emkPricePage.profit }" ignore="ignore" />
+				<input id="profit" name="profit" datatype="d" type="text" style="width: 140px" value="${emkPricePage.profit }" ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">利润</label>
 			</td>
@@ -628,7 +650,7 @@
 				</label>
 			</td>
 			<td class="value">
-				<input id="sumMoney" name="sumMoney"  type="text" style="width: 140px" value="${emkPricePage.sumMoney }"  ignore="ignore" />
+				<input id="sumMoney" name="sumMoney" datatype="d" readonly  type="text" style="width: 140px" value="${emkPricePage.sumMoney }"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">总计</label>
 			</td>
@@ -657,6 +679,30 @@
 			</td>
 			<td align="right">
 				<label class="Validform_label">
+					币种:
+				</label>
+			</td>
+			<td class="value">
+				<input id="bizhong" name="bizhong" type="text" style="width: 140px" value="${emkPricePage.bizhong }" ignore="ignore" />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">币种</label>
+			</td>
+			<td align="right">
+				<label class="Validform_label">
+					外币价:
+				</label>
+			</td>
+			<td class="value">
+				<input id="sumWb" name="sumWb" type="text" style="width: 140px" readonly value="${emkPricePage.sumWb }" ignore="ignore" />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">外币价</label>
+			</td>
+
+		</tr>
+		<tr>
+
+			<td align="right">
+				<label class="Validform_label">
 					实际最终同意价:
 				</label>
 			</td>
@@ -675,9 +721,6 @@
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">实际毛利润率</label>
 			</td>
-
-		</tr>
-		<tr>
 			<td align="right">
 				<label class="Validform_label">
 					供应商同意价:
@@ -694,7 +737,7 @@
 					客户同意价:
 				</label>
 			</td>
-			<td class="value" colspan="5">
+			<td class="value" colspan="3">
 				<input id="cusArgeePrice" name="cusArgeePrice" datatype="d" value="${emkPricePage.cusArgeePrice }" type="text" style="width: 140px"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">客户同意价</label>

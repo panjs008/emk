@@ -1,4 +1,5 @@
 package com.emk.check.qualitycheck.controller;
+import com.emk.bill.proorder.entity.EmkProOrderEntity;
 import com.emk.check.qualitycheck.entity.EmkQualityCheckEntity;
 import com.emk.check.qualitycheck.service.EmkQualityCheckServiceI;
 
@@ -9,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.emk.storage.enquirydetail.entity.EmkEnquiryDetailEntity;
 import com.emk.util.ParameterUtil;
+import com.emk.workorder.workorder.entity.EmkWorkOrderEntity;
 import org.apache.log4j.Logger;
 import org.apache.tools.ant.util.DateUtils;
 import org.jeecgframework.web.system.pojo.base.TSUser;
@@ -227,6 +229,14 @@ public class EmkQualityCheckController extends BaseController {
 					}
 				}
 			}
+			if(emkQualityCheck.getCyjg().equals("0")){
+				EmkProOrderEntity proOrderEntity = systemService.findUniqueByProperty(EmkProOrderEntity.class,"orderNo",emkQualityCheck.getOrderNo());
+				EmkWorkOrderEntity workOrderEntity = systemService.findUniqueByProperty(EmkWorkOrderEntity.class,"workNo",proOrderEntity.getWorkNo());
+				workOrderEntity.setSampleCheckNo(emkQualityCheck.getQualityCheckNum());
+				systemService.saveOrUpdate(workOrderEntity);
+			}
+
+
 			systemService.addLog(message, Globals.Log_Type_INSERT, Globals.Log_Leavel_INFO);
 		}catch(Exception e){
 			e.printStackTrace();
@@ -252,6 +262,12 @@ public class EmkQualityCheckController extends BaseController {
 		EmkQualityCheckEntity t = emkQualityCheckService.get(EmkQualityCheckEntity.class, emkQualityCheck.getId());
 		try {
 			MyBeanUtils.copyBeanNotNull2Bean(emkQualityCheck, t);
+			if(emkQualityCheck.getCyjg().equals("0")){
+				EmkProOrderEntity proOrderEntity = systemService.findUniqueByProperty(EmkProOrderEntity.class,"orderNo",emkQualityCheck.getOrderNo());
+				EmkWorkOrderEntity workOrderEntity = systemService.findUniqueByProperty(EmkWorkOrderEntity.class,"workNo",proOrderEntity.getWorkNo());
+				workOrderEntity.setSampleCheckNo(emkQualityCheck.getQualityCheckNum());
+				systemService.saveOrUpdate(workOrderEntity);
+			}
 			emkQualityCheckService.saveOrUpdate(t);
 			Map<String, String> map = ParameterUtil.getParamMaps(request.getParameterMap());
 			this.systemService.executeSql("delete from emk_enquiry_detail where ENQUIRY_ID=?", new Object[]{t.getId()});

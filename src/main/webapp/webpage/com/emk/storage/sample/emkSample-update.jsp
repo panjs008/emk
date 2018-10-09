@@ -86,16 +86,38 @@
 	<input id="id" name="id" type="hidden" value="${emkSamplePage.id }"/>
 	<input id="flag" name="flag" type="hidden" value="${emkSamplePage.flag}"/>
 	<table style="width: 100%;" cellpadding="0" cellspacing="1" class="formtable">
-		<tr>
+			<tr>
+				<td align="right" style="width: 18%">
+					<label class="Validform_label">
+						报价单号:
+					</label>
+				</td>
+				<td class="value" style="width: 32%">
+					<input id="pirceNo" name="pirceNo" datatype="*" value="${emkSamplePage.pirceNo}" type="text" style="width: 150px" class="inputxt"  />
+					<span class="Validform_checktip"></span>
+					<label class="Validform_label" style="display: none;">报价单号</label>
+				</td>
+				<td align="right" style="width: 18%">
+					<label class="Validform_label">
+						订单号:
+					</label>
+				</td>
+				<td class="value" style="width: 32%">
+					<input id="orderNo" name="orderNo" readonly value="${emkSamplePage.orderNo}" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+					<span class="Validform_checktip"></span>
+					<label class="Validform_label" style="display: none;">订单号</label>
+				</td>
+			</tr>
+			<tr>
                 <td align="right" style="width: 18%">
                     <label class="Validform_label">
-                        打样单号:
+                        打样通知单号:
                     </label>
                 </td>
                 <td class="value" style="width: 32%">
                     <input id="sampleNum" name="sampleNum" readonly value="${emkSamplePage.sampleNum}" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
                         <span class="Validform_checktip"></span>
-                        <label class="Validform_label" style="display: none;">打样单号</label>
+                        <label class="Validform_label" style="display: none;">打样通知单号</label>
                     </td>
 
 				<td align="right" style="width: 18%">

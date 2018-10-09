@@ -64,8 +64,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Api(value = "EmkSampleDetail", description = "样品单明细", tags = {"emkSampleDetailController"})
 @Controller
 @RequestMapping({"/emkSampleDetailController"})
-public class EmkSampleDetailController
-        extends BaseController {
+public class EmkSampleDetailController extends BaseController {
     private static final Logger logger = Logger.getLogger(EmkSampleDetailController.class);
     @Autowired
     private EmkSampleDetailServiceI emkSampleDetailService;
@@ -186,9 +185,13 @@ public class EmkSampleDetailController
             req.setAttribute("emkSampleEntity", emkSampleEntity);
         } else if (sampleType.equals("order")) {
             EmkProOrderEntity emkProOrder = (EmkProOrderEntity) this.systemService.getEntity(EmkProOrderEntity.class, emkSampleDetail.getSampleId());
-            Map price = this.systemService.findOneForJdbc("select * from emk_price where cus_num =? and sample_no=? order by kd_date desc limit 0,1", new Object[]{emkProOrder.getCusNum(), emkProOrder.getSampleNo()});
-            EmkPriceEntity emkSampleEntity = (EmkPriceEntity) this.systemService.getEntity(EmkPriceEntity.class, price.get("id").toString());
-            req.setAttribute("emkSampleEntity", emkSampleEntity);
+            if(emkProOrder != null){
+                Map price = this.systemService.findOneForJdbc("select * from emk_price where cus_num =? and sample_no=? order by kd_date desc limit 0,1", new Object[]{emkProOrder.getCusNum(), emkProOrder.getSampleNo()});
+                if(price != null){
+                    EmkPriceEntity emkSampleEntity = (EmkPriceEntity) this.systemService.getEntity(EmkPriceEntity.class, price.get("id").toString());
+                    req.setAttribute("emkSampleEntity", emkSampleEntity);
+                }
+            }
         }
         return new ModelAndView("com/emk/storage/sampledetail/emkSampleDetail-add");
     }

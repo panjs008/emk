@@ -19,17 +19,19 @@
       <t:dgCol title="业务部门"  field="businesseDeptName"  queryMode="single"  width="80"></t:dgCol>
       <t:dgCol title="业务员"  field="businesser"  queryMode="single"  width="70"></t:dgCol>
    <t:dgCol title="客户代码" query="true" field="cusNum"  queryMode="single"  width="70"></t:dgCol>
-   <t:dgCol title="客户名称" query="true" field="cusName"  queryMode="single"  width="160"></t:dgCol>
-      <t:dgCol title="款号"  field="sampleNo"  queryMode="single"  width="80"></t:dgCol>
+   <t:dgCol title="客户名称" query="true" field="cusName"  queryMode="single"  width="140"></t:dgCol>
+      <t:dgCol title="款号"  field="sampleNo"  queryMode="single"  width="70"></t:dgCol>
       <t:dgCol title="工艺种类"  field="gyzl"  dictionary="gylx" queryMode="single"  width="70"></t:dgCol>
    <t:dgCol title="款式大类"  field="proTypeName"  queryMode="single"  width="70"></t:dgCol>
    <t:dgCol title="总数量"  field="sumTotal"  queryMode="single"  width="60"></t:dgCol>
    <t:dgCol title="币种"  field="bz"  queryMode="single"  width="50"></t:dgCol>
-   <t:dgCol title="总金额"  field="sumMoney"  queryMode="single"  width="80"></t:dgCol>
+   <t:dgCol title="总金额"  field="sumMoney"  queryMode="single"  width="60"></t:dgCol>
+      <t:dgCol title="状态"  field="state" formatterjs="formatColor"  queryMode="single"  width="60"></t:dgCol>
       <t:dgFunOpt funname="queryDetail1(id,enquiryNo)" title="明细" urlclass="ace_button" urlfont="fa-list-alt"></t:dgFunOpt>
       <t:dgToolBar title="录入" icon="fa fa-plus" url="emkEnquiryController.do?goAdd&winTitle=录入意向询盘单" funname="add" height="580" width="1000"></t:dgToolBar>
        <t:dgToolBar title="编辑" icon="fa fa-edit" url="emkEnquiryController.do?goUpdate&winTitle=编辑意向询盘单" funname="update" height="580" width="1000"></t:dgToolBar>
-       <t:dgToolBar title="删除"  icon="fa fa-remove" url="emkEnquiryController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
+      <t:dgToolBar title="提交" icon="fa fa-arrow-circle-up" funname="doSubmitV"></t:dgToolBar>
+      <t:dgToolBar title="删除"  icon="fa fa-remove" url="emkEnquiryController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
       <t:dgToolBar title="导出" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
 
   </t:datagrid>
@@ -52,7 +54,15 @@
  <script type="text/javascript">
  $(document).ready(function(){
  });
-
+ function formatColor(val,row){
+     if(row.state=="1"){
+         return '<span style="color:	#FF0000;">处理中</span>';
+     }else if(row.state=="2"){
+         return '<span style="color:	#0000FF;">完成</span>';
+     }else{
+         return '创建';
+     }
+ }
  function queryDetail1(id,eNo){
      $('#emkEnquiryList').datagrid('unselectAll');
      var title = "询盘订单明细："+eNo;
@@ -63,6 +73,35 @@
      $('#main_list').layout('panel','east').panel('resize', {width: 500});
 
      $('#proDetialListpanel').panel("refresh", "emkEnquiryDetailController.do?list&enquiryId=" + id);
+ }
+
+ function doSubmitV() {
+     var rowsData = $('#emkEnquiryList').datagrid('getSelections');
+     var ids = [];
+     if (!rowsData || rowsData.length == 0) {
+         tip('请选择需要提交的询盘订单');
+         return;
+     }
+     for ( var i = 0; i < rowsData.length; i++) {
+         ids.push(rowsData[i].id);
+     }
+     $.dialog.confirm('您是否确定提交询盘订单?', function(r) {
+         if (r) {
+             $.ajax({
+                 url : "emkEnquiryController.do?doSubmit&ids="+ids,
+                 type : 'post',
+                 cache : false,
+                 data: null,
+                 success : function(data) {
+                     var d = $.parseJSON(data);
+                     tip(d.msg);
+                     if (d.success) {
+                         $('#emkEnquiryList').datagrid('reload');
+                     }
+                 }
+             });
+         }
+     });
  }
  
 //导入

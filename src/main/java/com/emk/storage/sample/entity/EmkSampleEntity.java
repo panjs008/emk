@@ -13,8 +13,7 @@ import org.jeecgframework.poi.excel.annotation.Excel;
 
 @Entity
 @Table(name = "emk_sample", schema = "")
-public class EmkSampleEntity
-        implements Serializable {
+public class EmkSampleEntity implements Serializable {
     private String id;
     private String createName;
     private String createBy;
@@ -26,7 +25,6 @@ public class EmkSampleEntity
     private String cusName;
     @Excel(name = "款号", width = 15)
     private String sampleNo;
-    @Excel(name = "计划号", width = 15)
     private String projectNo;
     @Excel(name = "供应商", width = 15)
     private String factoryName;
@@ -58,7 +56,7 @@ public class EmkSampleEntity
     private String requiretext;
     @Excel(name = "状态", width = 15)
     private String state;
-    @Excel(name = "订单号", width = 15)
+    @Excel(name = "打样通知单号", width = 15)
     private String sampleNum;
     @Excel(name = "样品类型", width = 15)
     private String type;
@@ -114,8 +112,12 @@ public class EmkSampleEntity
     @Excel(name = "业务部门", width = 15)
     private String businesseDeptName;
     private String businesseDeptId;
-    @Excel(name = "需求单号", width = 15)
+    @Excel(name = "打样需求单号", width = 15)
     private String xqdh;
+    @Excel(name = "报价单号", width = 15)
+    private String pirceNo;
+    @Excel(name = "订单号", width = 15)
+    private String orderNo;
 
     @Id
     @GeneratedValue(generator = "paymentableGenerator")
@@ -622,5 +624,23 @@ public class EmkSampleEntity
 
     public void setXqdh(String xqdh) {
         this.xqdh = xqdh;
+    }
+
+    @Column(name = "PIRCE_NO", nullable = true, length = 32)
+    public String getPirceNo() {
+        return this.pirceNo;
+    }
+
+    public void setPirceNo(String pirceNo) {
+        this.pirceNo = pirceNo;
+    }
+
+    @Column(name = "order_no", nullable = true, length = 32)
+    public String getOrderNo() {
+        return orderNo;
+    }
+
+    public void setOrderNo(String orderNo) {
+        this.orderNo = orderNo;
     }
 }

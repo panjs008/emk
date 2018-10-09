@@ -204,13 +204,25 @@
 		</tr>
 
 		<tr>
-
+			<td align="right">
+				<label class="Validform_label">
+					是否先打样:
+				</label>
+			</td>
+			<td class="value" >
+				<input name="isPrint" type="radio"  datatype="*" checked="true"value="0">
+				否
+				&nbsp;&nbsp;<input name="isPrint"  type="radio" datatype="*"  value="1">
+				是
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">是否先打样</label>
+			</td>
 			<td align="right">
 				<label class="Validform_label">
 					是否有设计稿:
 				</label>
 			</td>
-			<td class="value" colspan="3">
+			<td class="value">
 				<input name="isHaveDgr" type="radio" datatype="*" <c:if test="${emkEnquiryPage.isHaveDgr eq '0'}">checked="true"</c:if> value="0">
 				是
 				&nbsp;&nbsp;<input name="isHaveDgr"  type="radio" datatype="*"  <c:if test="${emkEnquiryPage.isHaveDgr eq '1'}">checked="true"</c:if> value="1">

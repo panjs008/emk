@@ -10,9 +10,9 @@
    <t:dgCol title="创建日期"  field="createDate"  formatter="yyyy-MM-dd"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="所属部门"  field="sysOrgCode"  hidden="true"  queryMode="single"  width="140"></t:dgCol>
       <t:dgCol title="操作" field="opt" width="245" frozenColumn="true"></t:dgCol>
-      <t:dgCol title="打样单号"  field="sampleNum"  queryMode="single"  width="115"></t:dgCol>
-      <t:dgCol title="下单日期"  field="kdTime"  queryMode="single"  width="80"></t:dgCol>
-      <t:dgCol title="客户编号"  field="cusNum"  queryMode="single"  width="70"></t:dgCol>
+      <t:dgCol title="打样通知单号" query="true"  field="sampleNum"  queryMode="single"  width="115"></t:dgCol>
+      <t:dgCol title="通知单日期"  field="kdTime"  queryMode="single"  width="80"></t:dgCol>
+      <t:dgCol title="客户编号" query="true"  field="cusNum"  queryMode="single"  width="70"></t:dgCol>
       <t:dgCol title="客户名称"  field="cusName"  queryMode="single"  width="130"></t:dgCol>
       <t:dgCol title="客户原样"  image="true"  imageSize="30,30" field="customSampleUrl"  queryMode="single"  width="70"></t:dgCol>
       <t:dgCol title="尺码表" image="true"  imageSize="30,30"  field="sampleSizeUrl"   queryMode="single"  width="60"></t:dgCol>
@@ -20,11 +20,13 @@
       <%--<t:dgCol title="商品名称"  field="proName"  queryMode="single"  width="120"></t:dgCol>--%>
    <t:dgCol title="客户ID"  field="customId"  hidden="true" queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="款号"  field="sampleNo"  queryMode="single"  width="80"></t:dgCol>
-   <t:dgCol title="工艺种类"  field="gyzl" dictionary="gylx"  queryMode="single"  width="70"></t:dgCol>
       <t:dgCol title="版次"  field="version"  queryMode="single"  width="50"></t:dgCol>
-      <t:dgCol title="布面克重"  field="weight" queryMode="single"  width="70"></t:dgCol>
-      <t:dgCol title="布面成分"  field="chengf"  queryMode="single"  width="70"></t:dgCol>
+      <t:dgCol title="工艺种类"  field="gyzl" dictionary="gylx"  queryMode="single"  width="70"></t:dgCol>
+      <t:dgCol title="样品类型"  field="type" dictionary="sampletype" queryMode="single"  width="70"></t:dgCol>
+      <%--<t:dgCol title="布面克重"  field="weight" queryMode="single"  width="70"></t:dgCol>
+      <t:dgCol title="布面成分"  field="chengf"  queryMode="single"  width="70"></t:dgCol>--%>
    <t:dgCol title="交货时间"  field="receviceDate"  queryMode="single"  width="80"></t:dgCol>
+      <t:dgCol title="状态"  field="state" formatterjs="formatColor"  queryMode="single"  width="60"></t:dgCol>
       <%--<t:dgFunOpt funname="queryDetail1(id,sampleNo)" title="数量" urlclass="ace_button" urlfont="fa-list-alt"></t:dgFunOpt>--%>
       <t:dgFunOpt funname="queryDetail2(id,sampleNum)" title="主辅料" urlclass="ace_button" urlfont="fa-list-alt"></t:dgFunOpt>
       <t:dgFunOpt funname="queryDetail3(id,sampleNum)" title="染色" urlStyle="background-color:#ec4758;" urlclass="ace_button" urlfont="fa-file-photo-o"></t:dgFunOpt>
@@ -33,7 +35,9 @@
 
       <t:dgToolBar title="录入" icon="fa fa-plus" url="emkSampleController.do?goAdd&flag=${param.flag}&winTitle=录入样品通知单" funname="add" height="550" width="1000"></t:dgToolBar>
        <t:dgToolBar title="编辑" icon="fa fa-edit" url="emkSampleController.do?goUpdate&winTitle=编辑样品通知单" funname="update" height="550" width="1000"></t:dgToolBar>
-       <t:dgToolBar title="删除"  icon="fa fa-remove" url="emkSampleController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
+      <t:dgToolBar title="提交" icon="fa fa-arrow-circle-up" funname="doSubmitV"></t:dgToolBar>
+
+      <t:dgToolBar title="删除"  icon="fa fa-remove" url="emkSampleController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
       <t:dgToolBar title="导出" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
 
   </t:datagrid>
@@ -56,6 +60,46 @@
  <script type="text/javascript">
  $(document).ready(function(){
  });
+
+ function formatColor(val,row){
+     if(row.state=="1"){
+         return '<span style="color:	#FF0000;">处理中</span>';
+     }else if(row.state=="2"){
+         return '<span style="color:	#0000FF;">完成</span>';
+     }else{
+         return '创建';
+     }
+ }
+
+ function doSubmitV() {
+     var rowsData = $('#emkSampleList').datagrid('getSelections');
+     var ids = [];
+     if (!rowsData || rowsData.length == 0) {
+         tip('请选择需要提交的打样单');
+         return;
+     }
+     for ( var i = 0; i < rowsData.length; i++) {
+         ids.push(rowsData[i].id);
+     }
+     $.dialog.confirm('您是否确定提交打样单?', function(r) {
+         if (r) {
+             $.ajax({
+                 url : "emkSampleController.do?doSubmit&ids="+ids,
+                 type : 'post',
+                 cache : false,
+                 data: null,
+                 success : function(data) {
+                     var d = $.parseJSON(data);
+                     tip(d.msg);
+                     if (d.success) {
+                         $('#emkSampleList').datagrid('reload');
+                     }
+                 }
+             });
+         }
+     });
+ }
+
  function queryDetail1(id,proName){
      $('#emkSampleList').datagrid('unselectAll');
      var title = "尺寸规格：" +proName;
@@ -78,6 +122,7 @@
 
      $('#proDetialListpanel').panel("refresh", "emkSampleDetailController.do?list&sampleType=sample&sampleId=" + id);
  }
+
 
  function queryDetail3(id,proName){
      $('#emkSampleList').datagrid('unselectAll');

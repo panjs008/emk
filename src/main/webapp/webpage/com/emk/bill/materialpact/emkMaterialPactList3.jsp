@@ -10,9 +10,9 @@
    <t:dgCol title="创建日期"  field="createDate"  formatter="yyyy-MM-dd"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="所属部门"  field="sysOrgCode"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="操作" field="opt" frozenColumn="true"  width="100"></t:dgCol>
-   <t:dgCol title="采购合同编号"  field="materialNo" queryMode="single" query="true"  width="100"></t:dgCol>
-   <t:dgCol title="合同编号"  field="htNum" queryMode="single" width="105"></t:dgCol>
-   <t:dgCol title="订单号"  field="orderNum" queryMode="single" width="100"></t:dgCol>
+      <t:dgCol title="采购合同编号"  field="materialNo" queryMode="single" query="true"  width="120"></t:dgCol>
+      <t:dgCol title="合同编号"  field="htNum" queryMode="single" width="120"></t:dgCol>
+      <t:dgCol title="订单号"  field="orderNum" queryMode="single" width="105"></t:dgCol>
 
    <t:dgCol title="提交日期"  field="kdDate"  queryMode="single"  width="80"></t:dgCol>
    <t:dgCol title="交货日期"  field="dhjqDate"  queryMode="single"  width="80"></t:dgCol>

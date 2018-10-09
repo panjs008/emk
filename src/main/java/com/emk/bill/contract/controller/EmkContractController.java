@@ -125,6 +125,7 @@ public class EmkContractController
             for (String id : ids.split(",")) {
                 EmkContractEntity emkContract = (EmkContractEntity) this.systemService.getEntity(EmkContractEntity.class, id);
 
+                this.systemService.executeSql("delete from emk_enquiry_detail where ENQUIRY_ID=?", id);
 
                 this.emkContractService.delete(emkContract);
                 this.systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);

@@ -9,6 +9,7 @@ import io.swagger.annotations.ApiParam;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -61,8 +62,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Api(value = "EmkPrice", description = "报价单", tags = {"emkPriceController"})
 @Controller
 @RequestMapping({"/emkPriceController"})
-public class EmkPriceController
-        extends BaseController {
+public class EmkPriceController extends BaseController {
     private static final Logger logger = Logger.getLogger(EmkPriceController.class);
     @Autowired
     private EmkPriceServiceI emkPriceService;
@@ -184,6 +184,46 @@ public class EmkPriceController
         if (StringUtil.isNotEmpty(emkPrice.getId())) {
             emkPrice = (EmkPriceEntity) this.emkPriceService.getEntity(EmkPriceEntity.class, emkPrice.getId());
             req.setAttribute("emkPricePage", emkPrice);
+
+            Map sumYlCb = this.systemService.findOneForJdbc("select ifnull(sum(chengben),0) sumCb from emk_sample_detail where type=? and sample_id=?","0",emkPrice.getId());
+            Map sumFzCb = this.systemService.findOneForJdbc("select ifnull(sum(chengben),0) sumCb from emk_sample_detail where type=? and sample_id=?","1",emkPrice.getId());
+            Map sumBzCb = this.systemService.findOneForJdbc("select ifnull(sum(chengben),0) sumCb from emk_sample_detail where type=? and sample_id=?","2",emkPrice.getId());
+            Map sumRgCb = this.systemService.findOneForJdbc("select ifnull(sum(chengben),0) sumCb from emk_sample_gx where sample_id=?",emkPrice.getId());
+            Map sumRanCb = this.systemService.findOneForJdbc("select ifnull(sum(chengben),0) sumCb from emk_sample_ran where sample_id=?",emkPrice.getId());
+            Map sumYinCb = this.systemService.findOneForJdbc("select ifnull(sum(chengben),0) sumCb from emk_sample_yin where sample_id=?",emkPrice.getId());
+
+            emkPrice.setSumYl(Double.parseDouble(sumYlCb.get("sumCb").toString()));
+            emkPrice.setSumFeng(Double.parseDouble(sumFzCb.get("sumCb").toString()));
+            emkPrice.setSumBao(Double.parseDouble(sumBzCb.get("sumCb").toString()));
+            emkPrice.setSumRg(Double.parseDouble(sumRgCb.get("sumCb").toString()));
+            emkPrice.setSumRan(Double.parseDouble(sumRanCb.get("sumCb").toString()));
+            emkPrice.setSumYin(Double.parseDouble(sumYinCb.get("sumCb").toString()));
+
+            double tax = Double.parseDouble(sumYlCb.get("sumCb").toString())+Double.parseDouble(sumFzCb.get("sumCb").toString())+Double.parseDouble(sumBzCb.get("sumCb").toString())+Double.parseDouble(sumRgCb.get("sumCb").toString())+Double.parseDouble(sumRanCb.get("sumCb").toString())+Double.parseDouble(sumYinCb.get("sumCb").toString());
+            if(emkPrice.getTestMoney() != null){
+                tax += emkPrice.getTestMoney();
+            }
+            if(emkPrice.getGlMoney() != null){
+                tax += emkPrice.getGlMoney();
+            }
+            if(emkPrice.getUnableMoney() != null){
+                tax += emkPrice.getUnableMoney();
+            }
+            BigDecimal b = new BigDecimal(tax);
+            emkPrice.setSumMoney(b.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+
+            tax = tax * 0.17;
+            b = new BigDecimal(tax);
+            double dTax = b.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+            emkPrice.setTax(dTax);
+
+            b = new BigDecimal(emkPrice.getSumMoney()-emkPrice.getTax());
+            emkPrice.setProfit(b.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+
+            if(emkPrice.getHuilv() != null){
+                b = new BigDecimal(emkPrice.getSumMoney()/emkPrice.getHuilv());
+                emkPrice.setSumWb(b.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+            }
         }
         return new ModelAndView("com/emk/storage/price/emkPrice-update");
     }

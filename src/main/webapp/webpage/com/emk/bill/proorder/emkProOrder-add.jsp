@@ -75,6 +75,28 @@
 	<input id="id" name="id" type="hidden" value="${emkProOrderPage.id }"/>
 	<table style="width: 100%;" cellpadding="0" cellspacing="1" class="formtable">
 		<tr>
+			<td align="right" style="width: 18%">
+				<label class="Validform_label">
+					工单号:
+				</label>
+			</td>
+			<td class="value" style="width: 32%">
+				<input id="workNo" name="workNo" datatype="*" value="${emkProOrderPage.workNo}" validType="emk_pro_order,work_no,id"  type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">工单号</label>
+			</td>
+			<td align="right">
+				<label class="Validform_label">
+					订单类型:
+				</label>
+			</td>
+			<td class="value">
+				<t:dictSelect id="orderType" field="orderType" typeGroupCode="orderType" datatype="*" defaultVal="${emkProOrderPage.orderType}" hasLabel="false" title="工单类型"></t:dictSelect>
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">订单类型</label>
+			</td>
+		</tr>
+		<tr>
 			<td align="right">
 				<label class="Validform_label">
 					供应商:

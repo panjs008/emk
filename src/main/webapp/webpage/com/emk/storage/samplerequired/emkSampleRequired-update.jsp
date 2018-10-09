@@ -239,7 +239,7 @@
 				</label>
 			</td>
 			<td class="value">
-				<input id="levelDays" name="levelDays" type="text" value="${emkSampleRequiredPage.levelDays }" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="levelDays" name="levelDays" type="text" value="${levelDays}" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">距交期剩余天数</label>
 			</td>
@@ -418,7 +418,7 @@
 				&nbsp;&nbsp;<input name="isPrintSample" type="radio" datatype="*"  <c:if test="${emkSampleRequiredPage.isPrintSample eq '1'}">checked="true"</c:if> value="1">
 				否
 				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">是否同意</label>
+				<label class="Validform_label" style="display: none;">是否打过初样</label>
 			</td>
 			<td align="right">
 				<label class="Validform_label">
@@ -431,7 +431,7 @@
 				&nbsp;&nbsp;<input name="isGetSample" onclick="showPriceDiv(1)"  type="radio" datatype="*"  <c:if test="${emkSampleRequiredPage.isGetSample eq '1'}">checked="true"</c:if> value="1">
 				否
 				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">是否同意</label>
+				<label class="Validform_label" style="display: none;">是否收取打样费</label>
 			</td>
 		</tr>
 		<tr id="priceDiv" style="display: ${emkSampleRequiredPage.isGetSample eq '0' ? '':'none'};">
@@ -444,7 +444,7 @@
 							</label>
 						</td>
 						<td class="value">
-							<input id="money" name="money" value="${samplePriceEntity.money }" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+							<input id="money" name="money" value="${samplePriceEntity.money }" datatype="n" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
 							<span class="Validform_checktip"></span>
 							<label class="Validform_label" style="display: none;">金额</label>
 						</td>
@@ -454,7 +454,7 @@
 							</label>
 						</td>
 						<td class="value">
-							<t:dictSelect id="pbz" field="pbz"  typeGroupCode="cointype" datatype="*" defaultVal="${samplePriceEntity.bz}" hasLabel="false" title="币种"></t:dictSelect>
+							<t:dictSelect id="pbz" field="pbz"  typeGroupCode="cointype" defaultVal="${samplePriceEntity.bz}" hasLabel="false" title="币种"></t:dictSelect>
 							<span class="Validform_checktip"></span>
 							<label class="Validform_label" style="display: none;">币种</label>
 						</td>

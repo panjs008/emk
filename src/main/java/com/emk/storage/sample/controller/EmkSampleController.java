@@ -1,27 +1,28 @@
 package com.emk.storage.sample.controller;
 
 import com.alibaba.fastjson.JSONArray;
+import com.emk.storage.enquiry.entity.EmkEnquiryEntity;
 import com.emk.storage.sample.entity.EmkSampleEntity;
 import com.emk.storage.sample.service.EmkSampleServiceI;
+import com.emk.util.DateUtil;
+import com.emk.util.ParameterUtil;
+import com.emk.workorder.workorder.entity.EmkWorkOrderEntity;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.tools.ant.util.DateUtils;
@@ -165,8 +166,11 @@ public class EmkSampleController
             emkSample.setState("0");
             emkSample.setKdTime(DateUtils.format(new Date(), "yyyy-MM-dd"));
             TSUser user = (TSUser) request.getSession().getAttribute("LOCAL_CLINET_USER");
-            Map orderNum = this.systemService.findOneForJdbc("select count(0)+1 orderNum from emk_sample where sys_org_code=?", new Object[]{user.getCurrentDepart().getOrgCode()});
-            emkSample.setSampleNum("YPTZD" + DateUtils.format(new Date(), "yyMMdd") + "A" + String.format("%02d", new Object[]{Integer.valueOf(Integer.parseInt(orderNum.get("orderNum").toString()))}));
+            Map orderNum = this.systemService.findOneForJdbc("select count(0)+1 orderNum from emk_sample where sys_org_code=?", user.getCurrentDepart().getOrgCode());
+            emkSample.setSampleNum("YPTZD" + DateUtils.format(new Date(), "yyMMdd") + "A" + String.format("%02d", Integer.parseInt(orderNum.get("orderNum").toString())));
+
+            orderNum = this.systemService.findOneForJdbc("select count(0)+1 orderNum from emk_sample where sys_org_code=?", user.getCurrentDepart().getOrgCode());
+            emkSample.setXqdh("YPXQ" +emkSample.getCusNum()+ DateUtils.format(new Date(), "yyMMdd") + "A" + String.format("%02d", Integer.parseInt(orderNum.get("orderNum").toString())));
             this.emkSampleService.save(emkSample);
             this.systemService.addLog(message, Globals.Log_Type_INSERT, Globals.Log_Leavel_INFO);
         } catch (Exception e) {
@@ -186,6 +190,17 @@ public class EmkSampleController
         message = "样品单更新成功";
         EmkSampleEntity t = (EmkSampleEntity) this.emkSampleService.get(EmkSampleEntity.class, emkSample.getId());
         try {
+            if (!t.getState().equals("0")) {
+                message = "存在已提交的打样单，请重新选择在提交！";
+                j.setSuccess(false);
+                return  j;
+            }
+            TSUser user = (TSUser) request.getSession().getAttribute("LOCAL_CLINET_USER");
+            Map orderNum = this.systemService.findOneForJdbc("select count(0)+1 orderNum from emk_sample where sys_org_code=?", user.getCurrentDepart().getOrgCode());
+            emkSample.setSampleNum("YPTZD" + DateUtils.format(new Date(), "yyMMdd") + "A" + String.format("%02d", Integer.parseInt(orderNum.get("orderNum").toString())));
+
+            orderNum = this.systemService.findOneForJdbc("select count(0)+1 orderNum from emk_sample where sys_org_code=?", user.getCurrentDepart().getOrgCode());
+            emkSample.setXqdh("YPXQ" +emkSample.getCusNum()+ DateUtils.format(new Date(), "yyMMdd") + "A" + String.format("%02d", Integer.parseInt(orderNum.get("orderNum").toString())));
             MyBeanUtils.copyBeanNotNull2Bean(emkSample, t);
             this.emkSampleService.saveOrUpdate(t);
             this.systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
@@ -201,6 +216,8 @@ public class EmkSampleController
     @RequestMapping(params = {"goAdd"})
     public ModelAndView goAdd(EmkSampleEntity emkSample, HttpServletRequest req) {
         req.setAttribute("kdDate", DateUtils.format(new Date(), "yyyy-MM-dd"));
+        TSUser user = (TSUser) req.getSession().getAttribute("LOCAL_CLINET_USER");
+
         if (StringUtil.isNotEmpty(emkSample.getId())) {
             emkSample = (EmkSampleEntity) this.emkSampleService.getEntity(EmkSampleEntity.class, emkSample.getId());
             req.setAttribute("emkSamplePage", emkSample);
@@ -314,5 +331,54 @@ public class EmkSampleController
             return Result.error("样品单删除失败");
         }
         return Result.success();
+    }
+
+    @RequestMapping(params="doSubmit")
+    @ResponseBody
+    public AjaxJson doSubmit(EmkSampleEntity emkSampleEntity, HttpServletRequest request) {
+        String message = null;
+        AjaxJson j = new AjaxJson();
+        message = "打样单提交成功";
+        try {
+            int flag = 0;
+            TSUser user = (TSUser)request.getSession().getAttribute("LOCAL_CLINET_USER");
+            Map map = ParameterUtil.getParamMaps(request.getParameterMap());
+            if ((emkSampleEntity.getId() == null) || (emkSampleEntity.getId().isEmpty())) {
+                for (String id : map.get("ids").toString().split(",")) {
+                    EmkSampleEntity sampleEntity = systemService.getEntity(EmkSampleEntity.class, id);
+                    if (!sampleEntity.getState().equals("0")) {
+                        message = "存在已提交的打样单，请重新选择在提交！";
+                        j.setSuccess(false);
+                        flag = 1;
+                        break;
+                    }
+                }
+            }else{
+                map.put("ids", emkSampleEntity.getId());
+            }
+            Map<String, Object> variables = new HashMap();
+            if (flag == 0) {
+                for (String id : map.get("ids").toString().split(",")) {
+                    EmkSampleEntity t = emkSampleService.get(EmkSampleEntity.class, id);
+                    t.setState("1");
+                    systemService.saveOrUpdate(t);
+
+                    Map enquiry = this.systemService.findOneForJdbc("SELECT t3.id,t3.enquiry_no FROM emk_sample t1 LEFT JOIN emk_price t2 ON t1.PIRCE_NO=t2.pirce_no LEFT JOIN emk_enquiry t3 ON t3.enquiry_no=t2.xp_no where t1.id=? LIMIT 0,1",id);
+                    if(enquiry != null){
+                        EmkWorkOrderEntity workOrderEntity = systemService.findUniqueByProperty(EmkWorkOrderEntity.class,"askNo",enquiry.get("enquiry_no").toString());
+                        workOrderEntity.setSampleNum(t.getSampleNum());
+                        systemService.saveOrUpdate(workOrderEntity);
+                    }
+                }
+            }
+            systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            message = "打样单提交失败";
+            throw new BusinessException(e.getMessage());
+        }
+        j.setMsg(message);
+        return j;
     }
 }

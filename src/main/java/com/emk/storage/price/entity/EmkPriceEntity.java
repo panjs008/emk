@@ -13,14 +13,13 @@ import org.jeecgframework.poi.excel.annotation.Excel;
 
 @Entity
 @Table(name = "emk_price", schema = "")
-public class EmkPriceEntity
-        implements Serializable {
+public class EmkPriceEntity implements Serializable {
     private String id;
     private String createName;
     private String createBy;
     private Date createDate;
     private String sysOrgCode;
-    @Excel(name = "需求单号", width = 15)
+    @Excel(name = "报价单号", width = 15)
     private String pirceNo;
     @Excel(name = "报价日期", width = 15)
     private String kdDate;
@@ -149,6 +148,13 @@ public class EmkPriceEntity
     private Double gysArgeePrice;
     @Excel(name = "客户同意价", width = 15)
     private Double cusArgeePrice;
+    @Excel(name = "币种", width = 15)
+    private String bizhong;
+
+    @Excel(name = "询盘单号", width = 15)
+    private String xpNo;
+    @Excel(name = "打样通知单号", width = 15)
+    private String dyNo;
 
     @Id
     @GeneratedValue(generator = "paymentableGenerator")
@@ -799,5 +805,32 @@ public class EmkPriceEntity
 
     public void setCusArgeePrice(Double cusArgeePrice) {
         this.cusArgeePrice = cusArgeePrice;
+    }
+
+    @Column(name = "bizhong", nullable = true, scale = 2, length = 32)
+    public String getBizhong() {
+        return bizhong;
+    }
+
+    public void setBizhong(String bizhong) {
+        this.bizhong = bizhong;
+    }
+
+    @Column(name = "xp_no", nullable = true, length = 32)
+    public String getXpNo() {
+        return xpNo;
+    }
+
+    public void setXpNo(String xpNo) {
+        this.xpNo = xpNo;
+    }
+
+    @Column(name = "dy_no", nullable = true, length = 32)
+    public String getDyNo() {
+        return dyNo;
+    }
+
+    public void setDyNo(String dyNo) {
+        this.dyNo = dyNo;
     }
 }

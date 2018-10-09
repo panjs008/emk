@@ -70,7 +70,6 @@ public class EmkSampleColorServiceImpl
         map.put("bpm_status", t.getBpmStatus());
         map.put("sytzdbh", t.getSytzdbh());
         map.put("sytzdrq", t.getSytzdrq());
-        map.put("syxqdbh", t.getSyxqdbh());
         map.put("gc", t.getGc());
         map.put("businesser", t.getBusinesser());
         map.put("tracer", t.getTracer());
@@ -125,7 +124,6 @@ public class EmkSampleColorServiceImpl
         sql = sql.replace("#{bpm_status}", String.valueOf(t.getBpmStatus()));
         sql = sql.replace("#{sytzdbh}", String.valueOf(t.getSytzdbh()));
         sql = sql.replace("#{sytzdrq}", String.valueOf(t.getSytzdrq()));
-        sql = sql.replace("#{syxqdbh}", String.valueOf(t.getSyxqdbh()));
         sql = sql.replace("#{gc}", String.valueOf(t.getGc()));
         sql = sql.replace("#{businesser}", String.valueOf(t.getBusinesser()));
         sql = sql.replace("#{tracer}", String.valueOf(t.getTracer()));

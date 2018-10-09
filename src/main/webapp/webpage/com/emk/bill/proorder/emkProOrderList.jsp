@@ -10,7 +10,7 @@
    <t:dgCol title="创建日期"  field="createDate"  formatter="yyyy-MM-dd"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="所属部门"  field="sysOrgCode"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="状态"  field="state"  formatterjs="formatColor"  queryMode="single"  dictionary="bpm_status"  width="60"></t:dgCol>
-   <t:dgCol title="订单号"  field="orderNo"  queryMode="single"  width="100"></t:dgCol>
+   <t:dgCol title="订单号"  field="orderNo"  queryMode="single"  width="110"></t:dgCol>
       <t:dgCol title="订单日期"  field="orderTime"  queryMode="single"  width="80"></t:dgCol>
       <t:dgCol title="操作" field="opt" width="227" frozenColumn="true"></t:dgCol>
       <t:dgCol title="业务部门"  field="businesseDeptName"  queryMode="single"  width="80"></t:dgCol>
@@ -18,12 +18,12 @@
       <t:dgCol title="业务跟单员"  field="tracer"  queryMode="single"  width="80"></t:dgCol>
       <%--<t:dgCol title="生产跟单员"  field="developer"  queryMode="single"  width="80"></t:dgCol>--%>
       <t:dgCol title="客户代码" query="true" field="cusNum"  queryMode="single"  width="70"></t:dgCol>
-      <t:dgCol title="客户名称" query="true" field="cusName"  queryMode="single"  width="160"></t:dgCol>
+      <t:dgCol title="客户名称" query="true" field="cusName"  queryMode="single"  width="180"></t:dgCol>
       <t:dgCol title="款号"  field="sampleNo"  queryMode="single"  width="80"></t:dgCol>
       <t:dgCol title="工艺种类"  field="gyzl"  dictionary="gylx" queryMode="single"  width="70"></t:dgCol>
       <t:dgCol title="款式大类"  field="proTypeName"  queryMode="single"  width="70"></t:dgCol>
-      <t:dgCol title="总数量"  field="sumTotal"  queryMode="single"  width="60"></t:dgCol>
-      <t:dgCol title="总金额"  field="sumMoney"  queryMode="single"  width="60"></t:dgCol>
+      <%--<t:dgCol title="总数量"  field="sumTotal"  queryMode="single"  width="60"></t:dgCol>
+      <t:dgCol title="总金额"  field="sumMoney"  queryMode="single"  width="60"></t:dgCol>--%>
       <t:dgFunOpt funname="queryDetail1(id,orderNo)" title="明细" urlStyle="background-color:#ec4758;" urlclass="ace_button"></t:dgFunOpt>
       <t:dgFunOpt funname="queryDetail2(id,orderNo)" title="主辅料" urlclass="ace_button" ></t:dgFunOpt>
       <t:dgFunOpt funname="queryDetail3(id,orderNo)" title="条码" urlStyle="background-color:#ec4758;" urlclass="ace_button" ></t:dgFunOpt>
@@ -32,7 +32,10 @@
 
       <t:dgToolBar title="录入" icon="fa fa-plus" url="emkProOrderController.do?goAdd&winTitle=录入订单" funname="add" height="600" width="1000"></t:dgToolBar>
       <t:dgToolBar title="编辑" icon="fa fa-edit" url="emkProOrderController.do?goUpdate&winTitle=编辑订单" funname="update" height="600" width="1000"></t:dgToolBar>
-      <t:dgToolBar title="审核" icon="fa fa-plus" funname="doSubmitV" height="600" width="1000"></t:dgToolBar>
+      <t:dgToolBar title="提交" icon="fa fa-arrow-circle-up" funname="doSubmitV"></t:dgToolBar>
+      <t:dgToolBar title="流程进度" icon="fa fa-plus" funname="goToProcess"></t:dgToolBar>
+
+      <%--<t:dgToolBar title="审核" icon="fa fa-plus" funname="doSubmitV" height="600" width="1000"></t:dgToolBar>--%>
       <t:dgToolBar title="删除"  icon="fa fa-remove" url="emkProOrderController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
       <t:dgToolBar title="导出" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
 
@@ -68,6 +71,7 @@
      }
  }
 
+/*
  function doSubmitV() {
      var rowsData = $('#emkProOrderList').datagrid('getSelections');
      var ids = [];
@@ -96,7 +100,65 @@
          }
      });
  }
+*/
 
+ function doSubmitV() {
+     var rowsData = $('#emkProOrderList').datagrid('getSelections');
+     var ids = [];
+     if (!rowsData || rowsData.length == 0) {
+         tip('请选择需要提交的订单');
+         return;
+     }
+     for ( var i = 0; i < rowsData.length; i++) {
+         ids.push(rowsData[i].id);
+     }
+     $.dialog.confirm('您是否确定提交订单?', function(r) {
+         if (r) {
+             $.ajax({
+                 url : "emkProOrderController.do?doSubmit&ids="+ids,
+                 type : 'post',
+                 cache : false,
+                 data: null,
+                 success : function(data) {
+                     var d = $.parseJSON(data);
+                     tip(d.msg);
+                     if (d.success) {
+                         $('#emkProOrderList').datagrid('reload');
+                     }
+                 }
+             });
+         }
+     });
+ }
+
+ function goToProcess(){
+     var height =window.top.document.body.offsetHeight*0.85;
+
+     var rowsData = $('#emkProOrderList').datagrid('getSelections');
+     if (!rowsData || rowsData.length == 0) {
+         tip('请选择需要提交的订单');
+         return;
+     }
+
+     $.ajax({
+         url : "emkProOrderController.do?getCurrentProcess&id="+rowsData[0].id,
+         type : 'post',
+         cache : false,
+         data: null,
+         success : function(data) {
+             var d = $.parseJSON(data);
+             if (d.success) {
+                 var msg = d.msg;
+                 if(msg == "完成"){
+                     createdetailwindow('流程进度--当前环节：'+msg,'emkProOrderController.do?goProcess&id='+rowsData[0].id,1200,height);
+                 }else{
+                     createwindow("流程进度--当前环节："+msg, "emkProOrderController.do?goProcess&id="+rowsData[0].id,1200,height);
+                 }
+
+             }
+         }
+     });
+ }
 
  function queryDetail1(id,eNo){
      var rowsData = $('#emkProOrderList').datagrid('getSelections');
