@@ -248,7 +248,7 @@
 					'<span>' + state.text + '</span>'
 			);
 			return $state;
-		};
+		}
 
 	</script>
 </head>
@@ -381,13 +381,13 @@
 				</label>
 			</td>
 			<td class="value" colspan="3">
-				<select id="shengFen" name="shengFen" datatype="*" style="width:130px;">
+				<select id="shengFen" name="shengFen"  style="width:130px;">
 					<option>--省份--</option>
 				</select>
-				<select id="chengShi" name="chengShi" datatype="*" style="width:150px;">
+				<select id="chengShi" name="chengShi" style="width:150px;">
 					<option>--城市--</option>
 				</select>
-				<select id="pianQu" name="pianQu" datatype="*" style="width:150px;">
+				<select id="pianQu" name="pianQu" style="width:150px;">
 					<option>--片区--</option>
 				</select>
 				<span class="Validform_checktip"></span>
@@ -413,7 +413,7 @@
 				</label>
 			</td>
 			<td class="value">
-				<select class="form-control select2" id="businesserId"  datatype="*"  >
+				<select class="form-control select2" id="businesserId"   >
 					<option value=''>请选择</option>
 				</select>
 				<span class="Validform_checktip"></span>
@@ -422,16 +422,16 @@
 
 			<td align="right">
 				<label class="Validform_label">
-					业务员跟单员:
+					业务跟单员:
 				</label>
 			</td>
 			<td class="value">
-				<select class="form-control select2" id="tracerId" datatype="*"  >
+				<select class="form-control select2" id="tracerId"  >
 					<%--<option value="">请选择客户</option>--%>
 						<option value=''>请选择</option>
 				</select>
 				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">业务员跟单员</label>
+				<label class="Validform_label" style="display: none;">业务跟单员</label>
 			</td>
 
 			<td align="right">
@@ -440,7 +440,7 @@
 				</label>
 			</td>
 			<td class="value">
-				<select class="form-control select2" id="developerId" datatype="*"  >
+				<select class="form-control select2" id="developerId"  >
 						<%--<option value="">请选择客户</option>--%>
 							<option value=''>请选择</option>
 				</select>
@@ -499,16 +499,6 @@
 		<tr>
 			<td align="right">
 				<label class="Validform_label">
-					实际业务金额:
-				</label>
-			</td>
-			<td class="value">
-				<input id="ywMoney" name="ywMoney" datatype="d" type="text" value="${ymkCustomPage.ywMoney }" style="width: 150px" class="inputxt"   />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">实际业务金额</label>
-			</td>
-			<td align="right">
-				<label class="Validform_label">
 					币种:
 				</label>
 			</td>
@@ -516,6 +506,16 @@
 				<t:dictSelect id="bz" field="bz" typeGroupCode="cointype" datatype="*" defaultVal="default" hasLabel="false" title="客户类型"></t:dictSelect>
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">币种</label>
+			</td>
+			<td align="right">
+				<label class="Validform_label">
+					实际业务金额:
+				</label>
+			</td>
+			<td class="value">
+				<input id="ywMoney" name="ywMoney" datatype="d" type="text" value="${ymkCustomPage.ywMoney }" style="width: 150px" class="inputxt"  ignore="ignore"  />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">实际业务金额</label>
 			</td>
 			<td align="right">
 				<label class="Validform_label">
@@ -545,7 +545,7 @@
 				</label>
 			</td>
 			<td class="value">
-				<input id="qzywMoney" name="qzywMoney" type="text" datatype="d" value="${ymkCustomPage.qzywMoney }" style="width: 150px" class="inputxt"   />
+				<input id="qzywMoney" name="qzywMoney" type="text" datatype="d" value="${ymkCustomPage.qzywMoney }" style="width: 150px" class="inputxt"   ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">潜在业务金额/年</label>
 			</td>

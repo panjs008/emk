@@ -11,13 +11,109 @@
   <script type="text/javascript">
   //编写自定义JS代码
 	  $(function() {
+		  $("#type").change(function(){
+			  varval = $('#type').val();
+			  if(varval == 'cy'){
+				  $("#orderNo").attr("ignore","ignore");
+				  $("#pirceNo").removeAttr("ignore");
+			  }else{
+				 /* $("#settb").css("display","none");
+				  $("#settb2").css("display","none");
 
+				  $("#tk0").attr("ignore","ignore");
+				  $("#settb").find(":text,textarea").attr("ignore","ignore");
+				  $("#settb2").find(":text,textarea").attr("ignore","ignore");*/
+				  $("#pirceNo").attr("ignore","ignore");
+				  $("#orderNo").removeAttr("ignore");
+			  }
+		  });
+
+		  BindSelect("businesserId","ymkCustomController.do?findUserList&userKey=业务员",1,$("#businesserName").val()+","+$("#businesser").val());
+
+		  $("#businesserId").change(function(){
+			  var itemarr = $("#businesserId").val().split(","); //字符分割
+			  $("#businesser").val(itemarr[0]);
+			  $("#businesserName").val(itemarr[1]);
+
+			  returnToDept($("#businesserName").val());
+		  });
+
+		  BindSelect("tracerId","ymkCustomController.do?findUserList&userKey=业务跟单员",1,$("#tracerName").val()+","+$("#tracer").val());
+		  $("#tracerId").change(function(){
+			  var itemarr = $("#tracerId").val().split(","); //字符分割
+			  $("#tracer").val(itemarr[0]);
+			  $("#tracerName").val(itemarr[1]);
+		  });
+
+		  BindSelect("developerId","ymkCustomController.do?findUserList&userKey=生产跟单员",1,$("#developerName").val()+","+$("#developer").val());
+		  $("#developerId").change(function(){
+			  var itemarr = $("#developerId").val().split(","); //字符分割
+			  $("#developer").val(itemarr[0]);
+			  $("#developerName").val(itemarr[1]);
+		  });
 	  });
+
+	  function returnToSelect(){
+		  BindSelect("businesserId","ymkCustomController.do?findUserList&userKey=业务员",1,$("#businesserName").val()+","+$("#businesser").val());
+		  BindSelect("tracerId","ymkCustomController.do?findUserList&userKey=业务跟单员",1,$("#tracerName").val()+","+$("#tracer").val());
+		  BindSelect("developerId","ymkCustomController.do?findUserList&userKey=生产跟单员",1,$("#developerName").val()+","+$("#developer").val());
+
+		  returnToDept($("#businesserName").val());
+	  }
+
+	  function returnToDept(userName){
+		  $.ajax({
+			  url: "ymkCustomController.do?getDeptInfoByUser&userName="+userName,
+			  type: 'post',
+			  cache: false,
+			  data: null,
+			  success: function (data) {
+				  var d = $.parseJSON(data);
+				  console.log(d);
+				  if (d.success) {
+					  $("#businesseDeptName").val(d.obj.departname);
+					  $("#businesseDeptId").val(d.obj.orgCode);
+				  }
+			  }
+		  });
+	  }
+
+	  function formatState (state) {
+		  if (!state.id) { return state.text; }
+		  var $state = $(
+				  '<span>' + state.text + '</span>'
+		  );
+		  return $state;
+	  }
+
+	  function BindSelect(ctrlName, url,type,categoryId) {
+		  var control = $('#' + ctrlName);
+		  //设置Select2的处理
+		  control.select2({
+			  formatResult: formatState,
+			  formatSelection: formatState,
+			  escapeMarkup: function (m) {
+				  return m;
+			  }
+		  });
+		  //绑定Ajax的内容
+		  $.getJSON(url, function (data) {
+			  control.empty();//清空下拉框
+			  control.append("<option value=''>请选择</option>");
+			  $.each(data.obj, function (i, item) {
+				  control.append("<option value='" + item.userName + ","+item.realName +"'>&nbsp;" + item.realName + "</option>");
+			  });
+			  if(type ==1){
+				  $("#"+ctrlName).select2('val',categoryId);
+			  }
+		  });
+
+	  }
 	  function uploadSuccess(d,file,response){
 		  var src = d.attributes.url;
 		  $("#customSampleUrl").val(d.attributes.url);
 		  $("#customSample").val(d.attributes.name);
-		  $("#khyyId").html(d.attributes.name);
+		  $("#khyyId").html("[<a href=\"javascript:findDetail('"+d.attributes.url+"')\">"+d.attributes.name+"</a>]");
 
 		  $("#uploadimg").attr('src',d.attributes.url);
 
@@ -26,12 +122,30 @@
 		  var src = d.attributes.url;
 		  $("#sampleSizeUrl").val(d.attributes.url);
 		  $("#sampleSize").val(d.attributes.name);
-		  $("#ccbId").html(d.attributes.name);
+		  $("#ccbId").html("[<a href=\"javascript:findDetail('"+d.attributes.url+"')\">"+d.attributes.name+"</a>]");
 
 		  $("#uploadimg2").attr('src',d.attributes.url);
 
 	  }
 
+	  function findDetail(photoUrl) {
+		  $.dialog({
+			  content: 'url:emkEnquiryController.do?photo&photoUrl='+photoUrl,
+			  zIndex: getzIndex(),
+			  title : "查看",
+			  lock : true,
+			  width:900,
+			  height: 500,
+			  opacity : 0.3,
+			  cache:false,
+			  lock : true,
+			  cache:false,
+			  max: true,
+			  min: true,
+			  drag: true,
+			  resize: false
+		  });
+	  }
 
   </script>
  </head>
@@ -57,7 +171,7 @@
 				  </label>
 			  </td>
 			  <td class="value" style="width: 32%">
-				  <input id="orderNo" name="orderNo" readonly value="${emkSamplePage.orderNo}" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				  <input id="orderNo" name="orderNo" datatype="*"  value="${emkSamplePage.orderNo}" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
 				  <span class="Validform_checktip"></span>
 				  <label class="Validform_label" style="display: none;">订单号</label>
 			  </td>
@@ -80,7 +194,10 @@
 					  </label>
 				  </td>
 				  <td class="value" style="width: 32%">
-					  <input id="businesser" name="businesser" readonly type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+					  <select class="form-control select2" id="businesserId"  >
+						  <option value=''>请选择</option>
+					  </select>
+					  <input id="businesser" name="businesser" readonly type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
 					  <input id="businesserName" name="businesserName"  type="hidden"  />
 					  <span class="Validform_checktip"></span>
 					  <label class="Validform_label" style="display: none;">业务员</label>
@@ -119,7 +236,10 @@
 				  </label>
 			  </td>
 				  <td class="value" style="width: 32%">
-					  <input id="tracer" name="tracer" readonly type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+					  <select class="form-control select2" id="tracerId"  >
+						  <option value=''>请选择</option>
+					  </select>
+					  <input id="tracer" name="tracer" readonly type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
 					  <input id="tracerName" name="tracerName"  type="hidden"  />
 					  <span class="Validform_checktip"></span>
 					  <label class="Validform_label" style="display: none;">业务员</label>
@@ -130,7 +250,10 @@
 					  </label>
 				  </td>
 				  <td class="value" style="width: 32%">
-					  <input id="developer" name="developer" readonly type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+					  <select class="form-control select2" id="developerId"  >
+						  <option value=''>请选择</option>
+					  </select>
+					  <input id="developer" name="developer" readonly type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
 					  <input id="developerName" name="developerName"  type="hidden"  />
 					  <span class="Validform_checktip"></span>
 					  <label class="Validform_label" style="display: none;">业务员</label>
@@ -149,6 +272,28 @@
 					<label class="Validform_label" style="display: none;">打样需求单编号</label>
 				</td>
 			</tr>--%>
+			  <tr>
+				  <td align="right">
+					  <label class="Validform_label">
+						  样品类型:
+					  </label>
+				  </td>
+				  <td class="value">
+					  <t:dictSelect id="type" field="type"  typeGroupCode="sampletype" datatype="*" defaultVal="default" hasLabel="false" title="样品类型"></t:dictSelect>
+					  <span class="Validform_checktip"></span>
+					  <label class="Validform_label" style="display: none;">样品类型</label>
+				  </td>
+				  <td align="right">
+					  <label class="Validform_label">
+						  版次:
+					  </label>
+				  </td>
+				  <td class="value">
+					  <input id="version" name="version"  type="text" style="width: 150px"  ignore="ignore" />
+					  <span class="Validform_checktip"></span>
+					  <label class="Validform_label" style="display: none;">版次</label>
+				  </td>
+			  </tr>
 		  	<tr>
 				<td align="right">
 					<label class="Validform_label">
@@ -219,29 +364,8 @@
 					<span class="Validform_checktip"></span>
 					<label class="Validform_label" style="display: none;">交货时间</label>
 				</td>
-					</tr>
-				  <tr>
-					  <td align="right">
-						  <label class="Validform_label">
-							  样品类型:
-						  </label>
-					  </td>
-					  <td class="value">
-						  <t:dictSelect id="type" field="type" typeGroupCode="sampletype" datatype="*" defaultVal="default" hasLabel="false" title="样品类型"></t:dictSelect>
-						  <span class="Validform_checktip"></span>
-						  <label class="Validform_label" style="display: none;">样品类型</label>
-					  </td>
-					  <td align="right">
-						  <label class="Validform_label">
-							  版次:
-						  </label>
-					  </td>
-					  <td class="value">
-						  <input id="version" name="version"  type="text" style="width: 150px"  ignore="ignore" />
-						  <span class="Validform_checktip"></span>
-						  <label class="Validform_label" style="display: none;">版次</label>
-					  </td>
-				  </tr>
+			</tr>
+
 				<tr>
 					<td align="right">
 						<label class="Validform_label">

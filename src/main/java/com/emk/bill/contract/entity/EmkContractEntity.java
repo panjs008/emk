@@ -19,6 +19,8 @@ public class EmkContractEntity implements Serializable {
     private String createBy;
     private Date createDate;
     private String sysOrgCode;
+    /**状态*/
+    private String state;
     @Excel(name = "业务员", width = 15)
     private String businesser;
     private String businesserName;
@@ -67,7 +69,13 @@ public class EmkContractEntity implements Serializable {
     private Double sumMoney;
     @Excel(name = "交货期", width = 15)
     private String recevieDate;
-
+    @Excel(name="审核意见", width=15.0D)
+    private String leadAdvice;
+    @Excel(name="是否通过", width=15.0D)
+    private String isPass;
+    private String leadUserId;
+    @Excel(name="审核人", width=15.0D)
+    private String leader;
     @Id
     @GeneratedValue(generator = "paymentableGenerator")
     @GenericGenerator(name = "paymentableGenerator", strategy = "uuid")
@@ -357,5 +365,62 @@ public class EmkContractEntity implements Serializable {
 
     public void setRecevieDate(String recevieDate) {
         this.recevieDate = recevieDate;
+    }
+
+    @Column(name ="STATE",nullable=true,length=32)
+    public String getState(){
+        return this.state;
+    }
+
+    /**
+     *方法: 设置java.lang.String
+     *@param: java.lang.String  状态
+     */
+    public void setState(String state){
+        this.state = state;
+    }
+
+    @Column(name="LEAD_ADVICE", nullable=true, length=256)
+    public String getLeadAdvice()
+    {
+        return this.leadAdvice;
+    }
+
+    public void setLeadAdvice(String leadAdvice)
+    {
+        this.leadAdvice = leadAdvice;
+    }
+
+    @Column(name="IS_PASS", nullable=true, length=32)
+    public String getIsPass()
+    {
+        return this.isPass;
+    }
+
+    public void setIsPass(String isPass)
+    {
+        this.isPass = isPass;
+    }
+
+    @Column(name="LEAD_USER_ID", nullable=true, length=32)
+    public String getLeadUserId()
+    {
+        return this.leadUserId;
+    }
+
+    public void setLeadUserId(String leadUserId)
+    {
+        this.leadUserId = leadUserId;
+    }
+
+    @Column(name="LEADER", nullable=true, length=32)
+    public String getLeader()
+    {
+        return this.leader;
+    }
+
+    public void setLeader(String leader)
+    {
+        this.leader = leader;
     }
 }

@@ -25,6 +25,7 @@ import javax.servlet.http.HttpSession;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
+import org.apache.commons.collections.map.HashedMap;
 import org.apache.log4j.Logger;
 import org.apache.tools.ant.util.DateUtils;
 import org.jeecgframework.core.beanvalidator.BeanValidators;
@@ -247,9 +248,11 @@ public class YmkCustomController
 
             ymkCustom.setCusCode(ChineseToEnglish.getPinYinHeadChar(ymkCustom.getCusName()));
             TSUser tsUser = (TSUser) this.systemService.findUniqueByProperty(TSUser.class, "userName", ymkCustom.getBusinesserName());
-            TSUserOrg userOrg = (TSUserOrg) tsUser.getUserOrgList().get(0);
-            ymkCustom.setBusinesseDeptName(userOrg.getTsDepart().getDepartname());
-            ymkCustom.setBusinesseDeptId(userOrg.getTsDepart().getId());
+            if(tsUser != null){
+                TSUserOrg userOrg = (TSUserOrg) tsUser.getUserOrgList().get(0);
+                ymkCustom.setBusinesseDeptName(userOrg.getTsDepart().getDepartname());
+                ymkCustom.setBusinesseDeptId(userOrg.getTsDepart().getId());
+            }
 
             this.ymkCustomService.save(ymkCustom);
 
@@ -323,13 +326,18 @@ public class YmkCustomController
         String message = null;
         AjaxJson j = new AjaxJson();
         message = "客户表更新成功";
+
         YmkCustomEntity t = (YmkCustomEntity) this.ymkCustomService.get(YmkCustomEntity.class, ymkCustom.getId());
         try {
             ymkCustom.setCusCode(ChineseToEnglish.getPinYinHeadChar(ymkCustom.getCusName()));
             TSUser tsUser = (TSUser) this.systemService.findUniqueByProperty(TSUser.class, "userName", ymkCustom.getBusinesserName());
-            TSUserOrg userOrg = (TSUserOrg) tsUser.getUserOrgList().get(0);
-            ymkCustom.setBusinesseDeptName(userOrg.getTsDepart().getDepartname());
-            ymkCustom.setBusinesseDeptId(userOrg.getTsDepart().getId());
+            if(tsUser != null){
+                TSUserOrg userOrg = (TSUserOrg) tsUser.getUserOrgList().get(0);
+                ymkCustom.setBusinesseDeptName(userOrg.getTsDepart().getDepartname());
+                ymkCustom.setBusinesseDeptId(userOrg.getTsDepart().getId());
+            }
+            t.setChengShi(ymkCustom.getChengShi());
+            t.setPianQu(ymkCustom.getPianQu());
             MyBeanUtils.copyBeanNotNull2Bean(ymkCustom, t);
 
             this.ymkCustomService.saveOrUpdate(t);
@@ -369,6 +377,24 @@ public class YmkCustomController
         j.setObj(userList);
 
 
+        return j;
+    }
+
+    @RequestMapping(params = "getDeptInfoByUser")
+    @ResponseBody
+    public AjaxJson getDeptInfoByUser(String userName, HttpServletRequest request) {
+        AjaxJson j = new AjaxJson();
+        TSUser tsUser = (TSUser) this.systemService.findUniqueByProperty(TSUser.class, "userName", userName);
+        if(tsUser != null){
+            TSUserOrg userOrg = tsUser.getUserOrgList().get(0);
+            TSDepart depart = userOrg.getTsDepart();
+            Map dept = new HashedMap();
+            dept.put("departname",depart.getDepartname());
+            dept.put("orgCode",depart.getOrgCode());
+
+            j.setObj(dept);
+            j.setSuccess(true);
+        }
         return j;
     }
 

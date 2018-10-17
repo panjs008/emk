@@ -261,6 +261,9 @@ public class ChooseTag extends TagSupport {
 		if (this.url.contains("userController.do?userOwner")) {
 			sb.append("returnToVal0();");
 		}
+		if (this.url.contains("ymkCustomController.do?select")) {
+			sb.append("returnToSelect();");
+		}
 		sb.append("}");
 	}
 	

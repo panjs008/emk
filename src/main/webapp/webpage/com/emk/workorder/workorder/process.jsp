@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@include file="/context/mytags.jsp"%>
-<t:base type="jquery,easyui,tools,DatePicker"></t:base>
 <script>
     $(document).ready(function() {
         var height = window.top.document.body.offsetHeight * 0.79;
@@ -9,8 +8,8 @@
 
     });
 </script>
-<div id="orderDiv" title="流程图" style="width:100%;height:350px;overflow:hidden" >
-    <iframe scrolling="no" id="processFrm" frameborder="0" style=""  src="emkWorkOrderController.do?showProcess&id=${param.id}" width="100%" height="100%"></iframe>
+<div id="orderDiv" title="流程图" style="width:100%;height:350px;overflow:hidden;overflow-x: hidden;overflow-y: hidden" >
+    <iframe scrolling="no" id="processFrm" frameborder="0" style=""  src="flowController.do?showProcess&id=${param.id}&tableName=emk_work_order" width="100%" height="100%"></iframe>
 </div>
 <%--<t:datagrid name="uRepairList" height="150px" checkbox="false" pagination="true" fitColumns="true" title="" actionUrl="flowController.do?hisProcessDatagrid&id=${param.id}" idField="id" fit="true" btnCls="bootstrap"  queryMode="group">
     <t:dgCol title="流程节点"  field="NAME_"  queryMode="single"  width="120"></t:dgCol>
@@ -22,9 +21,14 @@
 <%--<div id="processHisDiv"  style="width:100%;height:230px;overflow:hidden;" >
     <iframe scrolling="yes" id="processHisFrm" frameborder="0" src="flowController.do?processHis&id=${param.id}" width="99%" height="100%"></iframe>
 </div>--%>
-<div class="easyui-layout" fit="true" style="height: 100px">
+<div id="hisProcessDiv" title="" style="width:100%;height:230px;overflow:hidden;overflow-x: hidden;overflow-y: hidden" >
+    <iframe scrolling="no" id="hisProcessFrm" frameborder="0" style="overflow-x: hidden;overflow-y: hidden"  src="flowController.do?processHis&sqlType=inStorage&id=${param.id}" width="100%" height="100%"></iframe>
+
+    </div>
+<%--
+<div class="easyui-layout" fit="true" style="height: 0px">
     <div region="center" style="padding:0px;border:0px;">
-        <t:datagrid name="instorageList" checkbox="false" pagination="true" fitColumns="true" title="" actionUrl="flowController.do?hisProcessDatagrid&sqlType=inStorage&id=${param.id}" idField="id" fit="true" btnCls="bootstrap"  queryMode="group">
+        <t:datagrid name="instorageList" checkbox="false" pagination="false" fitColumns="true" title="" actionUrl="flowController.do?hisProcessDatagrid&sqlType=inStorage&id=${param.id}" idField="id" fit="true" btnCls="bootstrap"  queryMode="group">
             <t:dgCol title="流程节点"  field="NAME_"  queryMode="single"  width="120"></t:dgCol>
             <t:dgCol title="操作人"  field="workname"  queryMode="single"  width="120"></t:dgCol>
             <t:dgCol title="开始时间"  field="startTime"  queryMode="single"  width="120"></t:dgCol>
@@ -33,4 +37,4 @@
 
         </t:datagrid>
     </div>
-</div>
+</div>--%>

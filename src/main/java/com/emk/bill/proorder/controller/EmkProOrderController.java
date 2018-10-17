@@ -14,7 +14,9 @@ import com.emk.storage.instorage.entity.EmkInStorageEntity;
 import com.emk.storage.sampledetail.entity.EmkSampleDetailEntity;
 import com.emk.storage.storage.entity.EmkStorageEntity;
 import com.emk.storage.storagelog.entity.EmkStorageLogEntity;
+import com.emk.util.FlowUtil;
 import com.emk.util.ParameterUtil;
+import com.emk.workorder.workorder.entity.EmkWorkOrderEntity;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -607,7 +609,7 @@ public class EmkProOrderController extends BaseController {
 
 
                                 contractEntity.setId(null);
-
+                                contractEntity.setState("0");
                                 contractEntity.setPartyA(user.getCurrentDepart().getDepartname());
                                 contractEntity.setPartyAId(user.getCurrentDepart().getOrgCode());
                                 contractEntity.setPartyB(t.getGys());
@@ -709,6 +711,10 @@ public class EmkProOrderController extends BaseController {
                                         }
                                     }
                                 }
+                                EmkWorkOrderEntity workOrderEntity = systemService.findUniqueByProperty(EmkWorkOrderEntity.class,"workNo",t.getWorkNo());
+                                workOrderEntity.setOrderNo(t.getOrderNo());
+                                workOrderEntity.setOrderType("0");
+                                systemService.saveOrUpdate(workOrderEntity);
                                 taskService.complete(task1.getId(), variables);
                             } else {
                                 List<HistoricTaskInstance> hisTasks = historyService.createHistoricTaskInstanceQuery().taskAssignee(t.getId()).list();
@@ -717,7 +723,7 @@ public class EmkProOrderController extends BaseController {
                                 if (taskList.size() > 0) {
                                     Task taskH = (Task)taskList.get(taskList.size() - 1);
                                     HistoricTaskInstance historicTaskInstance = hisTasks.get(hisTasks.size() - 2);
-                                    turnTransition(taskH.getId(), historicTaskInstance.getTaskDefinitionKey(), variables);
+                                    FlowUtil.turnTransition(taskH.getId(), historicTaskInstance.getTaskDefinitionKey(), variables);
                                     Map activityMap = systemService.findOneForJdbc("SELECT GROUP_CONCAT(t0.ID_) ids,GROUP_CONCAT(t0.TASK_ID_) taskids FROM act_hi_actinst t0 WHERE t0.ASSIGNEE_=? AND t0.ACT_ID_=? ORDER BY ID_ ASC", new Object[] { t.getId(), historicTaskInstance.getTaskDefinitionKey() });
                                     String[] activitIdArr = activityMap.get("ids").toString().split(",");
                                     String[] taskIdArr = activityMap.get("taskids").toString().split(",");
@@ -745,160 +751,6 @@ public class EmkProOrderController extends BaseController {
         }
         j.setMsg(message);
         return j;
-    }
-
-    /**
-     * 流程转向操作
-     *
-     * @param taskId
-     *            当前任务ID
-     * @param activityId
-     *            目标节点任务ID
-     * @param variables
-     *            流程变量
-     * @throws Exception
-     */
-    private void turnTransition(String taskId, String activityId,
-                                Map<String, Object> variables) throws Exception {
-        // 当前节点
-        ActivityImpl currActivity = findActivitiImpl(taskId, null);
-        // 清空当前流向
-        List<PvmTransition> oriPvmTransitionList = clearTransition(currActivity);
-        // 创建新流向
-        TransitionImpl newTransition = currActivity.createOutgoingTransition();
-        // 目标节点
-        ActivityImpl pointActivity = findActivitiImpl(taskId, activityId);
-        // 设置新流向的目标节点
-        newTransition.setDestination(pointActivity);
-        // 执行转向任务
-        taskService.complete(taskId, variables);
-        // 删除目标节点新流入
-        pointActivity.getIncomingTransitions().remove(newTransition);
-        // 还原以前流向
-        restoreTransition(currActivity, oriPvmTransitionList);
-    }
-
-    /**
-     * 清空指定活动节点流向
-     *
-     * @param activityImpl
-     *            活动节点
-     * @return 节点流向集合
-     */
-    private List<PvmTransition> clearTransition(ActivityImpl activityImpl) {
-        // 存储当前节点所有流向临时变量
-        List<PvmTransition> oriPvmTransitionList = new ArrayList<PvmTransition>();
-        // 获取当前节点所有流向，存储到临时变量，然后清空
-        List<PvmTransition> pvmTransitionList = activityImpl
-                .getOutgoingTransitions();
-        for (PvmTransition pvmTransition : pvmTransitionList) {
-            oriPvmTransitionList.add(pvmTransition);
-        }
-        pvmTransitionList.clear();
-
-        return oriPvmTransitionList;
-    }
-
-    /**
-     * 还原指定活动节点流向
-     *
-     * @param activityImpl
-     *            活动节点
-     * @param oriPvmTransitionList
-     *            原有节点流向集合
-     */
-    private void restoreTransition(ActivityImpl activityImpl,
-                                   List<PvmTransition> oriPvmTransitionList) {
-        // 清空现有流向
-        List<PvmTransition> pvmTransitionList = activityImpl
-                .getOutgoingTransitions();
-        pvmTransitionList.clear();
-        // 还原以前流向
-        for (PvmTransition pvmTransition : oriPvmTransitionList) {
-            pvmTransitionList.add(pvmTransition);
-        }
-    }
-
-    /**
-     * 根据任务ID获取流程定义
-     *
-     * @param taskId
-     *            任务ID
-     * @return
-     * @throws Exception
-     */
-    private ProcessDefinitionEntity findProcessDefinitionEntityByTaskId(
-            String taskId) throws Exception {
-        // 取得流程定义
-        ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) ((RepositoryServiceImpl) repositoryService)
-                .getDeployedProcessDefinition(findTaskById(taskId)
-                        .getProcessDefinitionId());
-
-        if (processDefinition == null) {
-            throw new Exception("流程定义未找到!");
-        }
-
-        return processDefinition;
-    }
-
-
-
-    /**
-     * 根据任务ID和节点ID获取活动节点 <br>
-     *
-     * @param taskId
-     *            任务ID
-     * @param activityId
-     *            活动节点ID <br>
-     *            如果为null或""，则默认查询当前活动节点 <br>
-     *            如果为"end"，则查询结束节点 <br>
-     *
-     * @return
-     * @throws Exception
-     */
-    private ActivityImpl findActivitiImpl(String taskId, String activityId)
-            throws Exception {
-        // 取得流程定义
-        ProcessDefinitionEntity processDefinition = findProcessDefinitionEntityByTaskId(taskId);
-
-        // 获取当前活动节点ID
-        if (activityId == null || activityId.isEmpty()) {
-            activityId = findTaskById(taskId).getTaskDefinitionKey();
-        }
-
-        // 根据流程定义，获取该流程实例的结束节点
-        if (activityId.toUpperCase().equals("END")) {
-            for (ActivityImpl activityImpl : processDefinition.getActivities()) {
-                List<PvmTransition> pvmTransitionList = activityImpl
-                        .getOutgoingTransitions();
-                if (pvmTransitionList.isEmpty()) {
-                    return activityImpl;
-                }
-            }
-        }
-
-        // 根据节点ID，获取对应的活动节点
-        ActivityImpl activityImpl = ((ProcessDefinitionImpl) processDefinition)
-                .findActivity(activityId);
-
-        return activityImpl;
-    }
-
-    /**
-     * 根据任务ID获得任务实例
-     *
-     * @param taskId
-     *            任务ID
-     * @return
-     * @throws Exception
-     */
-    private TaskEntity findTaskById(String taskId) throws Exception {
-        TaskEntity task = (TaskEntity) taskService.createTaskQuery().taskId(
-                taskId).singleResult();
-        if (task == null) {
-            throw new Exception("任务实例未找到!");
-        }
-        return task;
     }
 
     @RequestMapping(params="goWork")
@@ -984,46 +836,5 @@ public class EmkProOrderController extends BaseController {
         return j;
     }
 
-    @RequestMapping(params="showProcess")
-    public void showProcess(HttpServletRequest req, HttpServletResponse response) throws Exception {
-        Map map = ParameterUtil.getParamMaps(req.getParameterMap());
 
-        List<Task> task = taskService.createTaskQuery().taskAssignee(map.get("id").toString()).list();
-        String processInstanceId = "";
-        EmkProOrderEntity t = emkProOrderService.get(EmkProOrderEntity.class, map.get("id").toString());
-        if (task.size() > 0) {
-            Task task1 = (Task)task.get(task.size() - 1);
-            processInstanceId = task1.getProcessInstanceId();
-        }else if (t.getState().equals("2")) {
-            Map hisPorcess = systemService.findOneForJdbc("SELECT PROC_INST_ID_ processid FROM act_hi_taskinst WHERE ASSIGNEE_=? LIMIT 0,1 ", map.get("id").toString());
-            processInstanceId = String.valueOf(hisPorcess.get("processid"));
-        }
-        if (processInstanceId != null && !processInstanceId.isEmpty()) {
-            HistoricProcessInstance processInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
-
-            BpmnModel bpmnModel = repositoryService.getBpmnModel(processInstance.getProcessDefinitionId());
-            processEngineConfiguration = processEngine.getProcessEngineConfiguration();
-            Context.setProcessEngineConfiguration((ProcessEngineConfigurationImpl)processEngineConfiguration);
-
-            ProcessDiagramGenerator diagramGenerator = processEngineConfiguration.getProcessDiagramGenerator();
-            ProcessDefinitionEntity definitionEntity = (ProcessDefinitionEntity)repositoryService.getProcessDefinition(processInstance.getProcessDefinitionId());
-
-            List<HistoricActivityInstance> highLightedActivitList = historyService.createHistoricActivityInstanceQuery().processInstanceId(processInstanceId).list();
-
-            List<String> highLightedActivitis = new ArrayList();
-
-            List<String> highLightedFlows = ParameterUtil.getHighLightedFlows(definitionEntity, highLightedActivitList);
-            for (HistoricActivityInstance tempActivity : highLightedActivitList) {
-                String activityId = tempActivity.getActivityId();
-                highLightedActivitis.add(activityId);
-            }
-            InputStream imageStream = diagramGenerator.generateDiagram(bpmnModel, "png", highLightedActivitis, highLightedFlows, "宋体", "宋体", null, 1.0D);
-
-            byte[] b = new byte[1024];
-            int len;
-            while ((len = imageStream.read(b, 0, 1024)) != -1) {
-                response.getOutputStream().write(b, 0, len);
-            }
-        }
-    }
 }

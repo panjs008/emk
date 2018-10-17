@@ -14,6 +14,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.SequenceGenerator;
 import org.jeecgframework.poi.excel.annotation.Excel;
@@ -346,7 +348,7 @@ public class EmkWorkOrderEntity implements java.io.Serializable {
 	 *方法: 取得java.lang.String
 	 *@return: java.lang.String  工单环节
 	 */
-
+	@Formula("(select p.NAME_ from act_ru_task p where p.ASSIGNEE_ = id)")
 	@Column(name ="PROCESS_NAME",nullable=true,length=32)
 	public String getProcessName(){
 		return this.processName;

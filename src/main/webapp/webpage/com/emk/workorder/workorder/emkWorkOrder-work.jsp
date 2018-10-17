@@ -15,7 +15,7 @@
 <t:formvalid formid="formobj" dialog="true" usePlugin="password" layout="table" action="emkWorkOrderController.do?doSubmit"  tiptype="1" >
 	<input id="id" name="id" type="hidden" value="${param.id }"/>
 	<table id="adviceTb" style="width: 100%;margin-top:2px;margin-bottom: 4px" cellpadding="0" cellspacing="1" class="formtable">
-		<c:if test="${orderFinish eq '0' && (orderPorcess.taskDefinitionKey eq 'khxpTask' || orderPorcess.taskDefinitionKey eq 'sampleTask' || orderPorcess.taskDefinitionKey eq 'sampleCheckTask') }">
+		<c:if test="${orderFinish eq '0' && (orderPorcess.taskDefinitionKey eq 'khxpTask' || orderPorcess.taskDefinitionKey eq 'sampleTask' || orderPorcess.taskDefinitionKey eq 'sampleCheckTask' || orderPorcess.taskDefinitionKey eq 'billTask'|| orderPorcess.taskDefinitionKey eq 'htTask' || orderPorcess.taskDefinitionKey eq 'produceTask') }">
 			<c:if test="${orderPorcess.taskDefinitionKey eq 'sampleCheckTask'}">
 				<tr>
 					<td align="right">

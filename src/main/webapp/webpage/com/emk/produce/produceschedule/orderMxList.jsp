@@ -59,9 +59,9 @@
 });
 
 </script>
-
-
-<div style="padding: 3px; height: 25px; width: width:800px; " class="datagrid-toolbar"><a id="addBtn" href="#">添加</a> <a id="delBtn" href="#">删除</a></div>
+<c:if test="${orderFinish eq ''}">
+    <div style="padding: 3px; height: 25px; width: width:800px; " class="datagrid-toolbar"><a id="addBtn" href="#">添加</a> <a id="delBtn" href="#">删除</a></div>
+</c:if>
 
 <%--<table border="0" cellpadding="2" cellspacing="0" id="jeecgOrderProduct_table">--%>
 <input id="orderMxListID" type="hidden" name="dataRowsVal" value="${fn:length(emkProOrderDetailEntities)}"/>

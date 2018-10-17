@@ -11,7 +11,8 @@
 			var src = d.attributes.url;
 			$("#customSampleUrl").val(d.attributes.url);
 			$("#customSample").val(d.attributes.name);
-			$("#customSampleId").html(d.attributes.name);
+			$("#customSampleId").html("[<a href=\"javascript:findDetail('"+d.attributes.url+"')\">"+d.attributes.name+"</a>]");
+
 			$("#uploadimg0").attr('src',d.attributes.url);
 
 		}
@@ -19,7 +20,8 @@
 			var src = d.attributes.url;
 			$("#colorCardUrl").val(d.attributes.url);
 			$("#colorCard").val(d.attributes.name);
-			$("#colorCardId").html(d.attributes.name);
+			$("#colorCardId").html("[<a href=\"javascript:findDetail('"+d.attributes.url+"')\">"+d.attributes.name+"</a>]");
+
 			$("#uploadimg1").attr('src',d.attributes.url);
 
 		}
@@ -27,7 +29,8 @@
 			var src = d.attributes.url;
 			$("#colorNumUrl").val(d.attributes.url);
 			$("#colorNum").val(d.attributes.name);
-			$("#colorNumId").html(d.attributes.name);
+			$("#colorNumId").html("[<a href=\"javascript:findDetail('"+d.attributes.url+"')\">"+d.attributes.name+"</a>]");
+
 			$("#uploadimg2").attr('src',d.attributes.url);
 
 		}
@@ -35,14 +38,16 @@
 			var src = d.attributes.url;
 			$("#colorDataUrl").val(d.attributes.url);
 			$("#colorData").val(d.attributes.name);
-			$("#colorDataId").html(d.attributes.name);
+			$("#colorDataId").html("[<a href=\"javascript:findDetail('"+d.attributes.url+"')\">"+d.attributes.name+"</a>]");
+
 			$("#uploadimg3").attr('src',d.attributes.url);
 		}
 		function uploadSuccess4(d,file,response){
 			var src = d.attributes.url;
 			$("#colorQtxUrl").val(d.attributes.url);
 			$("#colorQtx").val(d.attributes.name);
-			$("#colorQtxId").html(d.attributes.name);
+			$("#colorQtxId").html("[<a href=\"javascript:findDetail('"+d.attributes.url+"')\">"+d.attributes.name+"</a>]");
+
 			$("#uploadimg4").attr('src',d.attributes.url);
 		}
 
@@ -60,6 +65,25 @@
 			}else{
 				$("#dgrImageDiv").css("display","none");
 			}
+		}
+
+		function findDetail(photoUrl) {
+			$.dialog({
+				content: 'url:emkEnquiryController.do?photo&photoUrl='+photoUrl,
+				zIndex: getzIndex(),
+				title : "查看",
+				lock : true,
+				width:900,
+				height: 500,
+				opacity : 0.3,
+				cache:false,
+				lock : true,
+				cache:false,
+				max: true,
+				min: true,
+				drag: true,
+				resize: false
+			});
 		}
 	</script>
 </head>

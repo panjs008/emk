@@ -4,6 +4,7 @@ import com.emk.bound.minstoragedetail.entity.EmkMInStorageDetailEntity;
 import com.emk.storage.instorage.entity.EmkInStorageEntity;
 import com.emk.storage.storage.entity.EmkStorageEntity;
 import com.emk.storage.storagelog.entity.EmkStorageLogEntity;
+import com.emk.util.FlowUtil;
 import com.emk.util.ParameterUtil;
 import com.emk.workorder.workorder.entity.EmkWorkOrderEntity;
 import com.emk.workorder.workorder.service.EmkWorkOrderServiceI;
@@ -520,9 +521,9 @@ public class EmkWorkOrderController extends BaseController {
 								return j;
 							}
 							t.setSampleAdvice(map.get("leadAdvice").toString());
-							t.setSampleCheckUser(user.getRealName());
-							t.setSampleCheckUserId(user.getUserName());
+							t.setSampleUser(user.getRealName());
 							t.setSampleDate(DateUtil.getCurrentDate());
+							t.setSampleUserId(user.getUserName());
 							variables.put("isPass", t.getIsPass());
 							taskService.complete(task1.getId(), variables);
 						}
@@ -534,11 +535,65 @@ public class EmkWorkOrderController extends BaseController {
 							}
 							if(emkWorkOrderEntity.getIsPass().equals("0")){
 								variables.put("isPass", t.getIsPrint());
+							}else {
+								List<HistoricTaskInstance> hisTasks = historyService.createHistoricTaskInstanceQuery().taskAssignee(t.getId()).list();
+
+								List<Task> taskList = taskService.createTaskQuery().taskAssignee(t.getId()).list();
+								if (taskList.size() > 0) {
+									Task taskH = (Task)taskList.get(taskList.size() - 1);
+									HistoricTaskInstance historicTaskInstance = hisTasks.get(hisTasks.size() - 2);
+									FlowUtil.turnTransition(taskH.getId(), historicTaskInstance.getTaskDefinitionKey(), variables);
+									Map activityMap = systemService.findOneForJdbc("SELECT GROUP_CONCAT(t0.ID_) ids,GROUP_CONCAT(t0.TASK_ID_) taskids FROM act_hi_actinst t0 WHERE t0.ASSIGNEE_=? AND t0.ACT_ID_=? ORDER BY ID_ ASC", new Object[] { t.getId(), historicTaskInstance.getTaskDefinitionKey() });
+									String[] activitIdArr = activityMap.get("ids").toString().split(",");
+									String[] taskIdArr = activityMap.get("taskids").toString().split(",");
+									systemService.executeSql("UPDATE act_hi_taskinst SET  NAME_=CONCAT('【驳回后】','',NAME_) WHERE ASSIGNEE_>=? AND ID_=?",t.getId(), taskIdArr[1]);
+									systemService.executeSql("delete from act_hi_actinst where ID_>=? and ID_<?", activitIdArr[0], activitIdArr[1] );
+								}
+								t.setState("0");
 							}
-							t.setAskWorkUser(user.getRealName());
-							t.setAskWorkUserId(user.getUserName());
+							t.setSampleCheckUser(user.getRealName());
+							t.setSampleCheckUserId(user.getUserName());
 							t.setSampleCheckAdvice(map.get("leadAdvice").toString());
-							t.setAskWorkDate(DateUtil.getCurrentDate());
+							t.setSampleCheckDate(DateUtil.getCurrentDate());
+							taskService.complete(task1.getId(), variables);
+						}
+						if (task1.getTaskDefinitionKey().equals("billTask")) {
+							if(t.getOrderNo() == null || t.getOrderNo().equals("")){
+								j.setMsg("订单单号还未生成，请确认");
+								j.setSuccess(false);
+								return j;
+							}
+
+							t.setOrderUser(user.getRealName());
+							t.setOrderUserId(user.getUserName());
+							t.setOrderAdvice(map.get("leadAdvice").toString());
+							t.setOrderDate(DateUtil.getCurrentDate());
+							taskService.complete(task1.getId(), variables);
+						}
+						if (task1.getTaskDefinitionKey().equals("htTask")) {
+							if(t.getHtNo() == null || t.getHtNo().equals("")){
+								j.setMsg("合同单号还未生成，请确认");
+								j.setSuccess(false);
+								return j;
+							}
+
+							t.setHtUser(user.getRealName());
+							t.setHtUserId(user.getUserName());
+							t.setHtAdvice(map.get("leadAdvice").toString());
+							t.setHtDate(DateUtil.getCurrentDate());
+							taskService.complete(task1.getId(), variables);
+						}
+						if (task1.getTaskDefinitionKey().equals("produceTask")) {
+							if(t.getProduceNo() == null || t.getProduceNo().equals("")){
+								j.setMsg("生产单号还未生成，请确认");
+								j.setSuccess(false);
+								return j;
+							}
+
+							t.setHtUser(user.getRealName());
+							t.setHtUserId(user.getUserName());
+							t.setHtAdvice(map.get("leadAdvice").toString());
+							t.setHtDate(DateUtil.getCurrentDate());
 							taskService.complete(task1.getId(), variables);
 						}
 						if (task1.getTaskDefinitionKey().equals("checkTask")) {
@@ -596,159 +651,7 @@ public class EmkWorkOrderController extends BaseController {
 		return j;
 	}
 
-	/**
-	 * 流程转向操作
-	 *
-	 * @param taskId
-	 *            当前任务ID
-	 * @param activityId
-	 *            目标节点任务ID
-	 * @param variables
-	 *            流程变量
-	 * @throws Exception
-	 */
-	private void turnTransition(String taskId, String activityId,
-								Map<String, Object> variables) throws Exception {
-		// 当前节点
-		ActivityImpl currActivity = findActivitiImpl(taskId, null);
-		// 清空当前流向
-		List<PvmTransition> oriPvmTransitionList = clearTransition(currActivity);
-		// 创建新流向
-		TransitionImpl newTransition = currActivity.createOutgoingTransition();
-		// 目标节点
-		ActivityImpl pointActivity = findActivitiImpl(taskId, activityId);
-		// 设置新流向的目标节点
-		newTransition.setDestination(pointActivity);
-		// 执行转向任务
-		taskService.complete(taskId, variables);
-		// 删除目标节点新流入
-		pointActivity.getIncomingTransitions().remove(newTransition);
-		// 还原以前流向
-		restoreTransition(currActivity, oriPvmTransitionList);
-	}
 
-	/**
-	 * 清空指定活动节点流向
-	 *
-	 * @param activityImpl
-	 *            活动节点
-	 * @return 节点流向集合
-	 */
-	private List<PvmTransition> clearTransition(ActivityImpl activityImpl) {
-		// 存储当前节点所有流向临时变量
-		List<PvmTransition> oriPvmTransitionList = new ArrayList<PvmTransition>();
-		// 获取当前节点所有流向，存储到临时变量，然后清空
-		List<PvmTransition> pvmTransitionList = activityImpl
-				.getOutgoingTransitions();
-		for (PvmTransition pvmTransition : pvmTransitionList) {
-			oriPvmTransitionList.add(pvmTransition);
-		}
-		pvmTransitionList.clear();
-
-		return oriPvmTransitionList;
-	}
-
-	/**
-	 * 还原指定活动节点流向
-	 *
-	 * @param activityImpl
-	 *            活动节点
-	 * @param oriPvmTransitionList
-	 *            原有节点流向集合
-	 */
-	private void restoreTransition(ActivityImpl activityImpl,
-								   List<PvmTransition> oriPvmTransitionList) {
-		// 清空现有流向
-		List<PvmTransition> pvmTransitionList = activityImpl
-				.getOutgoingTransitions();
-		pvmTransitionList.clear();
-		// 还原以前流向
-		for (PvmTransition pvmTransition : oriPvmTransitionList) {
-			pvmTransitionList.add(pvmTransition);
-		}
-	}
-
-	/**
-	 * 根据任务ID获取流程定义
-	 *
-	 * @param taskId
-	 *            任务ID
-	 * @return
-	 * @throws Exception
-	 */
-	private ProcessDefinitionEntity findProcessDefinitionEntityByTaskId(
-			String taskId) throws Exception {
-		// 取得流程定义
-		ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) ((RepositoryServiceImpl) repositoryService)
-				.getDeployedProcessDefinition(findTaskById(taskId)
-						.getProcessDefinitionId());
-
-		if (processDefinition == null) {
-			throw new Exception("流程定义未找到!");
-		}
-
-		return processDefinition;
-	}
-
-
-
-	/**
-	 * 根据任务ID和节点ID获取活动节点 <br>
-	 *
-	 * @param taskId
-	 *            任务ID
-	 * @param activityId
-	 *            活动节点ID <br>
-	 *            如果为null或""，则默认查询当前活动节点 <br>
-	 *            如果为"end"，则查询结束节点 <br>
-	 *
-	 * @return
-	 * @throws Exception
-	 */
-	private ActivityImpl findActivitiImpl(String taskId, String activityId)
-			throws Exception {
-		// 取得流程定义
-		ProcessDefinitionEntity processDefinition = findProcessDefinitionEntityByTaskId(taskId);
-
-		// 获取当前活动节点ID
-		if (activityId == null || activityId.isEmpty()) {
-			activityId = findTaskById(taskId).getTaskDefinitionKey();
-		}
-
-		// 根据流程定义，获取该流程实例的结束节点
-		if (activityId.toUpperCase().equals("END")) {
-			for (ActivityImpl activityImpl : processDefinition.getActivities()) {
-				List<PvmTransition> pvmTransitionList = activityImpl
-						.getOutgoingTransitions();
-				if (pvmTransitionList.isEmpty()) {
-					return activityImpl;
-				}
-			}
-		}
-
-		// 根据节点ID，获取对应的活动节点
-		ActivityImpl activityImpl = ((ProcessDefinitionImpl) processDefinition)
-				.findActivity(activityId);
-
-		return activityImpl;
-	}
-
-	/**
-	 * 根据任务ID获得任务实例
-	 *
-	 * @param taskId
-	 *            任务ID
-	 * @return
-	 * @throws Exception
-	 */
-	private TaskEntity findTaskById(String taskId) throws Exception {
-		TaskEntity task = (TaskEntity) taskService.createTaskQuery().taskId(
-				taskId).singleResult();
-		if (task == null) {
-			throw new Exception("任务实例未找到!");
-		}
-		return task;
-	}
 
 	@RequestMapping(params="goWork")
 	public ModelAndView goWork(EmkWorkOrderEntity emkWorkOrderEntity, HttpServletRequest req) {
@@ -764,9 +667,15 @@ public class EmkWorkOrderController extends BaseController {
 		String sql = "";String countsql = "";
 		Map map = ParameterUtil.getParamMaps(req.getParameterMap());
 
-		sql = "SELECT DATE_FORMAT(t1.START_TIME_, '%Y-%m-%d %H:%i:%s') startTime,t1.*,CASE \n" +
+		sql = " SELECT DATE_FORMAT(t1.START_TIME_, '%Y-%m-%d %H:%i:%s') startTime,t1.*,CASE \n" +
 				" WHEN t1.TASK_DEF_KEY_='khxpTask' THEN t2.create_name \n" +
 				" WHEN t1.TASK_DEF_KEY_='sampleTask' THEN t2.ask_work_user \n" +
+				" WHEN t1.TASK_DEF_KEY_='sampleCheckTask' THEN t2.ask_work_user \n" +
+				" WHEN t1.TASK_DEF_KEY_='billTask' THEN t2.ask_work_user \n" +
+				" WHEN t1.TASK_DEF_KEY_='htTask' THEN t2.ask_work_user \n" +
+				" WHEN t1.TASK_DEF_KEY_='produceTask' THEN t2.ask_work_user \n" +
+				" WHEN t1.TASK_DEF_KEY_='outTask' THEN t2.ask_work_user \n" +
+
 				" END workname FROM act_hi_taskinst t1 \n" +
 				" LEFT JOIN emk_work_order t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='" + map.get("id") + "' ";
 
@@ -790,7 +699,7 @@ public class EmkWorkOrderController extends BaseController {
 
 	}
 
-	@RequestMapping(params="goProcess")
+	/*@RequestMapping(params="goProcess")
 	public ModelAndView goProcess(EmkWorkOrderEntity emkWorkOrderEntity, HttpServletRequest req) {
 		EmkWorkOrderEntity t = systemService.get(EmkWorkOrderEntity.class, emkWorkOrderEntity.getId());
 		List<Task> task = taskService.createTaskQuery().taskAssignee(t.getId()).list();
@@ -811,71 +720,6 @@ public class EmkWorkOrderController extends BaseController {
 	@RequestMapping(params="process")
 	public ModelAndView process(EmkWorkOrderEntity emkWorkOrderEntity, HttpServletRequest req) {
 		return new ModelAndView("com/emk/workorder/workorder/process");
-	}
+	}*/
 
-	@RequestMapping(params="getCurrentProcess")
-	@ResponseBody
-	public AjaxJson getCurrentProcess(EmkWorkOrderEntity emkWorkOrderEntity, HttpServletRequest request) {
-		String message = null;
-		AjaxJson j = new AjaxJson();
-		EmkWorkOrderEntity t = systemService.get(EmkWorkOrderEntity.class, emkWorkOrderEntity.getId());
-		List<Task> task = taskService.createTaskQuery().taskAssignee(t.getId()).list();
-		if (task.size() > 0) {
-			Task task1 = (Task)task.get(task.size() - 1);
-			j.setMsg(task1.getName());
-			request.getSession().setAttribute("orderPorcess", task1);
-			request.getSession().setAttribute("orderFinish", "0");
-		}else if (t.getState().equals("2")) {
-			j.setMsg("完成");
-			request.getSession().setAttribute("orderFinish", "1");
-		}else {
-			j.setMsg("工单");
-			request.getSession().setAttribute("orderFinish", "0");
-			request.getSession().setAttribute("orderPorcess", null);
-		}
-		return j;
-	}
-
-	@RequestMapping(params="showProcess")
-	public void showProcess(HttpServletRequest req, HttpServletResponse response) throws Exception {
-		Map map = ParameterUtil.getParamMaps(req.getParameterMap());
-
-		List<Task> task = taskService.createTaskQuery().taskAssignee(map.get("id").toString()).list();
-		String processInstanceId = "";
-		EmkWorkOrderEntity t = emkWorkOrderService.get(EmkWorkOrderEntity.class, map.get("id").toString());
-		if (task.size() > 0) {
-			Task task1 = (Task)task.get(task.size() - 1);
-			processInstanceId = task1.getProcessInstanceId();
-		}else if (t.getState().equals("2")) {
-			Map hisPorcess = systemService.findOneForJdbc("SELECT PROC_INST_ID_ processid FROM act_hi_taskinst WHERE ASSIGNEE_=? LIMIT 0,1 ", new Object[] { map.get("id").toString() });
-			processInstanceId = String.valueOf(hisPorcess.get("processid"));
-		}
-		if (processInstanceId != null && !processInstanceId.isEmpty()) {
-			HistoricProcessInstance processInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
-
-			BpmnModel bpmnModel = repositoryService.getBpmnModel(processInstance.getProcessDefinitionId());
-			processEngineConfiguration = processEngine.getProcessEngineConfiguration();
-			Context.setProcessEngineConfiguration((ProcessEngineConfigurationImpl)processEngineConfiguration);
-
-			ProcessDiagramGenerator diagramGenerator = processEngineConfiguration.getProcessDiagramGenerator();
-			ProcessDefinitionEntity definitionEntity = (ProcessDefinitionEntity)repositoryService.getProcessDefinition(processInstance.getProcessDefinitionId());
-
-			List<HistoricActivityInstance> highLightedActivitList = historyService.createHistoricActivityInstanceQuery().processInstanceId(processInstanceId).list();
-
-			List<String> highLightedActivitis = new ArrayList();
-
-			List<String> highLightedFlows = ParameterUtil.getHighLightedFlows(definitionEntity, highLightedActivitList);
-			for (HistoricActivityInstance tempActivity : highLightedActivitList) {
-				String activityId = tempActivity.getActivityId();
-				highLightedActivitis.add(activityId);
-			}
-			InputStream imageStream = diagramGenerator.generateDiagram(bpmnModel, "png", highLightedActivitis, highLightedFlows, "宋体", "宋体", null, 1.0D);
-
-			byte[] b = new byte[1024];
-			int len;
-			while ((len = imageStream.read(b, 0, 1024)) != -1) {
-				response.getOutputStream().write(b, 0, len);
-			}
-		}
-	}
 }

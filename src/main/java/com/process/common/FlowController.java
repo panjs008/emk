@@ -1,6 +1,8 @@
 package com.process.common;
 
+import com.emk.bill.contract.entity.EmkContractEntity;
 import com.emk.util.ParameterUtil;
+import com.emk.workorder.workorder.entity.EmkWorkOrderEntity;
 import com.process.repair.entity.URepairEntity;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.*;
@@ -44,51 +46,24 @@ import java.util.zip.ZipInputStream;
 @Controller
 @RequestMapping("/flowController")
 public class FlowController {
-    ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
-    RepositoryService repositoryService = processEngine.getRepositoryService();
-    ManagementService managementService = processEngine.getManagementService();
-    RuntimeService runtimeService = processEngine.getRuntimeService();
-    ProcessEngineConfiguration processEngineConfiguration = processEngine.getProcessEngineConfiguration();
-    HistoryService historyService = processEngine.getHistoryService();
-    TaskService taskService = processEngine.getTaskService();
+    @Autowired
+    ProcessEngine processEngine;
+    @Autowired
+    ManagementService managementService;
+    @Autowired
+    ProcessEngineConfiguration processEngineConfiguration;
+    @Autowired
+    RepositoryService repositoryService;
+    @Autowired
+    RuntimeService runtimeService;
+    @Autowired
+    TaskService taskService;
+    @Autowired
+    HistoryService historyService;
 
     @Autowired
     private SystemService systemService;
 
-    /**
-     * 获取当前流程节点名称
-     *
-     * @param ids
-     * @return
-     */
-    @RequestMapping(params = "getCurrentProcess")
-    @ResponseBody
-    public AjaxJson getCurrentProcess(URepairEntity uRepair, HttpServletRequest request) {
-        String message = null;
-        AjaxJson j = new AjaxJson();
-        URepairEntity t = systemService.get(URepairEntity.class, uRepair.getId());
-        List<Task> task = taskService.createTaskQuery()
-                .taskAssignee(t.getId())
-                .list();
-        if(task.size()>0){
-            Task task1 = task.get(task.size()-1);
-            j.setMsg(task1.getName());
-            request.getSession().setAttribute("repairPorcess",task1);
-            request.getSession().setAttribute("processFinish","0");
-        }else{
-            if(t.getStatus().equals("4")){
-                j.setMsg("完成");
-                request.getSession().setAttribute("processFinish","1");
-            }else {
-                j.setMsg("报修单申请");
-                request.getSession().setAttribute("processFinish","0");
-                request.getSession().setAttribute("repairPorcess",null);
-
-            }
-        }
-
-        return j;
-    }
 
     /**
      * 流程历史新页面跳转
@@ -107,10 +82,12 @@ public class FlowController {
             String sql = "",countsql = "";
             sql = "SELECT DATE_FORMAT(t1.START_TIME_,'%Y-%m-%d %H:%i:%s') startTime,DATE_FORMAT(t1.END_TIME_,'%Y-%m-%d %H:%i:%s') endTime,t1.*,CASE\n" +
                     " WHEN t1.TASK_DEF_KEY_='orderTask' THEN t2.create_name \n" +
+                    " WHEN t1.TASK_DEF_KEY_='htTask' THEN t2.create_name \n" +
                     " WHEN t1.TASK_DEF_KEY_='outstorageTask' THEN t2.create_name \n" +
                     " WHEN t1.TASK_DEF_KEY_='instorageTask' THEN t2.create_name \n" +
+                    " WHEN t1.TASK_DEF_KEY_='sampleTask' THEN t2.create_name \n" +
                     " WHEN t1.TASK_DEF_KEY_='checkTask' THEN t2.leader \n";
-            if(!map.get("sqlType").equals("bill")){
+            if(!map.get("sqlType").equals("bill") && !map.get("sqlType").equals("ht") && !map.get("sqlType").equals("sample")&& !map.get("sqlType").equals("produce")){
                 sql +=  " WHEN t1.TASK_DEF_KEY_='cwTask' THEN t2.financer ";
             }
             sql +=  " ELSE ''\n" ;
@@ -123,20 +100,118 @@ public class FlowController {
                 sql +=" LEFT JOIN emk_material_contract t2 ON t1.`ASSIGNEE_` = t2.`id` where ASSIGNEE_='"+map.get("id")+"' ";
             }else  if(map.get("sqlType").equals("bill")){
                 sql +=" LEFT JOIN emk_pro_order t2 ON t1.`ASSIGNEE_` = t2.`id` where ASSIGNEE_='"+map.get("id")+"' ";
+            }else  if(map.get("sqlType").equals("ht")){
+                sql +=" LEFT JOIN emk_contract t2 ON t1.`ASSIGNEE_` = t2.`id` where ASSIGNEE_='"+map.get("id")+"' ";
+            }else  if(map.get("sqlType").equals("enquiry")){
+                sql +=" LEFT JOIN emk_enquiry t2 ON t1.`ASSIGNEE_` = t2.`id` where ASSIGNEE_='"+map.get("id")+"' ";
+            }else  if(map.get("sqlType").equals("sample")){
+                sql +=" LEFT JOIN emk_sample t2 ON t1.`ASSIGNEE_` = t2.`id` where ASSIGNEE_='"+map.get("id")+"' ";
+            }else  if(map.get("sqlType").equals("produce")){
+                sql +=" LEFT JOIN emk_produce_schedule t2 ON t1.`ASSIGNEE_` = t2.`id` where ASSIGNEE_='"+map.get("id")+"' ";
             }
 
             countsql = " SELECT COUNT(1) FROM act_hi_taskinst t1 where ASSIGNEE_='"+map.get("id")+"' ";
+            sql += " order by t1.START_TIME_ asc";
 
             if(dataGrid.getPage()==1){
                 sql += " limit 0, "+dataGrid.getRows();
             }else{
                 sql += "limit "+(dataGrid.getPage()-1)*dataGrid.getRows()+","+dataGrid.getRows();
             }
-
             this.systemService.listAllByJdbc(dataGrid, sql, countsql);
             TagUtil.datagrid(response, dataGrid);
         }catch (Exception e) {
             throw new BusinessException(e.getMessage());
+        }
+    }
+
+    @RequestMapping(params="process")
+    public ModelAndView process(String processUrl, HttpServletRequest req) {
+        return new ModelAndView(processUrl);
+    }
+
+    @RequestMapping(params="goProcess")
+    public ModelAndView goProcess(String processUrl, HttpServletRequest req) {
+        return new ModelAndView(processUrl);
+    }
+
+    @RequestMapping(params="getCurrentProcess")
+    @ResponseBody
+    public AjaxJson getCurrentProcess(String id,String tableName,String title, HttpServletRequest request) {
+        String message = null;
+        AjaxJson j = new AjaxJson();
+        String state = "";
+        StringBuilder sql = new StringBuilder();
+        sql.append(" select * from \n");
+        sql.append( tableName + " where id=? \n");
+        Map beanMap = systemService.findOneForJdbc(sql.toString(),id);
+        if(beanMap != null){
+            state = beanMap.get("state").toString();
+        }
+        List<Task> task = taskService.createTaskQuery().taskAssignee(id).list();
+        if (task.size() > 0) {
+            Task task1 = (Task)task.get(task.size() - 1);
+            j.setMsg(task1.getName());
+            request.getSession().setAttribute("orderPorcess", task1);
+            request.getSession().setAttribute("orderFinish", "0");
+        }else if (state.equals("2")) {
+            j.setMsg("完成");
+            request.getSession().setAttribute("orderFinish", "1");
+        }else {
+            j.setMsg(title);
+            request.getSession().setAttribute("orderFinish", "0");
+            request.getSession().setAttribute("orderPorcess", null);
+        }
+        return j;
+    }
+
+    @RequestMapping(params="showProcess")
+    public void showProcess(String id,String tableName,HttpServletRequest req, HttpServletResponse response) throws Exception {
+//        Map map = ParameterUtil.getParamMaps(req.getParameterMap());
+        List<Task> task = taskService.createTaskQuery().taskAssignee(id).list();
+        String processInstanceId = "";
+        String state = "";
+//        EmkContractEntity t = systemService.get(EmkContractEntity.class, id);
+        StringBuilder sql = new StringBuilder();
+        sql.append(" select * from \n");
+        sql.append( tableName + " where id=? \n");
+        Map beanMap = systemService.findOneForJdbc(sql.toString(),id);
+        if(beanMap != null){
+            state = beanMap.get("state").toString();
+        }
+        if (task.size() > 0) {
+            Task task1 = (Task)task.get(task.size() - 1);
+            processInstanceId = task1.getProcessInstanceId();
+        }else if (state.equals("2")) {
+            Map hisPorcess = systemService.findOneForJdbc("SELECT PROC_INST_ID_ processid FROM act_hi_taskinst WHERE ASSIGNEE_=? LIMIT 0,1 ", id);
+            processInstanceId = String.valueOf(hisPorcess.get("processid"));
+        }
+        if (processInstanceId != null && !processInstanceId.isEmpty()) {
+            HistoricProcessInstance processInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
+
+            BpmnModel bpmnModel = repositoryService.getBpmnModel(processInstance.getProcessDefinitionId());
+            processEngineConfiguration = processEngine.getProcessEngineConfiguration();
+            Context.setProcessEngineConfiguration((ProcessEngineConfigurationImpl)processEngineConfiguration);
+
+            ProcessDiagramGenerator diagramGenerator = processEngineConfiguration.getProcessDiagramGenerator();
+            ProcessDefinitionEntity definitionEntity = (ProcessDefinitionEntity)repositoryService.getProcessDefinition(processInstance.getProcessDefinitionId());
+
+            List<HistoricActivityInstance> highLightedActivitList = historyService.createHistoricActivityInstanceQuery().processInstanceId(processInstanceId).list();
+
+            List<String> highLightedActivitis = new ArrayList();
+
+            List<String> highLightedFlows = ParameterUtil.getHighLightedFlows(definitionEntity, highLightedActivitList);
+            for (HistoricActivityInstance tempActivity : highLightedActivitList) {
+                String activityId = tempActivity.getActivityId();
+                highLightedActivitis.add(activityId);
+            }
+            InputStream imageStream = diagramGenerator.generateDiagram(bpmnModel, "png", highLightedActivitis, highLightedFlows, "宋体", "宋体", null, 1.0D);
+
+            byte[] b = new byte[1024];
+            int len;
+            while ((len = imageStream.read(b, 0, 1024)) != -1) {
+                response.getOutputStream().write(b, 0, len);
+            }
         }
     }
 
@@ -150,12 +225,12 @@ public class FlowController {
         RepositoryService repositoryService = processEngine.getRepositoryService();
 
         //获取在classpath下的流程文件
-        InputStream in = this.getClass().getClassLoader().getResourceAsStream("bill.zip");
+        InputStream in = this.getClass().getClassLoader().getResourceAsStream("produce.zip");
         ZipInputStream zipInputStream = new ZipInputStream(in);
         //使用deploy方法发布流程
         repositoryService.createDeployment()
                 .addZipInputStream(zipInputStream)
-                .name("bill")
+                .name("produce")
                 .deploy();
       /*  Map<String, Object> variables = new HashMap<String,Object>();
         variables.put("inputUser", "panjs");//表示惟一用户

@@ -5,13 +5,28 @@
 <head>
 	<title>样品单</title>
 	<t:base type="jquery,easyui,tools,DatePicker"></t:base>
+	<link type="text/css" rel="stylesheet" href="plug-in/select2/css/select2.min.css"/>
+	<script type="text/javascript" src="plug-in/select2/js/select2.js"></script>
+	<script type="text/javascript" src="plug-in/select2/js/pinyin.js"></script>
 	<script type="text/javascript">
+		$(function(){
+			BindSelect("businesserId","ymkCustomController.do?findUserList&userKey=业务员",1,$("#businesserName").val()+","+$("#businesser").val());
+
+			$("#businesserId").change(function(){
+				var itemarr = $("#businesserId").val().split(","); //字符分割
+				$("#businesser").val(itemarr[0]);
+				$("#businesserName").val(itemarr[1]);
+
+				returnToDept($("#businesserName").val());
+			});
+		});
+
 		//编写自定义JS代码
 		function uploadSuccess0(d,file,response){
 			var src = d.attributes.url;
 			$("#customSampleUrl").val(d.attributes.url);
 			$("#customSample").val(d.attributes.name);
-			$("#customSampleId").html(d.attributes.name);
+			$("#customSampleId").html("[<a href=\"javascript:findDetail('"+d.attributes.url+"')\">"+d.attributes.name+"</a>]");
 			$("#uploadimg0").attr('src',d.attributes.url);
 
 		}
@@ -19,7 +34,8 @@
 			var src = d.attributes.url;
 			$("#oldImageUrl").val(d.attributes.url);
 			$("#oldImage").val(d.attributes.name);
-			$("#oldImageId").html(d.attributes.name);
+			$("#oldImageId").html("[<a href=\"javascript:findDetail('"+d.attributes.url+"')\">"+d.attributes.name+"</a>]");
+
 			$("#uploadimg").attr('src',d.attributes.url);
 
 		}
@@ -27,7 +43,8 @@
 			var src = d.attributes.url;
 			$("#sizeImageUrl").val(d.attributes.url);
 			$("#sizeImage").val(d.attributes.name);
-			$("#sizeImageId").html(d.attributes.name);
+			$("#sizeImageId").html("[<a href=\"javascript:findDetail('"+d.attributes.url+"')\">"+d.attributes.name+"</a>]");
+
 			$("#uploadimg2").attr('src',d.attributes.url);
 
 		}
@@ -35,7 +52,8 @@
 			var src = d.attributes.url;
 			$("#dgrImageUrl").val(d.attributes.url);
 			$("#dgrImage").val(d.attributes.name);
-			$("#dgrImageId").html(d.attributes.name);
+			$("#dgrImageId").html("[<a href=\"javascript:findDetail('"+d.attributes.url+"')\">"+d.attributes.name+"</a>]");
+
 			$("#uploadimg3").attr('src',d.attributes.url);
 		}
 
@@ -53,6 +71,79 @@
 			}else{
 				$("#dgrImageDiv").css("display","none");
 			}
+		}
+
+		function returnToSelect(){
+			BindSelect("businesserId","ymkCustomController.do?findUserList&userKey=业务员",1,$("#businesserName").val()+","+$("#businesser").val());
+			returnToDept($("#businesserName").val());
+		}
+
+		function returnToDept(userName){
+			$.ajax({
+				url: "ymkCustomController.do?getDeptInfoByUser&userName="+userName,
+				type: 'post',
+				cache: false,
+				data: null,
+				success: function (data) {
+					var d = $.parseJSON(data);
+					console.log(d);
+					if (d.success) {
+						$("#businesseDeptName").val(d.obj.departname);
+						$("#businesseDeptId").val(d.obj.orgCode);
+					}
+				}
+			});
+		}
+
+		function formatState (state) {
+			if (!state.id) { return state.text; }
+			var $state = $(
+					'<span>' + state.text + '</span>'
+			);
+			return $state;
+		}
+
+		function BindSelect(ctrlName, url,type,categoryId) {
+			var control = $('#' + ctrlName);
+			//设置Select2的处理
+			control.select2({
+				formatResult: formatState,
+				formatSelection: formatState,
+				escapeMarkup: function (m) {
+					return m;
+				}
+			});
+			//绑定Ajax的内容
+			$.getJSON(url, function (data) {
+				control.empty();//清空下拉框
+				control.append("<option value=''>请选择</option>");
+				$.each(data.obj, function (i, item) {
+					control.append("<option value='" + item.userName + ","+item.realName +"'>&nbsp;" + item.realName + "</option>");
+				});
+				if(type ==1){
+					$("#"+ctrlName).select2('val',categoryId);
+				}
+			});
+
+		}
+
+		function findDetail(photoUrl) {
+			$.dialog({
+				content: 'url:emkEnquiryController.do?photo&photoUrl='+photoUrl,
+				zIndex: getzIndex(),
+				title : "查看",
+				lock : true,
+				width:900,
+				height: 500,
+				opacity : 0.3,
+				cache:false,
+				lock : true,
+				cache:false,
+				max: true,
+				min: true,
+				drag: true,
+				resize: false
+			});
 		}
 	</script>
 </head>
@@ -78,7 +169,10 @@
 				</label>
 			</td>
 			<td class="value" style="width: 32%">
-				<input id="businesser" name="businesser" readonly type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<select class="form-control select2" id="businesserId"  >
+					<option value=''>请选择</option>
+				</select>
+				<input id="businesser" name="businesser"  type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<input id="businesserName" name="businesserName"  type="hidden"  />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">业务员</label>
@@ -341,7 +435,7 @@
 				&nbsp;&nbsp;<input name="isPrintSample" type="radio" datatype="*"  <c:if test="${emkEnquiryPage.isPrintSample eq '1'}">checked="true"</c:if> value="1">
 				否
 				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">是否同意</label>
+				<label class="Validform_label" style="display: none;">是否打过初样</label>
 			</td>
 			<td align="right">
 				<label class="Validform_label">
@@ -354,7 +448,7 @@
 				&nbsp;&nbsp;<input name="isGetSample" onclick="showPriceDiv(1)"  type="radio" datatype="*"  <c:if test="${emkEnquiryPage.isGetSample eq '1'}">checked="true"</c:if> value="1">
 				否
 				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">是否同意</label>
+				<label class="Validform_label" style="display: none;">是否收取打样费</label>
 			</td>
 		</tr>
 		<tr id="priceDiv" style="display: none;">
@@ -377,7 +471,7 @@
 							</label>
 						</td>
 						<td class="value">
-							<t:dictSelect id="pbz" field="pbz" typeGroupCode="cointype" datatype="*" defaultVal="default" hasLabel="false" title="币种"></t:dictSelect>
+							<t:dictSelect id="pbz" field="pbz" typeGroupCode="cointype" defaultVal="default" hasLabel="false" title="币种"></t:dictSelect>
 							<span class="Validform_checktip"></span>
 							<label class="Validform_label" style="display: none;">币种</label>
 						</td>

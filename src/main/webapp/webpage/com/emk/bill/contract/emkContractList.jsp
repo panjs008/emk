@@ -10,6 +10,7 @@
       <t:dgCol title="创建日期"  field="createDate"  formatter="yyyy-MM-dd"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
       <t:dgCol title="所属部门"  field="sysOrgCode"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
       <%--<t:dgCol title="操作" field="opt" frozenColumn="true"  width="100"></t:dgCol>--%>
+      <t:dgCol title="操作" field="opt" frozenColumn="true"  width="100"></t:dgCol>
 
       <t:dgCol title="合同编号"  field="htNum" queryMode="single" width="90"></t:dgCol>
       <t:dgCol title="甲方"  field="partyA" queryMode="single" width="100"></t:dgCol>
@@ -21,10 +22,13 @@
       <t:dgCol title="业务员"  field="businesser"  queryMode="single"  width="70"></t:dgCol>
       <t:dgCol title="跟单员"  field="developer"  queryMode="single"  width="70"></t:dgCol>
       <t:dgCol title="款号"  field="sampleNo"  queryMode="single"  width="80"></t:dgCol>
+      <t:dgCol title="状态"  field="state" formatterjs="formatColor"  queryMode="single"  width="70"></t:dgCol>
 
+      <t:dgFunOpt funname="goToProcess(id)" title="流程进度" urlclass="ace_button"  urlStyle="background-color:#ec4758;" urlfont="fa-tasks"></t:dgFunOpt>
       <%--<t:dgFunOpt funname="queryDetail2(id,materialNo)" title="原料面料" urlclass="ace_button" urlfont="fa-list-alt"></t:dgFunOpt>--%>
       <%--<t:dgToolBar title="录入" icon="fa fa-plus" url="emkContractController.do?goAdd&type=0&winTitle=录入购销合同同单" funname="add" height="600" width="1100"></t:dgToolBar>--%>
       <t:dgToolBar title="编辑" icon="fa fa-edit" url="emkContractController.do?goUpdate&type=0&winTitle=编辑购销合同同单" funname="update" height="600" width="1100"></t:dgToolBar>
+      <t:dgToolBar title="提交" icon="fa fa-arrow-circle-up" funname="doSubmitV"></t:dgToolBar>
       <t:dgToolBar title="删除"  icon="fa fa-remove" url="emkContractController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
       <t:dgToolBar title="导出" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
 
@@ -35,8 +39,68 @@
  <script type="text/javascript">
  $(document).ready(function(){
  });
- 
-   
+
+ function formatColor(val,row){
+     if(row.state=="1"){
+         return '<span style="color:	#FF0000;">处理中</span>';
+     }else if(row.state=="2"){
+         return '<span style="color:	#0000FF;">完成</span>';
+     }else{
+         return '创建';
+     }
+ }
+
+ function doSubmitV() {
+     var rowsData = $('#emkContractList').datagrid('getSelections');
+     var ids = [];
+     if (!rowsData || rowsData.length == 0) {
+         tip('请选择需要提交的购销合同申请单');
+         return;
+     }
+     for ( var i = 0; i < rowsData.length; i++) {
+         ids.push(rowsData[i].id);
+     }
+     $.dialog.confirm('您是否确定提交购销合同申请单?', function(r) {
+         if (r) {
+             $.ajax({
+                 url : "emkContractController.do?doSubmit&ids="+ids,
+                 type : 'post',
+                 cache : false,
+                 data: null,
+                 success : function(data) {
+                     var d = $.parseJSON(data);
+                     tip(d.msg);
+                     if (d.success) {
+                         $('#emkContractList').datagrid('reload');
+                     }
+                 }
+             });
+         }
+     });
+ }
+
+ function goToProcess(id){
+     var height =window.top.document.body.offsetHeight*0.85;
+
+     $.ajax({
+         url: "flowController.do?getCurrentProcess&tableName=emk_contract&title=购销合同申请单&id=" + id,
+         type: 'post',
+         cache: false,
+         data: null,
+         success: function (data) {
+             var d = $.parseJSON(data);
+             if (d.success) {
+                 var msg = d.msg;
+                 if (msg == "完成") {
+                     createdetailwindow('流程进度--当前环节：' + msg, 'flowController.do?goProcess&processUrl=com/emk/bill/contract/emkContract-process&id=' + id, 1200, height);
+                 } else {
+                     createwindow("流程进度--当前环节：" + msg, "flowController.do?goProcess&processUrl=com/emk/bill/contract/emkContract-process&id=" + id, 1200, height);
+                 }
+
+             }
+         }
+     });
+ }
  
 //导入
 function ImportXls() {

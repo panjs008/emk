@@ -1,10 +1,13 @@
 package com.emk.storage.enquiry.controller;
 
 import com.alibaba.fastjson.JSONArray;
+import com.emk.bill.contract.entity.EmkContractEntity;
+import com.emk.bill.proorder.entity.EmkProOrderEntity;
 import com.emk.storage.enquiry.entity.EmkEnquiryEntity;
 import com.emk.storage.enquiry.service.EmkEnquiryServiceI;
 import com.emk.storage.sampleprice.entity.EmkSamplePriceEntity;
 import com.emk.util.DateUtil;
+import com.emk.util.FlowUtil;
 import com.emk.util.ParameterUtil;
 import com.emk.workorder.workorder.entity.EmkWorkOrderEntity;
 import io.swagger.annotations.Api;
@@ -22,6 +25,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
 import org.activiti.engine.*;
+import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.apache.commons.lang3.StringUtils;
@@ -78,6 +82,8 @@ public class EmkEnquiryController extends BaseController {
     ProcessEngine processEngine;
     @Autowired
     TaskService taskService;
+    @Autowired
+    HistoryService historyService;
 
 
     @RequestMapping(params = {"list"})
@@ -154,16 +160,19 @@ public class EmkEnquiryController extends BaseController {
             emkEnquiry.setState("0");
             TSUser user = (TSUser) request.getSession().getAttribute("LOCAL_CLINET_USER");
             Map map = ParameterUtil.getParamMaps(request.getParameterMap());
-            Map orderNum = this.systemService.findOneForJdbc("select count(0)+1 orderNum from emk_enquiry where sys_org_code=?", new Object[]{user.getCurrentDepart().getOrgCode()});
-            emkEnquiry.setEnquiryNo("YXDD" + emkEnquiry.getCusNum() + DateUtil.format(new Date(), "yyMMdd") + String.format("%03d", new Object[]{Integer.valueOf(Integer.parseInt(orderNum.get("orderNum").toString()))}));
+            Map orderNum = this.systemService.findOneForJdbc("select count(0)+1 orderNum from emk_enquiry where sys_org_code=?", user.getCurrentDepart().getOrgCode());
+            emkEnquiry.setEnquiryNo("YXDD" + emkEnquiry.getCusNum() + DateUtil.format(new Date(), "yyMMdd") + String.format("%03d", Integer.parseInt(orderNum.get("orderNum").toString())));
             this.emkEnquiryService.save(emkEnquiry);
 
             EmkSamplePriceEntity samplePriceEntity = new EmkSamplePriceEntity();
-            samplePriceEntity.setMoney(Double.valueOf(Double.parseDouble(map.get("money").toString())));
-            samplePriceEntity.setBz(map.get("pbz").toString());
-            samplePriceEntity.setEnquiryId(emkEnquiry.getId());
-            samplePriceEntity.setState(map.get("pstate").toString());
-            this.systemService.save(samplePriceEntity);
+            if(map.get("money") != null && !map.get("money").equals("")){
+                samplePriceEntity.setMoney(Double.valueOf(Double.parseDouble(map.get("money").toString())));
+                samplePriceEntity.setBz(map.get("pbz").toString());
+                samplePriceEntity.setEnquiryId(emkEnquiry.getId());
+                samplePriceEntity.setState(map.get("pstate").toString());
+                this.systemService.save(samplePriceEntity);
+            }
+
 
             this.systemService.addLog(message, Globals.Log_Type_INSERT, Globals.Log_Leavel_INFO);
         } catch (Exception e) {
@@ -196,7 +205,7 @@ public class EmkEnquiryController extends BaseController {
             MyBeanUtils.copyBeanNotNull2Bean(emkEnquiry, t);
             this.emkEnquiryService.saveOrUpdate(t);
 
-            this.systemService.executeSql("delete from emk_sample_price where ENQUIRY_ID=?", new Object[]{emkEnquiry.getId()});
+            this.systemService.executeSql("delete from emk_sample_price where ENQUIRY_ID=?", emkEnquiry.getId());
             EmkSamplePriceEntity samplePriceEntity = new EmkSamplePriceEntity();
             samplePriceEntity.setMoney(Double.valueOf(Double.parseDouble(map.get("money").toString())));
             samplePriceEntity.setBz(map.get("pbz").toString());
@@ -241,6 +250,26 @@ public class EmkEnquiryController extends BaseController {
             req.setAttribute("samplePriceEntity", samplePriceEntity);
         }
         return new ModelAndView("com/emk/storage/enquiry/emkEnquiry-update");
+    }
+
+    @RequestMapping(params = {"goUpdate2"})
+    public ModelAndView goUpdate2(EmkEnquiryEntity emkEnquiry, HttpServletRequest req) {
+        if (StringUtil.isNotEmpty(emkEnquiry.getId())) {
+            emkEnquiry = (EmkEnquiryEntity) this.emkEnquiryService.getEntity(EmkEnquiryEntity.class, emkEnquiry.getId());
+            req.setAttribute("emkEnquiryPage", emkEnquiry);
+
+            Calendar cal1 = Calendar.getInstance();
+            cal1.setTime(DateUtils.str2Date(emkEnquiry.getYsDate(),DateUtils.date_sdf));
+            Calendar cal2 = Calendar.getInstance();
+            int day = DateUtils.dateDiff('d',cal1,cal2);
+            if(day<0){
+                day = 0;
+            }
+            req.setAttribute("levelDays",day);
+            EmkSamplePriceEntity samplePriceEntity = (EmkSamplePriceEntity) this.systemService.findUniqueByProperty(EmkSamplePriceEntity.class, "enquiryId", emkEnquiry.getId());
+            req.setAttribute("samplePriceEntity", samplePriceEntity);
+        }
+        return new ModelAndView("com/emk/storage/enquiry/emkEnquiry-update2");
     }
 
     @RequestMapping(params = {"upload"})
@@ -370,24 +399,71 @@ public class EmkEnquiryController extends BaseController {
                 for (String id : map.get("ids").toString().split(",")) {
                     EmkEnquiryEntity t = emkEnquiryService.get(EmkEnquiryEntity.class, id);
                     t.setState("1");
+                    variables.put("optUser", t.getId());
 
+                    List<Task> task = taskService.createTaskQuery().taskAssignee(id).list();
+                    if (task.size() > 0) {
+                        Task task1 = (Task)task.get(task.size() - 1);
+                        if (task1.getTaskDefinitionKey().equals("instorageTask")) {
+                            taskService.complete(task1.getId(), variables);
+                        }
+                        if (task1.getTaskDefinitionKey().equals("checkTask")) {
+                            t.setLeader(user.getRealName());
+                            t.setLeadUserId(user.getId());
+                            t.setLeadAdvice(emkEnquiryEntity.getLeadAdvice());
+                            if (emkEnquiryEntity.getIsPass().equals("0")) {
+                                variables.put("isPass", emkEnquiryEntity.getIsPass());
+                                taskService.complete(task1.getId(), variables);
+                            } else {
+                                List<HistoricTaskInstance> hisTasks = historyService.createHistoricTaskInstanceQuery().taskAssignee(t.getId()).list();
 
-                    EmkWorkOrderEntity emkWorkOrderEntity = new EmkWorkOrderEntity();
-                    emkWorkOrderEntity.setIsPrint(t.getIsPrint());
-                    emkWorkOrderEntity.setAskNo(t.getEnquiryNo());
-                    emkWorkOrderEntity.setState("1");
-                    emkWorkOrderEntity.setCreateName(t.getCreateName());
-                    emkWorkOrderEntity.setKdDate(t.getKdDate());
-                    Map orderNum = this.systemService.findOneForJdbc("select count(0)+1 orderNum from emk_work_order where sys_org_code=?",user.getCurrentDepart().getOrgCode());
-                    emkWorkOrderEntity.setWorkNo("GD" + DateUtil.format(new Date(), "yyMMdd") + String.format("%03d", Integer.parseInt(orderNum.get("orderNum").toString())));
-                    systemService.save(emkWorkOrderEntity);
-                    variables.put("isPrint", emkWorkOrderEntity.getIsPrint());
-                    variables.put("inputUser", emkWorkOrderEntity.getId());
-                    List<Task> task = taskService.createTaskQuery().taskAssignee(emkWorkOrderEntity.getId()).list();
-                    if (task.size()== 0 || task == null) {
-                        ProcessInstance pi = processEngine.getRuntimeService().startProcessInstanceByKey("emk", "emkWorkOrderPage", variables);
-                        task = taskService.createTaskQuery().taskAssignee(emkWorkOrderEntity.getId()).list();
+                                List<Task> taskList = taskService.createTaskQuery().taskAssignee(t.getId()).list();
+                                if (taskList.size() > 0) {
+                                    Task taskH = (Task)taskList.get(taskList.size() - 1);
+                                    HistoricTaskInstance historicTaskInstance = hisTasks.get(hisTasks.size() - 2);
+                                    FlowUtil.turnTransition(taskH.getId(), historicTaskInstance.getTaskDefinitionKey(), variables);
+                                    Map activityMap = systemService.findOneForJdbc("SELECT GROUP_CONCAT(t0.ID_) ids,GROUP_CONCAT(t0.TASK_ID_) taskids FROM act_hi_actinst t0 WHERE t0.ASSIGNEE_=? AND t0.ACT_ID_=? ORDER BY ID_ ASC", new Object[] { t.getId(), historicTaskInstance.getTaskDefinitionKey() });
+                                    String[] activitIdArr = activityMap.get("ids").toString().split(",");
+                                    String[] taskIdArr = activityMap.get("taskids").toString().split(",");
+                                    systemService.executeSql("UPDATE act_hi_taskinst SET  NAME_=CONCAT('【驳回后】','',NAME_) WHERE ASSIGNEE_>=? AND ID_=?",t.getId(), taskIdArr[1]);
+                                    systemService.executeSql("delete from act_hi_actinst where ID_>=? and ID_<?", activitIdArr[0], activitIdArr[1] );
+                                }
+                                t.setState("0");
+                            }
+
+                        }
+                        if (task1.getTaskDefinitionKey().equals("cwTask")) {
+                            t.setState("2");
+                            this.taskService.complete(task1.getId(), variables);
+
+                            //发起工单流程
+                            EmkWorkOrderEntity emkWorkOrderEntity = new EmkWorkOrderEntity();
+                            emkWorkOrderEntity.setIsPrint(t.getIsPrint());
+                            emkWorkOrderEntity.setAskNo(t.getEnquiryNo());
+                            emkWorkOrderEntity.setState("1");
+                            emkWorkOrderEntity.setCreateName(t.getCreateName());
+                            emkWorkOrderEntity.setKdDate(t.getKdDate());
+                            Map orderNum = this.systemService.findOneForJdbc("select count(0)+1 orderNum from emk_work_order where sys_org_code=?",user.getCurrentDepart().getOrgCode());
+                            emkWorkOrderEntity.setWorkNo("GD" + DateUtil.format(new Date(), "yyMMdd") + String.format("%03d", Integer.parseInt(orderNum.get("orderNum").toString())));
+                            systemService.save(emkWorkOrderEntity);
+                            variables.put("isPrint", emkWorkOrderEntity.getIsPrint());
+                            variables.put("inputUser", emkWorkOrderEntity.getId());
+
+                            task = taskService.createTaskQuery().taskAssignee(emkWorkOrderEntity.getId()).list();
+                            if (task.size()== 0 || task == null) {
+                                ProcessInstance pi = processEngine.getRuntimeService().startProcessInstanceByKey("emk", "emkWorkOrderPage", variables);
+                                task = taskService.createTaskQuery().taskAssignee(emkWorkOrderEntity.getId()).list();
+                            }
+                            taskService.complete(task1.getId(), variables);
+                        }
+                    }else {
+                        ProcessInstance pi = processEngine.getRuntimeService().startProcessInstanceByKey("enquiry", "emkEnquiryEntity", variables);
+                        task = taskService.createTaskQuery().taskAssignee(id).list();
+                        Task task1 = task.get(task.size() - 1);
+                        taskService.complete(task1.getId(), variables);
                     }
+
+
                     systemService.saveOrUpdate(t);
                 }
             }
@@ -400,5 +476,45 @@ public class EmkEnquiryController extends BaseController {
         }
         j.setMsg(message);
         return j;
+    }
+
+    @RequestMapping(params="goWork")
+    public ModelAndView goWork(EmkEnquiryEntity emkEnquiryEntity, HttpServletRequest req) {
+        if (StringUtil.isNotEmpty(emkEnquiryEntity.getId())) {
+            emkEnquiryEntity = emkEnquiryService.getEntity(EmkEnquiryEntity.class, emkEnquiryEntity.getId());
+            req.setAttribute("emkEnquiry", emkEnquiryEntity);
+        }
+        return new ModelAndView("com/emk/storage/enquiry/emkEnquiry-work");
+
+    }
+
+    @RequestMapping(params="goTime")
+    public ModelAndView goTime(EmkEnquiryEntity emkEnquiryEntity, HttpServletRequest req, DataGrid dataGrid) {
+        String sql = "";String countsql = "";
+        Map map = ParameterUtil.getParamMaps(req.getParameterMap());
+
+        sql = "SELECT DATE_FORMAT(t1.START_TIME_, '%Y-%m-%d %H:%i:%s') startTime,t1.*,CASE \n" +
+                " WHEN t1.TASK_DEF_KEY_='instorageTask' THEN t2.create_name \n" +
+                " WHEN t1.TASK_DEF_KEY_='checkTask' THEN t2.leader \n" +
+                " END workname FROM act_hi_taskinst t1 \n" +
+                " LEFT JOIN emk_enquiry t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='" + map.get("id") + "' ";
+
+        countsql = " SELECT COUNT(1) FROM act_hi_taskinst t1 where ASSIGNEE_='" + map.get("id") + "' ";
+        if (dataGrid.getPage() == 1) {
+            sql = sql + " limit 0, " + dataGrid.getRows();
+        } else {
+            sql = sql + "limit " + (dataGrid.getPage() - 1) * dataGrid.getRows() + "," + dataGrid.getRows();
+        }
+        systemService.listAllByJdbc(dataGrid, sql, countsql);
+        req.setAttribute("taskList", dataGrid.getResults());
+        if (dataGrid.getResults().size() > 0) {
+            req.setAttribute("stepProcess", Integer.valueOf(dataGrid.getResults().size() - 1));
+        } else {
+            req.setAttribute("stepProcess", Integer.valueOf(0));
+        }
+        emkEnquiryEntity = emkEnquiryService.getEntity(EmkEnquiryEntity.class, emkEnquiryEntity.getId());
+        req.setAttribute("emkEnquiry", emkEnquiryEntity);
+        return new ModelAndView("com/emk/storage/enquiry/time");
+
     }
 }

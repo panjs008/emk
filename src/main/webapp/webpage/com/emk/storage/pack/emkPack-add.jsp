@@ -11,7 +11,8 @@
 			var src = d.attributes.url;
 			$("#customSampleUrl").val(d.attributes.url);
 			$("#customSample").val(d.attributes.name);
-			$("#customSampleId").html(d.attributes.name);
+			$("#customSampleId").html("[<a href=\"javascript:findDetail('"+d.attributes.url+"')\">"+d.attributes.name+"</a>]");
+
 			$("#uploadimg0").attr('src',d.attributes.url);
 
 		}
@@ -19,7 +20,8 @@
 			var src = d.attributes.url;
 			$("#oldImageUrl").val(d.attributes.url);
 			$("#oldImage").val(d.attributes.name);
-			$("#oldImageId").html(d.attributes.name);
+			$("#oldImageId").html("[<a href=\"javascript:findDetail('"+d.attributes.url+"')\">"+d.attributes.name+"</a>]");
+
 			$("#uploadimg").attr('src',d.attributes.url);
 
 		}
@@ -53,6 +55,25 @@
 			}else{
 				$("#dgrImageDiv").css("display","none");
 			}
+		}
+
+		function findDetail(photoUrl) {
+			$.dialog({
+				content: 'url:emkEnquiryController.do?photo&photoUrl='+photoUrl,
+				zIndex: getzIndex(),
+				title : "查看",
+				lock : true,
+				width:900,
+				height: 500,
+				opacity : 0.3,
+				cache:false,
+				lock : true,
+				cache:false,
+				max: true,
+				min: true,
+				drag: true,
+				resize: false
+			});
 		}
 	</script>
 </head>

@@ -3,7 +3,7 @@
 <t:base type="jquery,easyui,tools,DatePicker"></t:base>
 <div id="main_list" class="easyui-layout" fit="true">
   <div region="center" style="padding:0px;border:0px">
-  <t:datagrid name="emkSampleList" checkbox="false" pagination="true" fitColumns="false" title="" actionUrl="emkSampleController.do?datagrid&flag=${param.flag}" idField="id" fit="true" btnCls="bootstrap"  queryMode="group">
+  <t:datagrid name="emkSampleList" checkbox="false" pagination="true" sortName="sampleNum" sortOrder="desc" fitColumns="false" title="" actionUrl="emkSampleController.do?datagrid&flag=${param.flag}" idField="id" fit="true" btnCls="bootstrap"  queryMode="group">
    <t:dgCol title="主键"  field="id"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="创建人名称"  field="createName"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="创建人登录名称"  field="createBy"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
@@ -36,7 +36,7 @@
       <t:dgToolBar title="录入" icon="fa fa-plus" url="emkSampleController.do?goAdd&flag=${param.flag}&winTitle=录入样品通知单" funname="add" height="550" width="1000"></t:dgToolBar>
        <t:dgToolBar title="编辑" icon="fa fa-edit" url="emkSampleController.do?goUpdate&winTitle=编辑样品通知单" funname="update" height="550" width="1000"></t:dgToolBar>
       <t:dgToolBar title="提交" icon="fa fa-arrow-circle-up" funname="doSubmitV"></t:dgToolBar>
-
+      <t:dgToolBar title="流程进度" icon="fa fa-plus" funname="goToProcess"></t:dgToolBar>
       <t:dgToolBar title="删除"  icon="fa fa-remove" url="emkSampleController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
       <t:dgToolBar title="导出" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
 
@@ -96,6 +96,32 @@
                      }
                  }
              });
+         }
+     });
+ }
+ function goToProcess(id){
+     var height =window.top.document.body.offsetHeight*0.85;
+     var rowsData = $('#emkSampleList').datagrid('getSelections');
+     if (!rowsData || rowsData.length == 0) {
+         tip('请选择需要提交的打样申请单');
+         return;
+     }
+     $.ajax({
+         url: "flowController.do?getCurrentProcess&tableName=emk_sample&title=打样申请单&id=" + rowsData[0].id,
+         type: 'post',
+         cache: false,
+         data: null,
+         success: function (data) {
+             var d = $.parseJSON(data);
+             if (d.success) {
+                 var msg = d.msg;
+                 if (msg == "完成") {
+                     createdetailwindow('流程进度--当前环节：' + msg, 'flowController.do?goProcess&processUrl=com/emk/storage/sample/emkSample-process&id=' + rowsData[0].id, 1200, height);
+                 } else {
+                     createwindow("流程进度--当前环节：" + msg, "flowController.do?goProcess&processUrl=com/emk/storage/sample/emkSample-process&id=" + rowsData[0].id, 1200, height);
+                 }
+
+             }
          }
      });
  }

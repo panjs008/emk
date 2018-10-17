@@ -53,7 +53,7 @@
     <t:tab title="任务处理" id="orderFrm"  heigth="600px"  width="100%" href="emkMInStorageController.do?goWork&id=${param.id}" icon="fa fa-crosshairs"></t:tab>
     <t:tab title="基本信息" id="orderFrm"  heigth="600px"  width="100%" iframe="emkMInStorageController.do?goUpdate2&id=${param.id}" icon="fa fa-calendar"></t:tab>
     <%--<t:tab title="任务处理" id="workFrm"  heigth="480px"  width="100%" icon="" href="uRepairController.do?goWork&id=${param.id}"></t:tab>--%>
-    <t:tab title="流程图" id="proFrm"  heigth="560px" width="100%" icon="fa fa-sitemap" iframe="emkMInStorageController.do?process&id=${param.id}"></t:tab>
+    <t:tab title="流程图" id="proFrm"  heigth="600px" width="100%" icon="fa fa-sitemap" iframe="emkMInStorageController.do?process&id=${param.id}"></t:tab>
 </t:tabs>
 
 </body>

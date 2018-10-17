@@ -57,19 +57,19 @@
         <tr>
             <td align="right">
                 <label class="Validform_label">
-                    目录名称:
+                    类别名称:
                 </label>
             </td>
             <td class="value" colspan="3">
                 <input id="content" name="content" type="text" style="width:90%" value="${emkProductTypePage.content }" class="inputxt" datatype="*">
                 <span class="Validform_checktip"></span>
-                <label class="Validform_label" style="display: none;">目录名称</label>
+                <label class="Validform_label" style="display: none;">类别名称</label>
             </td>
         </tr>
         <tr>
             <td align="right">
                 <label class="Validform_label">
-                    产品代码:
+                    类别代码:
                 </label>
             </td>
             <td class="value" colspan="3">
@@ -83,32 +83,32 @@
         <tr>
             <td align="right">
                 <label class="Validform_label">
-                    目录类型:
+                    类别:
                 </label>
             </td>
             <td class="value" colspan="3">
                 <select name="officeLevel" id="officeLevel" datatype="*">
                     <option value="0" <c:if test="${emkProductTypePage.officeLevel eq 0}">selected="selected"</c:if>>
-                        一级目录
+                        一级类别
                     </option>
                     <option value="1" <c:if test="${emkProductTypePage.officeLevel > 0}"> selected="selected"</c:if>>
-                        下级目录
+                        下级类别
                     </option>
                 </select>
-                <label class="Validform_label" style="display: none;">父级目录</label>
+                <label class="Validform_label" style="display: none;">父级类别</label>
             </td>
         </tr>
         <tr id="pfun">
             <td align="right">
                 <label class="Validform_label">
-                    父级目录:
+                    父级类别:
                 </label>
             </td>
             <td class="value" colspan="3">
                 <input id="cc" value="${emkProductTypePage.productTypeEntity.content}">
                 <input id="officeId" name="productTypeEntity.id" style="display: none;" value="${emkProductTypePage.productTypeEntity.id}">
                 <span class="Validform_checktip"></span>
-                <label class="Validform_label" style="display: none;">父级目录</label>
+                <label class="Validform_label" style="display: none;">父级类别</label>
             </td>
         </tr>
         <tr>

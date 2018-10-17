@@ -79,7 +79,7 @@
         var height = window.top.document.body.offsetHeight * 0.85;
 
         $.ajax({
-            url: "emkWorkOrderController.do?getCurrentProcess&id=" + id,
+            url: "flowController.do?getCurrentProcess&tableName=emk_work_order&title=询盘订单申请单&id=" + id,
             type: 'post',
             cache: false,
             data: null,
@@ -88,9 +88,9 @@
                 if (d.success) {
                     var msg = d.msg;
                     if (msg == "完成") {
-                        createdetailwindow('流程进度--当前环节：' + msg, 'emkWorkOrderController.do?goProcess&id=' + id, 1200, height);
+                        createdetailwindow('流程进度--当前环节：' + msg, 'flowController.do?goProcess&processUrl=com/emk/workorder/workorder/emkWorkOrder-process&id=' + id, 1200, height);
                     } else {
-                        createwindow("流程进度--当前环节：" + msg, "emkWorkOrderController.do?goProcess&id=" + id, 1200, height);
+                        createwindow("流程进度--当前环节：" + msg, "flowController.do?goProcess&processUrl=com/emk/workorder/workorder/emkWorkOrder-process&id=" + id, 1200, height);
                     }
 
                 }

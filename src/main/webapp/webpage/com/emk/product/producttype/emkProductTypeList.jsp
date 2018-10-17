@@ -7,8 +7,8 @@
           <t:dgCol title="主键"  field="id"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
        <t:dgCol title="操作" hidden="true" field="opt" width="210"></t:dgCol>
        <t:dgCol title="主键"  field="id"  hidden="true" treefield="id"  queryMode="single"  width="120"></t:dgCol>
-       <t:dgCol title="产品名称"  field="content"  treefield="text"  queryMode="single"  width="250"></t:dgCol>
-          <t:dgCol title="产品代码"  field="proCode" treefield="fieldMap.proCode" queryMode="single"  width="200"></t:dgCol>
+       <t:dgCol title="类别名称"  field="content"  treefield="text"  queryMode="single"  width="250"></t:dgCol>
+          <t:dgCol title="类别代码"  field="proCode" treefield="fieldMap.proCode" queryMode="single"  width="200"></t:dgCol>
           <t:dgCol title="备注"  field="remark" treefield="fieldMap.remark" queryMode="single"  width="200"></t:dgCol>
           <t:dgDelOpt title="删除" url="emkProductTypeController.do?doDel&id={id}" urlclass="ace_button"  urlfont="fa-trash-o"/>
    <t:dgToolBar title="录入" icon="fa fa-plus" url="emkProductTypeController.do?goAdd" funname="add"></t:dgToolBar>

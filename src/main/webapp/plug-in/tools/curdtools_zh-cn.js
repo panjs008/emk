@@ -432,6 +432,10 @@ function createwindow(title, addurl,width,height) {
 		width =  window.top.document.body.offsetWidth;
 		height =window.top.document.body.offsetHeight-100;
 	}
+	if(addurl.indexOf('emkProduceScheduleController.do?goAdd')>=0 || addurl.indexOf('emkProduceScheduleController.do?goUpdate')>=0|| addurl.indexOf('flowController.do?goProcess&processUrl=com/emk/produce/produceschedule/emkProduceSchedule-process')>=0){
+		width =  window.top.document.body.offsetWidth;
+		height =window.top.document.body.offsetHeight-100;
+	}
     //--author：JueYue---------date：20140427---------for：弹出bug修改,设置了zindex()函数
 	if(typeof(windowapi) == 'undefined'){
 		$.dialog({
@@ -695,7 +699,7 @@ function createdialog(title, content, url,name,noShade) {
 				doSubmit(url,name);
 				rowid = '';
 			},
-			btn:['确定','取消'],
+			btn:['保存','取消'],
 			btn2:function(index){
 				layer.close(index);
 			}

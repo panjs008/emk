@@ -61,9 +61,8 @@
 </script>
 
 <c:if test="${orderFinish eq ''}">
-    </c:if>
-<div style="padding: 3px; height: 25px; width: width:800px; " class="datagrid-toolbar"><a id="addBtn" href="#">添加</a> <a id="delBtn" href="#">删除</a></div>
-
+    <div style="padding: 3px; height: 25px; width: width:800px; " class="datagrid-toolbar"><a id="addBtn" href="#">添加</a> <a id="delBtn" href="#">删除</a></div>
+</c:if>
 <%--<table border="0" cellpadding="2" cellspacing="0" id="jeecgOrderProduct_table">--%>
 <input id="orderMxListID" type="hidden" name="dataRowsVal" value="${fn:length(emkProOrderDetailEntities)}"/>
 <table id="mxtb" style="width:100%;" cellpadding="0" cellspacing="2" border="0">

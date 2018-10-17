@@ -4,25 +4,29 @@ import com.alibaba.fastjson.JSONArray;
 import com.emk.produce.produceschedule.entity.EmkProduceScheduleEntity;
 import com.emk.produce.produceschedule.service.EmkProduceScheduleServiceI;
 import com.emk.storage.enquirydetail.entity.EmkEnquiryDetailEntity;
+import com.emk.storage.sample.entity.EmkSampleEntity;
+import com.emk.util.FlowUtil;
 import com.emk.util.ParameterUtil;
+import com.emk.workorder.workorder.entity.EmkWorkOrderEntity;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
+import org.activiti.engine.HistoryService;
+import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.TaskService;
+import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.tools.ant.util.DateUtils;
@@ -71,6 +75,13 @@ public class EmkProduceScheduleController extends BaseController {
     private SystemService systemService;
     @Autowired
     private Validator validator;
+
+    @Autowired
+    ProcessEngine processEngine;
+    @Autowired
+    TaskService taskService;
+    @Autowired
+    HistoryService historyService;
 
     @RequestMapping(params = {"list"})
     public ModelAndView list(HttpServletRequest request) {
@@ -151,6 +162,7 @@ public class EmkProduceScheduleController extends BaseController {
         AjaxJson j = new AjaxJson();
         message = "采购生产表添加成功";
         try {
+            emkProduceSchedule.setState("0");
             this.emkProduceScheduleService.save(emkProduceSchedule);
             Map<String, String> map = ParameterUtil.getParamMaps(request.getParameterMap());
 
@@ -186,6 +198,7 @@ public class EmkProduceScheduleController extends BaseController {
         message = "采购生产表更新成功";
         EmkProduceScheduleEntity t = (EmkProduceScheduleEntity) this.emkProduceScheduleService.get(EmkProduceScheduleEntity.class, emkProduceSchedule.getId());
         try {
+            emkProduceSchedule.setState("0");
             MyBeanUtils.copyBeanNotNull2Bean(emkProduceSchedule, t);
             this.emkProduceScheduleService.saveOrUpdate(t);
             Map<String, String> map = ParameterUtil.getParamMaps(request.getParameterMap());
@@ -236,6 +249,17 @@ public class EmkProduceScheduleController extends BaseController {
             req.setAttribute("emkProduceSchedulePage", emkProduceSchedule);
         }
         return new ModelAndView("com/emk/produce/produceschedule/emkProduceSchedule-update");
+    }
+
+    @RequestMapping(params = {"goUpdate2"})
+    public ModelAndView goUpdate2(EmkProduceScheduleEntity emkProduceSchedule, HttpServletRequest req) {
+        List<Map<String, Object>> codeList = this.systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", new Object[]{"A03"});
+        req.setAttribute("categoryEntityList", codeList);
+        if (StringUtil.isNotEmpty(emkProduceSchedule.getId())) {
+            emkProduceSchedule = (EmkProduceScheduleEntity) this.emkProduceScheduleService.getEntity(EmkProduceScheduleEntity.class, emkProduceSchedule.getId());
+            req.setAttribute("emkProduceSchedulePage", emkProduceSchedule);
+        }
+        return new ModelAndView("com/emk/produce/produceschedule/emkProduceSchedule-update2");
     }
 
     @RequestMapping(params = {"upload"})
@@ -335,5 +359,144 @@ public class EmkProduceScheduleController extends BaseController {
             return Result.error("采购生产表删除失败");
         }
         return Result.success();
+    }
+
+    @RequestMapping(params="doSubmit")
+    @ResponseBody
+    public AjaxJson doSubmit(EmkProduceScheduleEntity emkProduceScheduleEntity, HttpServletRequest request) {
+        String message = null;
+        AjaxJson j = new AjaxJson();
+        message = "采购生产单提交成功";
+        try {
+            int flag = 0;
+            TSUser user = (TSUser)request.getSession().getAttribute("LOCAL_CLINET_USER");
+            Map map = ParameterUtil.getParamMaps(request.getParameterMap());
+            if ((emkProduceScheduleEntity.getId() == null) || (emkProduceScheduleEntity.getId().isEmpty())) {
+                for (String id : map.get("ids").toString().split(",")) {
+                    EmkProduceScheduleEntity produceScheduleEntity = systemService.getEntity(EmkProduceScheduleEntity.class, id);
+                    if (!produceScheduleEntity.getState().equals("0")) {
+                        message = "存在已提交的采购生产单，请重新选择在提交！";
+                        j.setSuccess(false);
+                        flag = 1;
+                        break;
+                    }
+                }
+            }else{
+                map.put("ids", emkProduceScheduleEntity.getId());
+            }
+            Map<String, Object> variables = new HashMap();
+            if (flag == 0) {
+                for (String id : map.get("ids").toString().split(",")) {
+                    EmkProduceScheduleEntity t = emkProduceScheduleService.get(EmkProduceScheduleEntity.class, id);
+                    t.setState("1");
+                    variables.put("optUser", t.getId());
+
+                    List<Task> task = taskService.createTaskQuery().taskAssignee(id).list();
+                    if (task.size() > 0) {
+                        Task task1 = (Task)task.get(task.size() - 1);
+                        if (task1.getTaskDefinitionKey().equals("produceTask")) {
+                            taskService.complete(task1.getId(), variables);
+                        }
+                        if (task1.getTaskDefinitionKey().equals("checkTask")) {
+                            t.setLeader(user.getRealName());
+                            t.setLeadUserId(user.getId());
+                            t.setLeadAdvice(emkProduceScheduleEntity.getLeadAdvice());
+                            if (emkProduceScheduleEntity.getIsPass().equals("0")) {
+                                variables.put("isPass", emkProduceScheduleEntity.getIsPass());
+                                taskService.complete(task1.getId(), variables);
+
+                                t.setSsSampleUser(t.getCreateName());
+                                t.setSsSampleUserId(t.getCreateBy());
+
+                            } else {
+                                List<HistoricTaskInstance> hisTasks = historyService.createHistoricTaskInstanceQuery().taskAssignee(t.getId()).list();
+
+                                List<Task> taskList = taskService.createTaskQuery().taskAssignee(t.getId()).list();
+                                if (taskList.size() > 0) {
+                                    Task taskH = (Task)taskList.get(taskList.size() - 1);
+                                    HistoricTaskInstance historicTaskInstance = hisTasks.get(hisTasks.size() - 2);
+                                    FlowUtil.turnTransition(taskH.getId(), historicTaskInstance.getTaskDefinitionKey(), variables);
+                                    Map activityMap = systemService.findOneForJdbc("SELECT GROUP_CONCAT(t0.ID_) ids,GROUP_CONCAT(t0.TASK_ID_) taskids FROM act_hi_actinst t0 WHERE t0.ASSIGNEE_=? AND t0.ACT_ID_=? ORDER BY ID_ ASC", new Object[] { t.getId(), historicTaskInstance.getTaskDefinitionKey() });
+                                    String[] activitIdArr = activityMap.get("ids").toString().split(",");
+                                    String[] taskIdArr = activityMap.get("taskids").toString().split(",");
+                                    systemService.executeSql("UPDATE act_hi_taskinst SET  NAME_=CONCAT('【驳回后】','',NAME_) WHERE ASSIGNEE_>=? AND ID_=?",t.getId(), taskIdArr[1]);
+                                    systemService.executeSql("delete from act_hi_actinst where ID_>=? and ID_<?", activitIdArr[0], activitIdArr[1] );
+                                }
+                                t.setState("0");
+                            }
+                        }
+                        if (task1.getTaskDefinitionKey().equals("syTask")) {
+                            t.setTestUser(t.getLeader());
+                            t.setTestUserId(t.getLeadUserId());
+                            t.setColorAdvice(t.getLeadAdvice());
+                            taskService.complete(task1.getId(), variables);
+                        }
+                        if (task1.getTaskDefinitionKey().equals("testTask")) {
+                            t.setTestUserAdvice(t.getLeadAdvice());
+                            taskService.complete(task1.getId(), variables);
+                        }
+                        systemService.saveOrUpdate(t);
+
+                    }else {
+                        ProcessInstance pi = processEngine.getRuntimeService().startProcessInstanceByKey("produce", "emkProduceScheduleEntity", variables);
+                        task = taskService.createTaskQuery().taskAssignee(id).list();
+                        Task task1 = task.get(task.size() - 1);
+                        taskService.complete(task1.getId(), variables);
+                    }
+
+                }
+            }
+            systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            message = "采购生产单提交失败";
+            throw new BusinessException(e.getMessage());
+        }
+        j.setMsg(message);
+        return j;
+    }
+
+    @RequestMapping(params="goWork")
+    public ModelAndView goWork(EmkProduceScheduleEntity emkProduceScheduleEntity, HttpServletRequest req) {
+        if (StringUtil.isNotEmpty(emkProduceScheduleEntity.getId())) {
+            emkProduceScheduleEntity = emkProduceScheduleService.getEntity(EmkProduceScheduleEntity.class, emkProduceScheduleEntity.getId());
+            req.setAttribute("emkProduceSchedule", emkProduceScheduleEntity);
+        }
+        return new ModelAndView("com/emk/produce/produceschedule/emkProduceSchedule-work");
+
+    }
+
+    @RequestMapping(params="goTime")
+    public ModelAndView goTime(EmkProduceScheduleEntity emkProduceScheduleEntity, HttpServletRequest req, DataGrid dataGrid) {
+        String sql = "";String countsql = "";
+        Map map = ParameterUtil.getParamMaps(req.getParameterMap());
+
+        sql = "SELECT DATE_FORMAT(t1.START_TIME_, '%Y-%m-%d %H:%i:%s') startTime,t1.*,CASE \n" +
+                " WHEN t1.TASK_DEF_KEY_='produceTask' THEN t2.create_name \n" +
+                " WHEN t1.TASK_DEF_KEY_='checkTask' THEN t2.leader \n" +
+                " WHEN t1.TASK_DEF_KEY_='ssyTask' THEN t2.SS_SAMPLE_USER \n" +
+                " WHEN t1.TASK_DEF_KEY_='cqyTask' THEN t2.CQ_SAMPLE_USER \n" +
+
+                " END workname FROM act_hi_taskinst t1 \n" +
+                " LEFT JOIN emk_produce_schedule t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='" + map.get("id") + "' ";
+
+        countsql = " SELECT COUNT(1) FROM act_hi_taskinst t1 where ASSIGNEE_='" + map.get("id") + "' ";
+        if (dataGrid.getPage() == 1) {
+            sql = sql + " limit 0, " + dataGrid.getRows();
+        } else {
+            sql = sql + "limit " + (dataGrid.getPage() - 1) * dataGrid.getRows() + "," + dataGrid.getRows();
+        }
+        systemService.listAllByJdbc(dataGrid, sql, countsql);
+        req.setAttribute("taskList", dataGrid.getResults());
+        if (dataGrid.getResults().size() > 0) {
+            req.setAttribute("stepProcess", Integer.valueOf(dataGrid.getResults().size() - 1));
+        } else {
+            req.setAttribute("stepProcess", Integer.valueOf(0));
+        }
+        emkProduceScheduleEntity = emkProduceScheduleService.getEntity(EmkProduceScheduleEntity.class, emkProduceScheduleEntity.getId());
+        req.setAttribute("emkProduceSchedule", emkProduceScheduleEntity);
+        return new ModelAndView("com/emk/produce/produceschedule/time");
+
     }
 }

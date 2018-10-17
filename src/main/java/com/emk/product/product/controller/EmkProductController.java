@@ -194,11 +194,13 @@ public class EmkProductController
             emkProduct = (EmkProductEntity) this.emkProductService.getEntity(EmkProductEntity.class, emkProduct.getId());
             req.setAttribute("emkProductPage", emkProduct);
 
-            Map protype = this.systemService.findOneForJdbc("select * from emk_product_type where id=?", new Object[]{emkProduct.getProType()});
-            req.setAttribute("proTypeName", protype.get("content"));
-            if (emkProduct.getHsId() != null) {
-                EmkProductHsEntity productHsEntity = (EmkProductHsEntity) this.systemService.getEntity(EmkProductHsEntity.class, emkProduct.getHsId());
-                req.setAttribute("productHsEntity", productHsEntity);
+            Map protype = this.systemService.findOneForJdbc("select * from emk_product_type where id=?", emkProduct.getProType());
+            if(protype != null){
+                req.setAttribute("proTypeName", protype.get("content"));
+                if (emkProduct.getHsId() != null) {
+                    EmkProductHsEntity productHsEntity = (EmkProductHsEntity) this.systemService.getEntity(EmkProductHsEntity.class, emkProduct.getHsId());
+                    req.setAttribute("productHsEntity", productHsEntity);
+                }
             }
         }
         return new ModelAndView("com/emk/product/product/emkProduct-update");

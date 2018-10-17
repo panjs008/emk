@@ -3,25 +3,46 @@ package com.emk.bill.contract.controller;
 import com.alibaba.fastjson.JSONArray;
 import com.emk.bill.contract.entity.EmkContractEntity;
 import com.emk.bill.contract.service.EmkContractServiceI;
+import com.emk.bill.proorder.entity.EmkProOrderEntity;
+import com.emk.bound.minstorage.entity.EmkMInStorageEntity;
+import com.emk.bound.minstoragedetail.entity.EmkMInStorageDetailEntity;
 import com.emk.storage.enquirydetail.entity.EmkEnquiryDetailEntity;
+import com.emk.storage.instorage.entity.EmkInStorageEntity;
+import com.emk.storage.storage.entity.EmkStorageEntity;
+import com.emk.storage.storagelog.entity.EmkStorageLogEntity;
+import com.emk.util.FlowUtil;
 import com.emk.util.ParameterUtil;
+import com.emk.workorder.workorder.entity.EmkWorkOrderEntity;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
+import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.engine.*;
+import org.activiti.engine.history.HistoricActivityInstance;
+import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.impl.RepositoryServiceImpl;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.impl.persistence.entity.TaskEntity;
+import org.activiti.engine.impl.pvm.PvmTransition;
+import org.activiti.engine.impl.pvm.process.ActivityImpl;
+import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
+import org.activiti.engine.impl.pvm.process.TransitionImpl;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
+import org.activiti.image.ProcessDiagramGenerator;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.jeecgframework.core.beanvalidator.BeanValidators;
@@ -57,8 +78,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Api(value = "EmkContract", description = "购销合同", tags = {"emkContractController"})
 @Controller
 @RequestMapping({"/emkContractController"})
-public class EmkContractController
-        extends BaseController {
+public class EmkContractController extends BaseController {
     private static final Logger logger = Logger.getLogger(EmkContractController.class);
     @Autowired
     private EmkContractServiceI emkContractService;
@@ -66,6 +86,21 @@ public class EmkContractController
     private SystemService systemService;
     @Autowired
     private Validator validator;
+
+    @Autowired
+    ProcessEngine processEngine;
+    @Autowired
+    ManagementService managementService;
+    @Autowired
+    ProcessEngineConfiguration processEngineConfiguration;
+    @Autowired
+    RepositoryService repositoryService;
+    @Autowired
+    RuntimeService runtimeService;
+    @Autowired
+    TaskService taskService;
+    @Autowired
+    HistoryService historyService;
 
     @RequestMapping(params = {"list"})
     public ModelAndView list(HttpServletRequest request) {
@@ -203,7 +238,7 @@ public class EmkContractController
         return new ModelAndView("com/emk/bill/contract/emkContract-add");
     }
 
-    @RequestMapping(params = {"goUpdate"})
+    @RequestMapping(params = "goUpdate")
     public ModelAndView goUpdate(EmkContractEntity emkContract, HttpServletRequest req) {
         List<Map<String, Object>> codeList = this.systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", new Object[]{"A03"});
         req.setAttribute("categoryEntityList", codeList);
@@ -212,6 +247,17 @@ public class EmkContractController
             req.setAttribute("emkContractPage", emkContract);
         }
         return new ModelAndView("com/emk/bill/contract/emkContract-update");
+    }
+
+    @RequestMapping(params = "goUpdate2")
+    public ModelAndView goUpdate2(EmkContractEntity emkContract, HttpServletRequest req) {
+        List<Map<String, Object>> codeList = this.systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", new Object[]{"A03"});
+        req.setAttribute("categoryEntityList", codeList);
+        if (StringUtil.isNotEmpty(emkContract.getId())) {
+            emkContract = (EmkContractEntity) this.emkContractService.getEntity(EmkContractEntity.class, emkContract.getId());
+            req.setAttribute("emkContractPage", emkContract);
+        }
+        return new ModelAndView("com/emk/bill/contract/emkContract-update2");
     }
 
     @RequestMapping(params = {"upload"})
@@ -313,4 +359,132 @@ public class EmkContractController
         }
         return Result.success();
     }
+
+    @RequestMapping(params="doSubmit")
+    @ResponseBody
+    public AjaxJson doSubmit(EmkContractEntity emkContractEntity, HttpServletRequest request) {
+        String message = null;
+        AjaxJson j = new AjaxJson();
+        message = "购销合同申请单提交成功";
+        try {
+            int flag = 0;
+            TSUser user = (TSUser)request.getSession().getAttribute("LOCAL_CLINET_USER");
+            Map map = ParameterUtil.getParamMaps(request.getParameterMap());
+            if ((emkContractEntity.getId() == null) || (emkContractEntity.getId().isEmpty())) {
+                for (String id : map.get("ids").toString().split(",")) {
+                    EmkContractEntity contractEntity = systemService.getEntity(EmkContractEntity.class, id);
+                    if (!contractEntity.getState().equals("0")) {
+                        message = "存在已提交的购销合同单，请重新选择在提交购销合同单！";
+                        j.setSuccess(false);
+                        flag = 1;
+                        break;
+                    }
+                }
+            }else{
+                map.put("ids", emkContractEntity.getId());
+            }
+            Map<String, Object> variables = new HashMap();
+            if (flag == 0) {
+                for (String id : map.get("ids").toString().split(",")) {
+                    EmkContractEntity t = emkContractService.get(EmkContractEntity.class, id);
+                    t.setState("1");
+                    variables.put("optUser", t.getId());
+
+                    List<Task> task = taskService.createTaskQuery().taskAssignee(id).list();
+                    if (task.size() > 0) {
+                        Task task1 = (Task)task.get(task.size() - 1);
+                        if (task1.getTaskDefinitionKey().equals("htTask")) {
+                            taskService.complete(task1.getId(), variables);
+                        }
+                        if (task1.getTaskDefinitionKey().equals("checkTask")) {
+                            t.setLeader(user.getRealName());
+                            t.setLeadUserId(user.getId());
+                            t.setLeadAdvice(emkContractEntity.getLeadAdvice());
+                            if (emkContractEntity.getIsPass().equals("0")) {
+                                variables.put("isPass", emkContractEntity.getIsPass());
+                                taskService.complete(task1.getId(), variables);
+                                t.setState("2");
+                                EmkProOrderEntity proOrderEntity = systemService.findUniqueByProperty(EmkProOrderEntity.class,"orderNo",t.getOrderNo());
+                                EmkWorkOrderEntity workOrderEntity = systemService.findUniqueByProperty(EmkWorkOrderEntity.class,"workNo",proOrderEntity.getWorkNo());
+                                workOrderEntity.setHtNo(t.getHtNum());
+                                systemService.saveOrUpdate(workOrderEntity);
+                                taskService.complete(task1.getId(), variables);
+                            } else {
+                                List<HistoricTaskInstance> hisTasks = historyService.createHistoricTaskInstanceQuery().taskAssignee(t.getId()).list();
+
+                                List<Task> taskList = taskService.createTaskQuery().taskAssignee(t.getId()).list();
+                                if (taskList.size() > 0) {
+                                    Task taskH = (Task)taskList.get(taskList.size() - 1);
+                                    HistoricTaskInstance historicTaskInstance = hisTasks.get(hisTasks.size() - 2);
+                                    FlowUtil.turnTransition(taskH.getId(), historicTaskInstance.getTaskDefinitionKey(), variables);
+                                    Map activityMap = systemService.findOneForJdbc("SELECT GROUP_CONCAT(t0.ID_) ids,GROUP_CONCAT(t0.TASK_ID_) taskids FROM act_hi_actinst t0 WHERE t0.ASSIGNEE_=? AND t0.ACT_ID_=? ORDER BY ID_ ASC", new Object[] { t.getId(), historicTaskInstance.getTaskDefinitionKey() });
+                                    String[] activitIdArr = activityMap.get("ids").toString().split(",");
+                                    String[] taskIdArr = activityMap.get("taskids").toString().split(",");
+                                    systemService.executeSql("UPDATE act_hi_taskinst SET  NAME_=CONCAT('【驳回后】','',NAME_) WHERE ASSIGNEE_>=? AND ID_=?",t.getId(), taskIdArr[1]);
+                                    systemService.executeSql("delete from act_hi_actinst where ID_>=? and ID_<?", activitIdArr[0], activitIdArr[1] );
+                                }
+                                t.setState("0");
+                            }
+                        }
+                    }else {
+                        ProcessInstance pi = processEngine.getRuntimeService().startProcessInstanceByKey("ht", "emkContractEntity", variables);
+                        task = taskService.createTaskQuery().taskAssignee(id).list();
+                        Task task1 = task.get(task.size() - 1);
+                        taskService.complete(task1.getId(), variables);
+                    }
+                    systemService.saveOrUpdate(t);
+                }
+            }
+            systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            message = "购销合同申请单提交失败";
+            throw new BusinessException(e.getMessage());
+        }
+        j.setMsg(message);
+        return j;
+    }
+
+
+    @RequestMapping(params="goWork")
+    public ModelAndView goWork(EmkContractEntity emkContractEntity, HttpServletRequest req) {
+        if (StringUtil.isNotEmpty(emkContractEntity.getId())) {
+            emkContractEntity = emkContractService.getEntity(EmkContractEntity.class, emkContractEntity.getId());
+            req.setAttribute("emkContractPage", emkContractEntity);
+        }
+        return new ModelAndView("com/emk/bill/contract/emkContract-work");
+
+    }
+
+    @RequestMapping(params="goTime")
+    public ModelAndView goTime(EmkContractEntity emkContractEntity, HttpServletRequest req, DataGrid dataGrid) {
+        String sql = "";String countsql = "";
+        Map map = ParameterUtil.getParamMaps(req.getParameterMap());
+
+        sql = "SELECT DATE_FORMAT(t1.START_TIME_, '%Y-%m-%d %H:%i:%s') startTime,t1.*,CASE \n" +
+                " WHEN t1.TASK_DEF_KEY_='htTask' THEN t2.create_name \n" +
+                " WHEN t1.TASK_DEF_KEY_='checkTask' THEN t2.leader \n" +
+                " END workname FROM act_hi_taskinst t1 \n" +
+                " LEFT JOIN emk_contract t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='" + map.get("id") + "' ";
+
+        countsql = " SELECT COUNT(1) FROM act_hi_taskinst t1 where ASSIGNEE_='" + map.get("id") + "' ";
+        if (dataGrid.getPage() == 1) {
+            sql = sql + " limit 0, " + dataGrid.getRows();
+        } else {
+            sql = sql + "limit " + (dataGrid.getPage() - 1) * dataGrid.getRows() + "," + dataGrid.getRows();
+        }
+        systemService.listAllByJdbc(dataGrid, sql, countsql);
+        req.setAttribute("taskList", dataGrid.getResults());
+        if (dataGrid.getResults().size() > 0) {
+            req.setAttribute("stepProcess", Integer.valueOf(dataGrid.getResults().size() - 1));
+        } else {
+            req.setAttribute("stepProcess", Integer.valueOf(0));
+        }
+        emkContractEntity = emkContractService.getEntity(EmkContractEntity.class, emkContractEntity.getId());
+        req.setAttribute("emkContract", emkContractEntity);
+        return new ModelAndView("com/emk/bill/contract/time");
+
+    }
+
 }
