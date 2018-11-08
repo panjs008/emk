@@ -3,7 +3,7 @@
 <t:base type="jquery,easyui,tools,DatePicker"></t:base>
 <div class="easyui-layout" fit="true">
   <div region="center" style="padding:0px;border:0px">
-  <t:datagrid name="emkMOutStorageList" checkbox="false" pagination="true" fitColumns="true" title="" actionUrl="emkMOutStorageController.do?datagrid" idField="id" fit="true" btnCls="bootstrap"  queryMode="group">
+  <t:datagrid name="emkMOutStorageList" checkbox="false" pagination="true" fitColumns="true" title="" actionUrl="emkMOutStorageController.do?datagrid&type=${param.type}" idField="id" fit="true" btnCls="bootstrap"  queryMode="group">
       <t:dgCol title="主键"  field="id"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
       <t:dgCol title="创建人名称"  field="createName"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
       <t:dgCol title="创建人登录名称"  field="createBy"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
@@ -25,7 +25,7 @@
       <t:dgCol title="状态"  field="state" formatterjs="formatColor"  queryMode="single"  width="70"></t:dgCol>
 
       <t:dgFunOpt funname="goToProcess(id)" title="流程进度" urlclass="ace_button"  urlStyle="background-color:#ec4758;" urlfont="fa-tasks"></t:dgFunOpt>
-      <t:dgToolBar title="录入" icon="fa fa-plus" url="emkMOutStorageController.do?goAdd&winTitle=添加出库申请单" funname="add" height="600" width="1100"></t:dgToolBar>
+      <t:dgToolBar title="录入" icon="fa fa-plus" url="emkMOutStorageController.do?goAdd&winTitle=添加出库申请单&type=${param.type}" funname="add" height="600" width="1100"></t:dgToolBar>
       <t:dgToolBar title="编辑" icon="fa fa-edit" url="emkMOutStorageController.do?goUpdate&winTitle=编辑出库申请单" funname="update" height="600" width="1100"></t:dgToolBar>
       <t:dgToolBar title="提交" icon="fa fa-arrow-circle-up" funname="doSubmitV"></t:dgToolBar>
       <t:dgToolBar title="删除"  icon="fa fa-remove" url="emkMOutStorageController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>

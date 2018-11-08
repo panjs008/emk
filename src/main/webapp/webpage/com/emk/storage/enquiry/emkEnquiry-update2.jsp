@@ -186,7 +186,7 @@
 				</label>
 			</td>
 			<td class="value">
-				<input id="levelDays" name="levelDays" type="text" readonly datatype="n" value="${levelDays}" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="levelDays" name="levelDays" type="text" readonly datatype="n" value="${emkEnquiryPage.levelDays}" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">距交期剩余天数</label>
 			</td>

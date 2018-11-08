@@ -186,13 +186,11 @@ public class EmkSampleController extends BaseController {
             }
 
             emkSample.setKdTime(DateUtils.format(new Date(), "yyyy-MM-dd"));
-            TSUser user = (TSUser) request.getSession().getAttribute("LOCAL_CLINET_USER");
-            Map orderNum = this.systemService.findOneForJdbc("select count(0)+1 orderNum from emk_sample where sys_org_code=?", user.getCurrentDepart().getOrgCode());
+            Map orderNum = this.systemService.findOneForJdbc("select CAST(ifnull(max(right(SAMPLE_NUM, 2)),0)+1 AS signed) orderNum from emk_sample");
             emkSample.setSampleNum("YPTZD" + DateUtils.format(new Date(), "yyMMdd") + "A" + String.format("%02d", Integer.parseInt(orderNum.get("orderNum").toString())));
-
-            orderNum = this.systemService.findOneForJdbc("select count(0)+1 orderNum from emk_sample where sys_org_code=?", user.getCurrentDepart().getOrgCode());
-            emkSample.setXqdh("YPXQ" +emkSample.getCusNum()+ DateUtils.format(new Date(), "yyMMdd") + "A" + String.format("%02d", Integer.parseInt(orderNum.get("orderNum").toString())));
+            emkSample.setXqdh("YPXQ" +emkSample.getCusNum()+ DateUtils.format(new Date(), "yyMMdd")+ String.format("%02d", Integer.parseInt(orderNum.get("orderNum").toString())));
             this.emkSampleService.save(emkSample);
+
             this.systemService.addLog(message, Globals.Log_Type_INSERT, Globals.Log_Leavel_INFO);
         } catch (Exception e) {
             e.printStackTrace();
@@ -415,7 +413,7 @@ public class EmkSampleController extends BaseController {
                                 variables.put("isPass", emkSampleEntity.getIsPass());
                                 taskService.complete(task1.getId(), variables);
                                 t.setState("2");
-                                if(t.getType().equals("cy")){
+                                /*if(t.getType().equals("cy")){
                                     Map enquiry = this.systemService.findOneForJdbc("SELECT t3.id,t3.enquiry_no FROM emk_sample t1 LEFT JOIN emk_price t2 ON t1.PIRCE_NO=t2.pirce_no LEFT JOIN emk_enquiry t3 ON t3.enquiry_no=t2.xp_no where t1.id=? LIMIT 0,1",id);
                                     if(enquiry != null){
                                         EmkWorkOrderEntity workOrderEntity = systemService.findUniqueByProperty(EmkWorkOrderEntity.class,"askNo",enquiry.get("enquiry_no").toString());
@@ -451,7 +449,7 @@ public class EmkSampleController extends BaseController {
                                         taskService.complete(produceTask.getId(), variables);
                                         systemService.saveOrUpdate(produceScheduleEntity);
                                     }
-                                }
+                                }*/
 
                             } else {
                                 List<HistoricTaskInstance> hisTasks = historyService.createHistoricTaskInstanceQuery().taskAssignee(t.getId()).list();

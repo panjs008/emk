@@ -5,20 +5,12 @@
 <head>
 	<title>预计验货时间表</title>
 	<t:base type="jquery,easyui,tools,DatePicker"></t:base>
-	<link type="text/css" rel="stylesheet" href="plug-in/select2/css/select2.min.css"/>
-	<script type="text/javascript" src="plug-in/select2/js/select2.js"></script>
-	<script type="text/javascript" src="plug-in/select2/js/pinyin.js"></script>
+	<%@include file="/context/header2.jsp"%>
+	<script src="${webRoot}/context/gys.js"></script>
 
 	<script type="text/javascript">
 		//编写自定义JS代码
 		$(function() {
-			BindSelect("gysId","ymkCustomController.do?findSupplierList",1,"${emkExamTimePage.gysCode},${emkExamTimePage.gys}");
-
-			$("#gysId").change(function(){
-				var itemarr = $("#gysId").val().split(","); //字符分割
-				$("#gysCode").val(itemarr[0]);
-				$("#gys").val(itemarr[1]);
-			});
 			$("#detailId").load("emkExamTimeController.do?orderMxList&proOrderId=${emkExamTimePage.id }");
 
 		});
@@ -33,37 +25,6 @@
 
 		}
 
-
-		function BindSelect(ctrlName, url,type,categoryId) {
-			var control = $('#' + ctrlName);
-			//设置Select2的处理
-			control.select2({
-				formatResult: formatState,
-				formatSelection: formatState,
-				escapeMarkup: function (m) {
-					return m;
-				}
-			});
-			//绑定Ajax的内容
-			$.getJSON(url, function (data) {
-				control.empty();//清空下拉框
-				control.append("<option value=''>请选择</option>");
-				$.each(data.obj, function (i, item) {
-					control.append("<option value='" + item.supplierCode + ","+item.supplier +"'>" + item.supplier + "</option>");
-				});
-				if(type ==1){
-					$("#"+ctrlName).select2('val',categoryId);
-				}
-			});
-		}
-
-		function formatState (state) {
-			if (!state.id) { return state.text; }
-			var $state = $(
-					'<span>' + state.text + '</span>'
-			);
-			return $state;
-		}
 		function resetTrNum(tableId) {
 			$tbody = $("#"+tableId+"");
 			$tbody.find('>tr').each(function(i){
@@ -83,24 +44,6 @@
 			});
 		}
 
-		function findDetail(photoUrl) {
-			$.dialog({
-				content: 'url:emkEnquiryController.do?photo&photoUrl='+photoUrl,
-				zIndex: getzIndex(),
-				title : "查看",
-				lock : true,
-				width:900,
-				height: 500,
-				opacity : 0.3,
-				cache:false,
-				lock : true,
-				cache:false,
-				max: true,
-				min: true,
-				drag: true,
-				resize: false
-			});
-		}
 	</script>
 
 </head>
@@ -159,7 +102,7 @@
 				</label>
 			</td>
 			<td class="value"  colspan="3">
-				<input id="cusName" name="cusName" readonly type="text" value="${emkExamTimePage.cusName }" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="cusName" name="cusName" readonly type="text" value="${emkExamTimePage.cusName }" style="width: 150px" class="inputxt"  datatype="*"/>
 				<t:choose  hiddenName="cusNum"  hiddenid="cusNum" url="ymkCustomController.do?select" name="ymkCustomList" width="700px" height="500px"
 						   icon="icon-search" title="选择客户" textname="cusName,businesseDeptName,businesseDeptId,businesser,businesserName,tracer,tracerName,developer,developerName,bz" isclear="true" isInit="true"></t:choose>
 				<span class="Validform_checktip"></span>
@@ -214,7 +157,10 @@
 				</label>
 			</td>
 			<td class="value" >
-				<input id="businesser" name="businesser" value="${emkExamTimePage.businesser }" readonly type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<select class="form-control select2" id="businesserId" datatype="*" >
+					<option value=''>请选择</option>
+				</select>
+				<input id="businesser" name="businesser" value="${emkExamTimePage.businesser }" readonly type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<input id="businesserName" name="businesserName"  value="${emkExamTimePage.businesserName }" type="hidden"  />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">业务员</label>
@@ -225,7 +171,10 @@
 				</label>
 			</td>
 			<td class="value" >
-				<input id="tracer" name="tracer" readonly type="text" value="${emkExamTimePage.tracer }" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<select class="form-control select2" id="tracerId"  >
+					<option value=''>请选择</option>
+				</select>
+				<input id="tracer" name="tracer" readonly type="hidden" value="${emkExamTimePage.tracer }" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<input id="tracerName" name="tracerName"  type="hidden"  value="${emkExamTimePage.tracerName }"/>
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">业务员</label>
@@ -239,7 +188,10 @@
 				</label>
 			</td>
 			<td class="value" >
-				<input id="developer" name="developer" readonly type="text" value="${emkExamTimePage.developer }" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<select class="form-control select2" id="developerId"  >
+					<option value=''>请选择</option>
+				</select>
+				<input id="developer" name="developer" readonly type="hidden" value="${emkExamTimePage.developer }" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<input id="developerName" name="developerName"  type="hidden" value="${emkExamTimePage.developerName }" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">业务员</label>

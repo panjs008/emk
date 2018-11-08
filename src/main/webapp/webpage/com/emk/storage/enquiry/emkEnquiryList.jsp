@@ -3,7 +3,7 @@
 <t:base type="jquery,easyui,tools,DatePicker"></t:base>
 <div id="main_list" class="easyui-layout" fit="true">
   <div region="center" style="padding:0px;border:0px">
-  <t:datagrid name="emkEnquiryList" checkbox="false" pagination="true" sortOrder="desc" sortName="enquiryNo" fitColumns="false" title="" actionUrl="emkEnquiryController.do?datagrid" idField="id" fit="true" btnCls="bootstrap"  queryMode="group">
+  <t:datagrid name="emkEnquiryList" checkbox="false" pagination="true" sortOrder="desc" sortName="kdDate" fitColumns="false" title="" actionUrl="emkEnquiryController.do?datagrid" idField="id" fit="true" btnCls="bootstrap"  queryMode="group">
    <t:dgCol title="主键"  field="id"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="创建人名称"  field="createName"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="创建人登录名称"  field="createBy"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
@@ -28,13 +28,14 @@
    <t:dgCol title="总金额"  field="sumMoney"  queryMode="single"  width="60"></t:dgCol>
       <t:dgCol title="状态"  field="state" formatterjs="formatColor"  queryMode="single"  width="60"></t:dgCol>
       <t:dgFunOpt funname="queryDetail1(id,enquiryNo)" title="明细" urlclass="ace_button" urlfont="fa-list-alt"></t:dgFunOpt>
-      <t:dgToolBar title="录入" icon="fa fa-plus" url="emkEnquiryController.do?goAdd&winTitle=录入意向询盘单" funname="add" height="580" width="1000"></t:dgToolBar>
-       <t:dgToolBar title="编辑" icon="fa fa-edit" url="emkEnquiryController.do?goUpdate&winTitle=编辑意向询盘单" funname="update" height="580" width="1000"></t:dgToolBar>
-      <t:dgToolBar title="提交" icon="fa fa-arrow-circle-up" funname="doSubmitV"></t:dgToolBar>
-      <t:dgToolBar title="流程进度" icon="fa fa-plus" funname="goToProcess"></t:dgToolBar>
+      <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkEnquiryController.do?goAdd&winTitle=录入意向询盘单" funname="add" height="580" width="1000"></t:dgToolBar>
+       <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkEnquiryController.do?goUpdate&winTitle=编辑意向询盘单" funname="update" height="580" width="1000"></t:dgToolBar>
+      <t:dgToolBar title="查看" icon="fa fa-search" operationCode="look" url="emkEnquiryController.do?goUpdate&goUpdate&winTitle=查看意向询盘单" funname="detail" height="580" width="1000"></t:dgToolBar>
+      <t:dgToolBar title="提交" icon="fa fa-arrow-circle-up" operationCode="submit" funname="doSubmitV"></t:dgToolBar>
+      <t:dgToolBar title="流程进度" icon="fa fa-plus" operationCode="process" funname="goToProcess"></t:dgToolBar>
 
-      <t:dgToolBar title="删除"  icon="fa fa-remove" url="emkEnquiryController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
-      <t:dgToolBar title="导出" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
+      <t:dgToolBar title="删除"  icon="fa fa-remove" operationCode="delete" url="emkEnquiryController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
+      <t:dgToolBar title="导出" icon="fa fa-arrow-circle-right" operationCode="exp" funname="ExportXls"></t:dgToolBar>
 
   </t:datagrid>
   </div>
@@ -52,7 +53,8 @@
 	}"
      style="width: 500px; overflow: hidden;" id="eastPanel">
     <div class="easyui-panel" style="padding:0px;border:0px" fit="true" border="false" id="proDetialListpanel"></div>
- <script src = "webpage/com/emk/storage/enquiry/emkEnquiryList.js"></script>		
+</div>
+ <script src = "webpage/com/emk/storage/enquiry/emkEnquiryList.js"></script>
  <script type="text/javascript">
  $(document).ready(function(){
  });
@@ -66,7 +68,7 @@
      }
  }
 
- function goToProcess(id){
+ function goToProcess(){
      var height =window.top.document.body.offsetHeight*0.85;
      var rowsData = $('#emkEnquiryList').datagrid('getSelections');
      if (!rowsData || rowsData.length == 0) {
@@ -82,12 +84,16 @@
              var d = $.parseJSON(data);
              if (d.success) {
                  var msg = d.msg;
-                 if (msg == "完成") {
-                     createdetailwindow('流程进度--当前环节：' + msg, 'flowController.do?goProcess&processUrl=com/emk/storage/enquiry/emkEnquiry-process&id=' + rowsData[0].id, 1200, height);
-                 } else {
-                     createwindow("流程进度--当前环节：" + msg, "flowController.do?goProcess&processUrl=com/emk/storage/enquiry/emkEnquiry-process&id=" + rowsData[0].id, 1200, height);
-                 }
 
+                 if(rowsData[0].createBy == "${CUR_USER.userName}"){
+                     createdetailwindow("流程进度--当前环节：" + msg, "flowController.do?goProcess&processUrl=com/emk/storage/enquiry/emkEnquiry-process&id=" + rowsData[0].id, 1200, height);
+                 }else{
+                     if (msg == "完成") {
+                         createdetailwindow('流程进度--当前环节：' + msg, 'flowController.do?goProcess&processUrl=com/emk/storage/enquiry/emkEnquiry-process&id=' + rowsData[0].id, 1200, height);
+                     } else {
+                         createwindow("流程进度--当前环节：" + msg, "flowController.do?goProcess&processUrl=com/emk/storage/enquiry/emkEnquiry-process&id=" + rowsData[0].id, 1200, height);
+                     }
+                 }
              }
          }
      });
@@ -132,7 +138,7 @@
          }
      });
  }
- 
+
 //导入
 function ImportXls() {
 	openuploadwin('Excel导入', 'emkEnquiryController.do?upload', "emkEnquiryList");

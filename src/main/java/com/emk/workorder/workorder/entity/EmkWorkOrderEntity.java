@@ -58,7 +58,6 @@ public class EmkWorkOrderEntity implements java.io.Serializable {
 	@Excel(name="询盘处理人",width=15)
 	private String askWorkUser;
 	/**询盘处理人ID*/
-	@Excel(name="询盘处理人ID",width=15)
 	private String askWorkUserId;
 	/**询盘处理时间*/
 	@Excel(name="询盘处理时间",width=15)
@@ -91,7 +90,6 @@ public class EmkWorkOrderEntity implements java.io.Serializable {
 	@Excel(name="录单人",width=15)
 	private String orderUser;
 	/**录单人ID*/
-	@Excel(name="录单人ID",width=15)
 	private String orderUserId;
 	/**订单号*/
 	@Excel(name="订单号",width=15)
@@ -103,16 +101,13 @@ public class EmkWorkOrderEntity implements java.io.Serializable {
 	@Excel(name="入单处理内容",width=15)
 	private String orderAdvice;
 	/**样品质检人ID*/
-	@Excel(name="样品质检人ID",width=15)
 	private String sampleCheckUserId;
 	/**打样处理人ID*/
-	@Excel(name="打样处理人ID",width=15)
 	private String sampleUserId;
 	/**合同处理人*/
 	@Excel(name="合同处理人",width=15)
 	private String htUser;
 	/**合同处理人ID*/
-	@Excel(name="合同处理人ID",width=15)
 	private String htUserId;
 	/**合同单号*/
 	@Excel(name="合同单号",width=15)
@@ -124,7 +119,6 @@ public class EmkWorkOrderEntity implements java.io.Serializable {
 	@Excel(name="生产处理人",width=15)
 	private String produceUser;
 	/**生产处理人ID*/
-	@Excel(name="生产处理人ID",width=15)
 	private String produceUserId;
 	/**生产处理时间*/
 	@Excel(name="生产处理时间",width=15)
@@ -139,7 +133,6 @@ public class EmkWorkOrderEntity implements java.io.Serializable {
 	@Excel(name="质检人",width=15)
 	private String checkUser;
 	/**质检人ID*/
-	@Excel(name="质检人ID",width=15)
 	private String checkUserId;
 	/**质检日期*/
 	@Excel(name="质检日期",width=15)
@@ -154,7 +147,6 @@ public class EmkWorkOrderEntity implements java.io.Serializable {
 	@Excel(name="出货人",width=15)
 	private String outUser;
 	/**出货人ID*/
-	@Excel(name="出货人ID",width=15)
 	private String outUserId;
 	/**出货时间*/
 	@Excel(name="出货时间",width=15)
@@ -166,7 +158,6 @@ public class EmkWorkOrderEntity implements java.io.Serializable {
 	@Excel(name="财务处理人",width=15)
 	private String caiwuUser;
 	/**财务处理人ID*/
-	@Excel(name="财务处理人ID",width=15)
 	private String caiwuUserId;
 	/**财务处理时间*/
 	@Excel(name="财务处理时间",width=15)
@@ -229,7 +220,7 @@ public class EmkWorkOrderEntity implements java.io.Serializable {
 	 *方法: 取得java.lang.String
 	 *@return: java.lang.String  创建人名称
 	 */
-
+	@Formula("(select p.NAME_ from act_ru_task p where p.ASSIGNEE_ = id)")
 	@Column(name ="CREATE_NAME",nullable=true,length=50)
 	public String getCreateName(){
 		return this.createName;

@@ -5,56 +5,17 @@
 <head>
 	<title>生产订单</title>
 	<t:base type="jquery,easyui,tools,DatePicker"></t:base>
-	<link type="text/css" rel="stylesheet" href="plug-in/select2/css/select2.min.css"/>
-	<script type="text/javascript" src="plug-in/select2/js/select2.js"></script>
-	<script type="text/javascript" src="plug-in/select2/js/pinyin.js"></script>
+	<%@include file="/context/header2.jsp"%>
+	<script src="${webRoot}/context/gys.js"></script>
 
 	<script type="text/javascript">
 		//编写自定义JS代码
-		$(function(){
-			BindSelect("gysId","ymkCustomController.do?findSupplierList",0,"");
-			$("#gysId").change(function(){
-				var itemarr = $("#gysId").val().split(","); //字符分割
-				$("#gysCode").val(itemarr[0]);
-				$("#gys").val(itemarr[1]);
-			});
-		});
-		function BindSelect(ctrlName, url,type,categoryId) {
-			var control = $('#' + ctrlName);
-			//设置Select2的处理
-			control.select2({
-				formatResult: formatState,
-				formatSelection: formatState,
-				escapeMarkup: function (m) {
-					return m;
-				}
-			});
-			//绑定Ajax的内容
-			$.getJSON(url, function (data) {
-				control.empty();//清空下拉框
-				control.append("<option value=''>请选择</option>");
-				$.each(data.obj, function (i, item) {
-					control.append("<option value='" + item.supplierCode + ","+item.supplier +"'>" + item.supplier + "</option>");
-				});
-
-			});
-		}
-
-		function formatState (state) {
-			if (!state.id) { return state.text; }
-			var $state = $(
-					'<span>' + state.text + '</span>'
-			);
-			return $state;
-		};
-
-
-
 		function uploadSuccess0(d,file,response){
 			var src = d.attributes.url;
 			$("#customSampleUrl").val(d.attributes.url);
 			$("#customSample").val(d.attributes.name);
-			$("#customSampleId").html(d.attributes.name);
+			$("#customSampleId").html("[<a href=\"javascript:findDetail('"+d.attributes.url+"')\">"+d.attributes.name+"</a>]");
+
 			$("#uploadimg0").attr('src',d.attributes.url);
 
 		}
@@ -62,7 +23,8 @@
 			var src = d.attributes.url;
 			$("#boxImageUrl").val(d.attributes.url);
 			$("#boxImage").val(d.attributes.name);
-			$("#boxImageId").html(d.attributes.name);
+			$("#boxImageId").html("[<a href=\"javascript:findDetail('"+d.attributes.url+"')\">"+d.attributes.name+"</a>]");
+
 			$("#uploadimg1").attr('src',d.attributes.url);
 
 		}
@@ -115,31 +77,6 @@
 
 		</tr>
 		<tr>
-			<td align="right" style="width: 18%">
-				<label class="Validform_label">
-					业务部门:
-				</label>
-			</td>
-			<td class="value" style="width: 32%">
-				<input id="businesseDeptName" name="businesseDeptName" readonly type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<input id="businesseDeptId" name="businesseDeptId"  type="hidden"  />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">业务部门</label>
-			</td>
-			<td align="right" style="width: 18%">
-				<label class="Validform_label">
-					业务员:
-				</label>
-			</td>
-			<td class="value" style="width: 32%">
-				<input id="businesser" name="businesser" readonly type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<input id="businesserName" name="businesserName"  type="hidden"  />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">业务员</label>
-			</td>
-		</tr>
-
-		<tr>
 
 			<td align="right" style="width: 18%">
 				<label class="Validform_label">
@@ -157,7 +94,7 @@
 				</label>
 			</td>
 			<td class="value" style="width: 32%">
-				<input id="cusName" name="cusName" readonly type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="cusName" name="cusName" readonly type="text" style="width: 150px" class="inputxt"  datatype="*"/>
 				<t:choose  hiddenName="cusNum"  hiddenid="cusNum" url="ymkCustomController.do?select" name="ymkCustomList" width="700px" height="500px"
 						   icon="icon-search" title="选择客户" textname="cusName,businesseDeptName,businesseDeptId,businesser,businesserName,tracer,tracerName,developer,developerName,bz" isclear="true" isInit="true"></t:choose>
 				<span class="Validform_checktip"></span>
@@ -167,11 +104,43 @@
 		<tr>
 			<td align="right" style="width: 18%">
 				<label class="Validform_label">
+					业务部门:
+				</label>
+			</td>
+			<td class="value" style="width: 32%">
+				<input id="businesseDeptName" name="businesseDeptName" readonly type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="businesseDeptId" name="businesseDeptId"  type="hidden"  />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">业务部门</label>
+			</td>
+			<td align="right" style="width: 18%">
+				<label class="Validform_label">
+					业务员:
+				</label>
+			</td>
+			<td class="value" style="width: 32%">
+				<select class="form-control select2" id="businesserId" datatype="*" >
+					<option value=''>请选择</option>
+				</select>
+				<input id="businesser" name="businesser" readonly type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="businesserName" name="businesserName"  type="hidden"  />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">业务员</label>
+			</td>
+		</tr>
+
+
+		<tr>
+			<td align="right" style="width: 18%">
+				<label class="Validform_label">
 					业务跟单员:
 				</label>
 			</td>
 			<td class="value" style="width: 32%">
-				<input id="tracer" name="tracer" readonly type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<select class="form-control select2" id="tracerId"  >
+					<option value=''>请选择</option>
+				</select>
+				<input id="tracer" name="tracer" readonly type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<input id="tracerName" name="tracerName"  type="hidden"  />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">业务员</label>
@@ -182,7 +151,10 @@
 				</label>
 			</td>
 			<td class="value" style="width: 32%">
-				<input id="developer" name="developer" readonly type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<select class="form-control select2" id="developerId"  >
+					<option value=''>请选择</option>
+				</select>
+				<input id="developer" name="developer" readonly type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<input id="developerName" name="developerName"  type="hidden"  />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">业务员</label>
@@ -221,7 +193,7 @@
 				</label>
 			</td>
 			<td class="value">
-				<input id="orderTime" name="orderTime" readonly value="${kdDate}" onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})"  type="text" style="width: 150px" class="Wdate"  ignore="ignore" />
+				<input id="kdDate" name="orderTime" readonly value="${kdDate}" onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})"  type="text" style="width: 150px" class="Wdate"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">提交日期</label>
 			</td>
@@ -231,7 +203,7 @@
 				</label>
 			</td>
 			<td class="value">
-				<input id="recevieDate" name="recevieDate" readonly onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})"  type="text" style="width: 150px" class="Wdate"  ignore="ignore" />
+				<input id="ysDate" name="recevieDate" readonly  onClick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'kdDate\');}',onpicked:setEndTime})" type="text" style="width: 150px" class="Wdate"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">交货时间</label>
 			</td>
@@ -271,7 +243,7 @@
 				</label>
 			</td>
 			<td class="value">
-				<input id="levelDays" name="levelDays"  datatype="n" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="levelDays" name="levelDays"  datatype="n" readonly type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">距交期剩余天数</label>
 			</td>

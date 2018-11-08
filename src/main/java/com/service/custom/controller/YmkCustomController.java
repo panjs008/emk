@@ -112,10 +112,20 @@ public class YmkCustomController
 
         HqlGenerateUtil.installHql(cq, ymkCustom, request.getParameterMap());
         try {
-            TSUser user = (TSUser) request.getSession().getAttribute("LOCAL_CLINET_USER");
+            /*TSUser user = (TSUser) request.getSession().getAttribute("LOCAL_CLINET_USER");
             if (!user.getUserName().equals("admin")) {
                 YmkCustomEntity custom = (YmkCustomEntity) request.getSession().getAttribute("custom");
                 cq.eq("id", custom.getId());
+            }*/
+            TSUser user = (TSUser) request.getSession().getAttribute(ResourceUtil.LOCAL_CLINET_USER);
+            Map roleMap = (Map) request.getSession().getAttribute("ROLE");
+            if(roleMap != null){
+                if(roleMap.get("rolecode").toString().contains("ywy") ){
+                    cq.eq("businesserName",user.getUserName());
+                }
+                if(roleMap.get("rolecode").toString().contains("ywgdy")){
+                    cq.eq("tracerName",user.getUserName());
+                }
             }
         } catch (Exception e) {
             throw new BusinessException(e.getMessage());
@@ -256,7 +266,7 @@ public class YmkCustomController
 
             this.ymkCustomService.save(ymkCustom);
 
-            TSUser user = new TSUser();
+           /* TSUser user = new TSUser();
 
             user.setUserName(ymkCustom.getDaanNum());
             user.setMobilePhone(ymkCustom.getTelphone());
@@ -271,7 +281,7 @@ public class YmkCustomController
             YmkCustomContactUserEntity customContactUserEntity = new YmkCustomContactUserEntity();
             customContactUserEntity.setContactId(ymkCustom.getId());
             customContactUserEntity.setUserId(user.getId());
-            this.systemService.saveOrUpdate(customContactUserEntity);
+            this.systemService.saveOrUpdate(customContactUserEntity);*/
             this.systemService.addLog(message, Globals.Log_Type_INSERT, Globals.Log_Leavel_INFO);
         } catch (Exception e) {
             e.printStackTrace();
@@ -330,12 +340,12 @@ public class YmkCustomController
         YmkCustomEntity t = (YmkCustomEntity) this.ymkCustomService.get(YmkCustomEntity.class, ymkCustom.getId());
         try {
             ymkCustom.setCusCode(ChineseToEnglish.getPinYinHeadChar(ymkCustom.getCusName()));
-            TSUser tsUser = (TSUser) this.systemService.findUniqueByProperty(TSUser.class, "userName", ymkCustom.getBusinesserName());
+            /*TSUser tsUser = (TSUser) this.systemService.findUniqueByProperty(TSUser.class, "userName", ymkCustom.getBusinesserName());
             if(tsUser != null){
                 TSUserOrg userOrg = (TSUserOrg) tsUser.getUserOrgList().get(0);
                 ymkCustom.setBusinesseDeptName(userOrg.getTsDepart().getDepartname());
                 ymkCustom.setBusinesseDeptId(userOrg.getTsDepart().getId());
-            }
+            }*/
             t.setChengShi(ymkCustom.getChengShi());
             t.setPianQu(ymkCustom.getPianQu());
             MyBeanUtils.copyBeanNotNull2Bean(ymkCustom, t);
@@ -382,20 +392,19 @@ public class YmkCustomController
 
     @RequestMapping(params = "getDeptInfoByUser")
     @ResponseBody
-    public AjaxJson getDeptInfoByUser(String userName, HttpServletRequest request) {
-        AjaxJson j = new AjaxJson();
+    public Object getDeptInfoByUser(String userName, HttpServletRequest request) {
+        Map dept = new HashedMap();
         TSUser tsUser = (TSUser) this.systemService.findUniqueByProperty(TSUser.class, "userName", userName);
         if(tsUser != null){
             TSUserOrg userOrg = tsUser.getUserOrgList().get(0);
             TSDepart depart = userOrg.getTsDepart();
-            Map dept = new HashedMap();
             dept.put("departname",depart.getDepartname());
             dept.put("orgCode",depart.getOrgCode());
-
-            j.setObj(dept);
-            j.setSuccess(true);
+        }else{
+            dept.put("departname","");
+            dept.put("orgCode","");
         }
-        return j;
+        return dept;
     }
 
     @RequestMapping(params = {"findSupplierList"})
@@ -403,8 +412,7 @@ public class YmkCustomController
     public AjaxJson findSupplierList(YmkCustomEntity customEntity, HttpServletRequest request) {
         AjaxJson j = new AjaxJson();
         TSUser user = (TSUser) request.getSession().getAttribute("LOCAL_CLINET_USER");
-        Map map = ParameterUtil.getParamMaps(request.getParameterMap());
-        List<EmkSupplierEntity> supplierEntities = this.systemService.findHql("from EmkSupplierEntity", new Object[0]);
+        List<EmkSupplierEntity> supplierEntities = this.systemService.findHql("from EmkSupplierEntity", null);
         j.setObj(supplierEntities);
         return j;
     }
@@ -455,8 +463,7 @@ public class YmkCustomController
 
     @RequestMapping(params = {"goAdd"})
     public ModelAndView goAdd(YmkCustomEntity ymkCustom, HttpServletRequest req) {
-        TSUser user = (TSUser) req.getSession().getAttribute("LOCAL_CLINET_USER");
-        Map orderNum = this.systemService.findOneForJdbc("select count(0)+1 orderNum from ymk_custom where sys_org_code=?", new Object[]{user.getCurrentDepart().getOrgCode()});
+        Map orderNum = this.systemService.findOneForJdbc("select CAST(max(right(cus_num, 4))+1 AS signed) orderNum from ymk_custom ");
         req.setAttribute("daanNum", "KHDA1" + String.format("%04d", new Object[]{Integer.valueOf(Integer.parseInt(orderNum.get("orderNum").toString()))}));
         req.setAttribute("cusNum", String.format("%04d", new Object[]{Integer.valueOf(Integer.parseInt(orderNum.get("orderNum").toString()))}));
         req.setAttribute("createDate", DateUtils.format(new Date(), "yyyy-MM-dd"));

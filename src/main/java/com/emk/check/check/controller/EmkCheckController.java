@@ -7,8 +7,16 @@ import java.text.SimpleDateFormat;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.emk.check.qualitycheck.entity.EmkQualityCheckEntity;
 import com.emk.storage.enquirydetail.entity.EmkEnquiryDetailEntity;
+import com.emk.util.FlowUtil;
 import com.emk.util.ParameterUtil;
+import org.activiti.engine.HistoryService;
+import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.TaskService;
+import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.apache.log4j.Logger;
 import org.apache.tools.ant.util.DateUtils;
 import org.jeecgframework.web.system.pojo.base.TSUser;
@@ -99,8 +107,13 @@ public class EmkCheckController extends BaseController {
 	private SystemService systemService;
 	@Autowired
 	private Validator validator;
-	
 
+	@Autowired
+	ProcessEngine processEngine;
+	@Autowired
+	TaskService taskService;
+	@Autowired
+	HistoryService historyService;
 
 	/**
 	 * 验货申请表列表 页面跳转
@@ -482,5 +495,125 @@ public class EmkCheckController extends BaseController {
 		}
 
 		return Result.success();
+	}
+
+	@RequestMapping(params="doSubmit")
+	@ResponseBody
+	public AjaxJson doSubmit(EmkCheckEntity emkCheck, HttpServletRequest request) {
+		String message = null;
+		AjaxJson j = new AjaxJson();
+		message = "验货申请单提交成功";
+		try {
+			int flag = 0;
+			TSUser user = (TSUser)request.getSession().getAttribute("LOCAL_CLINET_USER");
+			Map map = ParameterUtil.getParamMaps(request.getParameterMap());
+			if ((emkCheck.getId() == null) || (emkCheck.getId().isEmpty())) {
+				for (String id : map.get("ids").toString().split(",")) {
+					EmkCheckEntity checkEntity = systemService.getEntity(EmkCheckEntity.class, id);
+					if (!checkEntity.getState().equals("0")) {
+						message = "存在已提交的验货申请单，请重新选择在提交验货申请单！";
+						j.setSuccess(false);
+						flag = 1;
+						break;
+					}
+				}
+			}else{
+				map.put("ids", emkCheck.getId());
+			}
+			Map<String, Object> variables = new HashMap();
+			if (flag == 0) {
+				for (String id : map.get("ids").toString().split(",")) {
+					EmkCheckEntity t = emkCheckService.get(EmkCheckEntity.class, id);
+					t.setState("1");
+					variables.put("optUser", t.getId());
+
+					List<Task> task = taskService.createTaskQuery().taskAssignee(id).list();
+					if (task.size() > 0) {
+						Task task1 = (Task)task.get(task.size() - 1);
+						if (task1.getTaskDefinitionKey().equals("htTask")) {
+							taskService.complete(task1.getId(), variables);
+						}
+						if (task1.getTaskDefinitionKey().equals("checkTask")) {
+							t.setLeader(user.getRealName());
+							t.setLeadUserId(user.getId());
+							t.setLeadAdvice(emkCheck.getLeadAdvice());
+							if (emkCheck.getIsPass().equals("0")) {
+								variables.put("isPass", emkCheck.getIsPass());
+								taskService.complete(task1.getId(), variables);
+							} else {
+								List<HistoricTaskInstance> hisTasks = historyService.createHistoricTaskInstanceQuery().taskAssignee(t.getId()).list();
+
+								List<Task> taskList = taskService.createTaskQuery().taskAssignee(t.getId()).list();
+								if (taskList.size() > 0) {
+									Task taskH = (Task)taskList.get(taskList.size() - 1);
+									HistoricTaskInstance historicTaskInstance = hisTasks.get(hisTasks.size() - 2);
+									FlowUtil.turnTransition(taskH.getId(), historicTaskInstance.getTaskDefinitionKey(), variables);
+									Map activityMap = systemService.findOneForJdbc("SELECT GROUP_CONCAT(t0.ID_) ids,GROUP_CONCAT(t0.TASK_ID_) taskids FROM act_hi_actinst t0 WHERE t0.ASSIGNEE_=? AND t0.ACT_ID_=? ORDER BY ID_ ASC",  t.getId(), historicTaskInstance.getTaskDefinitionKey());
+									String[] activitIdArr = activityMap.get("ids").toString().split(",");
+									String[] taskIdArr = activityMap.get("taskids").toString().split(",");
+									systemService.executeSql("UPDATE act_hi_taskinst SET  NAME_=CONCAT('【驳回后】','',NAME_) WHERE ASSIGNEE_>=? AND ID_=?",t.getId(), taskIdArr[1]);
+									systemService.executeSql("delete from act_hi_actinst where ID_>=? and ID_<?", activitIdArr[0], activitIdArr[1] );
+								}
+								t.setState("0");
+							}
+						}
+					}else {
+						ProcessInstance pi = processEngine.getRuntimeService().startProcessInstanceByKey("ht", "emkContractEntity", variables);
+						task = taskService.createTaskQuery().taskAssignee(id).list();
+						Task task1 = task.get(task.size() - 1);
+						taskService.complete(task1.getId(), variables);
+					}
+					systemService.saveOrUpdate(t);
+				}
+			}
+			systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			message = "验货申请单提交失败";
+			throw new BusinessException(e.getMessage());
+		}
+		j.setMsg(message);
+		return j;
+	}
+
+
+	@RequestMapping(params="goWork")
+	public ModelAndView goWork(EmkCheckEntity emkCheck, HttpServletRequest req) {
+		if (StringUtil.isNotEmpty(emkCheck.getId())) {
+			emkCheck = emkCheckService.getEntity(EmkQualityCheckEntity.class, emkCheck.getId());
+			req.setAttribute("emkCheck", emkCheck);
+		}
+		return new ModelAndView("com/emk/check/check/emkCheck-work");
+	}
+
+	@RequestMapping(params="goTime")
+	public ModelAndView goTime(EmkCheckEntity emkCheck, HttpServletRequest req, DataGrid dataGrid) {
+		String sql = "";String countsql = "";
+		Map map = ParameterUtil.getParamMaps(req.getParameterMap());
+
+		sql = "SELECT DATE_FORMAT(t1.START_TIME_, '%Y-%m-%d %H:%i:%s') startTime,t1.*,CASE \n" +
+				" WHEN t1.TASK_DEF_KEY_='htTask' THEN t2.create_name \n" +
+				" WHEN t1.TASK_DEF_KEY_='checkTask' THEN t2.leader \n" +
+				" END workname FROM act_hi_taskinst t1 \n" +
+				" LEFT JOIN emk_check t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='" + map.get("id") + "' ";
+
+		countsql = " SELECT COUNT(1) FROM act_hi_taskinst t1 where ASSIGNEE_='" + map.get("id") + "' ";
+		if (dataGrid.getPage() == 1) {
+			sql = sql + " limit 0, " + dataGrid.getRows();
+		} else {
+			sql = sql + "limit " + (dataGrid.getPage() - 1) * dataGrid.getRows() + "," + dataGrid.getRows();
+		}
+		systemService.listAllByJdbc(dataGrid, sql, countsql);
+		req.setAttribute("taskList", dataGrid.getResults());
+		if (dataGrid.getResults().size() > 0) {
+			req.setAttribute("stepProcess", Integer.valueOf(dataGrid.getResults().size() - 1));
+		} else {
+			req.setAttribute("stepProcess", Integer.valueOf(0));
+		}
+		emkCheck = emkCheckService.getEntity(EmkQualityCheckEntity.class, emkCheck.getId());
+		req.setAttribute("emkCheck", emkCheck);
+		return new ModelAndView("com/emk/check/check/time");
+
 	}
 }

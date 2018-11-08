@@ -5,14 +5,11 @@
 <head>
 	<title>测试申请表</title>
 	<t:base type="jquery,easyui,tools,DatePicker"></t:base>
-	<link type="text/css" rel="stylesheet" href="plug-in/select2/css/select2.min.css"/>
-	<script type="text/javascript" src="plug-in/select2/js/select2.js"></script>
-	<script type="text/javascript" src="plug-in/select2/js/pinyin.js"></script>
+
+	<%@include file="/context/header2.jsp"%>
+
 	<script type="text/javascript">
 		//编写自定义JS代码
-		$(function() {
-
-		});
 		function uploadSuccess0(d,file,response){
 			var src = d.attributes.url;
 			$("#testContentUrl").val(d.attributes.url);
@@ -31,7 +28,7 @@
 				</label>
 			</td>
 			<td class="value" >
-				<input id="schtNum" name="schtNum"  type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="produceNum" name="produceNum" datatype="*" type="text" style="width: 150px" class="inputxt" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">生产合同号</label>
 			</td>
@@ -41,7 +38,7 @@
 				</label>
 			</td>
 			<td class="value" >
-				<input id="orderNo" name="orderNo"  type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="orderNo" name="orderNo" datatype="*"  type="text" style="width: 150px" class="inputxt"  />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">订单号</label>
 			</td>
@@ -176,7 +173,7 @@
 				</label>
 			</td>
 			<td class="value">
-				<input id="ysDate" name="ysDate" readonly onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})"  type="text" style="width: 150px" class="Wdate"  ignore="ignore" />
+				<input id="ysDate" name="ysDate" readonly onClick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'kdDate\');}',onpicked:setEndTime})"  type="text" style="width: 150px" class="Wdate"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">大货交期</label>
 			</td>

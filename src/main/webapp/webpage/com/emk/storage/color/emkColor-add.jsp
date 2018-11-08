@@ -5,6 +5,8 @@
 <head>
 	<title>色样需求单</title>
 	<t:base type="jquery,easyui,tools,DatePicker"></t:base>
+	<%@include file="/context/header.jsp"%>
+
 	<script type="text/javascript">
 		//编写自定义JS代码
 		function uploadSuccess0(d,file,response){
@@ -67,24 +69,6 @@
 			}
 		}
 
-		function findDetail(photoUrl) {
-			$.dialog({
-				content: 'url:emkEnquiryController.do?photo&photoUrl='+photoUrl,
-				zIndex: getzIndex(),
-				title : "查看",
-				lock : true,
-				width:900,
-				height: 500,
-				opacity : 0.3,
-				cache:false,
-				lock : true,
-				cache:false,
-				max: true,
-				min: true,
-				drag: true,
-				resize: false
-			});
-		}
 	</script>
 </head>
 <body>
@@ -108,7 +92,7 @@
 				</label>
 			</td>
 			<td class="value"  colspan="3">
-				<input id="cusName" name="cusName" readonly type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="cusName" name="cusName" readonly type="text" style="width: 150px" class="inputxt"  datatype="*" />
 				<t:choose  hiddenName="cusNum"  hiddenid="cusNum" url="ymkCustomController.do?select" name="ymkCustomList" width="700px" height="500px"
 						   icon="icon-search" title="选择客户" textname="cusName,businesseDeptName,businesseDeptId,businesser,businesserName,bz" isclear="true" isInit="true"></t:choose>
 				<span class="Validform_checktip"></span>
@@ -133,7 +117,10 @@
 				</label>
 			</td>
 			<td class="value" >
-				<input id="businesser" name="businesser" readonly type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<select class="form-control select2" id="businesserId" datatype="*" >
+					<option value=''>请选择</option>
+				</select>
+				<input id="businesser" name="businesser" readonly type="hidden" style="width: 150px" class="inputxt"  />
 				<input id="businesserName" name="businesserName"  type="hidden"  />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">业务员</label>
@@ -179,7 +166,7 @@
 				</label>
 			</td>
 			<td class="value">
-				<input id="recevieDate" name="recevieDate" readonly onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})"  type="text" style="width: 150px" class="Wdate"  ignore="ignore" />
+				<input id="ysDate" name="recevieDate" readonly onClick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'kdDate\');}'})" type="text" style="width: 150px" class="Wdate"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">交货时间</label>
 			</td>

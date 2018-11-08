@@ -75,9 +75,9 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.UriComponentsBuilder;
 
-@Api(value = "EmkContract", description = "购销合同", tags = {"emkContractController"})
+@Api(value = "EmkContract", description = "购销合同", tags = "emkContractController")
 @Controller
-@RequestMapping({"/emkContractController"})
+@RequestMapping("/emkContractController")
 public class EmkContractController extends BaseController {
     private static final Logger logger = Logger.getLogger(EmkContractController.class);
     @Autowired
@@ -90,36 +90,29 @@ public class EmkContractController extends BaseController {
     @Autowired
     ProcessEngine processEngine;
     @Autowired
-    ManagementService managementService;
-    @Autowired
-    ProcessEngineConfiguration processEngineConfiguration;
-    @Autowired
-    RepositoryService repositoryService;
-    @Autowired
-    RuntimeService runtimeService;
-    @Autowired
     TaskService taskService;
     @Autowired
     HistoryService historyService;
 
-    @RequestMapping(params = {"list"})
+
+    @RequestMapping(params = "list")
     public ModelAndView list(HttpServletRequest request) {
         return new ModelAndView("com/emk/bill/contract/emkContractList");
     }
 
-    @RequestMapping(params = {"orderMxList"})
+    @RequestMapping(params = "orderMxList")
     public ModelAndView orderMxList(HttpServletRequest request) {
-        List<Map<String, Object>> codeList = this.systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", new Object[]{"A03"});
+        List<Map<String, Object>> codeList = this.systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", "A03");
         request.setAttribute("categoryEntityList", codeList);
         Map map = ParameterUtil.getParamMaps(request.getParameterMap());
         if ((map.get("proOrderId") != null) && (!map.get("proOrderId").equals(""))) {
-            List<EmkEnquiryDetailEntity> emkProOrderDetailEntities = this.systemService.findHql("from EmkEnquiryDetailEntity where enquiryId=?", new Object[]{map.get("proOrderId")});
+            List<EmkEnquiryDetailEntity> emkProOrderDetailEntities = this.systemService.findHql("from EmkEnquiryDetailEntity where enquiryId=?", map.get("proOrderId"));
             request.setAttribute("emkProOrderDetailEntities", emkProOrderDetailEntities);
         }
         return new ModelAndView("com/emk/bill/contract/orderMxList");
     }
 
-    @RequestMapping(params = {"datagrid"})
+    @RequestMapping(params = "datagrid")
     public void datagrid(EmkContractEntity emkContract, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid) {
         CriteriaQuery cq = new CriteriaQuery(EmkContractEntity.class, dataGrid);
 
@@ -131,7 +124,7 @@ public class EmkContractController extends BaseController {
         TagUtil.datagrid(response, dataGrid);
     }
 
-    @RequestMapping(params = {"doDel"})
+    @RequestMapping(params = "doDel")
     @ResponseBody
     public AjaxJson doDel(EmkContractEntity emkContract, HttpServletRequest request) {
         String message = null;
@@ -150,7 +143,7 @@ public class EmkContractController extends BaseController {
         return j;
     }
 
-    @RequestMapping(params = {"doBatchDel"})
+    @RequestMapping(params = "doBatchDel")
     @ResponseBody
     public AjaxJson doBatchDel(String ids, HttpServletRequest request) {
         String message = null;
@@ -174,7 +167,7 @@ public class EmkContractController extends BaseController {
         return j;
     }
 
-    @RequestMapping(params = {"doAdd"})
+    @RequestMapping(params = "doAdd")
     @ResponseBody
     public AjaxJson doAdd(EmkContractEntity emkContract, HttpServletRequest request) {
         String message = null;
@@ -192,7 +185,7 @@ public class EmkContractController extends BaseController {
         return j;
     }
 
-    @RequestMapping(params = {"doUpdate"})
+    @RequestMapping(params = "doUpdate")
     @ResponseBody
     public AjaxJson doUpdate(EmkContractEntity emkContract, HttpServletRequest request) {
         String message = null;
@@ -203,7 +196,7 @@ public class EmkContractController extends BaseController {
             Map<String, String> map = ParameterUtil.getParamMaps(request.getParameterMap());
             MyBeanUtils.copyBeanNotNull2Bean(emkContract, t);
             this.emkContractService.saveOrUpdate(t);
-            this.systemService.executeSql("delete from emk_enquiry_detail where ENQUIRY_ID=?", new Object[]{t.getId()});
+            this.systemService.executeSql("delete from emk_enquiry_detail where ENQUIRY_ID=?", t.getId());
             String dataRows = (String) map.get("dataRowsVal");
             if ((dataRows != null) && (!dataRows.isEmpty())) {
                 int rows = Integer.parseInt(dataRows);
@@ -229,7 +222,7 @@ public class EmkContractController extends BaseController {
         return j;
     }
 
-    @RequestMapping(params = {"goAdd"})
+    @RequestMapping(params = "goAdd")
     public ModelAndView goAdd(EmkContractEntity emkContract, HttpServletRequest req) {
         if (StringUtil.isNotEmpty(emkContract.getId())) {
             emkContract = (EmkContractEntity) this.emkContractService.getEntity(EmkContractEntity.class, emkContract.getId());
@@ -240,7 +233,7 @@ public class EmkContractController extends BaseController {
 
     @RequestMapping(params = "goUpdate")
     public ModelAndView goUpdate(EmkContractEntity emkContract, HttpServletRequest req) {
-        List<Map<String, Object>> codeList = this.systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", new Object[]{"A03"});
+        List<Map<String, Object>> codeList = this.systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", "A03");
         req.setAttribute("categoryEntityList", codeList);
         if (StringUtil.isNotEmpty(emkContract.getId())) {
             emkContract = (EmkContractEntity) this.emkContractService.getEntity(EmkContractEntity.class, emkContract.getId());
@@ -251,7 +244,7 @@ public class EmkContractController extends BaseController {
 
     @RequestMapping(params = "goUpdate2")
     public ModelAndView goUpdate2(EmkContractEntity emkContract, HttpServletRequest req) {
-        List<Map<String, Object>> codeList = this.systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", new Object[]{"A03"});
+        List<Map<String, Object>> codeList = this.systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", "A03");
         req.setAttribute("categoryEntityList", codeList);
         if (StringUtil.isNotEmpty(emkContract.getId())) {
             emkContract = (EmkContractEntity) this.emkContractService.getEntity(EmkContractEntity.class, emkContract.getId());
@@ -260,13 +253,13 @@ public class EmkContractController extends BaseController {
         return new ModelAndView("com/emk/bill/contract/emkContract-update2");
     }
 
-    @RequestMapping(params = {"upload"})
+    @RequestMapping(params = "upload")
     public ModelAndView upload(HttpServletRequest req) {
         req.setAttribute("controller_name", "emkContractController");
         return new ModelAndView("common/upload/pub_excel_upload");
     }
 
-    @RequestMapping(params = {"exportXls"})
+    @RequestMapping(params = "exportXls")
     public String exportXls(EmkContractEntity emkContract, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid, ModelMap modelMap) {
         CriteriaQuery cq = new CriteriaQuery(EmkContractEntity.class, dataGrid);
         HqlGenerateUtil.installHql(cq, emkContract, request.getParameterMap());
@@ -279,7 +272,7 @@ public class EmkContractController extends BaseController {
         return "jeecgExcelView";
     }
 
-    @RequestMapping(params = {"exportXlsByT"})
+    @RequestMapping(params = "exportXlsByT")
     public String exportXlsByT(EmkContractEntity emkContract, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid, ModelMap modelMap) {
         modelMap.put("fileName", "购销合同");
         modelMap.put("entity", EmkContractEntity.class);
@@ -298,7 +291,7 @@ public class EmkContractController extends BaseController {
         return Result.success(listEmkContracts);
     }
 
-    @RequestMapping(value = {"/{id}"}, method = {RequestMethod.GET})
+    @RequestMapping(value = "/{id}", method = {RequestMethod.GET})
     @ResponseBody
     @ApiOperation(value = "根据ID获取购销合同信息", notes = "根据ID获取购销合同信息", httpMethod = "GET", produces = "application/json")
     public ResponseMessage<?> get(@ApiParam(required = true, name = "id", value = "ID") @PathVariable("id") String id) {
@@ -309,7 +302,7 @@ public class EmkContractController extends BaseController {
         return Result.success(task);
     }
 
-    @RequestMapping(method = {org.springframework.web.bind.annotation.RequestMethod.POST}, consumes = {"application/json"})
+    @RequestMapping(method = {org.springframework.web.bind.annotation.RequestMethod.POST}, consumes = "application/json")
     @ResponseBody
     @ApiOperation("创建购销合同")
     public ResponseMessage<?> create(@ApiParam(name = "购销合同对象") @RequestBody EmkContractEntity emkContract, UriComponentsBuilder uriBuilder) {
@@ -326,7 +319,7 @@ public class EmkContractController extends BaseController {
         return Result.success(emkContract);
     }
 
-    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.PUT}, consumes = {"application/json"})
+    @RequestMapping(value = "/{id}", method = {org.springframework.web.bind.annotation.RequestMethod.PUT}, consumes = "application/json")
     @ResponseBody
     @ApiOperation(value = "更新购销合同", notes = "更新购销合同")
     public ResponseMessage<?> update(@ApiParam(name = "购销合同对象") @RequestBody EmkContractEntity emkContract) {
@@ -343,7 +336,7 @@ public class EmkContractController extends BaseController {
         return Result.success("更新购销合同信息成功");
     }
 
-    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.DELETE})
+    @RequestMapping(value = "/{id}", method = {org.springframework.web.bind.annotation.RequestMethod.DELETE})
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ApiOperation("删除购销合同")
     public ResponseMessage<?> delete(@ApiParam(name = "id", value = "ID", required = true) @PathVariable("id") String id) {
@@ -417,7 +410,7 @@ public class EmkContractController extends BaseController {
                                     Task taskH = (Task)taskList.get(taskList.size() - 1);
                                     HistoricTaskInstance historicTaskInstance = hisTasks.get(hisTasks.size() - 2);
                                     FlowUtil.turnTransition(taskH.getId(), historicTaskInstance.getTaskDefinitionKey(), variables);
-                                    Map activityMap = systemService.findOneForJdbc("SELECT GROUP_CONCAT(t0.ID_) ids,GROUP_CONCAT(t0.TASK_ID_) taskids FROM act_hi_actinst t0 WHERE t0.ASSIGNEE_=? AND t0.ACT_ID_=? ORDER BY ID_ ASC", new Object[] { t.getId(), historicTaskInstance.getTaskDefinitionKey() });
+                                    Map activityMap = systemService.findOneForJdbc("SELECT GROUP_CONCAT(t0.ID_) ids,GROUP_CONCAT(t0.TASK_ID_) taskids FROM act_hi_actinst t0 WHERE t0.ASSIGNEE_=? AND t0.ACT_ID_=? ORDER BY ID_ ASC",  t.getId(), historicTaskInstance.getTaskDefinitionKey());
                                     String[] activitIdArr = activityMap.get("ids").toString().split(",");
                                     String[] taskIdArr = activityMap.get("taskids").toString().split(",");
                                     systemService.executeSql("UPDATE act_hi_taskinst SET  NAME_=CONCAT('【驳回后】','',NAME_) WHERE ASSIGNEE_>=? AND ID_=?",t.getId(), taskIdArr[1]);
@@ -484,7 +477,6 @@ public class EmkContractController extends BaseController {
         emkContractEntity = emkContractService.getEntity(EmkContractEntity.class, emkContractEntity.getId());
         req.setAttribute("emkContract", emkContractEntity);
         return new ModelAndView("com/emk/bill/contract/time");
-
     }
 
 }

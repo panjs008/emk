@@ -79,7 +79,6 @@ public class EmkTestServiceImpl
         map.put("total", t.getTotal());
         map.put("test_type", t.getTestType());
         map.put("produce_num", t.getProduceNum());
-        map.put("scht_num", t.getSchtNum());
         map.put("test_required", t.getTestRequired());
         map.put("test_content", t.getTestContent());
         map.put("test_content_url", t.getTestContentUrl());
@@ -118,7 +117,6 @@ public class EmkTestServiceImpl
         sql = sql.replace("#{total}", String.valueOf(t.getTotal()));
         sql = sql.replace("#{test_type}", String.valueOf(t.getTestType()));
         sql = sql.replace("#{produce_num}", String.valueOf(t.getProduceNum()));
-        sql = sql.replace("#{scht_num}", String.valueOf(t.getSchtNum()));
         sql = sql.replace("#{test_required}", String.valueOf(t.getTestRequired()));
         sql = sql.replace("#{test_content}", String.valueOf(t.getTestContent()));
         sql = sql.replace("#{test_content_url}", String.valueOf(t.getTestContentUrl()));

@@ -8,6 +8,7 @@ import com.emk.storage.sampledetail.entity.EmkSampleDetailEntity;
 import com.emk.storage.sampledetail.service.EmkSampleDetailServiceI;
 import com.emk.storage.samplerequired.entity.EmkSampleRequiredEntity;
 import com.emk.util.ParameterUtil;
+import com.emk.workorder.workorder.entity.EmkWorkOrderEntity;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -178,19 +179,20 @@ public class EmkSampleDetailController extends BaseController {
     @RequestMapping(params = {"goAdd"})
     public ModelAndView goAdd(EmkSampleDetailEntity emkSampleDetail, HttpServletRequest req, String sampleType) {
         if (sampleType.equals("sample")) {
-            EmkSampleEntity emkSampleEntity = (EmkSampleEntity) this.systemService.getEntity(EmkSampleEntity.class, emkSampleDetail.getSampleId());
+            EmkSampleEntity emkSampleEntity =  this.systemService.getEntity(EmkSampleEntity.class, emkSampleDetail.getSampleId());
             req.setAttribute("emkSampleEntity", emkSampleEntity);
+        } else if (sampleType.equals("price")) {
+            EmkPriceEntity priceEntity =  this.systemService.getEntity(EmkPriceEntity.class, emkSampleDetail.getSampleId());
+            req.setAttribute("emkSampleEntity", priceEntity);
         } else if (sampleType.equals("samplerequired")) {
             EmkSampleRequiredEntity emkSampleEntity = (EmkSampleRequiredEntity) this.systemService.getEntity(EmkSampleRequiredEntity.class, emkSampleDetail.getSampleId());
             req.setAttribute("emkSampleEntity", emkSampleEntity);
         } else if (sampleType.equals("order")) {
             EmkProOrderEntity emkProOrder = (EmkProOrderEntity) this.systemService.getEntity(EmkProOrderEntity.class, emkSampleDetail.getSampleId());
-            if(emkProOrder != null){
-                Map price = this.systemService.findOneForJdbc("select * from emk_price where cus_num =? and sample_no=? order by kd_date desc limit 0,1", new Object[]{emkProOrder.getCusNum(), emkProOrder.getSampleNo()});
-                if(price != null){
-                    EmkPriceEntity emkSampleEntity = (EmkPriceEntity) this.systemService.getEntity(EmkPriceEntity.class, price.get("id").toString());
-                    req.setAttribute("emkSampleEntity", emkSampleEntity);
-                }
+            EmkWorkOrderEntity workOrderEntity = systemService.findUniqueByProperty(EmkWorkOrderEntity.class,"workNo",emkProOrder.getWorkNo());
+            if(workOrderEntity != null) {
+                EmkPriceEntity priceEntity = systemService.findUniqueByProperty(EmkPriceEntity.class, "xpNo", workOrderEntity.getAskNo());
+                req.setAttribute("emkSampleEntity", priceEntity);
             }
         }
         return new ModelAndView("com/emk/storage/sampledetail/emkSampleDetail-add");

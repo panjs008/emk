@@ -64,8 +64,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Api(value = "EmkSampleColor", description = "色样通知单", tags = {"emkSampleColorController"})
 @Controller
 @RequestMapping({"/emkSampleColorController"})
-public class EmkSampleColorController
-        extends BaseController {
+public class EmkSampleColorController extends BaseController {
     private static final Logger logger = Logger.getLogger(EmkSampleColorController.class);
     @Autowired
     private EmkSampleColorServiceI emkSampleColorService;
@@ -140,9 +139,8 @@ public class EmkSampleColorController
         AjaxJson j = new AjaxJson();
         message = "色样通知单添加成功";
         try {
-            TSUser user = (TSUser) request.getSession().getAttribute("LOCAL_CLINET_USER");
             Map map = ParameterUtil.getParamMaps(request.getParameterMap());
-            Map orderNum = this.systemService.findOneForJdbc("select count(0)+1 orderNum from emk_sample_color where sys_org_code=?", new Object[]{user.getCurrentDepart().getOrgCode()});
+            Map orderNum = this.systemService.findOneForJdbc("select CAST(ifnull(max(right(sytzdbh, 2)),0)+1 AS signed) orderNum from emk_sample_color");
             emkSampleColor.setSytzdbh("SY" + DateUtils.format(new Date(), "yyMMdd") + "B" + String.format("%02d", new Object[]{Integer.valueOf(Integer.parseInt(orderNum.get("orderNum").toString()))}));
             this.emkSampleColorService.save(emkSampleColor);
             this.systemService.addLog(message, Globals.Log_Type_INSERT, Globals.Log_Leavel_INFO);

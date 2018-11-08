@@ -107,14 +107,6 @@ public class EmkMaterialContractController extends BaseController {
     @Autowired
     ProcessEngine processEngine;
     @Autowired
-    ManagementService managementService;
-    @Autowired
-    ProcessEngineConfiguration processEngineConfiguration;
-    @Autowired
-    RepositoryService repositoryService;
-    @Autowired
-    RuntimeService runtimeService;
-    @Autowired
     TaskService taskService;
     @Autowired
     HistoryService historyService;

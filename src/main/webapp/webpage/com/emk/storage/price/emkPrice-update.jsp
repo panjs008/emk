@@ -5,76 +5,10 @@
 <head>
 	<title>样品单</title>
 	<t:base type="jquery,easyui,tools,DatePicker"></t:base>
-	<link type="text/css" rel="stylesheet" href="plug-in/select2/css/select2.min.css"/>
-	<script type="text/javascript" src="plug-in/select2/js/select2.js"></script>
-	<script type="text/javascript" src="plug-in/select2/js/pinyin.js"></script>
+	<%@include file="/context/header.jsp"%>
+
 	<script type="text/javascript">
 		//编写自定义JS代码
-		$(function(){
-			BindSelect("businesserId","ymkCustomController.do?findUserList&userKey=业务员",1,$("#businesserName").val()+","+$("#businesser").val());
-
-			$("#businesserId").change(function(){
-				var itemarr = $("#businesserId").val().split(","); //字符分割
-				$("#businesser").val(itemarr[0]);
-				$("#businesserName").val(itemarr[1]);
-
-				returnToDept($("#businesserName").val());
-			});
-		});
-
-		function returnToSelect(){
-			BindSelect("businesserId","ymkCustomController.do?findUserList&userKey=业务员",1,$("#businesserName").val()+","+$("#businesser").val());
-			returnToDept($("#businesserName").val());
-		}
-
-		function returnToDept(userName){
-			$.ajax({
-				url: "ymkCustomController.do?getDeptInfoByUser&userName="+userName,
-				type: 'post',
-				cache: false,
-				data: null,
-				success: function (data) {
-					var d = $.parseJSON(data);
-					console.log(d);
-					if (d.success) {
-						$("#businesseDeptName").val(d.obj.departname);
-						$("#businesseDeptId").val(d.obj.orgCode);
-					}
-				}
-			});
-		}
-
-		function formatState (state) {
-			if (!state.id) { return state.text; }
-			var $state = $(
-					'<span>' + state.text + '</span>'
-			);
-			return $state;
-		}
-
-		function BindSelect(ctrlName, url,type,categoryId) {
-			var control = $('#' + ctrlName);
-			//设置Select2的处理
-			control.select2({
-				formatResult: formatState,
-				formatSelection: formatState,
-				escapeMarkup: function (m) {
-					return m;
-				}
-			});
-			//绑定Ajax的内容
-			$.getJSON(url, function (data) {
-				control.empty();//清空下拉框
-				control.append("<option value=''>请选择</option>");
-				$.each(data.obj, function (i, item) {
-					control.append("<option value='" + item.userName + ","+item.realName +"'>&nbsp;" + item.realName + "</option>");
-				});
-				if(type ==1){
-					$("#"+ctrlName).select2('val',categoryId);
-				}
-			});
-
-		}
 		function uploadSuccess0(d,file,response){
 			var src = d.attributes.url;
 			$("#customSampleUrl").val(d.attributes.url);
@@ -123,24 +57,7 @@
 			}
 		}
 
-		function findDetail(photoUrl) {
-			$.dialog({
-				content: 'url:emkEnquiryController.do?photo&photoUrl='+photoUrl,
-				zIndex: getzIndex(),
-				title : "查看",
-				lock : true,
-				width:900,
-				height: 500,
-				opacity : 0.3,
-				cache:false,
-				lock : true,
-				cache:false,
-				max: true,
-				min: true,
-				drag: true,
-				resize: false
-			});
-		}
+
 	</script>
 </head>
 <body>
@@ -154,7 +71,7 @@
 				</label>
 			</td>
 			<td class="value" >
-				<input id="xpNo" name="xpNo" datatype="*" value="${emkPricePage.xpNo }"  type="text" style="width: 140px" class="inputxt"  />
+				<input id="xpNo" name="xpNo" datatype="*" value="${emkPricePage.xpNo }" validType="emk_price,xp_no,id"  type="text" style="width: 140px" class="inputxt"  />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">询盘单号</label>
 			</td>
@@ -196,7 +113,7 @@
 				</label>
 			</td>
 			<td class="value" colspan="3">
-				<input id="cusName" name="cusName" readonly value="${emkPricePage.cusName }" type="text" style="width: 140px" class="inputxt"  ignore="ignore" />
+				<input id="cusName" name="cusName" readonly value="${emkPricePage.cusName }" type="text" style="width: 140px" class="inputxt"  datatype="*"/>
 				<t:choose  hiddenName="cusNum"  hiddenid="cusNum" url="ymkCustomController.do?select" name="ymkCustomList" width="700px" height="500px"
 						   icon="icon-search" title="选择客户" textname="cusName,businesseDeptName,businesseDeptId,businesser,businesserName,bz,guoJia" isclear="true" isInit="true"></t:choose>
 				<span class="Validform_checktip"></span>
@@ -425,7 +342,7 @@
 				&nbsp;&nbsp;<input name="isTest" type="radio" datatype="*"  <c:if test="${emkPricePage.isTest eq '1'}">checked="true"</c:if> value="1">
 				否
 				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">是否同意</label>
+				<label class="Validform_label" style="display: none;">是否需要测试</label>
 			</td>
 			<td align="right">
 				<label class="Validform_label">

@@ -66,7 +66,7 @@ public class EmkMaterialRequiredEntity implements Serializable {
     @Excel(name = "入库状态", width = 15)
     private String rkState;
     @Excel(name = "总数量", width = 15)
-    private Double sumTotal;
+    private Integer sumTotal;
     @Excel(name = "类型", width = 15)
     private String type;
     @Excel(name = "订单号", width = 15)
@@ -368,11 +368,11 @@ public class EmkMaterialRequiredEntity implements Serializable {
     }
 
     @Column(name = "SUM_TOTAL", nullable = true, scale = 2, length = 32)
-    public Double getSumTotal() {
+    public Integer getSumTotal() {
         return this.sumTotal;
     }
 
-    public void setSumTotal(Double sumTotal) {
+    public void setSumTotal(Integer sumTotal) {
         this.sumTotal = sumTotal;
     }
 

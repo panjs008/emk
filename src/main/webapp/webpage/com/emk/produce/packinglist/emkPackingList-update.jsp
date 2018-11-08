@@ -5,9 +5,7 @@
 <head>
 	<title>装箱单</title>
 	<t:base type="jquery,easyui,tools,DatePicker"></t:base>
-	<link type="text/css" rel="stylesheet" href="plug-in/select2/css/select2.min.css"/>
-	<script type="text/javascript" src="plug-in/select2/js/select2.js"></script>
-	<script type="text/javascript" src="plug-in/select2/js/pinyin.js"></script>
+	<%@include file="/context/header.jsp"%>
 	<script type="text/javascript">
 		//编写自定义JS代码
 

@@ -432,6 +432,10 @@ function createwindow(title, addurl,width,height) {
 		width =  window.top.document.body.offsetWidth;
 		height =window.top.document.body.offsetHeight-100;
 	}
+	if(addurl.indexOf('emkProduceController.do?goAdd')>=0 || addurl.indexOf('emkProduceController.do?goUpdate')>=0){
+		width =  window.top.document.body.offsetWidth;
+		height =window.top.document.body.offsetHeight-100;
+	}
 	if(addurl.indexOf('emkProduceScheduleController.do?goAdd')>=0 || addurl.indexOf('emkProduceScheduleController.do?goUpdate')>=0|| addurl.indexOf('flowController.do?goProcess&processUrl=com/emk/produce/produceschedule/emkProduceSchedule-process')>=0){
 		width =  window.top.document.body.offsetWidth;
 		height =window.top.document.body.offsetHeight-100;

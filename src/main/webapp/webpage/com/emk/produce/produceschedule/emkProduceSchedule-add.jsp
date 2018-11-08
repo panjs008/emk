@@ -5,21 +5,14 @@
 <head>
 	<title>采购生产表</title>
 	<t:base type="jquery,easyui,tools,DatePicker"></t:base>
-	<link type="text/css" rel="stylesheet" href="plug-in/select2/css/select2.min.css"/>
-	<script type="text/javascript" src="plug-in/select2/js/select2.js"></script>
-	<script type="text/javascript" src="plug-in/select2/js/pinyin.js"></script>
+	<%@include file="/context/header2.jsp"%>
+	<script src="${webRoot}/context/gys.js"></script>
+
 
 	<script type="text/javascript">
 		//编写自定义JS代码
 		$(function() {
-			BindSelect("gysId","ymkCustomController.do?findSupplierList",0,"");
-			$("#gysId").change(function(){
-				var itemarr = $("#gysId").val().split(","); //字符分割
-				$("#gysCode").val(itemarr[0]);
-				$("#gys").val(itemarr[1]);
-			});
 			$("#detailId").load("emkProduceScheduleController.do?orderMxList&proOrderId=${emkProduceSchedulePage.id }");
-
 		});
 
 
@@ -27,40 +20,11 @@
 			var src = d.attributes.url;
 			$("#customSampleUrl").val(d.attributes.url);
 			$("#customSample").val(d.attributes.name);
-			$("#customSampleId").html(d.attributes.name);
+			$("#customSampleId").html("[<a href=\"javascript:findDetail('"+d.attributes.url+"')\">"+d.attributes.name+"</a>]");
 			$("#uploadimg0").attr('src',d.attributes.url);
 
 		}
 
-
-		function BindSelect(ctrlName, url,type,categoryId) {
-			var control = $('#' + ctrlName);
-			//设置Select2的处理
-			control.select2({
-				formatResult: formatState,
-				formatSelection: formatState,
-				escapeMarkup: function (m) {
-					return m;
-				}
-			});
-			//绑定Ajax的内容
-			$.getJSON(url, function (data) {
-				control.empty();//清空下拉框
-				control.append("<option value=''>请选择</option>");
-				$.each(data.obj, function (i, item) {
-					control.append("<option value='" + item.supplierCode + ","+item.supplier +"'>" + item.supplier + "</option>");
-				});
-
-			});
-		}
-
-		function formatState (state) {
-			if (!state.id) { return state.text; }
-			var $state = $(
-					'<span>' + state.text + '</span>'
-			);
-			return $state;
-		}
 		function resetTrNum(tableId) {
 			$tbody = $("#"+tableId+"");
 			$tbody.find('>tr').each(function(i){
@@ -78,6 +42,24 @@
 					}
 				});
 			});
+		}
+
+		function setEndTimeP() {
+			var d1  =  $("#kdDate").val();
+			var d2  =  $("#ylblLimitDate").val();
+			$("#leavelYlblDay").val(DateDiff(d1,d2));
+		}
+
+		function setEndTimeP2() {
+			var d1  =  $("#kdDate").val();
+			var d2  =  $("#fzblLimitDate").val();
+			$("#leavelFzblDay").val(DateDiff(d1,d2));
+		}
+
+		function setEndTimeP3() {
+			var d1  =  $("#kdDate").val();
+			var d2  =  $("#bzblLimitDate").val();
+			$("#leavelBzblDay").val(DateDiff(d1,d2));
 		}
 	</script>
 </head>
@@ -136,7 +118,7 @@
 				</label>
 			</td>
 			<td class="value"  colspan="3">
-				<input id="cusName" name="cusName" readonly type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="cusName" name="cusName" readonly type="text" style="width: 150px" class="inputxt"  datatype="*" />
 				<t:choose  hiddenName="cusNum"  hiddenid="cusNum" url="ymkCustomController.do?select" name="ymkCustomList" width="700px" height="500px"
 						   icon="icon-search" title="选择客户" textname="cusName,businesseDeptName,businesseDeptId,businesser,businesserName,tracer,tracerName,developer,developerName,bz" isclear="true" isInit="true"></t:choose>
 				<span class="Validform_checktip"></span>
@@ -167,6 +149,7 @@
 				<select class="form-control select2" id="gysId"  datatype="*"  >
 					<option value=''>请选择</option>
 				</select>
+
 				<input id="gysCode" name="gysCode" type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<input id="gys" name="gys" type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
@@ -191,7 +174,10 @@
 				</label>
 			</td>
 			<td class="value" >
-				<input id="businesser" name="businesser" readonly type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<select class="form-control select2" id="businesserId" datatype="*" >
+					<option value=''>请选择</option>
+				</select>
+				<input id="businesser" name="businesser" readonly type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<input id="businesserName" name="businesserName"  type="hidden"  />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">业务员</label>
@@ -202,7 +188,10 @@
 				</label>
 			</td>
 			<td class="value" >
-				<input id="tracer" name="tracer" readonly type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<select class="form-control select2" id="tracerId"  >
+					<option value=''>请选择</option>
+				</select>
+				<input id="tracer" name="tracer" readonly type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<input id="tracerName" name="tracerName"  type="hidden"  />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">业务员</label>
@@ -216,7 +205,10 @@
 				</label>
 			</td>
 			<td class="value" >
-				<input id="developer" name="developer" readonly type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<select class="form-control select2" id="developerId"  >
+					<option value=''>请选择</option>
+				</select>
+				<input id="developer" name="developer" readonly type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<input id="developerName" name="developerName"  type="hidden"  />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">业务员</label>
@@ -275,7 +267,7 @@
 				</label>
 			</td>
 			<td class="value">
-				<input id="outDate" name="outDate" readonly onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})"  type="text" style="width: 150px" class="Wdate"  ignore="ignore" />
+				<input id="outDate" name="outDate" readonly onClick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'kdDate\');}'})" type="text" style="width: 150px" class="Wdate"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">交货时间</label>
 			</td>
@@ -307,7 +299,7 @@
 				</label>
 			</td>
 			<td class="value" >
-				<input id="ylblState" name="ylblState"  type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="ylblState" name="ylblState"  type="text" value="${emkProduceSchedulePage.ylblState }" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">原料布料状态</label>
 			</td>
@@ -317,7 +309,7 @@
 				</label>
 			</td>
 			<td class="value" >
-				<input id="ylblLimitDate" name="ylblLimitDate"  type="text" readonly onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})"  style="width: 150px" class="Wdate"  ignore="ignore" />
+				<input id="ylblLimitDate" name="ylblLimitDate" value="${emkProduceSchedulePage.ylblLimitDate }" type="text" readonly onClick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'kdDate\');}',onpicked:setEndTimeP})"  style="width: 150px" class="Wdate"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">原料布料到厂日期</label>
 			</td>
@@ -327,7 +319,7 @@
 				</label>
 			</td>
 			<td class="value" >
-				<input id="leavelYlblDay" name="leavelYlblDay" datatype="n" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="leavelYlblDay" name="leavelYlblDay" value="${emkProduceSchedulePage.leavelYlblDay }" datatype="n" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">距原料到厂剩余天数</label>
 			</td>
@@ -339,7 +331,7 @@
 				</label>
 			</td>
 			<td class="value" >
-				<input id="fzblState" name="fzblState"  type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="fzblState" name="fzblState" value="${emkProduceSchedulePage.fzblState }" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">缝制辅料状态</label>
 			</td>
@@ -349,7 +341,7 @@
 				</label>
 			</td>
 			<td class="value" >
-				<input id="fzblLimitDate" name="fzblLimitDate"  type="text" readonly onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})"  style="width: 150px" class="Wdate"  ignore="ignore" />
+				<input id="fzblLimitDate" name="fzblLimitDate" value="${emkProduceSchedulePage.fzblLimitDate }" type="text" readonly onClick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'kdDate\');}',onpicked:setEndTimeP2})"  style="width: 150px" class="Wdate"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">缝制辅料到厂日期</label>
 			</td>
@@ -359,7 +351,7 @@
 				</label>
 			</td>
 			<td class="value" >
-				<input id="leavelFzblDay" name="leavelFzblDay" datatype="n" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="leavelFzblDay" name="leavelFzblDay" value="${emkProduceSchedulePage.leavelFzblDay }" datatype="n" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">距缝制到厂剩余天数</label>
 			</td>
@@ -371,7 +363,7 @@
 				</label>
 			</td>
 			<td class="value" >
-				<input id="bzblState" name="bzblState"  type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="bzblState" name="bzblState" value="${emkProduceSchedulePage.bzblState }" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">包装辅料状态</label>
 			</td>
@@ -381,7 +373,7 @@
 				</label>
 			</td>
 			<td class="value" >
-				<input id="bzblLimitDate" name="bzblLimitDate"  type="text" readonly onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})"  style="width: 150px" class="Wdate"  ignore="ignore" />
+				<input id="bzblLimitDate" name="bzblLimitDate" value="${emkProduceSchedulePage.bzblLimitDate }" type="text" readonly onClick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'kdDate\');}',onpicked:setEndTimeP3})"  style="width: 150px" class="Wdate"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">包装辅料到厂日期</label>
 			</td>
@@ -391,7 +383,7 @@
 				</label>
 			</td>
 			<td class="value" >
-				<input id="leavelBzblDay" name="leavelBzblDay" datatype="n" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="leavelBzblDay" name="leavelBzblDay" value="${emkProduceSchedulePage.leavelBzblDay }" datatype="n" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">距包装到厂剩余天数</label>
 			</td>

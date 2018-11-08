@@ -124,7 +124,7 @@ public class EmkFinanceReceivableEntity implements java.io.Serializable {
 	private String fkDate;
 	/**提单状态*/
 	@Excel(name="提单状态",width=15)
-	private String state;
+	private String tdstate;
 	/**类型*/
 	@Excel(name="类型",width=15)
 	private String type;
@@ -138,7 +138,13 @@ public class EmkFinanceReceivableEntity implements java.io.Serializable {
 	/**客户名称*/
 	@Excel(name="客户名称",width=15)
 	private String cusName;
-	
+	@Excel(name = "审核意见", width = 15)
+	private String leadAdvice;
+	private String isPass;
+	private String leadUserId;
+	@Excel(name = "审核人", width = 15)
+	private String leader;
+	private String state;
 	/**
 	 *方法: 取得java.lang.String
 	 *@return: java.lang.String  业务员
@@ -805,4 +811,50 @@ public class EmkFinanceReceivableEntity implements java.io.Serializable {
 	public void setCusName(String cusName){
 		this.cusName = cusName;
 	}
+
+	@Column(name ="tdstate",nullable=true,length=32)
+	public String getTdstate() {
+		return tdstate;
+	}
+
+	public void setTdstate(String tdstate) {
+		this.tdstate = tdstate;
+	}
+
+	@Column(name = "LEAD_ADVICE", nullable = true, length = 256)
+	public String getLeadAdvice() {
+		return this.leadAdvice;
+	}
+
+	public void setLeadAdvice(String leadAdvice) {
+		this.leadAdvice = leadAdvice;
+	}
+
+	@Column(name = "IS_PASS", nullable = true, length = 32)
+	public String getIsPass() {
+		return this.isPass;
+	}
+
+	public void setIsPass(String isPass) {
+		this.isPass = isPass;
+	}
+
+	@Column(name = "LEAD_USER_ID", nullable = true, length = 32)
+	public String getLeadUserId() {
+		return this.leadUserId;
+	}
+
+	public void setLeadUserId(String leadUserId) {
+		this.leadUserId = leadUserId;
+	}
+
+	@Column(name = "LEADER", nullable = true, length = 32)
+	public String getLeader() {
+		return this.leader;
+	}
+
+	public void setLeader(String leader) {
+		this.leader = leader;
+	}
+
 }

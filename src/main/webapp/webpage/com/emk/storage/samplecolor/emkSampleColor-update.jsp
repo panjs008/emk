@@ -5,45 +5,18 @@
 <head>
 	<title>色样通知单</title>
 	<t:base type="jquery,easyui,tools,DatePicker"></t:base>
-	<link type="text/css" rel="stylesheet" href="plug-in/select2/css/select2.min.css"/>
-	<script type="text/javascript" src="plug-in/select2/js/select2.js"></script>
-	<script type="text/javascript" src="plug-in/select2/js/pinyin.js"></script>
+	<%@include file="/context/header2.jsp"%>
 
 	<script type="text/javascript">
 		//编写自定义JS代码
-		$(function() {
-
-		});
-
-
-
 		function uploadSuccess0(d,file,response){
 			var src = d.attributes.url;
 			$("#customSampleUrl").val(d.attributes.url);
 			$("#customSample").val(d.attributes.name);
-			$("#customSampleId").html(d.attributes.name);
+			$("#customSampleId").html("[<a href=\"javascript:findDetail('"+d.attributes.url+"')\">"+d.attributes.name+"</a>]");
+
 			$("#uploadimg0").attr('src',d.attributes.url);
 
-		}
-
-
-		function findDetail(photoUrl) {
-			$.dialog({
-				content: 'url:emkEnquiryController.do?photo&photoUrl='+photoUrl,
-				zIndex: getzIndex(),
-				title : "查看",
-				lock : true,
-				width:900,
-				height: 500,
-				opacity : 0.3,
-				cache:false,
-				lock : true,
-				cache:false,
-				max: true,
-				min: true,
-				drag: true,
-				resize: false
-			});
 		}
 	</script>
 </head>
@@ -91,7 +64,10 @@
 				</label>
 			</td>
 			<td class="value" style="width: 32%">
-				<input id="businesser" name="businesser" readonly value="${emkSampleColorPage.businesser }" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<select class="form-control select2" id="businesserId" datatype="*"  >
+					<option value=''>请选择</option>
+				</select>
+				<input id="businesser" name="businesser" readonly value="${emkSampleColorPage.businesser }" type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<input id="businesserName" name="businesserName" value="${emkSampleColorPage.businesserName }"  type="hidden"  />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">业务员</label>
@@ -116,7 +92,7 @@
 				</label>
 			</td>
 			<td class="value" style="width: 32%">
-				<input id="cusName" name="cusName" readonly type="text" value="${emkSampleColorPage.cusName }"  style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="cusName" name="cusName" readonly type="text" value="${emkSampleColorPage.cusName }"  style="width: 150px" class="inputxt"  datatype="*" />
 				<t:choose  hiddenName="cusNum"  hiddenid="cusNum" url="ymkCustomController.do?select" name="ymkCustomList" width="700px" height="500px"
 						   icon="icon-search" title="选择客户" textname="cusName,businesseDeptName,businesseDeptId,tracer,tracerName,businesser,businesserName,developer,developerName,bz" isclear="true" isInit="true"></t:choose>
 				<span class="Validform_checktip"></span>
@@ -130,7 +106,10 @@
 				</label>
 			</td>
 			<td class="value" style="width: 32%">
-				<input id="tracer" name="tracer" readonly type="text" value="${emkSampleColorPage.tracer }"  style="width: 150px" class="inputxt"  ignore="ignore" />
+				<select class="form-control select2" id="tracerId"  >
+					<option value=''>请选择</option>
+				</select>
+				<input id="tracer" name="tracer" readonly type="hidden" value="${emkSampleColorPage.tracer }"  style="width: 150px" class="inputxt"  ignore="ignore" />
 				<input id="tracerName" name="tracerName"  type="hidden" value="${emkSampleColorPage.tracerName }" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">业务员</label>
@@ -141,7 +120,10 @@
 				</label>
 			</td>
 			<td class="value" style="width: 32%">
-				<input id="developer" name="developer" readonly value="${emkSampleColorPage.developer }"  type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<select class="form-control select2" id="developerId"  >
+					<option value=''>请选择</option>
+				</select>
+				<input id="developer" name="developer" readonly value="${emkSampleColorPage.developer }"  type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<input id="developerName" name="developerName" value="${emkSampleColorPage.developerName }"  type="hidden"  />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">业务员</label>

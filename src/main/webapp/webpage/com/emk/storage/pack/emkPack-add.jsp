@@ -5,6 +5,8 @@
 <head>
 	<title>样品单</title>
 	<t:base type="jquery,easyui,tools,DatePicker"></t:base>
+	<%@include file="/context/header.jsp"%>
+
 	<script type="text/javascript">
 		//编写自定义JS代码
 		function uploadSuccess0(d,file,response){
@@ -57,24 +59,6 @@
 			}
 		}
 
-		function findDetail(photoUrl) {
-			$.dialog({
-				content: 'url:emkEnquiryController.do?photo&photoUrl='+photoUrl,
-				zIndex: getzIndex(),
-				title : "查看",
-				lock : true,
-				width:900,
-				height: 500,
-				opacity : 0.3,
-				cache:false,
-				lock : true,
-				cache:false,
-				max: true,
-				min: true,
-				drag: true,
-				resize: false
-			});
-		}
 	</script>
 </head>
 <body>
@@ -99,7 +83,10 @@
 				</label>
 			</td>
 			<td class="value" style="width: 32%">
-				<input id="businesser" name="businesser" readonly type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<select class="form-control select2" id="businesserId" datatype="*" >
+					<option value=''>请选择</option>
+				</select>
+				<input id="businesser" name="businesser" readonly type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<input id="businesserName" name="businesserName"  type="hidden"  />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">业务员</label>
@@ -124,7 +111,7 @@
 				</label>
 			</td>
 			<td class="value" style="width: 32%">
-				<input id="cusName" name="cusName" readonly type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="cusName" name="cusName" readonly type="text" style="width: 150px" class="inputxt"  datatype="*"/>
 				<t:choose  hiddenName="cusNum"  hiddenid="cusNum" url="ymkCustomController.do?select" name="ymkCustomList" width="700px" height="500px"
 						   icon="icon-search" title="选择客户" textname="cusName,businesseDeptName,businesseDeptId,businesser,businesserName,bz" isclear="true" isInit="true"></t:choose>
 				<span class="Validform_checktip"></span>
@@ -173,7 +160,7 @@
 				</label>
 			</td>
 			<td class="value">
-				<input id="ysDate" name="ysDate" readonly onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})"  type="text" style="width: 150px" class="Wdate"  ignore="ignore" />
+				<input id="ysDate" name="ysDate" readonly onClick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'kdDate\');}',onpicked:setEndTime})" type="text" style="width: 150px" class="Wdate"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">交货时间</label>
 			</td>
@@ -201,7 +188,7 @@
 				<label class="Validform_label" style="display: none;">生产合同号</label>
 			</td>
 		</tr>
-		<tr>
+		<%--<tr>
 			<td align="right">
 				<label class="Validform_label">
 					布面克重:
@@ -222,7 +209,7 @@
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">布面成分</label>
 			</td>
-		</tr>
+		</tr>--%>
 		<tr>
 			<td align="right">
 				<label class="Validform_label">

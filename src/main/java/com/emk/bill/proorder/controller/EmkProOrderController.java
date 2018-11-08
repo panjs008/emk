@@ -1,16 +1,22 @@
 package com.emk.bill.proorder.controller;
 
 import com.alibaba.fastjson.JSONArray;
+import com.emk.bill.bzgyd.entity.EmkBzgydEntity;
 import com.emk.bill.contract.entity.EmkContractEntity;
 import com.emk.bill.materialpact.entity.EmkMaterialPactEntity;
 import com.emk.bill.materialrequired.entity.EmkMaterialRequiredEntity;
 import com.emk.bill.proorder.entity.EmkProOrderEntity;
 import com.emk.bill.proorder.service.EmkProOrderServiceI;
+import com.emk.bill.proorderbarcode.entity.EmkProOrderBarcodeEntity;
+import com.emk.bill.proorderbox.entity.EmkProOrderBoxEntity;
 import com.emk.bill.proorderdetail.entity.EmkProOrderDetailEntity;
+import com.emk.bill.proorderpackage.entity.EmkProOrderPackageEntity;
+import com.emk.bill.yjyhtime.entity.EmkYjyhTimeEntity;
 import com.emk.bound.minstorage.entity.EmkMInStorageEntity;
 import com.emk.bound.minstoragedetail.entity.EmkMInStorageDetailEntity;
 import com.emk.storage.enquirydetail.entity.EmkEnquiryDetailEntity;
 import com.emk.storage.instorage.entity.EmkInStorageEntity;
+import com.emk.storage.price.entity.EmkPriceEntity;
 import com.emk.storage.sampledetail.entity.EmkSampleDetailEntity;
 import com.emk.storage.storage.entity.EmkStorageEntity;
 import com.emk.storage.storagelog.entity.EmkStorageLogEntity;
@@ -86,9 +92,9 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.UriComponentsBuilder;
 
-@Api(value = "EmkProOrder", description = "生产订单", tags = {"emkProOrderController"})
+@Api(value = "EmkProOrder", description = "生产订单", tags = "emkProOrderController")
 @Controller
-@RequestMapping({"/emkProOrderController"})
+@RequestMapping("/emkProOrderController")
 public class EmkProOrderController extends BaseController {
     private static final Logger logger = Logger.getLogger(EmkProOrderController.class);
     @Autowired
@@ -101,24 +107,16 @@ public class EmkProOrderController extends BaseController {
     @Autowired
     ProcessEngine processEngine;
     @Autowired
-    ManagementService managementService;
-    @Autowired
-    ProcessEngineConfiguration processEngineConfiguration;
-    @Autowired
-    RepositoryService repositoryService;
-    @Autowired
-    RuntimeService runtimeService;
-    @Autowired
     TaskService taskService;
     @Autowired
     HistoryService historyService;
 
-    @RequestMapping(params = {"list"})
+    @RequestMapping(params = "list")
     public ModelAndView list(HttpServletRequest request) {
         return new ModelAndView("com/emk/bill/proorder/emkProOrderList");
     }
 
-    @RequestMapping(params = {"orderMxList"})
+    @RequestMapping(params = "orderMxList")
     public ModelAndView orderMxList(HttpServletRequest request) {
         Map map = ParameterUtil.getParamMaps(request.getParameterMap());
         if ((map.get("proOrderId") != null) && (!map.get("proOrderId").equals(""))) {
@@ -128,7 +126,7 @@ public class EmkProOrderController extends BaseController {
         return new ModelAndView("com/emk/bill/proorder/orderMxList");
     }
 
-    @RequestMapping(params = {"datagrid"})
+    @RequestMapping(params = "datagrid")
     public void datagrid(EmkProOrderEntity emkProOrder, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid) {
         CriteriaQuery cq = new CriteriaQuery(EmkProOrderEntity.class, dataGrid);
 
@@ -140,7 +138,7 @@ public class EmkProOrderController extends BaseController {
         TagUtil.datagrid(response, dataGrid);
     }
 
-    @RequestMapping(params = {"doDel"})
+    @RequestMapping(params = "doDel")
     @ResponseBody
     public AjaxJson doDel(EmkProOrderEntity emkProOrder, HttpServletRequest request) {
         String message = null;
@@ -166,7 +164,7 @@ public class EmkProOrderController extends BaseController {
         return j;
     }
 
-    @RequestMapping(params = {"doBatchDel"})
+    @RequestMapping(params = "doBatchDel")
     @ResponseBody
     public AjaxJson doBatchDel(String ids, HttpServletRequest request) {
         String message = null;
@@ -181,7 +179,12 @@ public class EmkProOrderController extends BaseController {
                     j.setMsg(message);
                     return  j;
                 }
-                this.systemService.executeSql("delete from emk_pro_order_detail where pro_order_id=?", emkProOrder.getId());
+                this.systemService.executeSql("delete from emk_enquiry_detail where ENQUIRY_ID=?", emkProOrder.getId());
+                this.systemService.executeSql("delete from emk_sample_detail where sample_id=?", emkProOrder.getId());
+                this.systemService.executeSql("delete from emk_pro_order_barcode where order_id=?", emkProOrder.getId());
+                this.systemService.executeSql("delete from emk_pro_order_box where order_id=?", emkProOrder.getId());
+                this.systemService.executeSql("delete from emk_pro_order_package where order_id=?", emkProOrder.getId());
+
 
                 this.emkProOrderService.delete(emkProOrder);
                 this.systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
@@ -195,25 +198,33 @@ public class EmkProOrderController extends BaseController {
         return j;
     }
 
-    @RequestMapping(params = {"doAdd"})
+    @RequestMapping(params = "doAdd")
     @ResponseBody
     public AjaxJson doAdd(EmkProOrderEntity emkProOrder, HttpServletRequest request) {
         String message = null;
         AjaxJson j = new AjaxJson();
         message = "生产订单添加成功";
         try {
-            TSUser user = (TSUser) request.getSession().getAttribute("LOCAL_CLINET_USER");
-            Map orderNum = this.systemService.findOneForJdbc("select count(0)+1 orderNum from emk_pro_order where sys_org_code=?", new Object[]{user.getCurrentDepart().getOrgCode()});
-            emkProOrder.setOrderNo("D" + DateUtils.format(new Date(), "yyMMdd") + String.format("%06d", new Object[]{Integer.valueOf(Integer.parseInt(orderNum.get("orderNum").toString()))}));
+            Map orderNum = this.systemService.findOneForJdbc("select CAST(ifnull(max(right(ORDER_NO, 6)),0)+1 AS signed) orderNum from emk_pro_order");
+//            Map orderNum = this.systemService.findOneForJdbc("select count(0)+1 orderNum from emk_pro_order where sys_org_code=?", new Object[]{user.getCurrentDepart().getOrgCode()});
+            emkProOrder.setOrderNo("D" + DateUtils.format(new Date(), "yyMMdd") + String.format("%06d", Integer.parseInt(orderNum.get("orderNum").toString())));
             emkProOrder.setState("0");
             this.emkProOrderService.save(emkProOrder);
-            Map price = this.systemService.findOneForJdbc("select * from emk_price where cus_num =? and sample_no=? order by kd_date desc limit 0,1", new Object[]{emkProOrder.getCusNum(), emkProOrder.getSampleNo()});
-            List<EmkSampleDetailEntity> sampleDetailEntityList = this.systemService.findHql("from EmkSampleDetailEntity where sampleId=?", new Object[]{price.get("id")});
-            for (EmkSampleDetailEntity sampleDetailEntity : sampleDetailEntityList) {
-                sampleDetailEntity.setSampleId(price.get("id").toString());
-                sampleDetailEntity.setId(null);
-                this.systemService.save(sampleDetailEntity);
+            EmkWorkOrderEntity workOrderEntity = systemService.findUniqueByProperty(EmkWorkOrderEntity.class,"workNo",emkProOrder.getWorkNo());
+            if(workOrderEntity != null){
+                EmkPriceEntity priceEntity = systemService.findUniqueByProperty(EmkPriceEntity.class,"xpNo",workOrderEntity.getAskNo());
+                EmkSampleDetailEntity emkSampleDetailEntity = null;
+
+                List<EmkSampleDetailEntity> sampleDetailEntityList = this.systemService.findHql("from EmkSampleDetailEntity where sampleId=?", priceEntity.getId());
+                for (EmkSampleDetailEntity sampleDetailEntity : sampleDetailEntityList) {
+                    emkSampleDetailEntity = new EmkSampleDetailEntity();
+                    MyBeanUtils.copyBeanNotNull2Bean(sampleDetailEntity, emkSampleDetailEntity);
+                    emkSampleDetailEntity.setId(null);
+                    emkSampleDetailEntity.setSampleId(emkProOrder.getId());
+                    this.systemService.save(emkSampleDetailEntity);
+                }
             }
+
             this.systemService.addLog(message, Globals.Log_Type_INSERT, Globals.Log_Leavel_INFO);
         } catch (Exception e) {
             e.printStackTrace();
@@ -224,136 +235,8 @@ public class EmkProOrderController extends BaseController {
         return j;
     }
 
-   /* @RequestMapping(params = {"doSubmit"})
-    @ResponseBody
-    public AjaxJson doSubmit(EmkProOrderEntity emkProOrder, HttpServletRequest request, String ids) {
-        String message = null;
-        AjaxJson j = new AjaxJson();
-        message = "生产订单提交成功";
-        EmkProOrderEntity t = (EmkProOrderEntity) this.emkProOrderService.get(EmkProOrderEntity.class, emkProOrder.getId());
-        try {
-            TSUser user = (TSUser) request.getSession().getAttribute("LOCAL_CLINET_USER");
 
-            MyBeanUtils.copyBeanNotNull2Bean(emkProOrder, t);
-            this.emkProOrderService.saveOrUpdate(t);
-            EmkMaterialRequiredEntity materialRequiredEntity = null;
-            EmkMaterialPactEntity materialPactEntity = null;
-
-            EmkContractEntity contractEntity = new EmkContractEntity();
-            MyBeanUtils.copyBeanNotNull2Bean(t, contractEntity);
-
-
-            contractEntity.setId(null);
-
-            contractEntity.setPartyA(user.getCurrentDepart().getDepartname());
-            contractEntity.setPartyAId(user.getCurrentDepart().getOrgCode());
-            contractEntity.setPartyB(t.getGys());
-            contractEntity.setPartyBId(t.getGysCode());
-            contractEntity.setHtNum(t.getOrderNo().replace("D", "HT"));
-
-            EmkContractEntity emkContractEntity = (EmkContractEntity) this.systemService.findUniqueByProperty(EmkContractEntity.class, "htNum", contractEntity.getHtNum());
-            String contractId = "";
-            if (emkContractEntity != null) {
-                MyBeanUtils.copyBeanNotNull2Bean(contractEntity, emkContractEntity);
-                this.systemService.saveOrUpdate(emkContractEntity);
-                this.systemService.executeSql("delete from emk_enquiry_detail where ENQUIRY_ID=?", new Object[]{emkContractEntity.getId()});
-                contractId = emkContractEntity.getId();
-            } else {
-                this.systemService.save(contractEntity);
-                contractId = contractEntity.getId();
-            }
-            EmkEnquiryDetailEntity emkEnquiryDetailEntity = null;
-            List<EmkEnquiryDetailEntity> emkEnquiryDetailEntityList = this.systemService.findHql("from EmkEnquiryDetailEntity where enquiryId=?", new Object[]{emkProOrder.getId()});
-            for (EmkEnquiryDetailEntity enquiryDetailEntity : emkEnquiryDetailEntityList) {
-                emkEnquiryDetailEntity = new EmkEnquiryDetailEntity();
-                MyBeanUtils.copyBeanNotNull2Bean(enquiryDetailEntity, emkEnquiryDetailEntity);
-                emkEnquiryDetailEntity.setId(null);
-                emkEnquiryDetailEntity.setEnquiryId(contractId);
-                this.systemService.save(emkEnquiryDetailEntity);
-            }
-            EmkSampleDetailEntity emkSampleDetailEntity;
-            String materialRequiredId;
-            for (int i = 0; i < 3; i++) {
-                List<EmkSampleDetailEntity> sampleDetailEntityList = this.systemService.findHql("from EmkSampleDetailEntity where sampleId=? and type=?", new Object[]{emkProOrder.getId(), String.valueOf(i)});
-                if ((sampleDetailEntityList != null) && (sampleDetailEntityList.size() > 0)) {
-                    materialRequiredEntity = new EmkMaterialRequiredEntity();
-                    materialPactEntity = new EmkMaterialPactEntity();
-                    MyBeanUtils.copyBeanNotNull2Bean(t, materialRequiredEntity);
-                    MyBeanUtils.copyBeanNotNull2Bean(t, materialPactEntity);
-
-
-                    materialPactEntity.setId(null);
-                    materialPactEntity.setOrderNum(t.getOrderNo());
-                    materialPactEntity.setPartyA(user.getCurrentDepart().getDepartname());
-                    materialPactEntity.setPartyAId(user.getCurrentDepart().getOrgCode());
-                    materialPactEntity.setPartyB(t.getGys());
-                    materialPactEntity.setPartyBId(t.getGysCode());
-                    materialPactEntity.setMaterialNo(t.getOrderNo().replace("D", "YHT"));
-                    materialPactEntity.setKdDate(DateUtils.format(new Date(), "yyyy-MM-dd"));
-                    materialPactEntity.setDhjqDate(t.getRecevieDate());
-                    materialPactEntity.setLeaveDhjqDays(t.getLevelDays());
-                    materialPactEntity.setType(String.valueOf(i));
-                    List<EmkMaterialPactEntity> emkMaterialPactEntityList = this.systemService.findHql("from EmkMaterialPactEntity where materialNo=? and type=?", new Object[]{materialPactEntity.getMaterialNo(), String.valueOf(i)});
-                    String materialPactId = "";
-                    if ((emkMaterialPactEntityList != null) && (emkMaterialPactEntityList.size() > 0)) {
-                        EmkMaterialPactEntity t2 = (EmkMaterialPactEntity) emkMaterialPactEntityList.get(0);
-                        MyBeanUtils.copyBeanNotNull2Bean(materialPactEntity, t2);
-                        this.systemService.saveOrUpdate(t2);
-                        this.systemService.executeSql("delete from emk_sample_detail where sample_id=?", new Object[]{t2.getId()});
-                        materialPactId = t2.getId();
-                    } else {
-                        this.systemService.save(materialPactEntity);
-                        materialPactId = materialPactEntity.getId();
-                    }
-                    emkSampleDetailEntity = null;
-                    for (EmkSampleDetailEntity sampleDetailEntity : sampleDetailEntityList) {
-                        emkSampleDetailEntity = new EmkSampleDetailEntity();
-                        MyBeanUtils.copyBeanNotNull2Bean(sampleDetailEntity, emkSampleDetailEntity);
-                        emkSampleDetailEntity.setId(null);
-                        emkSampleDetailEntity.setSampleId(materialPactId);
-                        this.systemService.save(emkSampleDetailEntity);
-                    }
-                    materialRequiredEntity.setId(null);
-                    materialRequiredEntity.setMaterialNo(t.getOrderNo().replace("D", "CG"));
-                    materialRequiredEntity.setOrderNum(t.getOrderNo());
-                    materialRequiredEntity.setHtNum(materialPactEntity.getMaterialNo());
-                    materialRequiredEntity.setKdDate(DateUtils.format(new Date(), "yyyy-MM-dd"));
-                    materialRequiredEntity.setDhjqDate(t.getRecevieDate());
-                    materialRequiredEntity.setLeaveDhjqDays(t.getLevelDays());
-                    materialRequiredEntity.setType(String.valueOf(i));
-
-                    List<EmkMaterialRequiredEntity> emkMaterialRequiredEntityList = this.systemService.findHql("from EmkMaterialRequiredEntity where materialNo=? and type=?", new Object[]{materialRequiredEntity.getMaterialNo(), String.valueOf(i)});
-                    materialRequiredId = "";
-                    if ((emkMaterialRequiredEntityList != null) && (emkMaterialRequiredEntityList.size() > 0)) {
-                        EmkMaterialRequiredEntity t2 = (EmkMaterialRequiredEntity) emkMaterialRequiredEntityList.get(0);
-                        MyBeanUtils.copyBeanNotNull2Bean(materialRequiredEntity, t2);
-                        this.systemService.saveOrUpdate(t2);
-                        this.systemService.executeSql("delete from emk_sample_detail where sample_id=?", new Object[]{t2.getId()});
-                        materialRequiredId = t2.getId();
-                    } else {
-                        this.systemService.save(materialRequiredEntity);
-                        materialRequiredId = materialRequiredEntity.getId();
-                    }
-                    for (EmkSampleDetailEntity sampleDetailEntity : sampleDetailEntityList) {
-                        emkSampleDetailEntity = new EmkSampleDetailEntity();
-                        MyBeanUtils.copyBeanNotNull2Bean(sampleDetailEntity, emkSampleDetailEntity);
-                        emkSampleDetailEntity.setId(null);
-                        emkSampleDetailEntity.setSampleId(materialRequiredId);
-                        this.systemService.save(emkSampleDetailEntity);
-                    }
-                }
-            }
-            this.systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
-        } catch (Exception e) {
-            e.printStackTrace();
-            message = "生产订单更新失败";
-            throw new BusinessException(e.getMessage());
-        }
-        j.setMsg(message);
-        return j;
-    }*/
-
-    @RequestMapping(params = {"doUpdate"})
+    @RequestMapping(params = "doUpdate")
     @ResponseBody
     public AjaxJson doUpdate(EmkProOrderEntity emkProOrder, HttpServletRequest request) {
         String message = null;
@@ -370,19 +253,21 @@ public class EmkProOrderController extends BaseController {
             }
             MyBeanUtils.copyBeanNotNull2Bean(emkProOrder, t);
             this.emkProOrderService.saveOrUpdate(t);
-            Map price = this.systemService.findOneForJdbc("select id from emk_price where cus_num =? and sample_no=? order by kd_date desc limit 0,1", new Object[]{emkProOrder.getCusNum(), emkProOrder.getSampleNo()});
-            EmkSampleDetailEntity emkSampleDetailEntity;
-            if (price != null) {
-                List<EmkSampleDetailEntity> sampleDetailEntityList = this.systemService.findHql("from EmkSampleDetailEntity where sampleId=?", new Object[]{price.get("id")});
-                emkSampleDetailEntity = null;
+            EmkWorkOrderEntity workOrderEntity = systemService.findUniqueByProperty(EmkWorkOrderEntity.class,"workNo",t.getWorkNo());
+            if(workOrderEntity != null){
+                EmkPriceEntity priceEntity = systemService.findUniqueByProperty(EmkPriceEntity.class,"xpNo",workOrderEntity.getAskNo());
+                EmkSampleDetailEntity emkSampleDetailEntity = null;
+                systemService.executeSql("delete from emk_sample_detail where SAMPLE_ID=?",t.getId());
+                List<EmkSampleDetailEntity> sampleDetailEntityList = this.systemService.findHql("from EmkSampleDetailEntity where sampleId=?", t.getId());
                 for (EmkSampleDetailEntity sampleDetailEntity : sampleDetailEntityList) {
                     emkSampleDetailEntity = new EmkSampleDetailEntity();
                     MyBeanUtils.copyBeanNotNull2Bean(sampleDetailEntity, emkSampleDetailEntity);
                     emkSampleDetailEntity.setId(null);
-                    emkSampleDetailEntity.setSampleId(emkProOrder.getId());
+                    emkSampleDetailEntity.setSampleId(t.getId());
                     this.systemService.save(emkSampleDetailEntity);
                 }
             }
+
             this.systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
         } catch (Exception e) {
             e.printStackTrace();
@@ -393,7 +278,7 @@ public class EmkProOrderController extends BaseController {
         return j;
     }
 
-    @RequestMapping(params = {"goAdd"})
+    @RequestMapping(params = "goAdd")
     public ModelAndView goAdd(EmkProOrderEntity emkProOrder, HttpServletRequest req) {
         req.setAttribute("kdDate", DateUtils.format(new Date(), "yyyy-MM-dd"));
         if (StringUtil.isNotEmpty(emkProOrder.getId())) {
@@ -403,7 +288,7 @@ public class EmkProOrderController extends BaseController {
         return new ModelAndView("com/emk/bill/proorder/emkProOrder-add");
     }
 
-    @RequestMapping(params = {"goUpdate"})
+    @RequestMapping(params = "goUpdate")
     public ModelAndView goUpdate(EmkProOrderEntity emkProOrder, HttpServletRequest req) {
         if (StringUtil.isNotEmpty(emkProOrder.getId())) {
             emkProOrder = (EmkProOrderEntity) this.emkProOrderService.getEntity(EmkProOrderEntity.class, emkProOrder.getId());
@@ -428,7 +313,7 @@ public class EmkProOrderController extends BaseController {
         return new ModelAndView("com/emk/bill/proorder/emkProOrder-update");
     }
 
-    @RequestMapping(params = {"goUpdate2"})
+    @RequestMapping(params = "goUpdate2")
     public ModelAndView goUpdate2(EmkProOrderEntity emkProOrder, HttpServletRequest req) {
         if (StringUtil.isNotEmpty(emkProOrder.getId())) {
             emkProOrder = (EmkProOrderEntity) this.emkProOrderService.getEntity(EmkProOrderEntity.class, emkProOrder.getId());
@@ -451,13 +336,13 @@ public class EmkProOrderController extends BaseController {
         return new ModelAndView("com/emk/bill/proorder/emkProOrder-update2");
     }
 
-    @RequestMapping(params = {"upload"})
+    @RequestMapping(params = "upload")
     public ModelAndView upload(HttpServletRequest req) {
         req.setAttribute("controller_name", "emkProOrderController");
         return new ModelAndView("common/upload/pub_excel_upload");
     }
 
-    @RequestMapping(params = {"exportXls"})
+    @RequestMapping(params = "exportXls")
     public String exportXls(EmkProOrderEntity emkProOrder, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid, ModelMap modelMap) {
         CriteriaQuery cq = new CriteriaQuery(EmkProOrderEntity.class, dataGrid);
         HqlGenerateUtil.installHql(cq, emkProOrder, request.getParameterMap());
@@ -470,7 +355,7 @@ public class EmkProOrderController extends BaseController {
         return "jeecgExcelView";
     }
 
-    @RequestMapping(params = {"exportXlsByT"})
+    @RequestMapping(params = "exportXlsByT")
     public String exportXlsByT(EmkProOrderEntity emkProOrder, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid, ModelMap modelMap) {
         modelMap.put("fileName", "生产订单");
         modelMap.put("entity", EmkProOrderEntity.class);
@@ -489,7 +374,7 @@ public class EmkProOrderController extends BaseController {
         return Result.success(listEmkProOrders);
     }
 
-    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.GET})
+    @RequestMapping(value = "/{id}", method = {org.springframework.web.bind.annotation.RequestMethod.GET})
     @ResponseBody
     @ApiOperation(value = "根据ID获取生产订单信息", notes = "根据ID获取生产订单信息", httpMethod = "GET", produces = "application/json")
     public ResponseMessage<?> get(@ApiParam(required = true, name = "id", value = "ID") @PathVariable("id") String id) {
@@ -500,7 +385,7 @@ public class EmkProOrderController extends BaseController {
         return Result.success(task);
     }
 
-    @RequestMapping(method = {org.springframework.web.bind.annotation.RequestMethod.POST}, consumes = {"application/json"})
+    @RequestMapping(method = {org.springframework.web.bind.annotation.RequestMethod.POST}, consumes = "application/json")
     @ResponseBody
     @ApiOperation("创建生产订单")
     public ResponseMessage<?> create(@ApiParam(name = "生产订单对象") @RequestBody EmkProOrderEntity emkProOrder, UriComponentsBuilder uriBuilder) {
@@ -517,7 +402,7 @@ public class EmkProOrderController extends BaseController {
         return Result.success(emkProOrder);
     }
 
-    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.PUT}, consumes = {"application/json"})
+    @RequestMapping(value = "/{id}", method = {org.springframework.web.bind.annotation.RequestMethod.PUT}, consumes = "application/json")
     @ResponseBody
     @ApiOperation(value = "更新生产订单", notes = "更新生产订单")
     public ResponseMessage<?> update(@ApiParam(name = "生产订单对象") @RequestBody EmkProOrderEntity emkProOrder) {
@@ -534,7 +419,7 @@ public class EmkProOrderController extends BaseController {
         return Result.success("更新生产订单信息成功");
     }
 
-    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.DELETE})
+    @RequestMapping(value = "/{id}", method = {org.springframework.web.bind.annotation.RequestMethod.DELETE})
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ApiOperation("删除生产订单")
     public ResponseMessage<?> delete(@ApiParam(name = "id", value = "ID", required = true) @PathVariable("id") String id) {
@@ -603,10 +488,11 @@ public class EmkProOrderController extends BaseController {
 
                                 EmkMaterialRequiredEntity materialRequiredEntity = null;
                                 EmkMaterialPactEntity materialPactEntity = null;
+                                EmkMaterialPactEntity pactEntity = null;
 
+                                //生成合同表
                                 EmkContractEntity contractEntity = new EmkContractEntity();
                                 MyBeanUtils.copyBeanNotNull2Bean(t, contractEntity);
-
 
                                 contractEntity.setId(null);
                                 contractEntity.setState("0");
@@ -616,7 +502,7 @@ public class EmkProOrderController extends BaseController {
                                 contractEntity.setPartyBId(t.getGysCode());
                                 contractEntity.setHtNum(t.getOrderNo().replace("D", "HT"));
 
-                                EmkContractEntity emkContractEntity = (EmkContractEntity) this.systemService.findUniqueByProperty(EmkContractEntity.class, "htNum", contractEntity.getHtNum());
+                                /*EmkContractEntity emkContractEntity = (EmkContractEntity) this.systemService.findUniqueByProperty(EmkContractEntity.class, "htNum", contractEntity.getHtNum());
                                 String contractId = "";
                                 if (emkContractEntity != null) {
                                     MyBeanUtils.copyBeanNotNull2Bean(contractEntity, emkContractEntity);
@@ -626,71 +512,156 @@ public class EmkProOrderController extends BaseController {
                                 } else {
                                     this.systemService.save(contractEntity);
                                     contractId = contractEntity.getId();
-                                }
+                                }*/
+                                this.systemService.save(contractEntity);
+
                                 EmkEnquiryDetailEntity emkEnquiryDetailEntity = null;
-                                List<EmkEnquiryDetailEntity> emkEnquiryDetailEntityList = this.systemService.findHql("from EmkEnquiryDetailEntity where enquiryId=?", new Object[]{t.getId()});
+                                List<EmkEnquiryDetailEntity> emkEnquiryDetailEntityList = this.systemService.findHql("from EmkEnquiryDetailEntity where enquiryId=?",t.getId());
                                 for (EmkEnquiryDetailEntity enquiryDetailEntity : emkEnquiryDetailEntityList) {
                                     emkEnquiryDetailEntity = new EmkEnquiryDetailEntity();
                                     MyBeanUtils.copyBeanNotNull2Bean(enquiryDetailEntity, emkEnquiryDetailEntity);
                                     emkEnquiryDetailEntity.setId(null);
-                                    emkEnquiryDetailEntity.setEnquiryId(contractId);
+                                    //emkEnquiryDetailEntity.setEnquiryId(contractId);
+                                    emkEnquiryDetailEntity.setEnquiryId(contractEntity.getId());
                                     this.systemService.save(emkEnquiryDetailEntity);
                                 }
-                                EmkSampleDetailEntity emkSampleDetailEntity;
+
+                                //生成包装工艺表
+                                EmkBzgydEntity bzgydEntity = new EmkBzgydEntity();
+                                MyBeanUtils.copyBeanNotNull2Bean(t, bzgydEntity);
+                                this.systemService.save(bzgydEntity);
+                                EmkProOrderBarcodeEntity emkProOrderBarcodeEntity = null;
+                                EmkProOrderBoxEntity emkProOrderBoxEntity = null;
+                                EmkProOrderPackageEntity emkProOrderPackageEntity = null;
+                                EmkSampleDetailEntity emkSampleDetailEntity = null;
+
+                                List<EmkProOrderBarcodeEntity> proOrderBarcodeEntityList = systemService.findHql("from EmkProOrderBarcodeEntity where orderId=?",t.getId());
+                                for(EmkProOrderBarcodeEntity proOrderBarcodeEntity : proOrderBarcodeEntityList){
+                                    emkProOrderBarcodeEntity = new EmkProOrderBarcodeEntity();
+                                    MyBeanUtils.copyBeanNotNull2Bean(proOrderBarcodeEntity, emkProOrderBarcodeEntity);
+                                    emkProOrderBarcodeEntity.setId(null);
+                                    emkProOrderBarcodeEntity.setOrderId(bzgydEntity.getId());
+                                    systemService.save(emkProOrderBarcodeEntity);
+                                }
+                                List<EmkProOrderBoxEntity> proOrderBoxEntityList = systemService.findHql("from EmkProOrderBoxEntity where orderId=?",t.getId());
+                                for(EmkProOrderBoxEntity proOrderBoxEntity : proOrderBoxEntityList){
+                                    emkProOrderBoxEntity = new EmkProOrderBoxEntity();
+                                    MyBeanUtils.copyBeanNotNull2Bean(proOrderBoxEntity, emkProOrderBoxEntity);
+                                    emkProOrderBoxEntity.setId(null);
+                                    emkProOrderBoxEntity.setOrderId(bzgydEntity.getId());
+                                    systemService.save(emkProOrderBoxEntity);
+
+                                }
+                                List<EmkProOrderPackageEntity> proOrderPackageEntityList = systemService.findHql("from EmkProOrderPackageEntity where orderId=?",t.getId());
+                                for(EmkProOrderPackageEntity proOrderPackageEntity : proOrderPackageEntityList){
+                                    emkProOrderPackageEntity = new EmkProOrderPackageEntity();
+                                    MyBeanUtils.copyBeanNotNull2Bean(proOrderPackageEntity, emkProOrderPackageEntity);
+                                    emkProOrderPackageEntity.setId(null);
+                                    emkProOrderPackageEntity.setOrderId(bzgydEntity.getId());
+                                    systemService.save(emkProOrderPackageEntity);
+                                }
+                                List<EmkSampleDetailEntity> sampleDetailEntityList = this.systemService.findHql("from EmkSampleDetailEntity where sampleId=? and type=2", t.getId());
+                                for(EmkSampleDetailEntity sampleDetailEntity : sampleDetailEntityList){
+                                    emkSampleDetailEntity = new EmkSampleDetailEntity();
+                                    MyBeanUtils.copyBeanNotNull2Bean(sampleDetailEntity, emkSampleDetailEntity);
+                                    emkSampleDetailEntity.setId(null);
+                                    emkSampleDetailEntity.setSampleId(bzgydEntity.getId());
+                                    this.systemService.save(emkSampleDetailEntity);
+                                }
+
+
+                                //预计验货时间表
+                                EmkYjyhTimeEntity yjyhTimeEntity = new EmkYjyhTimeEntity();
+                                MyBeanUtils.copyBeanNotNull2Bean(t, yjyhTimeEntity);
+                                yjyhTimeEntity.setYjzqyhDate(t.getZqyhDate());
+                                yjyhTimeEntity.setYjwqyhDate(t.getWqyhDate());
+                                yjyhTimeEntity.setKdTime(DateUtils.format(new Date(), "yyyy-MM-dd"));
+                                this.systemService.save(yjyhTimeEntity);
+
+
+                                EmkSampleDetailEntity emkSampleDetailPactEntity;
+
+                                //生成采购需求单、预采购合同、采购合同
                                 String materialRequiredId;
                                 for (int i = 0; i < 3; i++) {
-                                    List<EmkSampleDetailEntity> sampleDetailEntityList = this.systemService.findHql("from EmkSampleDetailEntity where sampleId=? and type=?", new Object[]{t.getId(), String.valueOf(i)});
+                                    sampleDetailEntityList = this.systemService.findHql("from EmkSampleDetailEntity where sampleId=? and type=?", new Object[]{t.getId(), String.valueOf(i)});
                                     if ((sampleDetailEntityList != null) && (sampleDetailEntityList.size() > 0)) {
                                         materialRequiredEntity = new EmkMaterialRequiredEntity();
                                         materialPactEntity = new EmkMaterialPactEntity();
+                                        pactEntity = new EmkMaterialPactEntity();
+
                                         try {
                                             MyBeanUtils.copyBeanNotNull2Bean(t, materialRequiredEntity);
                                             MyBeanUtils.copyBeanNotNull2Bean(t, materialPactEntity);
                                         } catch (Exception e) {
                                             e.printStackTrace();
                                         }
-
+                                        //预采购合同
                                         materialPactEntity.setId(null);
+                                        materialPactEntity.setHtNum(contractEntity.getHtNum());
                                         materialPactEntity.setOrderNum(t.getOrderNo());
                                         materialPactEntity.setPartyA(user.getCurrentDepart().getDepartname());
                                         materialPactEntity.setPartyAId(user.getCurrentDepart().getOrgCode());
                                         materialPactEntity.setPartyB(t.getGys());
                                         materialPactEntity.setPartyBId(t.getGysCode());
-                                        materialPactEntity.setMaterialNo(t.getOrderNo().replace("D", "YHT"));
+                                        materialPactEntity.setMaterialNo(t.getOrderNo().replace("D", "CGHT"));
                                         materialPactEntity.setKdDate(DateUtils.format(new Date(), "yyyy-MM-dd"));
                                         materialPactEntity.setDhjqDate(t.getRecevieDate());
                                         materialPactEntity.setLeaveDhjqDays(t.getLevelDays());
                                         materialPactEntity.setType(String.valueOf(i));
-                                        List<EmkMaterialPactEntity> emkMaterialPactEntityList = this.systemService.findHql("from EmkMaterialPactEntity where materialNo=? and type=?", new Object[]{materialPactEntity.getMaterialNo(), String.valueOf(i)});
+                                        materialPactEntity.setFlag("0");
+
+                                        //采购合同
+                                        MyBeanUtils.copyBeanNotNull2Bean(materialPactEntity, pactEntity);
+                                        pactEntity.setCghtbh(materialPactEntity.getMaterialNo());
+                                        pactEntity.setFlag("1");
+                                        pactEntity.setZscghtbh(materialPactEntity.getMaterialNo().replace("CGHT","ZSCGHT"));
+                                        pactEntity.setCgxqdh(materialRequiredEntity.getMaterialNo());
+
+                                        /*List<EmkMaterialPactEntity> emkMaterialPactEntityList = this.systemService.findHql("from EmkMaterialPactEntity where materialNo=? and type=?", new Object[]{materialPactEntity.getMaterialNo(), String.valueOf(i)});
                                         String materialPactId = "";
                                         if ((emkMaterialPactEntityList != null) && (emkMaterialPactEntityList.size() > 0)) {
                                             EmkMaterialPactEntity t2 = (EmkMaterialPactEntity) emkMaterialPactEntityList.get(0);
                                             MyBeanUtils.copyBeanNotNull2Bean(materialPactEntity, t2);
                                             this.systemService.saveOrUpdate(t2);
-                                            this.systemService.executeSql("delete from emk_sample_detail where sample_id=?", new Object[]{t2.getId()});
+                                            this.systemService.executeSql("delete from emk_sample_detail where sample_id=?", t2.getId());
                                             materialPactId = t2.getId();
                                         } else {
                                             this.systemService.save(materialPactEntity);
                                             materialPactId = materialPactEntity.getId();
-                                        }
+                                        }*/
+                                        //生成预采购合同单
+                                        this.systemService.save(materialPactEntity);
+
+                                        //生成采购合同单
+                                        this.systemService.save(pactEntity);
+
                                         emkSampleDetailEntity = null;
                                         for (EmkSampleDetailEntity sampleDetailEntity : sampleDetailEntityList) {
+                                            //预采购合同明细
                                             emkSampleDetailEntity = new EmkSampleDetailEntity();
                                             MyBeanUtils.copyBeanNotNull2Bean(sampleDetailEntity, emkSampleDetailEntity);
                                             emkSampleDetailEntity.setId(null);
-                                            emkSampleDetailEntity.setSampleId(materialPactId);
+                                            emkSampleDetailEntity.setSampleId(materialPactEntity.getId());
                                             this.systemService.save(emkSampleDetailEntity);
+
+                                            //采购合同明细
+                                            emkSampleDetailPactEntity = new EmkSampleDetailEntity();
+                                            MyBeanUtils.copyBeanNotNull2Bean(sampleDetailEntity, emkSampleDetailPactEntity);
+                                            emkSampleDetailPactEntity.setId(null);
+                                            emkSampleDetailPactEntity.setSampleId(pactEntity.getId());
+                                            this.systemService.save(emkSampleDetailPactEntity);
                                         }
                                         materialRequiredEntity.setId(null);
-                                        materialRequiredEntity.setMaterialNo(t.getOrderNo().replace("D", "CG"));
+                                        materialRequiredEntity.setMaterialNo(t.getOrderNo().replace("D", "CGXQ"));
                                         materialRequiredEntity.setOrderNum(t.getOrderNo());
-                                        materialRequiredEntity.setHtNum(materialPactEntity.getMaterialNo());
+                                        materialRequiredEntity.setHtNum(contractEntity.getHtNum());
                                         materialRequiredEntity.setKdDate(DateUtils.format(new Date(), "yyyy-MM-dd"));
                                         materialRequiredEntity.setDhjqDate(t.getRecevieDate());
                                         materialRequiredEntity.setLeaveDhjqDays(t.getLevelDays());
                                         materialRequiredEntity.setType(String.valueOf(i));
 
-                                        List<EmkMaterialRequiredEntity> emkMaterialRequiredEntityList = this.systemService.findHql("from EmkMaterialRequiredEntity where materialNo=? and type=?", new Object[]{materialRequiredEntity.getMaterialNo(), String.valueOf(i)});
+                                       /* List<EmkMaterialRequiredEntity> emkMaterialRequiredEntityList = this.systemService.findHql("from EmkMaterialRequiredEntity where materialNo=? and type=?", new Object[]{materialRequiredEntity.getMaterialNo(), String.valueOf(i)});
                                         materialRequiredId = "";
                                         if ((emkMaterialRequiredEntityList != null) && (emkMaterialRequiredEntityList.size() > 0)) {
                                             EmkMaterialRequiredEntity t2 = (EmkMaterialRequiredEntity) emkMaterialRequiredEntityList.get(0);
@@ -701,12 +672,16 @@ public class EmkProOrderController extends BaseController {
                                         } else {
                                             this.systemService.save(materialRequiredEntity);
                                             materialRequiredId = materialRequiredEntity.getId();
-                                        }
+                                        }*/
+
+                                        //生成预采购需求单
+                                        this.systemService.save(materialRequiredEntity);
+
                                         for (EmkSampleDetailEntity sampleDetailEntity : sampleDetailEntityList) {
                                             emkSampleDetailEntity = new EmkSampleDetailEntity();
                                             MyBeanUtils.copyBeanNotNull2Bean(sampleDetailEntity, emkSampleDetailEntity);
                                             emkSampleDetailEntity.setId(null);
-                                            emkSampleDetailEntity.setSampleId(materialRequiredId);
+                                            emkSampleDetailEntity.setSampleId(materialRequiredEntity.getId());
                                             this.systemService.save(emkSampleDetailEntity);
                                         }
                                     }
@@ -835,6 +810,5 @@ public class EmkProOrderController extends BaseController {
         }
         return j;
     }
-
 
 }

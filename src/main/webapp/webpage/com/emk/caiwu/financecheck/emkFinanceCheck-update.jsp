@@ -3,11 +3,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>出货通知单</title>
+	<title>应收核准单</title>
 	<t:base type="jquery,easyui,tools,DatePicker"></t:base>
-	<link type="text/css" rel="stylesheet" href="plug-in/select2/css/select2.min.css"/>
-	<script type="text/javascript" src="plug-in/select2/js/select2.js"></script>
-	<script type="text/javascript" src="plug-in/select2/js/pinyin.js"></script>
+	<%@include file="/context/header2.jsp"%>
+	<script src="${webRoot}/context/gys.js"></script>
 	<script type="text/javascript">
 		//编写自定义JS代码
 
@@ -29,47 +28,6 @@
 				});
 			});
 		}
-		$(document).ready(function(){
-			BindSelect("gysId","ymkCustomController.do?findSupplierList",1,"${emkFinanceCheckPage.gysCode},${emkFinanceCheckPage.gys}");
-
-			$("#gysId").change(function(){
-				var itemarr = $("#gysId").val().split(","); //字符分割
-				$("#gysCode").val(itemarr[0]);
-				$("#gys").val(itemarr[1]);
-			});
-		});
-		function BindSelect(ctrlName, url,type,categoryId) {
-			var control = $('#' + ctrlName);
-			//设置Select2的处理
-			control.select2({
-				formatResult: formatState,
-				formatSelection: formatState,
-				escapeMarkup: function (m) {
-					return m;
-				}
-			});
-			//绑定Ajax的内容
-			$.getJSON(url, function (data) {
-				control.empty();//清空下拉框
-				control.append("<option value=''>请选择</option>");
-				$.each(data.obj, function (i, item) {
-					control.append("<option value='" + item.supplierCode + ","+item.supplier +"'>" + item.supplier + "</option>");
-				});
-				if(type ==1){
-					$("#"+ctrlName).select2('val',categoryId);
-				}
-			});
-		}
-
-		function formatState (state) {
-			if (!state.id) { return state.text; }
-			var $state = $(
-					'<span>' + state.text + '</span>'
-			);
-			return $state;
-		};
-
-
 	</script>
 </head>
 <body>
@@ -103,6 +61,30 @@
 
 		</tr>
 		<tr>
+			<td align="right" >
+				<label class="Validform_label">
+					客户编号:
+				</label>
+			</td>
+			<td class="value" >
+				<input id="cusNum" name="cusNum" readonly type="text" value="${emkFinanceCheckPage.cusNum }" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">客户编号</label>
+			</td>
+			<td align="right" >
+				<label class="Validform_label">
+					客户名称:
+				</label>
+			</td>
+			<td class="value" >
+				<input id="cusName" name="cusName" readonly type="text" value="${emkFinanceCheckPage.cusName }" style="width: 150px" class="inputxt"  datatype="*"/>
+				<t:choose  hiddenName="cusNum"  hiddenid="cusNum" url="ymkCustomController.do?select" name="ymkCustomList" width="700px" height="500px"
+						   icon="icon-search" title="选择客户" textname="cusName,businesseDeptName,businesseDeptId,businesser,businesserName,tracer,tracerName,developer,developerName,bz" isclear="true" isInit="true"></t:choose>
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">客户名称</label>
+			</td>
+		</tr>
+		<tr>
 			<td align="right" style="width: 18%" >
 				<label class="Validform_label">
 					业务部门:
@@ -120,7 +102,10 @@
 				</label>
 			</td>
 			<td class="value" style="width: 32%" >
-				<input id="businesser" name="businesser" readonly value="${emkFinanceCheckPage.businesser }" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<select class="form-control select2" id="businesserId" datatype="*" >
+					<option value=''>请选择</option>
+				</select>
+				<input id="businesser" name="businesser" readonly value="${emkFinanceCheckPage.businesser }" type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<input id="businesserName" name="businesserName"  value="${emkFinanceCheckPage.businesserName }" type="hidden"  />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">业务员</label>
@@ -131,35 +116,14 @@
 		<tr>
 			<td align="right" >
 				<label class="Validform_label">
-					客户编号:
-				</label>
-			</td>
-			<td class="value" >
-				<input id="cusNum" name="cusNum" readonly type="text" value="${emkFinanceCheckPage.cusNum }" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">客户编号</label>
-			</td>
-			<td align="right" >
-				<label class="Validform_label">
-					客户名称:
-				</label>
-			</td>
-			<td class="value" >
-				<input id="cusName" name="cusName" readonly type="text" value="${emkFinanceCheckPage.cusName }" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<t:choose  hiddenName="cusNum"  hiddenid="cusNum" url="ymkCustomController.do?select" name="ymkCustomList" width="700px" height="500px"
-						   icon="icon-search" title="选择客户" textname="cusName,businesseDeptName,businesseDeptId,businesser,businesserName,tracer,tracerName,developer,developerName,bz" isclear="true" isInit="true"></t:choose>
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">客户名称</label>
-			</td>
-		</tr>
-		<tr>
-			<td align="right" >
-				<label class="Validform_label">
 					业务跟单员:
 				</label>
 			</td>
 			<td class="value" >
-				<input id="tracer" name="tracer" readonly type="text" value="${emkFinanceCheckPage.tracer }" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<select class="form-control select2" id="tracerId"  >
+					<option value=''>请选择</option>
+				</select>
+				<input id="tracer" name="tracer" readonly type="hidden" value="${emkFinanceCheckPage.tracer }" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<input id="tracerName" name="tracerName"  type="hidden" value="${emkFinanceCheckPage.tracerName }" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">业务员</label>
@@ -170,7 +134,10 @@
 				</label>
 			</td>
 			<td class="value">
-				<input id="developer" name="developer" readonly value="${emkFinanceCheckPage.developer }" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<select class="form-control select2" id="developerId"  >
+					<option value=''>请选择</option>
+				</select>
+				<input id="developer" name="developer" readonly value="${emkFinanceCheckPage.developer }" type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<input id="developerName" name="developerName" value="${emkFinanceCheckPage.developerName }" type="hidden"  />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">业务员</label>

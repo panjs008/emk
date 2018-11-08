@@ -5,57 +5,17 @@
 <head>
 	<title>生产订单</title>
 	<t:base type="jquery,easyui,tools,DatePicker"></t:base>
-	<link type="text/css" rel="stylesheet" href="plug-in/select2/css/select2.min.css"/>
-	<script type="text/javascript" src="plug-in/select2/js/select2.js"></script>
-	<script type="text/javascript" src="plug-in/select2/js/pinyin.js"></script>
+	<%@include file="/context/header2.jsp"%>
+	<script src="${webRoot}/context/gys.js"></script>
 
 	<script type="text/javascript">
 		//编写自定义JS代码
-		$(document).ready(function() {
-			BindSelect("gysId","ymkCustomController.do?findSupplierList",1,"${emkProOrderPage.gysCode},${emkProOrderPage.gys}");
-			$("#gysId").change(function(){
-				var itemarr = $("#gysId").val().split(","); //字符分割
-				$("#gysCode").val(itemarr[0]);
-				$("#gys").val(itemarr[1]);
-			});
-		});
-		function BindSelect(ctrlName, url,type,categoryId) {
-			var control = $('#' + ctrlName);
-			//设置Select2的处理
-			control.select2({
-				formatResult: formatState,
-				formatSelection: formatState,
-				escapeMarkup: function (m) {
-					return m;
-				}
-			});
-			//绑定Ajax的内容
-			$.getJSON(url, function (data) {
-				control.empty();//清空下拉框
-				control.append("<option value=''>请选择</option>");
-				$.each(data.obj, function (i, item) {
-					control.append("<option value='" + item.supplierCode + ","+item.supplier +"'>" + item.supplier + "</option>");
-				});
-				if(type ==1){
-					$("#"+ctrlName).select2('val',categoryId);
-				}
-			});
-		}
-
-		function formatState (state) {
-			if (!state.id) { return state.text; }
-			var $state = $(
-					'<span>' + state.text + '</span>'
-			);
-			return $state;
-		};
-
-
 		function uploadSuccess0(d,file,response){
 			var src = d.attributes.url;
 			$("#customSampleUrl").val(d.attributes.url);
 			$("#customSample").val(d.attributes.name);
-			$("#customSampleId").html(d.attributes.name);
+			$("#customSampleId").html("[<a href=\"javascript:findDetail('"+d.attributes.url+"')\">"+d.attributes.name+"</a>]");
+
 			$("#uploadimg0").attr('src',d.attributes.url);
 
 		}
@@ -63,29 +23,10 @@
 			var src = d.attributes.url;
 			$("#boxImageUrl").val(d.attributes.url);
 			$("#boxImage").val(d.attributes.name);
-			$("#boxImageId").html(d.attributes.name);
+			$("#boxImageId").html("[<a href=\"javascript:findDetail('"+d.attributes.url+"')\">"+d.attributes.name+"</a>]");
+
 			$("#uploadimg1").attr('src',d.attributes.url);
 
-		}
-
-
-		function findDetail(photoUrl) {
-			$.dialog({
-				content: 'url:emkEnquiryController.do?photo&photoUrl='+photoUrl,
-				zIndex: getzIndex(),
-				title : "查看",
-				lock : true,
-				width:900,
-				height: 500,
-				opacity : 0.3,
-				cache:false,
-				lock : true,
-				cache:false,
-				max: true,
-				min: true,
-				drag: true,
-				resize: false
-			});
 		}
 
 	</script>
@@ -136,39 +77,13 @@
 				<select class="form-control select2" id="gysId"  datatype="*"  >
 					<option value=''>请选择</option>
 				</select>
-				<input id="gysCode" name="gysCode" value="${emkMaterialDetailPage.gysCode }" type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<input id="gys" name="gys" value="${emkMaterialDetailPage.gys }" type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="gysCode" name="gysCode" value="${emkProOrderPage.gysCode }" type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="gys" name="gys" value="${emkProOrderPage.gys }" type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">供应商</label>
 			</td>
 		</tr>
 		<tr>
-			<td align="right" style="width: 18%">
-				<label class="Validform_label">
-					业务部门:
-				</label>
-			</td>
-			<td class="value" style="width: 32%">
-				<input id="businesseDeptName" name="businesseDeptName" value="${emkProOrderPage.businesseDeptName }" readonly type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<input id="businesseDeptId" name="businesseDeptId"  value="${emkProOrderPage.businesseDeptId }" type="hidden"  />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">业务部门</label>
-			</td>
-			<td align="right" style="width: 18%">
-				<label class="Validform_label">
-					业务员:
-				</label>
-			</td>
-			<td class="value" style="width: 32%">
-				<input id="businesser" name="businesser" readonly value="${emkProOrderPage.businesser }" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<input id="businesserName" name="businesserName"  value="${emkProOrderPage.businesserName }" type="hidden"  />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">业务员</label>
-			</td>
-		</tr>
-
-		<tr>
-
 			<td align="right" style="width: 18%">
 				<label class="Validform_label">
 					客户编号:
@@ -195,11 +110,43 @@
 		<tr>
 			<td align="right" style="width: 18%">
 				<label class="Validform_label">
+					业务部门:
+				</label>
+			</td>
+			<td class="value" style="width: 32%">
+				<input id="businesseDeptName" name="businesseDeptName" value="${emkProOrderPage.businesseDeptName }" readonly type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="businesseDeptId" name="businesseDeptId"  value="${emkProOrderPage.businesseDeptId }" type="hidden"  />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">业务部门</label>
+			</td>
+			<td align="right" style="width: 18%">
+				<label class="Validform_label">
+					业务员:
+				</label>
+			</td>
+			<td class="value" style="width: 32%">
+				<select class="form-control select2" id="businesserId"  >
+					<option value=''>请选择</option>
+				</select>
+				<input id="businesser" name="businesser" readonly value="${emkProOrderPage.businesser }" type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="businesserName" name="businesserName"  value="${emkProOrderPage.businesserName }" type="hidden"  />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">业务员</label>
+			</td>
+		</tr>
+
+
+		<tr>
+			<td align="right" style="width: 18%">
+				<label class="Validform_label">
 					业务跟单员:
 				</label>
 			</td>
 			<td class="value" style="width: 32%">
-				<input id="tracer" name="tracer" readonly type="text" value="${emkProOrderPage.tracer }" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<select class="form-control select2" id="tracerId"  >
+					<option value=''>请选择</option>
+				</select>
+				<input id="tracer" name="tracer" readonly type="hidden" value="${emkProOrderPage.tracer }" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<input id="tracerName" name="tracerName"  type="hidden" value="${emkProOrderPage.tracerName }" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">业务员</label>
@@ -210,7 +157,10 @@
 				</label>
 			</td>
 			<td class="value" style="width: 32%">
-				<input id="developer" name="developer" readonly value="${emkProOrderPage.developer }" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<select class="form-control select2" id="developerId"  >
+					<option value=''>请选择</option>
+				</select>
+				<input id="developer" name="developer" readonly value="${emkProOrderPage.developer }" type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<input id="developerName" name="developerName" value="${emkProOrderPage.developerName }" type="hidden"  />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">业务员</label>
@@ -249,7 +199,7 @@
 				</label>
 			</td>
 			<td class="value">
-				<input id="orderTime" name="orderTime" readonly value="${emkProOrderPage.orderTime }" onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})"  type="text" style="width: 150px" class="Wdate"  ignore="ignore" />
+				<input id="kdDate" name="orderTime" readonly value="${emkProOrderPage.orderTime }" onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})"  type="text" style="width: 150px" class="Wdate"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">提交日期</label>
 			</td>
@@ -259,7 +209,7 @@
 				</label>
 			</td>
 			<td class="value">
-				<input id="recevieDate" name="recevieDate" readonly value="${emkProOrderPage.recevieDate}" onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})"  type="text" style="width: 150px" class="Wdate"  ignore="ignore" />
+				<input id="ysDate" name="recevieDate" readonly value="${emkProOrderPage.recevieDate}" onClick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'kdDate\');}',onpicked:setEndTime})" type="text" style="width: 150px" class="Wdate"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">交货时间</label>
 			</td>

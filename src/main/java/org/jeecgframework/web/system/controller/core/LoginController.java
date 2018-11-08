@@ -328,11 +328,7 @@ public class LoginController extends BaseController{
 			/*Map pDept = systemService.findOneForJdbc("SELECT * FROM t_s_depart WHERE org_code=?",u.getCurrentDepart().getOrgCode().substring(0,3));
 			req.getSession().setAttribute("pDept",pDept);*/
 			req.getSession().setAttribute("CUR_USER",u);
-			if(roleMap.get("rolecode").toString().contains("equipservice") || roleMap.get("rolecode").toString().contains("localservice")){
-				Map contact = systemService.findOneForJdbc("SELECT t1.`contact_id` FROM ymk_custom_contact_user t1 WHERE t1.`user_id`=?",u.getId());
-				YmkCustomEntity customEntity = systemService.get(YmkCustomEntity.class,contact.get("contact_id").toString());
-				req.getSession().setAttribute("custom",customEntity);
-			}
+
 			req.getSession().setAttribute("ROLE",roleMap);
 		}
 		return j;

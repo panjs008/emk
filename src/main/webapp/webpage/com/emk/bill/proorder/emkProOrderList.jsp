@@ -9,10 +9,11 @@
    <t:dgCol title="创建人登录名称"  field="createBy"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="创建日期"  field="createDate"  formatter="yyyy-MM-dd"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="所属部门"  field="sysOrgCode"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
-   <t:dgCol title="状态"  field="state"  formatterjs="formatColor"  queryMode="single"  dictionary="bpm_status"  width="60"></t:dgCol>
+      <t:dgCol title="操作" field="opt" width="227" frozenColumn="true"></t:dgCol>
+
+      <t:dgCol title="状态"  field="state"  formatterjs="formatColor"  queryMode="single"  dictionary="bpm_status"  width="60"></t:dgCol>
    <t:dgCol title="订单号"  field="orderNo"  queryMode="single"  width="110"></t:dgCol>
       <t:dgCol title="订单日期"  field="orderTime"  queryMode="single"  width="80"></t:dgCol>
-      <t:dgCol title="操作" field="opt" width="227" frozenColumn="true"></t:dgCol>
       <t:dgCol title="业务部门"  field="businesseDeptName"  queryMode="single"  width="80"></t:dgCol>
       <t:dgCol title="业务员"  field="businesser"  queryMode="single"  width="70"></t:dgCol>
       <t:dgCol title="业务跟单员"  field="tracer"  queryMode="single"  width="80"></t:dgCol>

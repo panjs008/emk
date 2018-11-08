@@ -1,6 +1,7 @@
 package com.emk.produce.produceschedule.controller;
 
 import com.alibaba.fastjson.JSONArray;
+import com.emk.bill.proorder.entity.EmkProOrderEntity;
 import com.emk.produce.produceschedule.entity.EmkProduceScheduleEntity;
 import com.emk.produce.produceschedule.service.EmkProduceScheduleServiceI;
 import com.emk.storage.enquirydetail.entity.EmkEnquiryDetailEntity;
@@ -64,9 +65,9 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.UriComponentsBuilder;
 
-@Api(value = "EmkProduceSchedule", description = "采购生产表", tags = {"emkProduceScheduleController"})
+@Api(value = "EmkProduceSchedule", description = "生产表", tags = "emkProduceScheduleController")
 @Controller
-@RequestMapping({"/emkProduceScheduleController"})
+@RequestMapping("/emkProduceScheduleController")
 public class EmkProduceScheduleController extends BaseController {
     private static final Logger logger = Logger.getLogger(EmkProduceScheduleController.class);
     @Autowired
@@ -83,24 +84,24 @@ public class EmkProduceScheduleController extends BaseController {
     @Autowired
     HistoryService historyService;
 
-    @RequestMapping(params = {"list"})
+    @RequestMapping(params = "list")
     public ModelAndView list(HttpServletRequest request) {
         return new ModelAndView("com/emk/produce/produceschedule/emkProduceScheduleList");
     }
 
-    @RequestMapping(params = {"orderMxList"})
+    @RequestMapping(params = "orderMxList")
     public ModelAndView orderMxList(HttpServletRequest request) {
-        List<Map<String, Object>> codeList = this.systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", new Object[]{"A03"});
+        List<Map<String, Object>> codeList = this.systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", "A03");
         request.setAttribute("categoryEntityList", codeList);
         Map map = ParameterUtil.getParamMaps(request.getParameterMap());
         if ((map.get("proOrderId") != null) && (!map.get("proOrderId").equals(""))) {
-            List<EmkEnquiryDetailEntity> emkProOrderDetailEntities = this.systemService.findHql("from EmkEnquiryDetailEntity where enquiryId=?", new Object[]{map.get("proOrderId")});
+            List<EmkEnquiryDetailEntity> emkProOrderDetailEntities = this.systemService.findHql("from EmkEnquiryDetailEntity where enquiryId=?", map.get("proOrderId"));
             request.setAttribute("emkProOrderDetailEntities", emkProOrderDetailEntities);
         }
         return new ModelAndView("com/emk/produce/produceschedule/orderMxList");
     }
 
-    @RequestMapping(params = {"datagrid"})
+    @RequestMapping(params = "datagrid")
     public void datagrid(EmkProduceScheduleEntity emkProduceSchedule, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid) {
         CriteriaQuery cq = new CriteriaQuery(EmkProduceScheduleEntity.class, dataGrid);
 
@@ -112,31 +113,31 @@ public class EmkProduceScheduleController extends BaseController {
         TagUtil.datagrid(response, dataGrid);
     }
 
-    @RequestMapping(params = {"doDel"})
+    @RequestMapping(params = "doDel")
     @ResponseBody
     public AjaxJson doDel(EmkProduceScheduleEntity emkProduceSchedule, HttpServletRequest request) {
         String message = null;
         AjaxJson j = new AjaxJson();
         emkProduceSchedule = (EmkProduceScheduleEntity) this.systemService.getEntity(EmkProduceScheduleEntity.class, emkProduceSchedule.getId());
-        message = "采购生产表删除成功";
+        message = "生产表删除成功";
         try {
             this.emkProduceScheduleService.delete(emkProduceSchedule);
             this.systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
         } catch (Exception e) {
             e.printStackTrace();
-            message = "采购生产表删除失败";
+            message = "生产表删除失败";
             throw new BusinessException(e.getMessage());
         }
         j.setMsg(message);
         return j;
     }
 
-    @RequestMapping(params = {"doBatchDel"})
+    @RequestMapping(params = "doBatchDel")
     @ResponseBody
     public AjaxJson doBatchDel(String ids, HttpServletRequest request) {
         String message = null;
         AjaxJson j = new AjaxJson();
-        message = "采购生产表删除成功";
+        message = "生产表删除成功";
         try {
             for (String id : ids.split(",")) {
                 EmkProduceScheduleEntity emkProduceSchedule = (EmkProduceScheduleEntity) this.systemService.getEntity(EmkProduceScheduleEntity.class, id);
@@ -148,19 +149,19 @@ public class EmkProduceScheduleController extends BaseController {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            message = "采购生产表删除失败";
+            message = "生产表删除失败";
             throw new BusinessException(e.getMessage());
         }
         j.setMsg(message);
         return j;
     }
 
-    @RequestMapping(params = {"doAdd"})
+    @RequestMapping(params = "doAdd")
     @ResponseBody
     public AjaxJson doAdd(EmkProduceScheduleEntity emkProduceSchedule, HttpServletRequest request) {
         String message = null;
         AjaxJson j = new AjaxJson();
-        message = "采购生产表添加成功";
+        message = "生产表添加成功";
         try {
             emkProduceSchedule.setState("0");
             this.emkProduceScheduleService.save(emkProduceSchedule);
@@ -183,19 +184,19 @@ public class EmkProduceScheduleController extends BaseController {
             this.systemService.addLog(message, Globals.Log_Type_INSERT, Globals.Log_Leavel_INFO);
         } catch (Exception e) {
             e.printStackTrace();
-            message = "采购生产表添加失败";
+            message = "生产表添加失败";
             throw new BusinessException(e.getMessage());
         }
         j.setMsg(message);
         return j;
     }
 
-    @RequestMapping(params = {"doUpdate"})
+    @RequestMapping(params = "doUpdate")
     @ResponseBody
     public AjaxJson doUpdate(EmkProduceScheduleEntity emkProduceSchedule, HttpServletRequest request) {
         String message = null;
         AjaxJson j = new AjaxJson();
-        message = "采购生产表更新成功";
+        message = "生产表更新成功";
         EmkProduceScheduleEntity t = (EmkProduceScheduleEntity) this.emkProduceScheduleService.get(EmkProduceScheduleEntity.class, emkProduceSchedule.getId());
         try {
             emkProduceSchedule.setState("0");
@@ -221,17 +222,17 @@ public class EmkProduceScheduleController extends BaseController {
             this.systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
         } catch (Exception e) {
             e.printStackTrace();
-            message = "采购生产表更新失败";
+            message = "生产表更新失败";
             throw new BusinessException(e.getMessage());
         }
         j.setMsg(message);
         return j;
     }
 
-    @RequestMapping(params = {"goAdd"})
+    @RequestMapping(params = "goAdd")
     public ModelAndView goAdd(EmkProduceScheduleEntity emkProduceSchedule, HttpServletRequest req) {
         req.setAttribute("kdDate", DateUtils.format(new Date(), "yyyy-MM-dd"));
-        List<Map<String, Object>> codeList = this.systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", new Object[]{"A03"});
+        List<Map<String, Object>> codeList = this.systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", "A03");
         req.setAttribute("categoryEntityList", codeList);
         if (StringUtil.isNotEmpty(emkProduceSchedule.getId())) {
             emkProduceSchedule = (EmkProduceScheduleEntity) this.emkProduceScheduleService.getEntity(EmkProduceScheduleEntity.class, emkProduceSchedule.getId());
@@ -240,9 +241,9 @@ public class EmkProduceScheduleController extends BaseController {
         return new ModelAndView("com/emk/produce/produceschedule/emkProduceSchedule-add");
     }
 
-    @RequestMapping(params = {"goUpdate"})
+    @RequestMapping(params = "goUpdate")
     public ModelAndView goUpdate(EmkProduceScheduleEntity emkProduceSchedule, HttpServletRequest req) {
-        List<Map<String, Object>> codeList = this.systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", new Object[]{"A03"});
+        List<Map<String, Object>> codeList = this.systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", "A03");
         req.setAttribute("categoryEntityList", codeList);
         if (StringUtil.isNotEmpty(emkProduceSchedule.getId())) {
             emkProduceSchedule = (EmkProduceScheduleEntity) this.emkProduceScheduleService.getEntity(EmkProduceScheduleEntity.class, emkProduceSchedule.getId());
@@ -251,9 +252,9 @@ public class EmkProduceScheduleController extends BaseController {
         return new ModelAndView("com/emk/produce/produceschedule/emkProduceSchedule-update");
     }
 
-    @RequestMapping(params = {"goUpdate2"})
+    @RequestMapping(params = "goUpdate2")
     public ModelAndView goUpdate2(EmkProduceScheduleEntity emkProduceSchedule, HttpServletRequest req) {
-        List<Map<String, Object>> codeList = this.systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", new Object[]{"A03"});
+        List<Map<String, Object>> codeList = this.systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", "A03");
         req.setAttribute("categoryEntityList", codeList);
         if (StringUtil.isNotEmpty(emkProduceSchedule.getId())) {
             emkProduceSchedule = (EmkProduceScheduleEntity) this.emkProduceScheduleService.getEntity(EmkProduceScheduleEntity.class, emkProduceSchedule.getId());
@@ -262,30 +263,30 @@ public class EmkProduceScheduleController extends BaseController {
         return new ModelAndView("com/emk/produce/produceschedule/emkProduceSchedule-update2");
     }
 
-    @RequestMapping(params = {"upload"})
+    @RequestMapping(params = "upload")
     public ModelAndView upload(HttpServletRequest req) {
         req.setAttribute("controller_name", "emkProduceScheduleController");
         return new ModelAndView("common/upload/pub_excel_upload");
     }
 
-    @RequestMapping(params = {"exportXls"})
+    @RequestMapping(params = "exportXls")
     public String exportXls(EmkProduceScheduleEntity emkProduceSchedule, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid, ModelMap modelMap) {
         CriteriaQuery cq = new CriteriaQuery(EmkProduceScheduleEntity.class, dataGrid);
         HqlGenerateUtil.installHql(cq, emkProduceSchedule, request.getParameterMap());
         List<EmkProduceScheduleEntity> emkProduceSchedules = this.emkProduceScheduleService.getListByCriteriaQuery(cq, Boolean.valueOf(false));
-        modelMap.put("fileName", "采购生产表");
+        modelMap.put("fileName", "生产表");
         modelMap.put("entity", EmkProduceScheduleEntity.class);
-        modelMap.put("params", new ExportParams("采购生产表列表", "导出人:" + ResourceUtil.getSessionUser().getRealName(), "导出信息"));
+        modelMap.put("params", new ExportParams("生产表列表", "导出人:" + ResourceUtil.getSessionUser().getRealName(), "导出信息"));
 
         modelMap.put("data", emkProduceSchedules);
         return "jeecgExcelView";
     }
 
-    @RequestMapping(params = {"exportXlsByT"})
+    @RequestMapping(params = "exportXlsByT")
     public String exportXlsByT(EmkProduceScheduleEntity emkProduceSchedule, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid, ModelMap modelMap) {
-        modelMap.put("fileName", "采购生产表");
+        modelMap.put("fileName", "生产表");
         modelMap.put("entity", EmkProduceScheduleEntity.class);
-        modelMap.put("params", new ExportParams("采购生产表列表", "导出人:" + ResourceUtil.getSessionUser().getRealName(), "导出信息"));
+        modelMap.put("params", new ExportParams("生产表列表", "导出人:" + ResourceUtil.getSessionUser().getRealName(), "导出信息"));
 
         modelMap.put("data", new ArrayList());
         return "jeecgExcelView";
@@ -293,27 +294,27 @@ public class EmkProduceScheduleController extends BaseController {
 
     @RequestMapping(method = {org.springframework.web.bind.annotation.RequestMethod.GET})
     @ResponseBody
-    @ApiOperation(value = "采购生产表列表信息", produces = "application/json", httpMethod = "GET")
+    @ApiOperation(value = "生产表列表信息", produces = "application/json", httpMethod = "GET")
     public ResponseMessage<List<EmkProduceScheduleEntity>> list() {
         List<EmkProduceScheduleEntity> listEmkProduceSchedules = this.emkProduceScheduleService.getList(EmkProduceScheduleEntity.class);
         return Result.success(listEmkProduceSchedules);
     }
 
-    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.GET})
+    @RequestMapping(value = "/{id}", method = {org.springframework.web.bind.annotation.RequestMethod.GET})
     @ResponseBody
-    @ApiOperation(value = "根据ID获取采购生产表信息", notes = "根据ID获取采购生产表信息", httpMethod = "GET", produces = "application/json")
+    @ApiOperation(value = "根据ID获取生产表信息", notes = "根据ID获取生产表信息", httpMethod = "GET", produces = "application/json")
     public ResponseMessage<?> get(@ApiParam(required = true, name = "id", value = "ID") @PathVariable("id") String id) {
         EmkProduceScheduleEntity task = (EmkProduceScheduleEntity) this.emkProduceScheduleService.get(EmkProduceScheduleEntity.class, id);
         if (task == null) {
-            return Result.error("根据ID获取采购生产表信息为空");
+            return Result.error("根据ID获取生产表信息为空");
         }
         return Result.success(task);
     }
 
-    @RequestMapping(method = {org.springframework.web.bind.annotation.RequestMethod.POST}, consumes = {"application/json"})
+    @RequestMapping(method = {org.springframework.web.bind.annotation.RequestMethod.POST}, consumes = "application/json")
     @ResponseBody
-    @ApiOperation("创建采购生产表")
-    public ResponseMessage<?> create(@ApiParam(name = "采购生产表对象") @RequestBody EmkProduceScheduleEntity emkProduceSchedule, UriComponentsBuilder uriBuilder) {
+    @ApiOperation("创建生产表")
+    public ResponseMessage<?> create(@ApiParam(name = "生产表对象") @RequestBody EmkProduceScheduleEntity emkProduceSchedule, UriComponentsBuilder uriBuilder) {
         Set<ConstraintViolation<EmkProduceScheduleEntity>> failures = this.validator.validate(emkProduceSchedule, new Class[0]);
         if (!failures.isEmpty()) {
             return Result.error(JSONArray.toJSONString(BeanValidators.extractPropertyAndMessage(failures)));
@@ -322,15 +323,15 @@ public class EmkProduceScheduleController extends BaseController {
             this.emkProduceScheduleService.save(emkProduceSchedule);
         } catch (Exception e) {
             e.printStackTrace();
-            return Result.error("采购生产表信息保存失败");
+            return Result.error("生产表信息保存失败");
         }
         return Result.success(emkProduceSchedule);
     }
 
-    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.PUT}, consumes = {"application/json"})
+    @RequestMapping(value = "/{id}", method = {org.springframework.web.bind.annotation.RequestMethod.PUT}, consumes = "application/json")
     @ResponseBody
-    @ApiOperation(value = "更新采购生产表", notes = "更新采购生产表")
-    public ResponseMessage<?> update(@ApiParam(name = "采购生产表对象") @RequestBody EmkProduceScheduleEntity emkProduceSchedule) {
+    @ApiOperation(value = "更新生产表", notes = "更新生产表")
+    public ResponseMessage<?> update(@ApiParam(name = "生产表对象") @RequestBody EmkProduceScheduleEntity emkProduceSchedule) {
         Set<ConstraintViolation<EmkProduceScheduleEntity>> failures = this.validator.validate(emkProduceSchedule, new Class[0]);
         if (!failures.isEmpty()) {
             return Result.error(JSONArray.toJSONString(BeanValidators.extractPropertyAndMessage(failures)));
@@ -339,14 +340,14 @@ public class EmkProduceScheduleController extends BaseController {
             this.emkProduceScheduleService.saveOrUpdate(emkProduceSchedule);
         } catch (Exception e) {
             e.printStackTrace();
-            return Result.error("更新采购生产表信息失败");
+            return Result.error("更新生产表信息失败");
         }
-        return Result.success("更新采购生产表信息成功");
+        return Result.success("更新生产表信息成功");
     }
 
-    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.DELETE})
+    @RequestMapping(value = "/{id}", method = {org.springframework.web.bind.annotation.RequestMethod.DELETE})
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @ApiOperation("删除采购生产表")
+    @ApiOperation("删除生产表")
     public ResponseMessage<?> delete(@ApiParam(name = "id", value = "ID", required = true) @PathVariable("id") String id) {
         logger.info("delete[{}]" + id);
         if (StringUtils.isEmpty(id)) {
@@ -356,7 +357,7 @@ public class EmkProduceScheduleController extends BaseController {
             this.emkProduceScheduleService.deleteEntityById(EmkProduceScheduleEntity.class, id);
         } catch (Exception e) {
             e.printStackTrace();
-            return Result.error("采购生产表删除失败");
+            return Result.error("生产表删除失败");
         }
         return Result.success();
     }
@@ -366,7 +367,7 @@ public class EmkProduceScheduleController extends BaseController {
     public AjaxJson doSubmit(EmkProduceScheduleEntity emkProduceScheduleEntity, HttpServletRequest request) {
         String message = null;
         AjaxJson j = new AjaxJson();
-        message = "采购生产单提交成功";
+        message = "生产单提交成功";
         try {
             int flag = 0;
             TSUser user = (TSUser)request.getSession().getAttribute("LOCAL_CLINET_USER");
@@ -375,7 +376,7 @@ public class EmkProduceScheduleController extends BaseController {
                 for (String id : map.get("ids").toString().split(",")) {
                     EmkProduceScheduleEntity produceScheduleEntity = systemService.getEntity(EmkProduceScheduleEntity.class, id);
                     if (!produceScheduleEntity.getState().equals("0")) {
-                        message = "存在已提交的采购生产单，请重新选择在提交！";
+                        message = "存在已提交的生产单，请重新选择在提交！";
                         j.setSuccess(false);
                         flag = 1;
                         break;
@@ -390,6 +391,7 @@ public class EmkProduceScheduleController extends BaseController {
                     EmkProduceScheduleEntity t = emkProduceScheduleService.get(EmkProduceScheduleEntity.class, id);
                     t.setState("1");
                     variables.put("optUser", t.getId());
+                    MyBeanUtils.copyBeanNotNull2Bean(emkProduceScheduleEntity, t);
 
                     List<Task> task = taskService.createTaskQuery().taskAssignee(id).list();
                     if (task.size() > 0) {
@@ -404,7 +406,6 @@ public class EmkProduceScheduleController extends BaseController {
                             if (emkProduceScheduleEntity.getIsPass().equals("0")) {
                                 variables.put("isPass", emkProduceScheduleEntity.getIsPass());
                                 taskService.complete(task1.getId(), variables);
-
                                 t.setSsSampleUser(t.getCreateName());
                                 t.setSsSampleUserId(t.getCreateBy());
 
@@ -416,7 +417,7 @@ public class EmkProduceScheduleController extends BaseController {
                                     Task taskH = (Task)taskList.get(taskList.size() - 1);
                                     HistoricTaskInstance historicTaskInstance = hisTasks.get(hisTasks.size() - 2);
                                     FlowUtil.turnTransition(taskH.getId(), historicTaskInstance.getTaskDefinitionKey(), variables);
-                                    Map activityMap = systemService.findOneForJdbc("SELECT GROUP_CONCAT(t0.ID_) ids,GROUP_CONCAT(t0.TASK_ID_) taskids FROM act_hi_actinst t0 WHERE t0.ASSIGNEE_=? AND t0.ACT_ID_=? ORDER BY ID_ ASC", new Object[] { t.getId(), historicTaskInstance.getTaskDefinitionKey() });
+                                    Map activityMap = systemService.findOneForJdbc("SELECT GROUP_CONCAT(t0.ID_) ids,GROUP_CONCAT(t0.TASK_ID_) taskids FROM act_hi_actinst t0 WHERE t0.ASSIGNEE_=? AND t0.ACT_ID_=? ORDER BY ID_ ASC",  t.getId(), historicTaskInstance.getTaskDefinitionKey());
                                     String[] activitIdArr = activityMap.get("ids").toString().split(",");
                                     String[] taskIdArr = activityMap.get("taskids").toString().split(",");
                                     systemService.executeSql("UPDATE act_hi_taskinst SET  NAME_=CONCAT('【驳回后】','',NAME_) WHERE ASSIGNEE_>=? AND ID_=?",t.getId(), taskIdArr[1]);
@@ -425,16 +426,107 @@ public class EmkProduceScheduleController extends BaseController {
                                 t.setState("0");
                             }
                         }
+                        if (task1.getTaskDefinitionKey().equals("ssyTask")) {
+                            t.setCqSampleUser(map.get("realName").toString());
+                            t.setCqSampleUserId(map.get("userName").toString());
+                            t.setSsSampleAdvice(t.getLeadAdvice());
+                            taskService.complete(task1.getId(), variables);
+                        }
                         if (task1.getTaskDefinitionKey().equals("syTask")) {
-                            t.setTestUser(t.getLeader());
-                            t.setTestUserId(t.getLeadUserId());
+                            t.setTestUser(map.get("realName").toString());
+                            t.setTestUserId(map.get("userName").toString());
                             t.setColorAdvice(t.getLeadAdvice());
                             taskService.complete(task1.getId(), variables);
                         }
                         if (task1.getTaskDefinitionKey().equals("testTask")) {
                             t.setTestUserAdvice(t.getLeadAdvice());
+                            t.setCqhyUserName(map.get("realName").toString());
+                            t.setCqhyUserId(map.get("userName").toString());
                             taskService.complete(task1.getId(), variables);
                         }
+                        if (task1.getTaskDefinitionKey().equals("meetingTask")) {
+                            t.setCqhyAdvice(t.getLeadAdvice());
+                            t.setYlflcgUserName(map.get("realName").toString());
+                            t.setYlflcgUserId(map.get("userName").toString());
+                            taskService.complete(task1.getId(), variables);
+                        }
+                        if (task1.getTaskDefinitionKey().equals("ylTask")) {
+                            t.setYlflcgAdvice(t.getLeadAdvice());
+                            t.setRanUserName(map.get("realName").toString());
+                            t.setRanUserId(map.get("userName").toString());
+                            taskService.complete(task1.getId(), variables);
+                        }
+                        if (task1.getTaskDefinitionKey().equals("ranTask")) {
+                            t.setRanAdvice(t.getLeadAdvice());
+                            t.setCaiUserName(map.get("realName").toString());
+                            t.setCaiUserId(map.get("userName").toString());
+                            taskService.complete(task1.getId(), variables);
+                        }
+                        if (task1.getTaskDefinitionKey().equals("caiTask")) {
+                            t.setCaiUserAdvice(t.getLeadAdvice());
+                            t.setFengUserName(map.get("realName").toString());
+                            t.setFengUserId(map.get("userName").toString());
+                            taskService.complete(task1.getId(), variables);
+                        }
+                        if (task1.getTaskDefinitionKey().equals("fengTask")) {
+                            t.setFengUserAdvice(t.getLeadAdvice());
+                            t.setZqjcUserName(map.get("realName").toString());
+                            t.setZqjcUserId(map.get("userName").toString());
+                            taskService.complete(task1.getId(), variables);
+                        }
+                        if (task1.getTaskDefinitionKey().equals("zqjcTask")) {
+                            t.setZqjcAdvice(t.getLeadAdvice());
+                            t.setBiaoUserName(map.get("realName").toString());
+                            t.setBiaoUserId(map.get("userName").toString());
+                            taskService.complete(task1.getId(), variables);
+                        }
+                        if (task1.getTaskDefinitionKey().equals("btTask")) {
+                            t.setBiaoAdvice(t.getLeadAdvice());
+                            t.setZhengtUserName(map.get("realName").toString());
+                            t.setZhengtUserId(map.get("userName").toString());
+                            taskService.complete(task1.getId(), variables);
+                        }
+                        if (task1.getTaskDefinitionKey().equals("ztTask")) {
+                            t.setZhengtAdvice(t.getLeadAdvice());
+                            t.setChuangUserName(map.get("realName").toString());
+                            t.setChuangUserId(map.get("userName").toString());
+                            taskService.complete(task1.getId(), variables);
+                        }
+                        if (task1.getTaskDefinitionKey().equals("cyTask")) {
+                            t.setChuangAdvice(t.getLeadAdvice());
+                            t.setBoxUserName(map.get("realName").toString());
+                            t.setBoxUserId(map.get("userName").toString());
+                            taskService.complete(task1.getId(), variables);
+                        }
+                        if (task1.getTaskDefinitionKey().equals("bzTask")) {
+                            t.setBoxAdvice(t.getLeadAdvice());
+                            t.setOutUserName(map.get("realName").toString());
+                            t.setOutUserId(map.get("userName").toString());
+                            taskService.complete(task1.getId(), variables);
+                        }
+                        if (task1.getTaskDefinitionKey().equals("outTask")) {
+                            t.setOutAdvice(t.getLeadAdvice());
+                            t.setWeiUserName(map.get("realName").toString());
+                            t.setWeiUserId(map.get("userName").toString());
+                            taskService.complete(task1.getId(), variables);
+                        }
+                        if (task1.getTaskDefinitionKey().equals("wqTask")) {
+                            t.setWeiAdvice(t.getLeadAdvice());
+                            t.setShouUserName(map.get("realName").toString());
+                            t.setShouUserId(map.get("userName").toString());
+                            taskService.complete(task1.getId(), variables);
+                        }
+                        if (task1.getTaskDefinitionKey().equals("skTask")) {
+                            t.setShouAdvice(t.getLeadAdvice());
+                            taskService.complete(task1.getId(), variables);
+                            t.setState("2");
+
+                            EmkProOrderEntity proOrderEntity = systemService.findUniqueByProperty(EmkProOrderEntity.class,"orderNo",t.getOrderNo());
+                            EmkWorkOrderEntity workOrderEntity = systemService.findUniqueByProperty(EmkWorkOrderEntity.class,"workNo",proOrderEntity.getWorkNo());
+                            workOrderEntity.setProduceNo(t.getProduceHtNum());
+                            systemService.saveOrUpdate(workOrderEntity);
+                        }
+
                         systemService.saveOrUpdate(t);
 
                     }else {
@@ -450,7 +542,7 @@ public class EmkProduceScheduleController extends BaseController {
         }
         catch (Exception e) {
             e.printStackTrace();
-            message = "采购生产单提交失败";
+            message = "生产单提交失败";
             throw new BusinessException(e.getMessage());
         }
         j.setMsg(message);
@@ -477,9 +569,25 @@ public class EmkProduceScheduleController extends BaseController {
                 " WHEN t1.TASK_DEF_KEY_='checkTask' THEN t2.leader \n" +
                 " WHEN t1.TASK_DEF_KEY_='ssyTask' THEN t2.SS_SAMPLE_USER \n" +
                 " WHEN t1.TASK_DEF_KEY_='cqyTask' THEN t2.CQ_SAMPLE_USER \n" +
+                " WHEN t1.TASK_DEF_KEY_='syTask' THEN t2.CQ_SAMPLE_USER \n" +
+                " WHEN t1.TASK_DEF_KEY_='testTask' THEN t2.test_user \n" +
+                " WHEN t1.TASK_DEF_KEY_='meetingTask' THEN t2.cqhy_user_name \n" +
+                " WHEN t1.TASK_DEF_KEY_='ylTask' THEN t2.ylflcg_user_name \n" +
+                " WHEN t1.TASK_DEF_KEY_='ranTask' THEN t2.ran_user_name \n" +
+                " WHEN t1.TASK_DEF_KEY_='caiTask' THEN t2.cai_user_name \n" +
+                " WHEN t1.TASK_DEF_KEY_='fengTask' THEN t2.feng_user_name \n" +
+                " WHEN t1.TASK_DEF_KEY_='zqjcTask' THEN t2.zqjc_user_name \n" +
+                " WHEN t1.TASK_DEF_KEY_='btTask' THEN t2.biao_user_name \n" +
+                " WHEN t1.TASK_DEF_KEY_='ztTask' THEN t2.zhengt_user_name \n" +
+                " WHEN t1.TASK_DEF_KEY_='cyTask' THEN t2.chuang_user_name \n" +
+                " WHEN t1.TASK_DEF_KEY_='bzTask' THEN t2.box_user_name \n" +
+                " WHEN t1.TASK_DEF_KEY_='outTask' THEN t2.out_user_name \n" +
+                " WHEN t1.TASK_DEF_KEY_='wqTask' THEN t2.wei_user_name \n" +
+                " WHEN t1.TASK_DEF_KEY_='skTask' THEN t2.shou_user_name \n" +
 
                 " END workname FROM act_hi_taskinst t1 \n" +
-                " LEFT JOIN emk_produce_schedule t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='" + map.get("id") + "' ";
+                " LEFT JOIN emk_produce t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='" + map.get("id") + "' ";
+        sql += " order by t1.START_TIME_ desc";
 
         countsql = " SELECT COUNT(1) FROM act_hi_taskinst t1 where ASSIGNEE_='" + map.get("id") + "' ";
         if (dataGrid.getPage() == 1) {

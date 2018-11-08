@@ -97,6 +97,16 @@ public class EmkOutForumEntity implements Serializable {
     @Excel(name = "订舱状态", width = 15)
     private String dcState;
 
+    @Excel(name="审核意见", width=15.0D)
+    private String leadAdvice;
+    @Excel(name="是否通过", width=15.0D)
+    private String isPass;
+    private String leadUserId;
+    @Excel(name="审核人", width=15.0D)
+    private String leader;
+    private String state;
+
+
     @Column(name = "BUSINESSER", nullable = true, length = 32)
     public String getBusinesser() {
         return this.businesser;
@@ -512,5 +522,58 @@ public class EmkOutForumEntity implements Serializable {
 
     public void setDcState(String dcState) {
         this.dcState = dcState;
+    }
+
+    @Column(name="LEAD_ADVICE", nullable=true, length=256)
+    public String getLeadAdvice()
+    {
+        return this.leadAdvice;
+    }
+
+    public void setLeadAdvice(String leadAdvice)
+    {
+        this.leadAdvice = leadAdvice;
+    }
+
+    @Column(name="IS_PASS", nullable=true, length=32)
+    public String getIsPass()
+    {
+        return this.isPass;
+    }
+
+    public void setIsPass(String isPass)
+    {
+        this.isPass = isPass;
+    }
+
+    @Column(name="LEAD_USER_ID", nullable=true, length=32)
+    public String getLeadUserId()
+    {
+        return this.leadUserId;
+    }
+
+    public void setLeadUserId(String leadUserId)
+    {
+        this.leadUserId = leadUserId;
+    }
+
+    @Column(name="LEADER", nullable=true, length=32)
+    public String getLeader()
+    {
+        return this.leader;
+    }
+
+    public void setLeader(String leader)
+    {
+        this.leader = leader;
+    }
+
+    @Column(name = "STATE", nullable = true, length = 32)
+    public String getState() {
+        return this.state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
     }
 }

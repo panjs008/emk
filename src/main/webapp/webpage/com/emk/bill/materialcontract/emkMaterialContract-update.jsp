@@ -5,9 +5,8 @@
 <head>
 	<title>原料采购合同表</title>
 	<t:base type="jquery,easyui,tools,DatePicker"></t:base>
-	<link type="text/css" rel="stylesheet" href="plug-in/select2/css/select2.min.css"/>
-	<script type="text/javascript" src="plug-in/select2/js/select2.js"></script>
-	<script type="text/javascript" src="plug-in/select2/js/pinyin.js"></script>
+	<%@include file="/context/header2.jsp"%>
+	<script src="${webRoot}/context/gys.js"></script>
 	<script type="text/javascript">
 		//编写自定义JS代码
 
@@ -31,44 +30,8 @@
 		}
 		$(document).ready(function(){
 			$("#detailId").load("emkMaterialContractController.do?emkMaterialContractDetailList&contractId=${emkMaterialContractPage.id }&selectType=0");
-			BindSelect("gysId","ymkCustomController.do?findSupplierList",1,"${emkMaterialContractPage.gysCode},${emkMaterialContractPage.gys}");
-			$("#gysId").change(function(){
-				var itemarr = $("#gysId").val().split(","); //字符分割
-				$("#gysCode").val(itemarr[0]);
-				$("#gys").val(itemarr[1]);
-			});
+
 		});
-		function BindSelect(ctrlName, url,type,categoryId) {
-			var control = $('#' + ctrlName);
-			//设置Select2的处理
-			control.select2({
-				formatResult: formatState,
-				formatSelection: formatState,
-				escapeMarkup: function (m) {
-					return m;
-				}
-			});
-			//绑定Ajax的内容
-			$.getJSON(url, function (data) {
-				control.empty();//清空下拉框
-				control.append("<option value=''>请选择</option>");
-				$.each(data.obj, function (i, item) {
-					control.append("<option value='" + item.supplierCode + ","+item.supplier +"'>" + item.supplier + "</option>");
-				});
-				if(type ==1){
-					$("#"+ctrlName).select2('val',categoryId);
-				}
-			});
-		}
-
-		function formatState (state) {
-			if (!state.id) { return state.text; }
-			var $state = $(
-					'<span>' + state.text + '</span>'
-			);
-			return $state;
-		};
-
 
 	</script>
 </head>
@@ -139,7 +102,10 @@
 				</label>
 			</td>
 			<td class="value" >
-				<input id="businesser" name="businesser" readonly value="${emkMaterialContractPage.businesser }" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<select class="form-control select2" id="businesserId"  datatype="*">
+					<option value=''>请选择</option>
+				</select>
+				<input id="businesser" name="businesser" readonly value="${emkMaterialContractPage.businesser }" type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<input id="businesserName" name="businesserName"  value="${emkMaterialContractPage.businesserName }" type="hidden"  />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">业务员</label>
@@ -164,7 +130,7 @@
 				</label>
 			</td>
 			<td class="value"  colspan="3">
-				<input id="cusName" name="cusName" readonly type="text" value="${emkMaterialContractPage.cusName }" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="cusName" name="cusName" readonly type="text" value="${emkMaterialContractPage.cusName }" style="width: 150px" class="inputxt"  datatype="*"/>
 				<t:choose  hiddenName="cusNum"  hiddenid="cusNum" url="ymkCustomController.do?select" name="ymkCustomList" width="700px" height="500px"
 						   icon="icon-search" title="选择客户" textname="cusName,businesseDeptName,businesseDeptId,businesser,businesserName,tracer,tracerName,developer,developerName,bz" isclear="true" isInit="true"></t:choose>
 				<span class="Validform_checktip"></span>
@@ -178,7 +144,10 @@
 				</label>
 			</td>
 			<td class="value" >
-				<input id="tracer" name="tracer" readonly type="text" value="${emkMaterialContractPage.tracer }" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<select class="form-control select2" id="tracerId"  >
+					<option value=''>请选择</option>
+				</select>
+				<input id="tracer" name="tracer" readonly type="hidden" value="${emkMaterialContractPage.tracer }" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<input id="tracerName" name="tracerName"  type="hidden" value="${emkMaterialContractPage.tracerName }" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">业务员</label>
@@ -189,7 +158,10 @@
 				</label>
 			</td>
 			<td class="value">
-				<input id="developer" name="developer" readonly value="${emkMaterialContractPage.developer }" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<select class="form-control select2" id="developerId"  >
+					<option value=''>请选择</option>
+				</select>
+				<input id="developer" name="developer" readonly value="${emkMaterialContractPage.developer }" type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<input id="developerName" name="developerName" value="${emkMaterialContractPage.developerName }" type="hidden"  />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">业务员</label>
@@ -216,8 +188,8 @@
 				<select class="form-control select2" id="gysId"  datatype="*"  >
 					<option value=''>请选择</option>
 				</select>
-				<input id="gysCode" name="gysCode" type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<input id="gys" name="gys" type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="gysCode" name="gysCode" value="${emkMaterialContractPage.gysCode }" type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="gys" name="gys" type="hidden" value="${emkMaterialContractPage.gys }"  style="width: 150px" class="inputxt"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">供应商</label>
 			</td>
@@ -262,7 +234,7 @@
 				</label>
 			</td>
 			<td class="value">
-				<input id="outDate" name="outDate" readonly value="${emkMaterialContractPage.outDate}" onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})"  type="text" style="width: 150px" class="Wdate"  ignore="ignore" />
+				<input id="outDate" name="outDate" readonly value="${emkMaterialContractPage.outDate}" onClick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'kdDate\');}'})" type="text" style="width: 150px" class="Wdate"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">出货日期</label>
 			</td>
@@ -272,7 +244,7 @@
 				</label>
 			</td>
 			<td class="value">
-				<input id="limitDate" name="limitDate" value="${emkMaterialContractPage.limitDate }" onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})"  readonly type="text" style="width: 150px" class="Wdate"  ignore="ignore" />
+				<input id="ysDate" name="limitDate" value="${emkMaterialContractPage.limitDate }" onClick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'kdDate\');}',onpicked:setEndTime})" readonly type="text" style="width: 150px" class="Wdate"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">最迟到厂日期</label>
 			</td>
@@ -296,7 +268,7 @@
 				</label>
 			</td>
 			<td class="value" colspan="3">
-				<input id="leaveLimit" name="leaveLimit" type="text" value="${emkMaterialContractPage.leaveLimit }" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="levelDays" name="leaveLimit" type="text" value="${emkMaterialContractPage.leaveLimit }" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">距最迟到厂剩余天数</label>
 			</td>

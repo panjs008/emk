@@ -5,76 +5,10 @@
 <head>
 	<title>样品单</title>
 	<t:base type="jquery,easyui,tools,DatePicker"></t:base>
-	<link type="text/css" rel="stylesheet" href="plug-in/select2/css/select2.min.css"/>
-	<script type="text/javascript" src="plug-in/select2/js/select2.js"></script>
-	<script type="text/javascript" src="plug-in/select2/js/pinyin.js"></script>
+	<%@include file="/context/header.jsp"%>
+
 	<script type="text/javascript">
 		//编写自定义JS代码
-		$(function(){
-			BindSelect("businesserId","ymkCustomController.do?findUserList&userKey=业务员",1,$("#businesserName").val()+","+$("#businesser").val());
-
-			$("#businesserId").change(function(){
-				var itemarr = $("#businesserId").val().split(","); //字符分割
-				$("#businesser").val(itemarr[0]);
-				$("#businesserName").val(itemarr[1]);
-
-				returnToDept($("#businesserName").val());
-			});
-		});
-
-		function returnToSelect(){
-			BindSelect("businesserId","ymkCustomController.do?findUserList&userKey=业务员",1,$("#businesserName").val()+","+$("#businesser").val());
-			returnToDept($("#businesserName").val());
-		}
-
-		function returnToDept(userName){
-			$.ajax({
-				url: "ymkCustomController.do?getDeptInfoByUser&userName="+userName,
-				type: 'post',
-				cache: false,
-				data: null,
-				success: function (data) {
-					var d = $.parseJSON(data);
-					console.log(d);
-					if (d.success) {
-						$("#businesseDeptName").val(d.obj.departname);
-						$("#businesseDeptId").val(d.obj.orgCode);
-					}
-				}
-			});
-		}
-
-		function formatState (state) {
-			if (!state.id) { return state.text; }
-			var $state = $(
-					'<span>' + state.text + '</span>'
-			);
-			return $state;
-		}
-
-		function BindSelect(ctrlName, url,type,categoryId) {
-			var control = $('#' + ctrlName);
-			//设置Select2的处理
-			control.select2({
-				formatResult: formatState,
-				formatSelection: formatState,
-				escapeMarkup: function (m) {
-					return m;
-				}
-			});
-			//绑定Ajax的内容
-			$.getJSON(url, function (data) {
-				control.empty();//清空下拉框
-				control.append("<option value=''>请选择</option>");
-				$.each(data.obj, function (i, item) {
-					control.append("<option value='" + item.userName + ","+item.realName +"'>&nbsp;" + item.realName + "</option>");
-				});
-				if(type ==1){
-					$("#"+ctrlName).select2('val',categoryId);
-				}
-			});
-
-		}
 		function uploadSuccess0(d,file,response){
 			var src = d.attributes.url;
 			$("#customSampleUrl").val(d.attributes.url);
@@ -125,24 +59,7 @@
 			}
 		}
 
-		function findDetail(photoUrl) {
-			$.dialog({
-				content: 'url:emkEnquiryController.do?photo&photoUrl='+photoUrl,
-				zIndex: getzIndex(),
-				title : "查看",
-				lock : true,
-				width:900,
-				height: 500,
-				opacity : 0.3,
-				cache:false,
-				lock : true,
-				cache:false,
-				max: true,
-				min: true,
-				drag: true,
-				resize: false
-			});
-		}
+
 	</script>
 </head>
 <body>
@@ -176,7 +93,7 @@
 				</label>
 			</td>
 			<td class="value" colspan="3">
-				<input id="cusName" name="cusName" value="${emkSampleRequiredPage.cusName }" readonly type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="cusName" name="cusName" value="${emkSampleRequiredPage.cusName }" readonly type="text" style="width: 150px" class="inputxt"  datatype="*" />
 				<t:choose  hiddenName="cusNum"  hiddenid="cusNum" url="ymkCustomController.do?select" name="ymkCustomList" width="700px" height="500px"
 						   icon="icon-search" title="选择客户" textname="cusName,businesseDeptName,businesseDeptId,businesser,businesserName,bz" isclear="true" isInit="true"></t:choose>
 				<span class="Validform_checktip"></span>
@@ -201,7 +118,7 @@
 				</label>
 			</td>
 			<td class="value" >
-				<select class="form-control select2" id="businesserId"  >
+				<select class="form-control select2" id="businesserId"  datatype="*">
 					<option value=''>请选择</option>
 				</select>
 				<input id="businesser" name="businesser" readonly value="${emkSampleRequiredPage.businesser }" type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
@@ -250,7 +167,7 @@
 				</label>
 			</td>
 			<td class="value">
-				<input id="ysDate" name="ysDate" readonly value="${emkSampleRequiredPage.ysDate }" onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})"  type="text" style="width: 150px" class="Wdate"  ignore="ignore" />
+				<input id="ysDate" name="ysDate" readonly value="${emkSampleRequiredPage.ysDate }" onClick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'kdDate\');}',onpicked:setEndTime})" type="text" style="width: 150px" class="Wdate"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">样品交期</label>
 			</td>

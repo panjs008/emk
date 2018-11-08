@@ -1,15 +1,26 @@
 package com.emk.caiwu.financereceivable.controller;
 import com.emk.caiwu.financereceivable.entity.EmkFinanceReceivableEntity;
 import com.emk.caiwu.financereceivable.service.EmkFinanceReceivableServiceI;
-import java.util.ArrayList;
-import java.util.List;
+
+import java.util.*;
 import java.text.SimpleDateFormat;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.emk.storage.enquiry.entity.EmkEnquiryEntity;
 import com.emk.storage.enquirydetail.entity.EmkEnquiryDetailEntity;
+import com.emk.util.DateUtil;
+import com.emk.util.FlowUtil;
 import com.emk.util.ParameterUtil;
+import com.emk.workorder.workorder.entity.EmkWorkOrderEntity;
+import org.activiti.engine.HistoryService;
+import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.TaskService;
+import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.apache.log4j.Logger;
+import org.jeecgframework.web.system.pojo.base.TSUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -45,8 +56,6 @@ import java.io.IOException;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-import java.util.Map;
-import java.util.HashMap;
 import org.jeecgframework.core.util.ExceptionUtil;
 
 import org.springframework.http.ResponseEntity;
@@ -60,7 +69,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.jeecgframework.core.beanvalidator.BeanValidators;
-import java.util.Set;
+
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import java.net.URI;
@@ -99,8 +108,13 @@ public class EmkFinanceReceivableController extends BaseController {
 	private SystemService systemService;
 	@Autowired
 	private Validator validator;
-	
 
+	@Autowired
+	ProcessEngine processEngine;
+	@Autowired
+	TaskService taskService;
+	@Autowired
+	HistoryService historyService;
 
 	/**
 	 * 应收通知单列表 页面跳转
@@ -221,8 +235,13 @@ public class EmkFinanceReceivableController extends BaseController {
 	public AjaxJson doAdd(EmkFinanceReceivableEntity emkFinanceReceivable, HttpServletRequest request) {
 		String message = null;
 		AjaxJson j = new AjaxJson();
-		message = "应收通知单添加成功";
+		if(emkFinanceReceivable.getType().equals("0")){
+			message = "应收通知单添加成功";
+		}else{
+			message = "应付通知单添加成功";
+		}
 		try{
+			emkFinanceReceivable.setState("0");
 			emkFinanceReceivableService.save(emkFinanceReceivable);
 			Map<String, String> map = ParameterUtil.getParamMaps(request.getParameterMap());
 			String dataRows = (String) map.get("dataRowsVal");
@@ -243,7 +262,11 @@ public class EmkFinanceReceivableController extends BaseController {
 			systemService.addLog(message, Globals.Log_Type_INSERT, Globals.Log_Leavel_INFO);
 		}catch(Exception e){
 			e.printStackTrace();
-			message = "应收通知单添加失败";
+			if(emkFinanceReceivable.getType().equals("0")){
+				message = "应收通知单添加失败";
+			}else{
+				message = "应付通知单添加失败";
+			}
 			throw new BusinessException(e.getMessage());
 		}
 		j.setMsg(message);
@@ -357,6 +380,29 @@ public class EmkFinanceReceivableController extends BaseController {
 			req.setAttribute("emkFinanceReceivablePage", emkFinanceReceivable);
 		}
 		return new ModelAndView("com/emk/caiwu/financereceivable/emkFinanceReceivable-update1");
+	}
+
+	@RequestMapping(params = "goUpdate2")
+	public ModelAndView goUpdate2(EmkFinanceReceivableEntity emkFinanceReceivable, HttpServletRequest req) {
+		List<Map<String, Object>> codeList = this.systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", new Object[]{"A03"});
+		req.setAttribute("categoryEntityList", codeList);
+
+		if (StringUtil.isNotEmpty(emkFinanceReceivable.getId())) {
+			emkFinanceReceivable = emkFinanceReceivableService.getEntity(EmkFinanceReceivableEntity.class, emkFinanceReceivable.getId());
+			req.setAttribute("emkFinanceReceivablePage", emkFinanceReceivable);
+		}
+		return new ModelAndView("com/emk/caiwu/financereceivable/emkFinanceReceivable-update2");
+	}
+	@RequestMapping(params = "goUpdate3")
+	public ModelAndView goUpdate3(EmkFinanceReceivableEntity emkFinanceReceivable, HttpServletRequest req) {
+		List<Map<String, Object>> codeList = this.systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", new Object[]{"A03"});
+		req.setAttribute("categoryEntityList", codeList);
+
+		if (StringUtil.isNotEmpty(emkFinanceReceivable.getId())) {
+			emkFinanceReceivable = emkFinanceReceivableService.getEntity(EmkFinanceReceivableEntity.class, emkFinanceReceivable.getId());
+			req.setAttribute("emkFinanceReceivablePage", emkFinanceReceivable);
+		}
+		return new ModelAndView("com/emk/caiwu/financereceivable/emkFinanceReceivable-update3");
 	}
 	/**
 	 * 导入功能跳转
@@ -517,5 +563,249 @@ public class EmkFinanceReceivableController extends BaseController {
 		}
 
 		return Result.success();
+	}
+
+	@RequestMapping(params="doSubmit")
+	@ResponseBody
+	public AjaxJson doSubmit(EmkFinanceReceivableEntity emkFinanceReceivableEntity, HttpServletRequest request) {
+		String message = null;
+		AjaxJson j = new AjaxJson();
+		message = "应收通知单提交成功";
+		try {
+			int flag = 0;
+			TSUser user = (TSUser)request.getSession().getAttribute("LOCAL_CLINET_USER");
+			Map map = ParameterUtil.getParamMaps(request.getParameterMap());
+			if ((emkFinanceReceivableEntity.getId() == null) || (emkFinanceReceivableEntity.getId().isEmpty())) {
+				for (String id : map.get("ids").toString().split(",")) {
+					EmkFinanceReceivableEntity financeReceivableEntity = systemService.getEntity(EmkFinanceReceivableEntity.class, id);
+					if (!financeReceivableEntity.getState().equals("0")) {
+						message = "存在已提交的应收通知单，请重新选择在提交！";
+						j.setSuccess(false);
+						flag = 1;
+						break;
+					}
+				}
+			}else{
+				map.put("ids", emkFinanceReceivableEntity.getId());
+			}
+			Map<String, Object> variables = new HashMap();
+			if (flag == 0) {
+				for (String id : map.get("ids").toString().split(",")) {
+					EmkFinanceReceivableEntity t = emkFinanceReceivableService.get(EmkFinanceReceivableEntity.class, id);
+					t.setState("1");
+					variables.put("optUser", t.getId());
+
+					List<Task> task = taskService.createTaskQuery().taskAssignee(id).list();
+					if (task.size() > 0) {
+						Task task1 = (Task)task.get(task.size() - 1);
+						if (task1.getTaskDefinitionKey().equals("ysTask")) {
+							taskService.complete(task1.getId(), variables);
+						}
+						if (task1.getTaskDefinitionKey().equals("checkTask")) {
+							t.setLeader(user.getRealName());
+							t.setLeadUserId(user.getId());
+							t.setLeadAdvice(emkFinanceReceivableEntity.getLeadAdvice());
+							if (emkFinanceReceivableEntity.getIsPass().equals("0")) {
+								variables.put("isPass", emkFinanceReceivableEntity.getIsPass());
+								taskService.complete(task1.getId(), variables);
+							} else {
+								List<HistoricTaskInstance> hisTasks = historyService.createHistoricTaskInstanceQuery().taskAssignee(t.getId()).list();
+
+								List<Task> taskList = taskService.createTaskQuery().taskAssignee(t.getId()).list();
+								if (taskList.size() > 0) {
+									Task taskH = (Task)taskList.get(taskList.size() - 1);
+									HistoricTaskInstance historicTaskInstance = hisTasks.get(hisTasks.size() - 2);
+									FlowUtil.turnTransition(taskH.getId(), historicTaskInstance.getTaskDefinitionKey(), variables);
+									Map activityMap = systemService.findOneForJdbc("SELECT GROUP_CONCAT(t0.ID_) ids,GROUP_CONCAT(t0.TASK_ID_) taskids FROM act_hi_actinst t0 WHERE t0.ASSIGNEE_=? AND t0.ACT_ID_=? ORDER BY ID_ ASC", new Object[] { t.getId(), historicTaskInstance.getTaskDefinitionKey() });
+									String[] activitIdArr = activityMap.get("ids").toString().split(",");
+									String[] taskIdArr = activityMap.get("taskids").toString().split(",");
+									systemService.executeSql("UPDATE act_hi_taskinst SET  NAME_=CONCAT('【驳回后】','',NAME_) WHERE ASSIGNEE_>=? AND ID_=?",t.getId(), taskIdArr[1]);
+									systemService.executeSql("delete from act_hi_actinst where ID_>=? and ID_<?", activitIdArr[0], activitIdArr[1] );
+								}
+								t.setState("0");
+							}
+
+						}
+
+					}else {
+						ProcessInstance pi = processEngine.getRuntimeService().startProcessInstanceByKey("ys", "emkFinanceReceivableYsEntity", variables);
+						task = taskService.createTaskQuery().taskAssignee(id).list();
+						Task task1 = task.get(task.size() - 1);
+						taskService.complete(task1.getId(), variables);
+					}
+
+
+					systemService.saveOrUpdate(t);
+				}
+			}
+			systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			message = "应收通知单提交失败";
+			throw new BusinessException(e.getMessage());
+		}
+		j.setMsg(message);
+		return j;
+	}
+
+	@RequestMapping(params="goWork")
+	public ModelAndView goWork(EmkFinanceReceivableEntity emkFinanceReceivableEntity, HttpServletRequest req) {
+		if (StringUtil.isNotEmpty(emkFinanceReceivableEntity.getId())) {
+			emkFinanceReceivableEntity = emkFinanceReceivableService.getEntity(EmkFinanceReceivableEntity.class, emkFinanceReceivableEntity.getId());
+			req.setAttribute("emkFinanceReceivable", emkFinanceReceivableEntity);
+		}
+		return new ModelAndView("com/emk/caiwu/financereceivable/emkFinanceReceivable-work");
+	}
+
+	@RequestMapping(params="goTime")
+	public ModelAndView goTime(EmkFinanceReceivableEntity emkFinanceReceivableEntity, HttpServletRequest req, DataGrid dataGrid) {
+		String sql = "";String countsql = "";
+		Map map = ParameterUtil.getParamMaps(req.getParameterMap());
+
+		sql = "SELECT DATE_FORMAT(t1.START_TIME_, '%Y-%m-%d %H:%i:%s') startTime,t1.*,CASE \n" +
+				" WHEN t1.TASK_DEF_KEY_='ysTask' THEN t2.create_name \n" +
+				" WHEN t1.TASK_DEF_KEY_='checkTask' THEN t2.leader \n" +
+				" END workname FROM act_hi_taskinst t1 \n" +
+				" LEFT JOIN emk_finance_receivable t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='" + map.get("id") + "' ";
+
+		countsql = " SELECT COUNT(1) FROM act_hi_taskinst t1 where ASSIGNEE_='" + map.get("id") + "' ";
+		if (dataGrid.getPage() == 1) {
+			sql = sql + " limit 0, " + dataGrid.getRows();
+		} else {
+			sql = sql + "limit " + (dataGrid.getPage() - 1) * dataGrid.getRows() + "," + dataGrid.getRows();
+		}
+		systemService.listAllByJdbc(dataGrid, sql, countsql);
+		req.setAttribute("taskList", dataGrid.getResults());
+		if (dataGrid.getResults().size() > 0) {
+			req.setAttribute("stepProcess", Integer.valueOf(dataGrid.getResults().size() - 1));
+		} else {
+			req.setAttribute("stepProcess", Integer.valueOf(0));
+		}
+		emkFinanceReceivableEntity = emkFinanceReceivableService.getEntity(EmkFinanceReceivableEntity.class, emkFinanceReceivableEntity.getId());
+		req.setAttribute("emkFinanceReceivable", emkFinanceReceivableEntity);
+		return new ModelAndView("com/emk/caiwu/financereceivable/time");
+	}
+
+	@RequestMapping(params="doSubmit2")
+	@ResponseBody
+	public AjaxJson doSubmit2(EmkFinanceReceivableEntity emkFinanceReceivableEntity, HttpServletRequest request) {
+		String message = null;
+		AjaxJson j = new AjaxJson();
+		message = "应付通知单提交成功";
+		try {
+			int flag = 0;
+			TSUser user = (TSUser)request.getSession().getAttribute("LOCAL_CLINET_USER");
+			Map map = ParameterUtil.getParamMaps(request.getParameterMap());
+			if ((emkFinanceReceivableEntity.getId() == null) || (emkFinanceReceivableEntity.getId().isEmpty())) {
+				for (String id : map.get("ids").toString().split(",")) {
+					EmkFinanceReceivableEntity financeReceivableEntity = systemService.getEntity(EmkFinanceReceivableEntity.class, id);
+					if (!financeReceivableEntity.getState().equals("0")) {
+						message = "存在已提交的应付通知单，请重新选择在提交！";
+						j.setSuccess(false);
+						flag = 1;
+						break;
+					}
+				}
+			}else{
+				map.put("ids", emkFinanceReceivableEntity.getId());
+			}
+			Map<String, Object> variables = new HashMap();
+			if (flag == 0) {
+				for (String id : map.get("ids").toString().split(",")) {
+					EmkFinanceReceivableEntity t = emkFinanceReceivableService.get(EmkFinanceReceivableEntity.class, id);
+					t.setState("1");
+					variables.put("optUser", t.getId());
+
+					List<Task> task = taskService.createTaskQuery().taskAssignee(id).list();
+					if (task.size() > 0) {
+						Task task1 = (Task)task.get(task.size() - 1);
+						if (task1.getTaskDefinitionKey().equals("yfTask")) {
+							taskService.complete(task1.getId(), variables);
+						}
+						if (task1.getTaskDefinitionKey().equals("checkTask")) {
+							t.setLeader(user.getRealName());
+							t.setLeadUserId(user.getId());
+							t.setLeadAdvice(emkFinanceReceivableEntity.getLeadAdvice());
+							if (emkFinanceReceivableEntity.getIsPass().equals("0")) {
+								variables.put("isPass", emkFinanceReceivableEntity.getIsPass());
+								taskService.complete(task1.getId(), variables);
+							} else {
+								List<HistoricTaskInstance> hisTasks = historyService.createHistoricTaskInstanceQuery().taskAssignee(t.getId()).list();
+
+								List<Task> taskList = taskService.createTaskQuery().taskAssignee(t.getId()).list();
+								if (taskList.size() > 0) {
+									Task taskH = (Task)taskList.get(taskList.size() - 1);
+									HistoricTaskInstance historicTaskInstance = hisTasks.get(hisTasks.size() - 2);
+									FlowUtil.turnTransition(taskH.getId(), historicTaskInstance.getTaskDefinitionKey(), variables);
+									Map activityMap = systemService.findOneForJdbc("SELECT GROUP_CONCAT(t0.ID_) ids,GROUP_CONCAT(t0.TASK_ID_) taskids FROM act_hi_actinst t0 WHERE t0.ASSIGNEE_=? AND t0.ACT_ID_=? ORDER BY ID_ ASC", new Object[] { t.getId(), historicTaskInstance.getTaskDefinitionKey() });
+									String[] activitIdArr = activityMap.get("ids").toString().split(",");
+									String[] taskIdArr = activityMap.get("taskids").toString().split(",");
+									systemService.executeSql("UPDATE act_hi_taskinst SET  NAME_=CONCAT('【驳回后】','',NAME_) WHERE ASSIGNEE_>=? AND ID_=?",t.getId(), taskIdArr[1]);
+									systemService.executeSql("delete from act_hi_actinst where ID_>=? and ID_<?", activitIdArr[0], activitIdArr[1] );
+								}
+								t.setState("0");
+							}
+
+						}
+
+					}else {
+						ProcessInstance pi = processEngine.getRuntimeService().startProcessInstanceByKey("yf", "emkFinanceReceivableYfEntity", variables);
+						task = taskService.createTaskQuery().taskAssignee(id).list();
+						Task task1 = task.get(task.size() - 1);
+						taskService.complete(task1.getId(), variables);
+					}
+
+
+					systemService.saveOrUpdate(t);
+				}
+			}
+			systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			message = "应付通知单提交失败";
+			throw new BusinessException(e.getMessage());
+		}
+		j.setMsg(message);
+		return j;
+	}
+
+	@RequestMapping(params="goWork2")
+	public ModelAndView goWork2(EmkFinanceReceivableEntity emkFinanceReceivableEntity, HttpServletRequest req) {
+		if (StringUtil.isNotEmpty(emkFinanceReceivableEntity.getId())) {
+			emkFinanceReceivableEntity = emkFinanceReceivableService.getEntity(EmkFinanceReceivableEntity.class, emkFinanceReceivableEntity.getId());
+			req.setAttribute("emkFinanceReceivable", emkFinanceReceivableEntity);
+		}
+		return new ModelAndView("com/emk/caiwu/financereceivable/emkFinanceReceivable-work2");
+	}
+
+	@RequestMapping(params="goTime2")
+	public ModelAndView goTime2(EmkFinanceReceivableEntity emkFinanceReceivableEntity, HttpServletRequest req, DataGrid dataGrid) {
+		String sql = "";String countsql = "";
+		Map map = ParameterUtil.getParamMaps(req.getParameterMap());
+
+		sql = "SELECT DATE_FORMAT(t1.START_TIME_, '%Y-%m-%d %H:%i:%s') startTime,t1.*,CASE \n" +
+				" WHEN t1.TASK_DEF_KEY_='ysTask' THEN t2.create_name \n" +
+				" WHEN t1.TASK_DEF_KEY_='checkTask' THEN t2.leader \n" +
+				" END workname FROM act_hi_taskinst t1 \n" +
+				" LEFT JOIN emk_finance_receivable t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='" + map.get("id") + "' ";
+
+		countsql = " SELECT COUNT(1) FROM act_hi_taskinst t1 where ASSIGNEE_='" + map.get("id") + "' ";
+		if (dataGrid.getPage() == 1) {
+			sql = sql + " limit 0, " + dataGrid.getRows();
+		} else {
+			sql = sql + "limit " + (dataGrid.getPage() - 1) * dataGrid.getRows() + "," + dataGrid.getRows();
+		}
+		systemService.listAllByJdbc(dataGrid, sql, countsql);
+		req.setAttribute("taskList", dataGrid.getResults());
+		if (dataGrid.getResults().size() > 0) {
+			req.setAttribute("stepProcess", Integer.valueOf(dataGrid.getResults().size() - 1));
+		} else {
+			req.setAttribute("stepProcess", Integer.valueOf(0));
+		}
+		emkFinanceReceivableEntity = emkFinanceReceivableService.getEntity(EmkFinanceReceivableEntity.class, emkFinanceReceivableEntity.getId());
+		req.setAttribute("emkFinanceReceivable", emkFinanceReceivableEntity);
+		return new ModelAndView("com/emk/caiwu/financereceivable/time2");
 	}
 }

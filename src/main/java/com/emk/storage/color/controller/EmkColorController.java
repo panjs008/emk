@@ -139,9 +139,7 @@ public class EmkColorController extends BaseController {
         AjaxJson j = new AjaxJson();
         message = "色样需求单添加成功";
         try {
-            TSUser user = (TSUser) request.getSession().getAttribute("LOCAL_CLINET_USER");
-            Map map = ParameterUtil.getParamMaps(request.getParameterMap());
-            Map orderNum = this.systemService.findOneForJdbc("select count(0)+1 orderNum from emk_color where sys_org_code=?", new Object[]{user.getCurrentDepart().getOrgCode()});
+            Map orderNum = this.systemService.findOneForJdbc("select CAST(ifnull(max(right(COLOR_NO, 3)),0)+1 AS signed) orderNum from emk_color");
             emkColor.setColorNo("SYXP" + emkColor.getCusNum() + DateUtils.format(new Date(), "yyMMdd") + String.format("%03d", new Object[]{Integer.valueOf(Integer.parseInt(orderNum.get("orderNum").toString()))}));
             this.emkColorService.save(emkColor);
             this.systemService.addLog(message, Globals.Log_Type_INSERT, Globals.Log_Leavel_INFO);

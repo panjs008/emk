@@ -5,9 +5,9 @@
 <head>
 	<title>原料采购合同表</title>
 	<t:base type="jquery,easyui,tools,DatePicker"></t:base>
-	<link type="text/css" rel="stylesheet" href="plug-in/select2/css/select2.min.css"/>
-	<script type="text/javascript" src="plug-in/select2/js/select2.js"></script>
-	<script type="text/javascript" src="plug-in/select2/js/pinyin.js"></script>
+	<%@include file="/context/header2.jsp"%>
+	<script src="${webRoot}/context/gys.js"></script>
+
 	<script type="text/javascript">
 		//编写自定义JS代码
 
@@ -31,13 +31,9 @@
 		}
 		$(document).ready(function(){
 			$("#detailId").load("emkMInStorageController.do?emkMInStorageDetailList&selectType=0");
-			BindSelect("gysId","ymkCustomController.do?findSupplierList",0,"");
-			$("#gysId").change(function(){
-				var itemarr = $("#gysId").val().split(","); //字符分割
-				$("#gysCode").val(itemarr[0]);
-				$("#gys").val(itemarr[1]);
-			});
+
 		});
+
 
 		function changeType(){
 			if($("#type").val() == "0"){
@@ -50,42 +46,13 @@
 			}
 		}
 
-		function BindSelect(ctrlName, url,type,categoryId) {
-			var control = $('#' + ctrlName);
-			//设置Select2的处理
-			control.select2({
-				formatResult: formatState,
-				formatSelection: formatState,
-				escapeMarkup: function (m) {
-					return m;
-				}
-			});
-			//绑定Ajax的内容
-			$.getJSON(url, function (data) {
-				control.empty();//清空下拉框
-				control.append("<option value=''>请选择</option>");
-				$.each(data.obj, function (i, item) {
-					control.append("<option value='" + item.supplierCode + ","+item.supplier +"'>" + item.supplier + "</option>");
-				});
-
-			});
-		}
-
-		function formatState (state) {
-			if (!state.id) { return state.text; }
-			var $state = $(
-					'<span>' + state.text + '</span>'
-			);
-			return $state;
-		};
-
-
 	</script>
 </head>
 <body>
 <t:formvalid formid="formobj" dialog="true" usePlugin="password" layout="table" action="emkMInStorageController.do?doAdd" tiptype="1">
 	<input id="id" name="id" type="hidden" value="${emkMInStoragePage.id }"/>
-	<c:set var="selectType" value="0"  scope="session"></c:set>
+	<c:set var="selectType" value="${param.type }"  scope="session"></c:set>
+	<input id="type" name="type" type="hidden" value="${param.type }"/>
 
 	<table style="width: 100%;" cellpadding="0" cellspacing="1" class="formtable">
 		<tr>
@@ -108,62 +75,10 @@
 				<input id="realName" name="realName" type="text" value="${LOCAL_CLINET_USER.realName}" readonly style="width: 150px" class="inputxt" >
 				<input name="userName"   type="hidden"  id="userName" value="${LOCAL_CLINET_USER.userName}" type="text"  />
 				<t:choose  hiddenName="userName"  hiddenid="userName" url="userController.do?userSelect0" name="userList0" width="700px" height="500px"
-						   icon="icon-search" title="选择处理人" textname="realName" isclear="true" isInit="true"></t:choose>
+						   icon="icon-search" title="选择申请人" textname="realName" isclear="true" isInit="true"></t:choose>
 			</td>
 			</tr>
-		<tr>
 
-			<td align="right">
-				<label class="Validform_label">
-					入库类型:
-				</label>
-			</td>
-			<td class="value" >
-				<select name="type" id="type" datatype="*" onchange="changeType();">
-					<option value="0">原料面料</option>
-					<option value="1">缝制辅料</option>
-					<option value="2">包装辅料</option>
-				</select>
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">入库日期</label>
-			</td>
-			<td align="right" >
-				<label class="Validform_label">
-					入库人:
-				</label>
-			</td>
-			<td class="value" colspan="3">
-				<input id="sender" name="sender" type="text" value="${LOCAL_CLINET_USER.realName}" readonly style="width: 150px" class="inputxt" >
-				<input name="senderUserNames"   type="hidden" value="${LOCAL_CLINET_USER.userName}"  id="senderUserNames" type="text"  />
-				<t:choose  hiddenName="senderUserNames"  hiddenid="userName" url="userController.do?userdept0" name="userList0" width="700px" height="500px"
-						   icon="icon-search" title="选择处理人" textname="sender,sendDeptName,sendDeptCode" isclear="true" isInit="true"></t:choose>
-			</td>
-		</tr>
-		<tr>
-
-			<td align="right" >
-				<label class="Validform_label">
-					客户编号:
-				</label>
-			</td>
-			<td class="value" >
-				<input id="cusNum" name="cusNum" readonly type="text" value="${emkMInStoragePage.cusNum }" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">客户编号</label>
-			</td>
-			<td align="right" >
-				<label class="Validform_label">
-					客户名称:
-				</label>
-			</td>
-			<td class="value"  colspan="3">
-				<input id="cusName" name="cusName" readonly type="text" value="${emkMInStoragePage.cusName }" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<t:choose  hiddenName="cusNum"  hiddenid="cusNum" url="ymkCustomController.do?select" name="ymkCustomList" width="700px" height="500px"
-						   icon="icon-search" title="选择客户" textname="cusName,businesseDeptName,businesseDeptId,businesser,businesserName,tracer,tracerName,developer,developerName,bz" isclear="true" isInit="true"></t:choose>
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">客户名称</label>
-			</td>
-		</tr>
 		<tr>
 			<td align="right" >
 				<label class="Validform_label">
@@ -200,6 +115,32 @@
 
 			<td align="right" >
 				<label class="Validform_label">
+					客户编号:
+				</label>
+			</td>
+			<td class="value" >
+				<input id="cusNum" name="cusNum" readonly type="text" value="${emkMInStoragePage.cusNum }" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">客户编号</label>
+			</td>
+			<td align="right" >
+				<label class="Validform_label">
+					客户名称:
+				</label>
+			</td>
+			<td class="value"  colspan="3">
+				<input id="cusName" name="cusName" readonly type="text" value="${emkMInStoragePage.cusName }" style="width: 150px" class="inputxt"  datatype="*"/>
+				<t:choose  hiddenName="cusNum"  hiddenid="cusNum" url="ymkCustomController.do?select" name="ymkCustomList" width="700px" height="500px"
+						   icon="icon-search" title="选择客户" textname="cusName,businesseDeptName,businesseDeptId,businesser,businesserName,tracer,tracerName,developer,developerName,bz" isclear="true" isInit="true"></t:choose>
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">客户名称</label>
+			</td>
+		</tr>
+
+		<tr>
+
+			<td align="right" >
+				<label class="Validform_label">
 					业务部门:
 				</label>
 			</td>
@@ -215,7 +156,10 @@
 				</label>
 			</td>
 			<td class="value" >
-				<input id="businesser" name="businesser" readonly value="${emkMInStoragePage.businesser }" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<select class="form-control select2" id="businesserId"  datatype="*">
+					<option value=''>请选择</option>
+				</select>
+				<input id="businesser" name="businesser" readonly value="${emkMInStoragePage.businesser }" type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<input id="businesserName" name="businesserName"  value="${emkMInStoragePage.businesserName }" type="hidden"  />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">业务员</label>
@@ -226,7 +170,10 @@
 				</label>
 			</td>
 			<td class="value" >
-				<input id="tracer" name="tracer" readonly type="text" value="${emkMInStoragePage.tracer }" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<select class="form-control select2" id="tracerId"  >
+					<option value=''>请选择</option>
+				</select>
+				<input id="tracer" name="tracer" readonly type="hidden" value="${emkMInStoragePage.tracer }" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<input id="tracerName" name="tracerName"  type="hidden" value="${emkMInStoragePage.tracerName }" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">业务员</label>
@@ -235,14 +182,16 @@
 
 
 		<tr>
-
 			<td align="right" >
 				<label class="Validform_label">
 					生产跟单员:
 				</label>
 			</td>
 			<td class="value">
-				<input id="developer" name="developer" readonly value="${emkMInStoragePage.developer }" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<select class="form-control select2" id="developerId"  >
+					<option value=''>请选择</option>
+				</select>
+				<input id="developer" name="developer" readonly value="${emkMInStoragePage.developer }" type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<input id="developerName" name="developerName" value="${emkMInStoragePage.developerName }" type="hidden"  />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">业务员</label>
@@ -274,18 +223,29 @@
 			</td>
 		</tr>
 
-
 		<tr>
 			<td align="right">
 				<label class="Validform_label">
 					出货日期:
 				</label>
 			</td>
-			<td class="value" colspan="5">
+			<td class="value">
 				<input id="outDate" name="outDate" readonly value="${emkMInStoragePage.outDate}" onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})"  type="text" style="width: 150px" class="Wdate"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">出货日期</label>
 			</td>
+			<td align="right" >
+				<label class="Validform_label">
+					入库人:
+				</label>
+			</td>
+			<td class="value" colspan="3">
+				<input id="sender" name="sender" type="text" value="${LOCAL_CLINET_USER.realName}" readonly style="width: 150px" class="inputxt" >
+				<input name="senderUserNames"   type="hidden" value="${LOCAL_CLINET_USER.userName}"  id="senderUserNames" type="text"  />
+				<t:choose  hiddenName="senderUserNames"  hiddenid="userName" url="userController.do?userdept0" name="userList0" width="700px" height="500px"
+						   icon="icon-search" title="选择处理人" textname="sender,sendDeptName,sendDeptCode" isclear="true" isInit="true"></t:choose>
+			</td>
+
 		</tr>
 
 	</table>

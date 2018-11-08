@@ -5,9 +5,8 @@
 <head>
 	<title>验货申请表</title>
 	<t:base type="jquery,easyui,tools,DatePicker"></t:base>
-	<link type="text/css" rel="stylesheet" href="plug-in/select2/css/select2.min.css"/>
-	<script type="text/javascript" src="plug-in/select2/js/select2.js"></script>
-	<script type="text/javascript" src="plug-in/select2/js/pinyin.js"></script>
+	<%@include file="/context/header2.jsp"%>
+	<script src="${webRoot}/context/gys.js"></script>
 	<script type="text/javascript">
 		//编写自定义JS代码
 
@@ -31,42 +30,10 @@
 		}
 		$(document).ready(function(){
 			$("#detailId").load("emkCheckController.do?orderMxList");
-			BindSelect("gysId","ymkCustomController.do?findSupplierList",0,"");
-			$("#gysId").change(function(){
-				var itemarr = $("#gysId").val().split(","); //字符分割
-				$("#gysCode").val(itemarr[0]);
-				$("#gys").val(itemarr[1]);
-			});
+
 		});
 
-		function BindSelect(ctrlName, url,type,categoryId) {
-			var control = $('#' + ctrlName);
-			//设置Select2的处理
-			control.select2({
-				formatResult: formatState,
-				formatSelection: formatState,
-				escapeMarkup: function (m) {
-					return m;
-				}
-			});
-			//绑定Ajax的内容
-			$.getJSON(url, function (data) {
-				control.empty();//清空下拉框
-				control.append("<option value=''>请选择</option>");
-				$.each(data.obj, function (i, item) {
-					control.append("<option value='" + item.supplierCode + ","+item.supplier +"'>" + item.supplier + "</option>");
-				});
 
-			});
-		}
-
-		function formatState (state) {
-			if (!state.id) { return state.text; }
-			var $state = $(
-					'<span>' + state.text + '</span>'
-			);
-			return $state;
-		};
 
 	</script>
 </head>
@@ -112,6 +79,30 @@
 		<tr>
 			<td align="right" >
 				<label class="Validform_label">
+					客户编号:
+				</label>
+			</td>
+			<td class="value" >
+				<input id="cusNum" name="cusNum" readonly type="text" value="${emkCheckPage.cusNum }" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">客户编号</label>
+			</td>
+			<td align="right" >
+				<label class="Validform_label">
+					客户名称:
+				</label>
+			</td>
+			<td class="value"  colspan="3">
+				<input id="cusName" name="cusName" readonly type="text" value="${emkCheckPage.cusName }" style="width: 150px" class="inputxt"  datatype="*" />
+				<t:choose  hiddenName="cusNum"  hiddenid="cusNum" url="ymkCustomController.do?select" name="ymkCustomList" width="700px" height="500px"
+						   icon="icon-search" title="选择客户" textname="cusName,businesseDeptName,businesseDeptId,businesser,businesserName,tracer,tracerName,developer,developerName,bz" isclear="true" isInit="true"></t:choose>
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">客户名称</label>
+			</td>
+		</tr>
+		<tr>
+			<td align="right" >
+				<label class="Validform_label">
 					业务部门:
 				</label>
 			</td>
@@ -127,7 +118,10 @@
 				</label>
 			</td>
 			<td class="value" >
-				<input id="businesser" name="businesser" readonly value="${emkCheckPage.businesser }" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<select class="form-control select2" id="tracerId"  >
+					<option value=''>请选择</option>
+				</select>
+				<input id="businesser" name="businesser" readonly value="${emkCheckPage.businesser }" type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<input id="businesserName" name="businesserName"  value="${emkCheckPage.businesserName }" type="hidden"  />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">业务员</label>
@@ -145,30 +139,6 @@
 
 		</tr>
 
-		<tr>
-			<td align="right" >
-				<label class="Validform_label">
-					客户编号:
-				</label>
-			</td>
-			<td class="value" >
-				<input id="cusNum" name="cusNum" readonly type="text" value="${emkCheckPage.cusNum }" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">客户编号</label>
-			</td>
-			<td align="right" >
-				<label class="Validform_label">
-					客户名称:
-				</label>
-			</td>
-			<td class="value"  colspan="3">
-				<input id="cusName" name="cusName" readonly type="text" value="${emkCheckPage.cusName }" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<t:choose  hiddenName="cusNum"  hiddenid="cusNum" url="ymkCustomController.do?select" name="ymkCustomList" width="700px" height="500px"
-						   icon="icon-search" title="选择客户" textname="cusName,businesseDeptName,businesseDeptId,businesser,businesserName,tracer,tracerName,developer,developerName,bz" isclear="true" isInit="true"></t:choose>
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">客户名称</label>
-			</td>
-		</tr>
 
 
 		<tr>

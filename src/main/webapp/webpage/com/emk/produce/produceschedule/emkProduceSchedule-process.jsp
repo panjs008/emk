@@ -45,6 +45,56 @@
                 $("#spanId3").css("display","");
             }
         }
+
+        function DateDiff(sDate1,  sDate2){    //sDate1和sDate2是2002-12-18格式
+            var  aDate,  oDate1,  oDate2,  iDays
+            aDate  =  sDate1.split("-")
+            oDate1  =  new  Date(aDate[1]  +  '-'  +  aDate[2]  +  '-'  +  aDate[0])    //转换为12-18-2002格式
+            aDate  =  sDate2.split("-")
+            oDate2  =  new  Date(aDate[1]  +  '-'  +  aDate[2]  +  '-'  +  aDate[0])
+            iDays  =  parseInt(Math.abs(oDate1  -  oDate2)  /  1000  /  60  /  60  /24)    //把相差的毫秒数转换为天数
+            return  iDays
+        }
+        function setEndTimeSsy() {
+            var d1  =  $("#kdDate").val();
+            var d2  =  $("#ssyDate").val();
+            $("#leavelSsy").val(DateDiff(d1,d2));
+        }
+        function setEndTimeCqy() {
+            var d1  =  $("#kdDate").val();
+            var d2  =  $("#cqyDate").val();
+            $("#leavelCq").val(DateDiff(d1,d2));
+        }
+
+        function setEndTimeSy() {
+            var d1  =  $("#kdDate").val();
+            var d2  =  $("#syDate").val();
+            $("#leavelSy").val(DateDiff(d1,d2));
+        }
+
+        function setEndTimeCy() {
+            var d1  =  $("#kdDate").val();
+            var d2  =  $("#cyDate").val();
+            $("#leavelCy").val(DateDiff(d1,d2));
+        }
+
+        function setEndTimeP() {
+            var d1  =  $("#kdDate").val();
+            var d2  =  $("#ylblLimitDate").val();
+            $("#leavelYlblDay").val(DateDiff(d1,d2));
+        }
+
+        function setEndTimeP2() {
+            var d1  =  $("#kdDate").val();
+            var d2  =  $("#fzblLimitDate").val();
+            $("#leavelFzblDay").val(DateDiff(d1,d2));
+        }
+
+        function setEndTimeP3() {
+            var d1  =  $("#kdDate").val();
+            var d2  =  $("#bzblLimitDate").val();
+            $("#leavelBzblDay").val(DateDiff(d1,d2));
+        }
     </script>
 
 </head>

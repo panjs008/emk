@@ -5,7 +5,9 @@
  <head>
   <title>购销合同</title>
   <t:base type="jquery,easyui,tools,DatePicker"></t:base>
-  <script type="text/javascript">
+	 <%@include file="/context/header.jsp"%>
+
+	 <script type="text/javascript">
   //编写自定义JS代码
   </script>
  </head>

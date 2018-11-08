@@ -10,15 +10,15 @@
       <t:dgCol title="创建日期"  field="createDate"  formatter="yyyy-MM-dd"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
       <t:dgCol title="所属部门"  field="sysOrgCode"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
       <t:dgCol title="操作" field="opt" frozenColumn="true"  width="100"></t:dgCol>
-      <t:dgCol title="需求单号"  field="materialNo" queryMode="single" query="true"  width="110"></t:dgCol>
-      <t:dgCol title="预合同编号"  field="htNum" queryMode="single" width="120"></t:dgCol>
+      <t:dgCol title="采购需求单号"  field="materialNo" queryMode="single" query="true"  width="125"></t:dgCol>
+      <t:dgCol title="合同编号"  field="htNum" queryMode="single" width="120"></t:dgCol>
       <t:dgCol title="订单号"  field="orderNum" queryMode="single" width="105"></t:dgCol>
 
       <t:dgCol title="提交日期"  field="kdDate"  queryMode="single"  width="80"></t:dgCol>
       <t:dgCol title="交货日期"  field="dhjqDate"  queryMode="single"  width="80"></t:dgCol>
       <t:dgCol title="业务部门"  field="businesseDeptName"  queryMode="single"  width="80"></t:dgCol>
       <t:dgCol title="业务员"  field="businesser"  queryMode="single"  width="70"></t:dgCol>
-      <t:dgCol title="跟单员"  field="developer"  queryMode="single"  width="70"></t:dgCol>
+      <%--<t:dgCol title="跟单员"  field="developer"  queryMode="single"  width="70"></t:dgCol>--%>
       <t:dgCol title="客户代码" query="true" field="cusNum"  queryMode="single"  width="70"></t:dgCol>
       <t:dgCol title="客户名称" query="true" field="cusName"  queryMode="single"  width="160"></t:dgCol>
       <t:dgCol title="款号"  field="sampleNo"  queryMode="single"  width="80"></t:dgCol>
@@ -26,7 +26,7 @@
       <t:dgCol title="款式大类"  field="proTypeName"  queryMode="single"  width="70"></t:dgCol>
 
       <t:dgFunOpt funname="queryDetail2(id,materialNo)" title="包装辅料" urlclass="ace_button" urlfont="fa-list-alt"></t:dgFunOpt>
-      <t:dgToolBar title="录入" icon="fa fa-plus" url="emkMaterialRequiredController.do?goAdd&type=2&winTitle=录入包装采购需求单" funname="add" height="600" width="1000"></t:dgToolBar>
+      <%--<t:dgToolBar title="录入" icon="fa fa-plus" url="emkMaterialRequiredController.do?goAdd&type=2&winTitle=录入包装采购需求单" funname="add" height="600" width="1000"></t:dgToolBar>--%>
       <t:dgToolBar title="编辑" icon="fa fa-edit" url="emkMaterialRequiredController.do?goUpdate&type=2&winTitle=编辑包装采购需求单" funname="update" height="600" width="1000"></t:dgToolBar>
       <t:dgToolBar title="删除"  icon="fa fa-remove" url="emkMaterialRequiredController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
       <t:dgToolBar title="导出" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>

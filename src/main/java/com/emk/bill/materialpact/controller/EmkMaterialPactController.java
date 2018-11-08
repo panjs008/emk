@@ -56,9 +56,9 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.UriComponentsBuilder;
 
-@Api(value = "EmkMaterialPact", description = "面料预采购合同", tags = {"emkMaterialPactController"})
+@Api(value = "EmkMaterialPact", description = "面料预采购合同", tags = "emkMaterialPactController")
 @Controller
-@RequestMapping({"/emkMaterialPactController"})
+@RequestMapping("/emkMaterialPactController")
 public class EmkMaterialPactController extends BaseController {
     private static final Logger logger = Logger.getLogger(EmkMaterialPactController.class);
     @Autowired
@@ -68,22 +68,37 @@ public class EmkMaterialPactController extends BaseController {
     @Autowired
     private Validator validator;
 
-    @RequestMapping(params = {"list"})
+    @RequestMapping(params = "list")
     public ModelAndView list(HttpServletRequest request) {
         return new ModelAndView("com/emk/bill/materialpact/emkMaterialPactList");
     }
 
-    @RequestMapping(params = {"list2"})
+    @RequestMapping(params = "list2")
     public ModelAndView list2(HttpServletRequest request) {
         return new ModelAndView("com/emk/bill/materialpact/emkMaterialPactList2");
     }
 
-    @RequestMapping(params = {"list3"})
+    @RequestMapping(params = "list3")
     public ModelAndView list3(HttpServletRequest request) {
         return new ModelAndView("com/emk/bill/materialpact/emkMaterialPactList3");
     }
 
-    @RequestMapping(params = {"datagrid"})
+    @RequestMapping(params = "emkPactList")
+    public ModelAndView emkPactList(HttpServletRequest request) {
+        return new ModelAndView("com/emk/bill/materialpact/emkPactList");
+    }
+
+    @RequestMapping(params = "emkPactList2")
+    public ModelAndView emkPactList2(HttpServletRequest request) {
+        return new ModelAndView("com/emk/bill/materialpact/emkPactList2");
+    }
+
+    @RequestMapping(params = "emkPactList3")
+    public ModelAndView emkPactList3(HttpServletRequest request) {
+        return new ModelAndView("com/emk/bill/materialpact/emkPactList3");
+    }
+
+    @RequestMapping(params = "datagrid")
     public void datagrid(EmkMaterialPactEntity emkMaterialPact, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid) {
         CriteriaQuery cq = new CriteriaQuery(EmkMaterialPactEntity.class, dataGrid);
 
@@ -95,7 +110,7 @@ public class EmkMaterialPactController extends BaseController {
         TagUtil.datagrid(response, dataGrid);
     }
 
-    @RequestMapping(params = {"doDel"})
+    @RequestMapping(params = "doDel")
     @ResponseBody
     public AjaxJson doDel(EmkMaterialPactEntity emkMaterialPact, HttpServletRequest request) {
         String message = null;
@@ -114,7 +129,7 @@ public class EmkMaterialPactController extends BaseController {
         return j;
     }
 
-    @RequestMapping(params = {"doBatchDel"})
+    @RequestMapping(params = "doBatchDel")
     @ResponseBody
     public AjaxJson doBatchDel(String ids, HttpServletRequest request) {
         String message = null;
@@ -136,7 +151,7 @@ public class EmkMaterialPactController extends BaseController {
         return j;
     }
 
-    @RequestMapping(params = {"doAdd"})
+    @RequestMapping(params = "doAdd")
     @ResponseBody
     public AjaxJson doAdd(EmkMaterialPactEntity emkMaterialPact, HttpServletRequest request) {
         String message = null;
@@ -154,7 +169,7 @@ public class EmkMaterialPactController extends BaseController {
         return j;
     }
 
-    @RequestMapping(params = {"doUpdate"})
+    @RequestMapping(params = "doUpdate")
     @ResponseBody
     public AjaxJson doUpdate(EmkMaterialPactEntity emkMaterialPact, HttpServletRequest request) {
         String message = null;
@@ -174,7 +189,7 @@ public class EmkMaterialPactController extends BaseController {
         return j;
     }
 
-    @RequestMapping(params = {"goAdd"})
+    @RequestMapping(params = "goAdd")
     public ModelAndView goAdd(EmkMaterialPactEntity emkMaterialPact, HttpServletRequest req) {
         if (StringUtil.isNotEmpty(emkMaterialPact.getId())) {
             emkMaterialPact = (EmkMaterialPactEntity) this.emkMaterialPactService.getEntity(EmkMaterialPactEntity.class, emkMaterialPact.getId());
@@ -183,7 +198,7 @@ public class EmkMaterialPactController extends BaseController {
         return new ModelAndView("com/emk/bill/materialpact/emkMaterialPact-add");
     }
 
-    @RequestMapping(params = {"goUpdate"})
+    @RequestMapping(params = "goUpdate")
     public ModelAndView goUpdate(EmkMaterialPactEntity emkMaterialPact, HttpServletRequest req) {
         if (StringUtil.isNotEmpty(emkMaterialPact.getId())) {
             emkMaterialPact = (EmkMaterialPactEntity) this.emkMaterialPactService.getEntity(EmkMaterialPactEntity.class, emkMaterialPact.getId());
@@ -192,13 +207,13 @@ public class EmkMaterialPactController extends BaseController {
         return new ModelAndView("com/emk/bill/materialpact/emkMaterialPact-update");
     }
 
-    @RequestMapping(params = {"upload"})
+    @RequestMapping(params = "upload")
     public ModelAndView upload(HttpServletRequest req) {
         req.setAttribute("controller_name", "emkMaterialPactController");
         return new ModelAndView("common/upload/pub_excel_upload");
     }
 
-    @RequestMapping(params = {"exportXls"})
+    @RequestMapping(params = "exportXls")
     public String exportXls(EmkMaterialPactEntity emkMaterialPact, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid, ModelMap modelMap) {
         CriteriaQuery cq = new CriteriaQuery(EmkMaterialPactEntity.class, dataGrid);
         HqlGenerateUtil.installHql(cq, emkMaterialPact, request.getParameterMap());
@@ -211,7 +226,7 @@ public class EmkMaterialPactController extends BaseController {
         return "jeecgExcelView";
     }
 
-    @RequestMapping(params = {"exportXlsByT"})
+    @RequestMapping(params = "exportXlsByT")
     public String exportXlsByT(EmkMaterialPactEntity emkMaterialPact, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid, ModelMap modelMap) {
         modelMap.put("fileName", "面料预采购合同");
         modelMap.put("entity", EmkMaterialPactEntity.class);
@@ -229,7 +244,7 @@ public class EmkMaterialPactController extends BaseController {
         return Result.success(listEmkMaterialPacts);
     }
 
-    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.GET})
+    @RequestMapping(value = "/{id}", method = {org.springframework.web.bind.annotation.RequestMethod.GET})
     @ResponseBody
     @ApiOperation(value = "根据ID获取面料预采购合同信息", notes = "根据ID获取面料预采购合同信息", httpMethod = "GET", produces = "application/json")
     public ResponseMessage<?> get(@ApiParam(required = true, name = "id", value = "ID") @PathVariable("id") String id) {
@@ -240,7 +255,7 @@ public class EmkMaterialPactController extends BaseController {
         return Result.success(task);
     }
 
-    @RequestMapping(method = {org.springframework.web.bind.annotation.RequestMethod.POST}, consumes = {"application/json"})
+    @RequestMapping(method = {org.springframework.web.bind.annotation.RequestMethod.POST}, consumes = "application/json")
     @ResponseBody
     @ApiOperation("创建面料预采购合同")
     public ResponseMessage<?> create(@ApiParam(name = "面料预采购合同对象") @RequestBody EmkMaterialPactEntity emkMaterialPact, UriComponentsBuilder uriBuilder) {
@@ -257,7 +272,7 @@ public class EmkMaterialPactController extends BaseController {
         return Result.success(emkMaterialPact);
     }
 
-    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.PUT}, consumes = {"application/json"})
+    @RequestMapping(value = "/{id}", method = {org.springframework.web.bind.annotation.RequestMethod.PUT}, consumes = "application/json")
     @ResponseBody
     @ApiOperation(value = "更新面料预采购合同", notes = "更新面料预采购合同")
     public ResponseMessage<?> update(@ApiParam(name = "面料预采购合同对象") @RequestBody EmkMaterialPactEntity emkMaterialPact) {
@@ -274,7 +289,7 @@ public class EmkMaterialPactController extends BaseController {
         return Result.success("更新面料预采购合同信息成功");
     }
 
-    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.DELETE})
+    @RequestMapping(value = "/{id}", method = {org.springframework.web.bind.annotation.RequestMethod.DELETE})
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ApiOperation("删除面料预采购合同")
     public ResponseMessage<?> delete(@ApiParam(name = "id", value = "ID", required = true) @PathVariable("id") String id) {

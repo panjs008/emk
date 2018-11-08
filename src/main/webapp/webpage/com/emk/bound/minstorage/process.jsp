@@ -8,7 +8,7 @@
 
     });
 </script>
-<div id="orderDiv" title="流程图" style="width:100%;height:350px;overflow:hidden" >
+<div id="orderDiv" title="流程图" style="width:100%;height:350px;overflow:hidden;overflow-x: hidden;overflow-y: hidden" >
     <iframe scrolling="no" id="processFrm" frameborder="0" style=""  src="flowController.do?showProcess&id=${param.id}&tableName=emk_m_in_storage" width="100%" height="100%"></iframe>
 </div>
 <%--<t:datagrid name="uRepairList" height="150px" checkbox="false" pagination="true" fitColumns="true" title="" actionUrl="flowController.do?hisProcessDatagrid&id=${param.id}" idField="id" fit="true" btnCls="bootstrap"  queryMode="group">

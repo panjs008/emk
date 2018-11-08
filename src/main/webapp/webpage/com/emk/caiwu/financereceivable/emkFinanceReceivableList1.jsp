@@ -9,18 +9,24 @@
    <t:dgCol title="创建人登录名称"  hidden="true" field="createBy"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="创建日期"  hidden="true" field="createDate"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="所属部门"  hidden="true" field="sysOrgCode"  queryMode="single"  width="120"></t:dgCol>
-   <t:dgCol title="应付通知单号"  field="receiveNum" query="true"  queryMode="single"  width="80"></t:dgCol>
+      <t:dgCol title="操作" field="opt" frozenColumn="true"  width="100"></t:dgCol>
+
+      <t:dgCol title="应付通知单号"  field="receiveNum" query="true"  queryMode="single"  width="80"></t:dgCol>
    <t:dgCol title="订舱通知单号"  field="cargoNo" query="true"  queryMode="single"  width="80"></t:dgCol>
    <t:dgCol title="离厂放行条号"  field="levealFactoryNo" query="true"  queryMode="single"  width="80"></t:dgCol>
-   <t:dgCol title="发票日期"  field="fpDate"   queryMode="single"  width="70"></t:dgCol>
+   <t:dgCol title="出货日期"  field="outForrmDate"   queryMode="single"  width="70"></t:dgCol>
    <t:dgCol title="业务部门"  field="businesseDeptName"  queryMode="single"  width="70"></t:dgCol>
    <t:dgCol title="业务员"  field="businesser"  queryMode="single"  width="50"></t:dgCol>
    <t:dgCol title="客户代码"  field="cusNum"  queryMode="single"  width="60"></t:dgCol>
    <t:dgCol title="客户名称"  field="cusName"  queryMode="single"  width="145"></t:dgCol>
    <t:dgCol title="款号"  field="sampleNo"  queryMode="single"  width="80"></t:dgCol>
-       <t:dgToolBar title="录入" icon="fa fa-plus" url="emkFinanceReceivableController.do?goAdd1&winTitle=录入应付通知单" funname="add" height="600" width="1000"></t:dgToolBar>
-       <t:dgToolBar title="编辑" icon="fa fa-edit" url="emkFinanceReceivableController.do?goUpdate1&winTitle=编辑应付通知单" funname="update" height="600" width="1000"></t:dgToolBar>
-       <t:dgToolBar title="删除"  icon="fa fa-remove" url="emkFinanceReceivableController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
+
+      <t:dgCol title="状态"  field="state" formatterjs="formatColor"  queryMode="single"  width="70"></t:dgCol>
+      <t:dgFunOpt funname="goToProcess(id)" title="流程进度" urlclass="ace_button"  urlStyle="background-color:#ec4758;" urlfont="fa-tasks"></t:dgFunOpt>
+      <t:dgToolBar title="录入" icon="fa fa-plus" url="emkFinanceReceivableController.do?goAdd1&winTitle=录入应付通知单" funname="add" height="600" width="1000"></t:dgToolBar>
+      <t:dgToolBar title="编辑" icon="fa fa-edit" url="emkFinanceReceivableController.do?goUpdate1&type=0&winTitle=编辑应付通知单" funname="update" height="600" width="1100"></t:dgToolBar>
+      <t:dgToolBar title="提交" icon="fa fa-arrow-circle-up" funname="doSubmitV"></t:dgToolBar>
+      <t:dgToolBar title="删除"  icon="fa fa-remove" url="emkFinanceReceivableController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
       <t:dgToolBar title="导出" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
 
   </t:datagrid>
@@ -30,7 +36,68 @@
  <script type="text/javascript">
  $(document).ready(function(){
  });
- 
+
+ function formatColor(val,row){
+     if(row.state=="1"){
+         return '<span style="color:	#FF0000;">处理中</span>';
+     }else if(row.state=="2"){
+         return '<span style="color:	#0000FF;">完成</span>';
+     }else{
+         return '创建';
+     }
+ }
+
+ function doSubmitV() {
+     var rowsData = $('#emkFinanceReceivableList').datagrid('getSelections');
+     var ids = [];
+     if (!rowsData || rowsData.length == 0) {
+         tip('请选择需要提交的应付通知单');
+         return;
+     }
+     for ( var i = 0; i < rowsData.length; i++) {
+         ids.push(rowsData[i].id);
+     }
+     $.dialog.confirm('您是否确定提交应付通知单?', function(r) {
+         if (r) {
+             $.ajax({
+                 url : "emkFinanceReceivableController.do?doSubmit2&ids="+ids,
+                 type : 'post',
+                 cache : false,
+                 data: null,
+                 success : function(data) {
+                     var d = $.parseJSON(data);
+                     tip(d.msg);
+                     if (d.success) {
+                         $('#emkFinanceReceivableList').datagrid('reload');
+                     }
+                 }
+             });
+         }
+     });
+ }
+
+ function goToProcess(id){
+     var height =window.top.document.body.offsetHeight*0.85;
+
+     $.ajax({
+         url: "flowController.do?getCurrentProcess&tableName=emk_finance_receivable&title=应付通知单&id=" + id,
+         type: 'post',
+         cache: false,
+         data: null,
+         success: function (data) {
+             var d = $.parseJSON(data);
+             if (d.success) {
+                 var msg = d.msg;
+                 if (msg == "完成") {
+                     createdetailwindow('流程进度--当前环节：' + msg, 'flowController.do?goProcess&processUrl=com/emk/caiwu/financereceivable/emkFinanceReceivable-process2&id=' + id, 1200, height);
+                 } else {
+                     createwindow("流程进度--当前环节：" + msg, "flowController.do?goProcess&processUrl=com/emk/caiwu/financereceivable/emkFinanceReceivable-process2&id=" + id, 1200, height);
+                 }
+
+             }
+         }
+     });
+ }
    
  
 //导入

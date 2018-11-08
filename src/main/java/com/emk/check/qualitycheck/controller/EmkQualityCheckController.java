@@ -8,9 +8,18 @@ import java.text.SimpleDateFormat;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.emk.produce.outforum.entity.EmkOutForumEntity;
 import com.emk.storage.enquirydetail.entity.EmkEnquiryDetailEntity;
+import com.emk.storage.price.entity.EmkPriceEntity;
+import com.emk.util.FlowUtil;
 import com.emk.util.ParameterUtil;
 import com.emk.workorder.workorder.entity.EmkWorkOrderEntity;
+import org.activiti.engine.HistoryService;
+import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.TaskService;
+import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.apache.log4j.Logger;
 import org.apache.tools.ant.util.DateUtils;
 import org.jeecgframework.web.system.pojo.base.TSUser;
@@ -101,8 +110,14 @@ public class EmkQualityCheckController extends BaseController {
 	private SystemService systemService;
 	@Autowired
 	private Validator validator;
-	
 
+
+	@Autowired
+	ProcessEngine processEngine;
+	@Autowired
+	TaskService taskService;
+	@Autowired
+	HistoryService historyService;
 
 	/**
 	 * 质量检查表列表 页面跳转
@@ -492,5 +507,124 @@ public class EmkQualityCheckController extends BaseController {
 		}
 
 		return Result.success();
+	}
+
+	@RequestMapping(params="doSubmit")
+	@ResponseBody
+	public AjaxJson doSubmit(EmkQualityCheckEntity emkQualityCheck, HttpServletRequest request) {
+		String message = null;
+		AjaxJson j = new AjaxJson();
+		message = "质量检查单提交成功";
+		try {
+			int flag = 0;
+			TSUser user = (TSUser)request.getSession().getAttribute("LOCAL_CLINET_USER");
+			Map map = ParameterUtil.getParamMaps(request.getParameterMap());
+			if ((emkQualityCheck.getId() == null) || (emkQualityCheck.getId().isEmpty())) {
+				for (String id : map.get("ids").toString().split(",")) {
+					EmkQualityCheckEntity qualityCheckEntity = systemService.getEntity(EmkQualityCheckEntity.class, id);
+					if (!qualityCheckEntity.getState().equals("0")) {
+						message = "存在已提交的质量检查单，请重新选择在提交质量检查单！";
+						j.setSuccess(false);
+						flag = 1;
+						break;
+					}
+				}
+			}else{
+				map.put("ids", emkQualityCheck.getId());
+			}
+			Map<String, Object> variables = new HashMap();
+			if (flag == 0) {
+				for (String id : map.get("ids").toString().split(",")) {
+					EmkQualityCheckEntity t = emkQualityCheckService.get(EmkQualityCheckEntity.class, id);
+					t.setState("1");
+					variables.put("optUser", t.getId());
+
+					List<Task> task = taskService.createTaskQuery().taskAssignee(id).list();
+					if (task.size() > 0) {
+						Task task1 = (Task)task.get(task.size() - 1);
+						if (task1.getTaskDefinitionKey().equals("htTask")) {
+							taskService.complete(task1.getId(), variables);
+						}
+						if (task1.getTaskDefinitionKey().equals("checkTask")) {
+							t.setLeader(user.getRealName());
+							t.setLeadUserId(user.getId());
+							t.setLeadAdvice(emkQualityCheck.getLeadAdvice());
+							if (emkQualityCheck.getIsPass().equals("0")) {
+								variables.put("isPass", emkQualityCheck.getIsPass());
+								taskService.complete(task1.getId(), variables);
+							} else {
+								List<HistoricTaskInstance> hisTasks = historyService.createHistoricTaskInstanceQuery().taskAssignee(t.getId()).list();
+
+								List<Task> taskList = taskService.createTaskQuery().taskAssignee(t.getId()).list();
+								if (taskList.size() > 0) {
+									Task taskH = (Task)taskList.get(taskList.size() - 1);
+									HistoricTaskInstance historicTaskInstance = hisTasks.get(hisTasks.size() - 2);
+									FlowUtil.turnTransition(taskH.getId(), historicTaskInstance.getTaskDefinitionKey(), variables);
+									Map activityMap = systemService.findOneForJdbc("SELECT GROUP_CONCAT(t0.ID_) ids,GROUP_CONCAT(t0.TASK_ID_) taskids FROM act_hi_actinst t0 WHERE t0.ASSIGNEE_=? AND t0.ACT_ID_=? ORDER BY ID_ ASC",  t.getId(), historicTaskInstance.getTaskDefinitionKey());
+									String[] activitIdArr = activityMap.get("ids").toString().split(",");
+									String[] taskIdArr = activityMap.get("taskids").toString().split(",");
+									systemService.executeSql("UPDATE act_hi_taskinst SET  NAME_=CONCAT('【驳回后】','',NAME_) WHERE ASSIGNEE_>=? AND ID_=?",t.getId(), taskIdArr[1]);
+									systemService.executeSql("delete from act_hi_actinst where ID_>=? and ID_<?", activitIdArr[0], activitIdArr[1] );
+								}
+								t.setState("0");
+							}
+						}
+					}else {
+						ProcessInstance pi = processEngine.getRuntimeService().startProcessInstanceByKey("ht", "emkContractEntity", variables);
+						task = taskService.createTaskQuery().taskAssignee(id).list();
+						Task task1 = task.get(task.size() - 1);
+						taskService.complete(task1.getId(), variables);
+					}
+					systemService.saveOrUpdate(t);
+				}
+			}
+			systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			message = "质量检查单提交失败";
+			throw new BusinessException(e.getMessage());
+		}
+		j.setMsg(message);
+		return j;
+	}
+
+
+	@RequestMapping(params="goWork")
+	public ModelAndView goWork(EmkQualityCheckEntity emkQualityCheck, HttpServletRequest req) {
+		if (StringUtil.isNotEmpty(emkQualityCheck.getId())) {
+			emkQualityCheck = emkQualityCheckService.getEntity(EmkQualityCheckEntity.class, emkQualityCheck.getId());
+			req.setAttribute("emkQualityCheck", emkQualityCheck);
+		}
+		return new ModelAndView("com/emk/check/qualitycheck/emkQualityCheck-work");
+	}
+
+	@RequestMapping(params="goTime")
+	public ModelAndView goTime(EmkQualityCheckEntity emkQualityCheck, HttpServletRequest req, DataGrid dataGrid) {
+		String sql = "";String countsql = "";
+		Map map = ParameterUtil.getParamMaps(req.getParameterMap());
+
+		sql = "SELECT DATE_FORMAT(t1.START_TIME_, '%Y-%m-%d %H:%i:%s') startTime,t1.*,CASE \n" +
+				" WHEN t1.TASK_DEF_KEY_='htTask' THEN t2.create_name \n" +
+				" WHEN t1.TASK_DEF_KEY_='checkTask' THEN t2.leader \n" +
+				" END workname FROM act_hi_taskinst t1 \n" +
+				" LEFT JOIN emk_quality_check t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='" + map.get("id") + "' ";
+
+		countsql = " SELECT COUNT(1) FROM act_hi_taskinst t1 where ASSIGNEE_='" + map.get("id") + "' ";
+		if (dataGrid.getPage() == 1) {
+			sql = sql + " limit 0, " + dataGrid.getRows();
+		} else {
+			sql = sql + "limit " + (dataGrid.getPage() - 1) * dataGrid.getRows() + "," + dataGrid.getRows();
+		}
+		systemService.listAllByJdbc(dataGrid, sql, countsql);
+		req.setAttribute("taskList", dataGrid.getResults());
+		if (dataGrid.getResults().size() > 0) {
+			req.setAttribute("stepProcess", Integer.valueOf(dataGrid.getResults().size() - 1));
+		} else {
+			req.setAttribute("stepProcess", Integer.valueOf(0));
+		}
+		emkQualityCheck = emkQualityCheckService.getEntity(EmkQualityCheckEntity.class, emkQualityCheck.getId());
+		req.setAttribute("emkQualityCheck", emkQualityCheck);
+		return new ModelAndView("com/emk/check/qualitycheck/time");
 	}
 }

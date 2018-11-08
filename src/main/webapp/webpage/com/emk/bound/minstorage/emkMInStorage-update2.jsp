@@ -72,7 +72,38 @@
 
 			</td>
 		</tr>
-
+		<tr>
+			<td align="right" >
+				<label class="Validform_label">
+					采购合同号:
+				</label>
+			</td>
+			<td class="value">
+				<input id="htNum" name="htNum"  value="${emkMInStoragePage.htNum}" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">采购合同号</label>
+			</td>
+			<td align="right" >
+				<label class="Validform_label">
+					预采购合同号:
+				</label>
+			</td>
+			<td class="value">
+				<input id="yhtNum" name="yhtNum"  value="${emkMInStoragePage.yhtNum}" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">预采购合同号</label>
+			</td>
+			<td align="right" >
+				<label class="Validform_label">
+					订单号:
+				</label>
+			</td>
+			<td class="value">
+				<input id="orderNo" name="orderNo"  value="${emkMInStoragePage.orderNo}" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">订单号</label>
+			</td>
+		</tr>
 		<tr>
 
 			<td align="right" >
@@ -111,38 +142,7 @@
 				<label class="Validform_label" style="display: none;">入库日期</label>
 			</td>
 		</tr>
-		<tr>
-			<td align="right" >
-				<label class="Validform_label">
-					采购合同号:
-				</label>
-			</td>
-			<td class="value">
-				<input id="htNum" name="htNum"  value="${emkMInStoragePage.htNum}" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">采购合同号</label>
-			</td>
-			<td align="right" >
-				<label class="Validform_label">
-					预采购合同号:
-				</label>
-			</td>
-			<td class="value">
-				<input id="yhtNum" name="yhtNum"  value="${emkMInStoragePage.yhtNum}" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">预采购合同号</label>
-			</td>
-			<td align="right" >
-				<label class="Validform_label">
-					订单号:
-				</label>
-			</td>
-			<td class="value">
-				<input id="orderNo" name="orderNo"  value="${emkMInStoragePage.orderNo}" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">订单号</label>
-			</td>
-		</tr>
+
 		<tr>
 
 			<td align="right" >

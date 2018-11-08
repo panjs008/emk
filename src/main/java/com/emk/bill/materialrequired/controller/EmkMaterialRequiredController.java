@@ -3,18 +3,15 @@ package com.emk.bill.materialrequired.controller;
 import com.alibaba.fastjson.JSONArray;
 import com.emk.bill.materialrequired.entity.EmkMaterialRequiredEntity;
 import com.emk.bill.materialrequired.service.EmkMaterialRequiredServiceI;
+import com.emk.util.DateUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolation;
@@ -22,6 +19,7 @@ import javax.validation.Validator;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.apache.tools.ant.util.DateUtils;
 import org.jeecgframework.core.beanvalidator.BeanValidators;
 import org.jeecgframework.core.common.controller.BaseController;
 import org.jeecgframework.core.common.exception.BusinessException;
@@ -177,6 +175,9 @@ public class EmkMaterialRequiredController extends BaseController {
 
     @RequestMapping(params = {"goAdd"})
     public ModelAndView goAdd(EmkMaterialRequiredEntity emkMaterialRequired, HttpServletRequest req) {
+        TSUser user = (TSUser) req.getSession().getAttribute("LOCAL_CLINET_USER");
+        Map orderNum = this.systemService.findOneForJdbc("select count(0)+1 orderNum from emk_material_required where sys_org_code=?", new Object[]{user.getCurrentDepart().getOrgCode()});
+        req.setAttribute("materialNo","CG"+ DateUtils.format(new Date(), "yyMMdd") + String.format("%06d", Integer.valueOf(Integer.parseInt(orderNum.get("orderNum").toString()))));
         if (StringUtil.isNotEmpty(emkMaterialRequired.getId())) {
             emkMaterialRequired = (EmkMaterialRequiredEntity) this.emkMaterialRequiredService.getEntity(EmkMaterialRequiredEntity.class, emkMaterialRequired.getId());
             req.setAttribute("emkMaterialRequiredPage", emkMaterialRequired);

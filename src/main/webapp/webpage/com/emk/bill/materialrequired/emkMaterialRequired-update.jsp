@@ -5,50 +5,11 @@
 <head>
 	<title>生产订单</title>
 	<t:base type="jquery,easyui,tools,DatePicker"></t:base>
-	<link type="text/css" rel="stylesheet" href="plug-in/select2/css/select2.min.css"/>
-	<script type="text/javascript" src="plug-in/select2/js/select2.js"></script>
-	<script type="text/javascript" src="plug-in/select2/js/pinyin.js"></script>
+	<%@include file="/context/header2.jsp"%>
+	<script src="${webRoot}/context/gys.js"></script>
 
 	<script type="text/javascript">
 		//编写自定义JS代码
-		$(document).ready(function() {
-			BindSelect("gysId","ymkCustomController.do?findSupplierList",1,"${emkMaterialRequiredPage.gysCode},${emkMaterialRequiredPage.gys}");
-			$("#gysId").change(function(){
-				var itemarr = $("#gysId").val().split(","); //字符分割
-				$("#gysCode").val(itemarr[0]);
-				$("#gys").val(itemarr[1]);
-			});
-		});
-		function BindSelect(ctrlName, url,type,categoryId) {
-			var control = $('#' + ctrlName);
-			//设置Select2的处理
-			control.select2({
-				formatResult: formatState,
-				formatSelection: formatState,
-				escapeMarkup: function (m) {
-					return m;
-				}
-			});
-			//绑定Ajax的内容
-			$.getJSON(url, function (data) {
-				control.empty();//清空下拉框
-				control.append("<option value=''>请选择</option>");
-				$.each(data.obj, function (i, item) {
-					control.append("<option value='" + item.supplierCode + ","+item.supplier +"'>" + item.supplier + "</option>");
-				});
-				if(type ==1){
-					$("#"+ctrlName).select2('val',categoryId);
-				}
-			});
-		}
-
-		function formatState (state) {
-			if (!state.id) { return state.text; }
-			var $state = $(
-					'<span>' + state.text + '</span>'
-			);
-			return $state;
-		};
 
 	</script>
 </head>
@@ -59,13 +20,13 @@
 		<tr>
 			<td align="right" >
 				<label class="Validform_label">
-					需求单号:
+					<c:if test="${param.type eq 0}">原料面料</c:if><c:if test="${param.type eq 1}">缝制辅料</c:if><c:if test="${param.type eq 2}">包装辅料</c:if>采购需求单号:
 				</label>
 			</td>
 			<td class="value" >
 				<input id="materialNo" name="materialNo" readonly value="${emkMaterialRequiredPage.materialNo}" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">需求单号</label>
+				<label class="Validform_label" style="display: none;"><c:if test="${param.type eq 0}">原料面料</c:if><c:if test="${param.type eq 1}">缝制辅料</c:if><c:if test="${param.type eq 2}">包装辅料</c:if>采购需求单号</label>
 			</td>
 			<td align="right">
 				<label class="Validform_label">
@@ -76,8 +37,8 @@
 				<select class="form-control select2" id="gysId"  datatype="*"  >
 					<option value=''>请选择</option>
 				</select>
-				<input id="gysCode" name="gysCode" value="${emkMaterialDetailPage.gysCode }" type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<input id="gys" name="gys" value="${emkMaterialDetailPage.gys }" type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="gysCode" name="gysCode" value="${emkMaterialRequiredPage.gysCode }" type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="gys" name="gys" value="${emkMaterialRequiredPage.gys }" type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">供应商</label>
 			</td>
@@ -107,32 +68,6 @@
 		<tr>
 			<td align="right" style="width: 18%">
 				<label class="Validform_label">
-					业务部门:
-				</label>
-			</td>
-			<td class="value" style="width: 32%">
-				<input id="businesseDeptName" name="businesseDeptName" value="${emkMaterialRequiredPage.businesseDeptName }" readonly type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<input id="businesseDeptId" name="businesseDeptId"  value="${emkMaterialRequiredPage.businesseDeptId }" type="hidden"  />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">业务部门</label>
-			</td>
-			<td align="right" style="width: 18%">
-				<label class="Validform_label">
-					业务员:
-				</label>
-			</td>
-			<td class="value" style="width: 32%">
-				<input id="businesser" name="businesser" readonly value="${emkMaterialRequiredPage.businesser }" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<input id="businesserName" name="businesserName"  value="${emkMaterialRequiredPage.businesserName }" type="hidden"  />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">业务员</label>
-			</td>
-		</tr>
-
-		<tr>
-
-			<td align="right" style="width: 18%">
-				<label class="Validform_label">
 					客户编号:
 				</label>
 			</td>
@@ -157,11 +92,43 @@
 		<tr>
 			<td align="right" style="width: 18%">
 				<label class="Validform_label">
+					业务部门:
+				</label>
+			</td>
+			<td class="value" style="width: 32%">
+				<input id="businesseDeptName" name="businesseDeptName" value="${emkMaterialRequiredPage.businesseDeptName }" readonly type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="businesseDeptId" name="businesseDeptId"  value="${emkMaterialRequiredPage.businesseDeptId }" type="hidden"  />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">业务部门</label>
+			</td>
+			<td align="right" style="width: 18%">
+				<label class="Validform_label">
+					业务员:
+				</label>
+			</td>
+			<td class="value" style="width: 32%">
+				<select class="form-control select2" id="businesserId"  >
+					<option value=''>请选择</option>
+				</select>
+				<input id="businesser" name="businesser" readonly value="${emkMaterialRequiredPage.businesser }" type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="businesserName" name="businesserName"  value="${emkMaterialRequiredPage.businesserName }" type="hidden"  />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">业务员</label>
+			</td>
+		</tr>
+
+
+		<tr>
+			<td align="right" style="width: 18%">
+				<label class="Validform_label">
 					业务跟单员:
 				</label>
 			</td>
 			<td class="value" style="width: 32%">
-				<input id="tracer" name="tracer" readonly type="text" value="${emkMaterialRequiredPage.tracer }" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<select class="form-control select2" id="tracerId"  >
+					<option value=''>请选择</option>
+				</select>
+				<input id="tracer" name="tracer" readonly type="hidden" value="${emkMaterialRequiredPage.tracer }" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<input id="tracerName" name="tracerName"  type="hidden" value="${emkMaterialRequiredPage.tracerName }" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">业务员</label>
@@ -172,7 +139,10 @@
 				</label>
 			</td>
 			<td class="value" style="width: 32%">
-				<input id="developer" name="developer" readonly value="${emkMaterialRequiredPage.developer }" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<select class="form-control select2" id="developerId"  >
+					<option value=''>请选择</option>
+				</select>
+				<input id="developer" name="developer" readonly value="${emkMaterialRequiredPage.developer }" type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<input id="developerName" name="developerName" value="${emkMaterialRequiredPage.developerName }" type="hidden"  />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">业务员</label>

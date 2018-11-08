@@ -19,7 +19,7 @@ public class EmkMaterialPactEntity implements Serializable {
     private String createBy;
     private Date createDate;
     private String sysOrgCode;
-    @Excel(name = "需求单号", width = 15)
+    @Excel(name = "采购合同编号", width = 15)
     private String materialNo;
     @Excel(name = "提交日期", width = 15)
     private String kdDate;
@@ -104,6 +104,15 @@ public class EmkMaterialPactEntity implements Serializable {
     private String gys;
     @Excel(name = "供应商Code", width = 15)
     private String gysCode;
+
+    @Excel(name = "正式采购合同编号", width = 15)
+    private String zscghtbh;
+    @Excel(name = "采购需求单号", width = 15)
+    private String cgxqdh;
+    @Excel(name = "采购合同号", width = 15)
+    private String cghtbh;
+    private String flag;
+
 
     @Column(name = "GYS", nullable = true, length = 32)
     public String getGys() {
@@ -538,5 +547,41 @@ public class EmkMaterialPactEntity implements Serializable {
 
     public void setOrderNum(String orderNum) {
         this.orderNum = orderNum;
+    }
+
+    @Column(name = "flag", nullable = true, length = 32)
+    public String getFlag() {
+        return flag;
+    }
+
+    public void setFlag(String flag) {
+        this.flag = flag;
+    }
+
+    @Column(name = "zscghtbh", nullable = true, length = 32)
+    public String getZscghtbh() {
+        return zscghtbh;
+    }
+
+    public void setZscghtbh(String zscghtbh) {
+        this.zscghtbh = zscghtbh;
+    }
+
+    @Column(name = "cgxqdh", nullable = true, length = 32)
+    public String getCgxqdh() {
+        return cgxqdh;
+    }
+
+    public void setCgxqdh(String cgxqdh) {
+        this.cgxqdh = cgxqdh;
+    }
+
+    @Column(name = "cghtbh", nullable = true, length = 32)
+    public String getCghtbh() {
+        return cghtbh;
+    }
+
+    public void setCghtbh(String cghtbh) {
+        this.cghtbh = cghtbh;
     }
 }

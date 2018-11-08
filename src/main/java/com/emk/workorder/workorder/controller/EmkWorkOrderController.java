@@ -127,18 +127,9 @@ public class EmkWorkOrderController extends BaseController {
 	@Autowired
 	ProcessEngine processEngine;
 	@Autowired
-	ManagementService managementService;
-	@Autowired
-	ProcessEngineConfiguration processEngineConfiguration;
-	@Autowired
-	RepositoryService repositoryService;
-	@Autowired
-	RuntimeService runtimeService;
-	@Autowired
 	TaskService taskService;
 	@Autowired
 	HistoryService historyService;
-
 
 	/**
 	 * 工单管理列表 页面跳转
@@ -678,6 +669,8 @@ public class EmkWorkOrderController extends BaseController {
 
 				" END workname FROM act_hi_taskinst t1 \n" +
 				" LEFT JOIN emk_work_order t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='" + map.get("id") + "' ";
+
+		sql += " order by t1.START_TIME_ desc";
 
 		countsql = " SELECT COUNT(1) FROM act_hi_taskinst t1 where ASSIGNEE_='" + map.get("id") + "' ";
 		if (dataGrid.getPage() == 1) {

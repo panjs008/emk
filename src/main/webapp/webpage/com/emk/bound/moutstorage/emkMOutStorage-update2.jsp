@@ -107,6 +107,29 @@
 
 			<td align="right" >
 				<label class="Validform_label">
+					客户编号:
+				</label>
+			</td>
+			<td class="value" >
+				<input id="cusNum" name="cusNum" readonly type="text" value="${emkMOutStoragePage.cusNum }" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">客户编号</label>
+			</td>
+			<td align="right" >
+				<label class="Validform_label">
+					客户名称:
+				</label>
+			</td>
+			<td class="value"  colspan="3">
+				<input id="cusName" name="cusName" readonly type="text" value="${emkMOutStoragePage.cusName }" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">客户名称</label>
+			</td>
+		</tr>
+		<tr>
+
+			<td align="right" >
+				<label class="Validform_label">
 					业务部门:
 				</label>
 			</td>
@@ -140,29 +163,7 @@
 			</td>
 		</tr>
 
-		<tr>
 
-			<td align="right" >
-				<label class="Validform_label">
-					客户编号:
-				</label>
-			</td>
-			<td class="value" >
-				<input id="cusNum" name="cusNum" readonly type="text" value="${emkMOutStoragePage.cusNum }" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">客户编号</label>
-			</td>
-			<td align="right" >
-				<label class="Validform_label">
-					客户名称:
-				</label>
-			</td>
-			<td class="value"  colspan="3">
-				<input id="cusName" name="cusName" readonly type="text" value="${emkMOutStoragePage.cusName }" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">客户名称</label>
-			</td>
-		</tr>
 		<tr>
 
 			<td align="right" >

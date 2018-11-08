@@ -99,7 +99,13 @@ public class EmkEnquiryController extends BaseController {
     @RequestMapping(params = {"datagrid"})
     public void datagrid(EmkEnquiryEntity emkEnquiry, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid) {
         CriteriaQuery cq = new CriteriaQuery(EmkEnquiryEntity.class, dataGrid);
-
+        TSUser user = (TSUser) request.getSession().getAttribute(ResourceUtil.LOCAL_CLINET_USER);
+        Map roleMap = (Map) request.getSession().getAttribute("ROLE");
+        if(roleMap != null){
+            if(roleMap.get("rolecode").toString().contains("ywy") || roleMap.get("rolecode").toString().contains("ywgdy")){
+                cq.eq("createBy",user.getUserName());
+            }
+        }
         HqlGenerateUtil.installHql(cq, emkEnquiry, request.getParameterMap());
 
 
@@ -158,9 +164,9 @@ public class EmkEnquiryController extends BaseController {
         message = "询盘单添加成功";
         try {
             emkEnquiry.setState("0");
-            TSUser user = (TSUser) request.getSession().getAttribute("LOCAL_CLINET_USER");
             Map map = ParameterUtil.getParamMaps(request.getParameterMap());
-            Map orderNum = this.systemService.findOneForJdbc("select count(0)+1 orderNum from emk_enquiry where sys_org_code=?", user.getCurrentDepart().getOrgCode());
+            Map orderNum = this.systemService.findOneForJdbc("select CAST(ifnull(max(right(enquiry_no, 3)),0)+1 AS signed) orderNum from emk_enquiry");
+
             emkEnquiry.setEnquiryNo("YXDD" + emkEnquiry.getCusNum() + DateUtil.format(new Date(), "yyMMdd") + String.format("%03d", Integer.parseInt(orderNum.get("orderNum").toString())));
             this.emkEnquiryService.save(emkEnquiry);
 
@@ -199,19 +205,18 @@ public class EmkEnquiryController extends BaseController {
             }
             Map map = ParameterUtil.getParamMaps(request.getParameterMap());
             emkEnquiry.setState("0");
-            TSUser user = (TSUser) request.getSession().getAttribute("LOCAL_CLINET_USER");
-            Map orderNum = this.systemService.findOneForJdbc("select count(0)+1 orderNum from emk_enquiry where sys_org_code=?", new Object[]{user.getCurrentDepart().getOrgCode()});
-            emkEnquiry.setEnquiryNo("YXDD" + emkEnquiry.getCusNum() + DateUtil.format(new Date(), "yyMMdd") + String.format("%03d", new Object[]{Integer.valueOf(Integer.parseInt(orderNum.get("orderNum").toString()))}));
             MyBeanUtils.copyBeanNotNull2Bean(emkEnquiry, t);
             this.emkEnquiryService.saveOrUpdate(t);
 
             this.systemService.executeSql("delete from emk_sample_price where ENQUIRY_ID=?", emkEnquiry.getId());
             EmkSamplePriceEntity samplePriceEntity = new EmkSamplePriceEntity();
-            samplePriceEntity.setMoney(Double.valueOf(Double.parseDouble(map.get("money").toString())));
-            samplePriceEntity.setBz(map.get("pbz").toString());
-            samplePriceEntity.setEnquiryId(emkEnquiry.getId());
-            samplePriceEntity.setState(map.get("pstate").toString());
-            this.systemService.save(samplePriceEntity);
+            if(map.get("money") != null && !map.get("money").equals("")){
+                samplePriceEntity.setMoney(Double.valueOf(Double.parseDouble(map.get("money").toString())));
+                samplePriceEntity.setBz(map.get("pbz").toString());
+                samplePriceEntity.setEnquiryId(emkEnquiry.getId());
+                samplePriceEntity.setState(map.get("pstate").toString());
+                this.systemService.save(samplePriceEntity);
+            }
             this.systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
         } catch (Exception e) {
             e.printStackTrace();
@@ -238,14 +243,6 @@ public class EmkEnquiryController extends BaseController {
             emkEnquiry = (EmkEnquiryEntity) this.emkEnquiryService.getEntity(EmkEnquiryEntity.class, emkEnquiry.getId());
             req.setAttribute("emkEnquiryPage", emkEnquiry);
 
-            Calendar cal1 = Calendar.getInstance();
-            cal1.setTime(DateUtils.str2Date(emkEnquiry.getYsDate(),DateUtils.date_sdf));
-            Calendar cal2 = Calendar.getInstance();
-            int day = DateUtils.dateDiff('d',cal1,cal2);
-            if(day<0){
-                day = 0;
-            }
-            req.setAttribute("levelDays",day);
             EmkSamplePriceEntity samplePriceEntity = (EmkSamplePriceEntity) this.systemService.findUniqueByProperty(EmkSamplePriceEntity.class, "enquiryId", emkEnquiry.getId());
             req.setAttribute("samplePriceEntity", samplePriceEntity);
         }
@@ -258,14 +255,14 @@ public class EmkEnquiryController extends BaseController {
             emkEnquiry = (EmkEnquiryEntity) this.emkEnquiryService.getEntity(EmkEnquiryEntity.class, emkEnquiry.getId());
             req.setAttribute("emkEnquiryPage", emkEnquiry);
 
-            Calendar cal1 = Calendar.getInstance();
+           /* Calendar cal1 = Calendar.getInstance();
             cal1.setTime(DateUtils.str2Date(emkEnquiry.getYsDate(),DateUtils.date_sdf));
             Calendar cal2 = Calendar.getInstance();
             int day = DateUtils.dateDiff('d',cal1,cal2);
             if(day<0){
                 day = 0;
             }
-            req.setAttribute("levelDays",day);
+            req.setAttribute("levelDays",day);*/
             EmkSamplePriceEntity samplePriceEntity = (EmkSamplePriceEntity) this.systemService.findUniqueByProperty(EmkSamplePriceEntity.class, "enquiryId", emkEnquiry.getId());
             req.setAttribute("samplePriceEntity", samplePriceEntity);
         }
@@ -515,6 +512,5 @@ public class EmkEnquiryController extends BaseController {
         emkEnquiryEntity = emkEnquiryService.getEntity(EmkEnquiryEntity.class, emkEnquiryEntity.getId());
         req.setAttribute("emkEnquiry", emkEnquiryEntity);
         return new ModelAndView("com/emk/storage/enquiry/time");
-
     }
 }

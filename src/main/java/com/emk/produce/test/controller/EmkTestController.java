@@ -3,27 +3,32 @@ package com.emk.produce.test.controller;
 import com.alibaba.fastjson.JSONArray;
 import com.emk.produce.test.entity.EmkTestEntity;
 import com.emk.produce.test.service.EmkTestServiceI;
+import com.emk.storage.enquiry.entity.EmkEnquiryEntity;
+import com.emk.util.DateUtil;
+import com.emk.util.FlowUtil;
 import com.emk.util.ParameterUtil;
 import com.emk.util.WebFileUtils;
+import com.emk.workorder.workorder.entity.EmkWorkOrderEntity;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
+import org.activiti.engine.HistoryService;
+import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.TaskService;
+import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.tools.ant.util.DateUtils;
@@ -62,9 +67,9 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.UriComponentsBuilder;
 
-@Api(value = "EmkTest", description = "测试申请表", tags = {"emkTestController"})
+@Api(value = "EmkTest", description = "测试申请表", tags = "emkTestController")
 @Controller
-@RequestMapping({"/emkTestController"})
+@RequestMapping("/emkTestController")
 public class EmkTestController extends BaseController {
     private static final Logger logger = Logger.getLogger(EmkTestController.class);
     @Autowired
@@ -74,12 +79,19 @@ public class EmkTestController extends BaseController {
     @Autowired
     private Validator validator;
 
-    @RequestMapping(params = {"list"})
+    @Autowired
+    ProcessEngine processEngine;
+    @Autowired
+    TaskService taskService;
+    @Autowired
+    HistoryService historyService;
+
+    @RequestMapping(params = "list")
     public ModelAndView list(HttpServletRequest request) {
         return new ModelAndView("com/emk/produce/test/emkTestList");
     }
 
-    @RequestMapping(params = {"datagrid"})
+    @RequestMapping(params = "datagrid")
     public void datagrid(EmkTestEntity emkTest, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid) {
         CriteriaQuery cq = new CriteriaQuery(EmkTestEntity.class, dataGrid);
 
@@ -91,7 +103,7 @@ public class EmkTestController extends BaseController {
         TagUtil.datagrid(response, dataGrid);
     }
 
-    @RequestMapping(params = {"doDel"})
+    @RequestMapping(params = "doDel")
     @ResponseBody
     public AjaxJson doDel(EmkTestEntity emkTest, HttpServletRequest request) {
         String message = null;
@@ -110,7 +122,7 @@ public class EmkTestController extends BaseController {
         return j;
     }
 
-    @RequestMapping(params = {"doBatchDel"})
+    @RequestMapping(params = "doBatchDel")
     @ResponseBody
     public AjaxJson doBatchDel(String ids, HttpServletRequest request) {
         String message = null;
@@ -133,17 +145,17 @@ public class EmkTestController extends BaseController {
         return j;
     }
 
-    @RequestMapping(params = {"doAdd"})
+    @RequestMapping(params = "doAdd")
     @ResponseBody
     public AjaxJson doAdd(EmkTestEntity emkTest, HttpServletRequest request) {
         String message = null;
         AjaxJson j = new AjaxJson();
         message = "测试申请表添加成功";
         try {
-            TSUser user = (TSUser) request.getSession().getAttribute("LOCAL_CLINET_USER");
-            Map map = ParameterUtil.getParamMaps(request.getParameterMap());
-            Map orderNum = this.systemService.findOneForJdbc("select count(0)+1 orderNum from emk_test where sys_org_code=?", new Object[]{user.getCurrentDepart().getOrgCode()});
-            emkTest.setProduceNum("CS" + emkTest.getCusNum() + DateUtils.format(new Date(), "yyMMdd") + String.format("%03d", new Object[]{Integer.valueOf(Integer.parseInt(orderNum.get("orderNum").toString()))}));
+            emkTest.setState("0");
+            Map orderNum = this.systemService.findOneForJdbc("select CAST(ifnull(max(right(cssqdh, 3)),0)+1 AS signed) orderNum from emk_test");
+            emkTest.setCssqdh("CS" + emkTest.getCusNum() + DateUtils.format(new Date(), "yyMMdd") + String.format("%03d", Integer.parseInt(orderNum.get("orderNum").toString())));
+
             this.emkTestService.save(emkTest);
             this.systemService.addLog(message, Globals.Log_Type_INSERT, Globals.Log_Leavel_INFO);
         } catch (Exception e) {
@@ -155,7 +167,7 @@ public class EmkTestController extends BaseController {
         return j;
     }
 
-    @RequestMapping(params = {"doUpdate"})
+    @RequestMapping(params = "doUpdate")
     @ResponseBody
     public AjaxJson doUpdate(EmkTestEntity emkTest, HttpServletRequest request) {
         String message = null;
@@ -175,7 +187,7 @@ public class EmkTestController extends BaseController {
         return j;
     }
 
-    @RequestMapping(params = {"dowaLoadFile"})
+    @RequestMapping(params = "dowaLoadFile")
     public ModelAndView dowaLoadFile(EmkTestEntity emkTest, HttpServletRequest request, HttpServletResponse response) {
         String message = null;
         message = "文件下载成功";
@@ -200,8 +212,9 @@ public class EmkTestController extends BaseController {
         return null;
     }
 
-    @RequestMapping(params = {"goAdd"})
+    @RequestMapping(params = "goAdd")
     public ModelAndView goAdd(EmkTestEntity emkTest, HttpServletRequest req) {
+        req.setAttribute("kdDate", DateUtils.format(new Date(), "yyyy-MM-dd"));
         if (StringUtil.isNotEmpty(emkTest.getId())) {
             emkTest = (EmkTestEntity) this.emkTestService.getEntity(EmkTestEntity.class, emkTest.getId());
             req.setAttribute("emkTestPage", emkTest);
@@ -209,7 +222,7 @@ public class EmkTestController extends BaseController {
         return new ModelAndView("com/emk/produce/test/emkTest-add");
     }
 
-    @RequestMapping(params = {"goUpdate"})
+    @RequestMapping(params = "goUpdate")
     public ModelAndView goUpdate(EmkTestEntity emkTest, HttpServletRequest req) {
         if (StringUtil.isNotEmpty(emkTest.getId())) {
             emkTest = (EmkTestEntity) this.emkTestService.getEntity(EmkTestEntity.class, emkTest.getId());
@@ -218,13 +231,22 @@ public class EmkTestController extends BaseController {
         return new ModelAndView("com/emk/produce/test/emkTest-update");
     }
 
-    @RequestMapping(params = {"upload"})
+    @RequestMapping(params = "goUpdate2")
+    public ModelAndView goUpdate2(EmkTestEntity emkTest, HttpServletRequest req) {
+        if (StringUtil.isNotEmpty(emkTest.getId())) {
+            emkTest = (EmkTestEntity) this.emkTestService.getEntity(EmkTestEntity.class, emkTest.getId());
+            req.setAttribute("emkTestPage", emkTest);
+        }
+        return new ModelAndView("com/emk/produce/test/emkTest-update2");
+    }
+
+    @RequestMapping(params = "upload")
     public ModelAndView upload(HttpServletRequest req) {
         req.setAttribute("controller_name", "emkTestController");
         return new ModelAndView("common/upload/pub_excel_upload");
     }
 
-    @RequestMapping(params = {"exportXls"})
+    @RequestMapping(params = "exportXls")
     public String exportXls(EmkTestEntity emkTest, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid, ModelMap modelMap) {
         CriteriaQuery cq = new CriteriaQuery(EmkTestEntity.class, dataGrid);
         HqlGenerateUtil.installHql(cq, emkTest, request.getParameterMap());
@@ -237,7 +259,7 @@ public class EmkTestController extends BaseController {
         return "jeecgExcelView";
     }
 
-    @RequestMapping(params = {"exportXlsByT"})
+    @RequestMapping(params = "exportXlsByT")
     public String exportXlsByT(EmkTestEntity emkTest, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid, ModelMap modelMap) {
         modelMap.put("fileName", "测试申请表");
         modelMap.put("entity", EmkTestEntity.class);
@@ -256,7 +278,7 @@ public class EmkTestController extends BaseController {
         return Result.success(listEmkTests);
     }
 
-    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.GET})
+    @RequestMapping(value = "/{id}", method = {org.springframework.web.bind.annotation.RequestMethod.GET})
     @ResponseBody
     @ApiOperation(value = "根据ID获取测试申请表信息", notes = "根据ID获取测试申请表信息", httpMethod = "GET", produces = "application/json")
     public ResponseMessage<?> get(@ApiParam(required = true, name = "id", value = "ID") @PathVariable("id") String id) {
@@ -267,7 +289,7 @@ public class EmkTestController extends BaseController {
         return Result.success(task);
     }
 
-    @RequestMapping(method = {org.springframework.web.bind.annotation.RequestMethod.POST}, consumes = {"application/json"})
+    @RequestMapping(method = {org.springframework.web.bind.annotation.RequestMethod.POST}, consumes = "application/json")
     @ResponseBody
     @ApiOperation("创建测试申请表")
     public ResponseMessage<?> create(@ApiParam(name = "测试申请表对象") @RequestBody EmkTestEntity emkTest, UriComponentsBuilder uriBuilder) {
@@ -284,7 +306,7 @@ public class EmkTestController extends BaseController {
         return Result.success(emkTest);
     }
 
-    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.PUT}, consumes = {"application/json"})
+    @RequestMapping(value = "/{id}", method = {org.springframework.web.bind.annotation.RequestMethod.PUT}, consumes = "application/json")
     @ResponseBody
     @ApiOperation(value = "更新测试申请表", notes = "更新测试申请表")
     public ResponseMessage<?> update(@ApiParam(name = "测试申请表对象") @RequestBody EmkTestEntity emkTest) {
@@ -301,7 +323,7 @@ public class EmkTestController extends BaseController {
         return Result.success("更新测试申请表信息成功");
     }
 
-    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.DELETE})
+    @RequestMapping(value = "/{id}", method = {org.springframework.web.bind.annotation.RequestMethod.DELETE})
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ApiOperation("删除测试申请表")
     public ResponseMessage<?> delete(@ApiParam(name = "id", value = "ID", required = true) @PathVariable("id") String id) {
@@ -316,5 +338,132 @@ public class EmkTestController extends BaseController {
             return Result.error("测试申请表删除失败");
         }
         return Result.success();
+    }
+
+    @RequestMapping(params="doSubmit")
+    @ResponseBody
+    public AjaxJson doSubmit(EmkTestEntity emkTestEntity, HttpServletRequest request) {
+        String message = null;
+        AjaxJson j = new AjaxJson();
+        message = "测试申请表提交成功";
+        try {
+            int flag = 0;
+            TSUser user = (TSUser)request.getSession().getAttribute("LOCAL_CLINET_USER");
+            Map map = ParameterUtil.getParamMaps(request.getParameterMap());
+            if ((emkTestEntity.getId() == null) || (emkTestEntity.getId().isEmpty())) {
+                for (String id : map.get("ids").toString().split(",")) {
+                    EmkTestEntity testEntity = systemService.getEntity(EmkTestEntity.class, id);
+                    if (!testEntity.getState().equals("0")) {
+                        message = "存在已提交的测试申请表，请重新选择在提交！";
+                        j.setSuccess(false);
+                        flag = 1;
+                        break;
+                    }
+                }
+            }else{
+                map.put("ids", emkTestEntity.getId());
+            }
+            Map<String, Object> variables = new HashMap();
+            if (flag == 0) {
+                for (String id : map.get("ids").toString().split(",")) {
+                    EmkTestEntity t = emkTestService.get(EmkTestEntity.class, id);
+                    t.setState("1");
+                    variables.put("optUser", t.getId());
+
+                    List<Task> task = taskService.createTaskQuery().taskAssignee(id).list();
+                    if (task.size() > 0) {
+                        Task task1 = (Task)task.get(task.size() - 1);
+                        if (task1.getTaskDefinitionKey().equals("testTask")) {
+                            taskService.complete(task1.getId(), variables);
+                        }
+                        if (task1.getTaskDefinitionKey().equals("checkTask")) {
+                            t.setLeader(user.getRealName());
+                            t.setLeadUserId(user.getId());
+                            t.setLeadAdvice(emkTestEntity.getLeadAdvice());
+                            if (t.getIsPass().equals("0")) {
+                                variables.put("isPass", emkTestEntity.getIsPass());
+                                taskService.complete(task1.getId(), variables);
+                            } else {
+                                List<HistoricTaskInstance> hisTasks = historyService.createHistoricTaskInstanceQuery().taskAssignee(t.getId()).list();
+
+                                List<Task> taskList = taskService.createTaskQuery().taskAssignee(t.getId()).list();
+                                if (taskList.size() > 0) {
+                                    Task taskH = (Task)taskList.get(taskList.size() - 1);
+                                    HistoricTaskInstance historicTaskInstance = hisTasks.get(hisTasks.size() - 2);
+                                    FlowUtil.turnTransition(taskH.getId(), historicTaskInstance.getTaskDefinitionKey(), variables);
+                                    Map activityMap = systemService.findOneForJdbc("SELECT GROUP_CONCAT(t0.ID_) ids,GROUP_CONCAT(t0.TASK_ID_) taskids FROM act_hi_actinst t0 WHERE t0.ASSIGNEE_=? AND t0.ACT_ID_=? ORDER BY ID_ ASC", new Object[] { t.getId(), historicTaskInstance.getTaskDefinitionKey() });
+                                    String[] activitIdArr = activityMap.get("ids").toString().split(",");
+                                    String[] taskIdArr = activityMap.get("taskids").toString().split(",");
+                                    systemService.executeSql("UPDATE act_hi_taskinst SET  NAME_=CONCAT('【驳回后】','',NAME_) WHERE ASSIGNEE_>=? AND ID_=?",t.getId(), taskIdArr[1]);
+                                    systemService.executeSql("delete from act_hi_actinst where ID_>=? and ID_<?", activitIdArr[0], activitIdArr[1] );
+                                }
+                                t.setState("0");
+                            }
+
+                        }
+                        if (task1.getTaskDefinitionKey().equals("cwTask")) {
+                            t.setState("2");
+                            this.taskService.complete(task1.getId(), variables);
+
+                        }
+                    }else {
+                        ProcessInstance pi = processEngine.getRuntimeService().startProcessInstanceByKey("test", "emkTestEntity", variables);
+                        task = taskService.createTaskQuery().taskAssignee(id).list();
+                        Task task1 = task.get(task.size() - 1);
+                        taskService.complete(task1.getId(), variables);
+                    }
+
+
+                    systemService.saveOrUpdate(t);
+                }
+            }
+            systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            message = "测试申请表提交失败";
+            throw new BusinessException(e.getMessage());
+        }
+        j.setMsg(message);
+        return j;
+    }
+
+    @RequestMapping(params="goWork")
+    public ModelAndView goWork(EmkTestEntity emkTestEntity, HttpServletRequest req) {
+        if (StringUtil.isNotEmpty(emkTestEntity.getId())) {
+            emkTestEntity = emkTestService.getEntity(EmkTestEntity.class, emkTestEntity.getId());
+            req.setAttribute("emkTestEntity", emkTestEntity);
+        }
+        return new ModelAndView("com/emk/produce/test/emkTest-work");
+    }
+
+    @RequestMapping(params="goTime")
+    public ModelAndView goTime(EmkTestEntity emkTestEntity, HttpServletRequest req, DataGrid dataGrid) {
+        String sql = "";String countsql = "";
+        Map map = ParameterUtil.getParamMaps(req.getParameterMap());
+
+        sql = "SELECT DATE_FORMAT(t1.START_TIME_, '%Y-%m-%d %H:%i:%s') startTime,t1.*,CASE \n" +
+                " WHEN t1.TASK_DEF_KEY_='testTask' THEN t2.create_name \n" +
+                " WHEN t1.TASK_DEF_KEY_='checkTask' THEN t2.leader \n" +
+                " END workname FROM act_hi_taskinst t1 \n" +
+                " LEFT JOIN emk_test t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='" + map.get("id") + "' ";
+
+        countsql = " SELECT COUNT(1) FROM act_hi_taskinst t1 where ASSIGNEE_='" + map.get("id") + "' ";
+        if (dataGrid.getPage() == 1) {
+            sql = sql + " limit 0, " + dataGrid.getRows();
+        } else {
+            sql = sql + "limit " + (dataGrid.getPage() - 1) * dataGrid.getRows() + "," + dataGrid.getRows();
+        }
+        systemService.listAllByJdbc(dataGrid, sql, countsql);
+        req.setAttribute("taskList", dataGrid.getResults());
+        if (dataGrid.getResults().size() > 0) {
+            req.setAttribute("stepProcess", Integer.valueOf(dataGrid.getResults().size() - 1));
+        } else {
+            req.setAttribute("stepProcess", Integer.valueOf(0));
+        }
+        emkTestEntity = emkTestService.getEntity(EmkTestEntity.class, emkTestEntity.getId());
+        req.setAttribute("emkTest", emkTestEntity);
+        return new ModelAndView("com/emk/produce/test/time");
+
     }
 }

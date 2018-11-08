@@ -136,14 +136,16 @@ public class EmkSampleRequiredController
         AjaxJson j = new AjaxJson();
         message = "样品需求单添加成功";
         try {
-            TSUser user = (TSUser) request.getSession().getAttribute("LOCAL_CLINET_USER");
             Map map = ParameterUtil.getParamMaps(request.getParameterMap());
-            Map orderNum = this.systemService.findOneForJdbc("select count(0)+1 orderNum from emk_sample_required where sys_org_code=?", new Object[]{user.getCurrentDepart().getOrgCode()});
-            emkSampleRequired.setRequiredNo("YPXP" + emkSampleRequired.getCusNum() + DateUtils.format(new Date(), "yyMMdd") + String.format("%03d", new Object[]{Integer.valueOf(Integer.parseInt(orderNum.get("orderNum").toString()))}));
+            Map orderNum = this.systemService.findOneForJdbc("select CAST(ifnull(max(right(REQUIRED_NO, 3)),0)+1 AS signed) orderNum from emk_sample_required");
+
+            emkSampleRequired.setRequiredNo("YPXP" + emkSampleRequired.getCusNum() + DateUtils.format(new Date(), "yyMMdd") + String.format("%03d", Integer.valueOf(Integer.parseInt(orderNum.get("orderNum").toString()))));
             this.emkSampleRequiredService.save(emkSampleRequired);
 
             EmkSamplePriceEntity samplePriceEntity = new EmkSamplePriceEntity();
-            samplePriceEntity.setMoney(Double.valueOf(Double.parseDouble(map.get("money").toString())));
+            if(map.get("money") != null && !map.get("money").equals("")){
+                samplePriceEntity.setMoney(Double.valueOf(Double.parseDouble(map.get("money").toString())));
+            }
             samplePriceEntity.setBz(map.get("pbz").toString());
             samplePriceEntity.setEnquiryId(emkSampleRequired.getId());
             samplePriceEntity.setState(map.get("pstate").toString());

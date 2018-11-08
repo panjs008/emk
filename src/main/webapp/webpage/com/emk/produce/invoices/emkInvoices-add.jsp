@@ -5,9 +5,8 @@
 <head>
 	<title>发票</title>
 	<t:base type="jquery,easyui,tools,DatePicker"></t:base>
-	<link type="text/css" rel="stylesheet" href="plug-in/select2/css/select2.min.css"/>
-	<script type="text/javascript" src="plug-in/select2/js/select2.js"></script>
-	<script type="text/javascript" src="plug-in/select2/js/pinyin.js"></script>
+	<%@include file="/context/header2.jsp"%>
+	<script src="${webRoot}/context/gys.js"></script>
 	<script type="text/javascript">
 		//编写自定义JS代码
 
@@ -112,42 +111,6 @@
 		<tr>
 			<td align="right" >
 				<label class="Validform_label">
-					业务部门:
-				</label>
-			</td>
-			<td class="value" >
-				<input id="businesseDeptName" name="businesseDeptName" value="${emkInvoicesPage.businesseDeptName }" readonly type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<input id="businesseDeptId" name="businesseDeptId"  value="${emkInvoicesPage.businesseDeptId }" type="hidden"  />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">业务部门</label>
-			</td>
-			<td align="right" >
-				<label class="Validform_label">
-					业务员:
-				</label>
-			</td>
-			<td class="value" >
-				<input id="businesser" name="businesser" readonly value="${emkInvoicesPage.businesser }" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<input id="businesserName" name="businesserName"  value="${emkInvoicesPage.businesserName }" type="hidden"  />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">业务员</label>
-			</td>
-			<td align="right" >
-				<label class="Validform_label">
-					业务跟单员:
-				</label>
-			</td>
-			<td class="value" >
-				<input id="tracer" name="tracer" readonly type="text" value="${emkInvoicesPage.tracer }" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<input id="tracerName" name="tracerName"  type="hidden" value="${emkInvoicesPage.tracerName }" />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">业务员</label>
-			</td>
-		</tr>
-
-		<tr>
-			<td align="right" >
-				<label class="Validform_label">
 					客户编号:
 				</label>
 			</td>
@@ -170,6 +133,49 @@
 			</td>
 		</tr>
 		<tr>
+			<td align="right" >
+				<label class="Validform_label">
+					业务部门:
+				</label>
+			</td>
+			<td class="value" >
+				<input id="businesseDeptName" name="businesseDeptName" value="${emkInvoicesPage.businesseDeptName }" readonly type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="businesseDeptId" name="businesseDeptId"  value="${emkInvoicesPage.businesseDeptId }" type="hidden"  />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">业务部门</label>
+			</td>
+			<td align="right" >
+				<label class="Validform_label">
+					业务员:
+				</label>
+			</td>
+			<td class="value" >
+				<select class="form-control select2" id="businesserId" datatype="*" >
+					<option value=''>请选择</option>
+				</select>
+				<input id="businesser" name="businesser" readonly value="${emkInvoicesPage.businesser }" type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="businesserName" name="businesserName"  value="${emkInvoicesPage.businesserName }" type="hidden"  />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">业务员</label>
+			</td>
+			<td align="right" >
+				<label class="Validform_label">
+					业务跟单员:
+				</label>
+			</td>
+			<td class="value" >
+				<select class="form-control select2" id="tracerId"  >
+					<option value=''>请选择</option>
+				</select>
+				<input id="tracer" name="tracer" readonly type="hidden" value="${emkInvoicesPage.tracer }" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="tracerName" name="tracerName"  type="hidden" value="${emkInvoicesPage.tracerName }" />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">业务员</label>
+			</td>
+		</tr>
+
+
+		<tr>
 
 			<td align="right" >
 				<label class="Validform_label">
@@ -177,7 +183,10 @@
 				</label>
 			</td>
 			<td class="value">
-				<input id="developer" name="developer" readonly value="${emkInvoicesPage.developer }" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<select class="form-control select2" id="developerId"  >
+					<option value=''>请选择</option>
+				</select>
+				<input id="developer" name="developer" readonly value="${emkInvoicesPage.developer }" type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<input id="developerName" name="developerName" value="${emkInvoicesPage.developerName }" type="hidden"  />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">业务员</label>

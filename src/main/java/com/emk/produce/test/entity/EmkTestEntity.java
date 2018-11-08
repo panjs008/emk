@@ -19,6 +19,8 @@ public class EmkTestEntity implements Serializable {
     private String createBy;
     private Date createDate;
     private String sysOrgCode;
+    @Excel(name = "测试申请表编号", width = 15)
+    private String cssqdh;
     @Excel(name = "业务员", width = 15)
     private String businesser;
     private String businesserName;
@@ -45,15 +47,13 @@ public class EmkTestEntity implements Serializable {
     private Integer total;
     @Excel(name = "测试种类", width = 15)
     private String testType;
-    @Excel(name = "测试申请表编号", width = 15)
-    private String produceNum;
     @Excel(name = "生产合同号", width = 15)
-    private String schtNum;
+    private String produceNum;
+
     @Excel(name = "测试样品要求", width = 15)
     private String testRequired;
     @Excel(name = "测试内容", width = 15)
     private String testContent;
-    @Excel(name = "测试内容URL", width = 15)
     private String testContentUrl;
     @Excel(name = "报告有效期", width = 15)
     private String limitDate;
@@ -79,6 +79,15 @@ public class EmkTestEntity implements Serializable {
     private String testCode;
     @Excel(name = "测试机构", width = 15)
     private String testOrgName;
+
+    @Excel(name = "审核意见", width = 15)
+    private String leadAdvice;
+    private String isPass;
+    private String leadUserId;
+    @Excel(name = "审核人", width = 15)
+    private String leader;
+    private String state;
+
 
     @Id
     @GeneratedValue(generator = "paymentableGenerator")
@@ -126,6 +135,15 @@ public class EmkTestEntity implements Serializable {
 
     public void setSysOrgCode(String sysOrgCode) {
         this.sysOrgCode = sysOrgCode;
+    }
+
+    @Column(name = "cssqdh", nullable = true, length = 32)
+    public String getCssqdh() {
+        return cssqdh;
+    }
+
+    public void setCssqdh(String cssqdh) {
+        this.cssqdh = cssqdh;
     }
 
     @Column(name = "BUSINESSER", nullable = true, length = 32)
@@ -272,14 +290,6 @@ public class EmkTestEntity implements Serializable {
         this.produceNum = produceNum;
     }
 
-    @Column(name = "SCHT_NUM", nullable = true, length = 32)
-    public String getSchtNum() {
-        return this.schtNum;
-    }
-
-    public void setSchtNum(String schtNum) {
-        this.schtNum = schtNum;
-    }
 
     @Column(name = "TEST_REQUIRED", nullable = true, length = 256)
     public String getTestRequired() {
@@ -415,4 +425,55 @@ public class EmkTestEntity implements Serializable {
     public void setTestOrgName(String testOrgName) {
         this.testOrgName = testOrgName;
     }
+
+    @Column(name = "LEAD_ADVICE", nullable = true, length = 256)
+    public String getLeadAdvice() {
+        return this.leadAdvice;
+    }
+
+    public void setLeadAdvice(String leadAdvice) {
+        this.leadAdvice = leadAdvice;
+    }
+
+    @Column(name = "IS_PASS", nullable = true, length = 32)
+    public String getIsPass() {
+        return this.isPass;
+    }
+
+    public void setIsPass(String isPass) {
+        this.isPass = isPass;
+    }
+
+    @Column(name = "LEAD_USER_ID", nullable = true, length = 32)
+    public String getLeadUserId() {
+        return this.leadUserId;
+    }
+
+    public void setLeadUserId(String leadUserId) {
+        this.leadUserId = leadUserId;
+    }
+
+    @Column(name = "LEADER", nullable = true, length = 32)
+    public String getLeader() {
+        return this.leader;
+    }
+
+    public void setLeader(String leader) {
+        this.leader = leader;
+    }
+
+    @Column(name ="STATE",nullable=true,length=32)
+    public String getState(){
+        return this.state;
+    }
+
+    /**
+     *方法: 设置java.lang.String
+     *@param: java.lang.String  工单状态
+     */
+    public void setState(String state){
+        this.state = state;
+    }
+
 }
+

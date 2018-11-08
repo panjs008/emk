@@ -5,6 +5,8 @@
 <head>
 	<title>离厂放行单</title>
 	<t:base type="jquery,easyui,tools,DatePicker"></t:base>
+	<%@include file="/context/header2.jsp"%>
+	<script src="${webRoot}/context/gys.js"></script>
 	<script type="text/javascript">
 
 	</script>
@@ -14,6 +16,30 @@
 	<input id="id" name="id" type="hidden" value="${emkPassFactoryPage.id }"/>
 
 	<table style="width: 100%;" cellpadding="0" cellspacing="1" class="formtable">
+		<tr>
+			<td align="right" >
+				<label class="Validform_label">
+					客户编号:
+				</label>
+			</td>
+			<td class="value" >
+				<input id="cusNum" name="cusNum" readonly type="text" value="${emkPassFactoryPage.cusNum }" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">客户编号</label>
+			</td>
+			<td align="right" >
+				<label class="Validform_label">
+					客户名称:
+				</label>
+			</td>
+			<td class="value" >
+				<input id="cusName" name="cusName" readonly type="text" value="${emkPassFactoryPage.cusName }" style="width: 150px" class="inputxt"  datatype="*" />
+				<t:choose  hiddenName="cusNum"  hiddenid="cusNum" url="ymkCustomController.do?select" name="ymkCustomList" width="700px" height="500px"
+						   icon="icon-search" title="选择客户" textname="cusName,businesseDeptName,businesseDeptId,businesser,businesserName,tracer,tracerName,developer,developerName,bz" isclear="true" isInit="true"></t:choose>
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">客户名称</label>
+			</td>
+		</tr>
 		<tr>
 			<td align="right" style="width: 18%" >
 				<label class="Validform_label">
@@ -32,6 +58,9 @@
 				</label>
 			</td>
 			<td class="value" style="width: 32%" >
+				<select class="form-control select2" id="businesserId" datatype="*" >
+					<option value=''>请选择</option>
+				</select>
 				<input id="businesser" name="businesser" readonly value="${emkPassFactoryPage.businesser }" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<input id="businesserName" name="businesserName"  value="${emkPassFactoryPage.businesserName }" type="hidden"  />
 				<span class="Validform_checktip"></span>
@@ -40,30 +69,7 @@
 
 		</tr>
 
-		<tr>
-			<td align="right" >
-				<label class="Validform_label">
-					客户编号:
-				</label>
-			</td>
-			<td class="value" >
-				<input id="cusNum" name="cusNum" readonly type="text" value="${emkPassFactoryPage.cusNum }" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">客户编号</label>
-			</td>
-			<td align="right" >
-				<label class="Validform_label">
-					客户名称:
-				</label>
-			</td>
-			<td class="value" >
-				<input id="cusName" name="cusName" readonly type="text" value="${emkPassFactoryPage.cusName }" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<t:choose  hiddenName="cusNum"  hiddenid="cusNum" url="ymkCustomController.do?select" name="ymkCustomList" width="700px" height="500px"
-						   icon="icon-search" title="选择客户" textname="cusName,businesseDeptName,businesseDeptId,businesser,businesserName,tracer,tracerName,developer,developerName,bz" isclear="true" isInit="true"></t:choose>
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">客户名称</label>
-			</td>
-		</tr>
+
 		<tr>
 			<td align="right" >
 				<label class="Validform_label">
@@ -71,7 +77,10 @@
 				</label>
 			</td>
 			<td class="value" >
-				<input id="tracer" name="tracer" readonly type="text" value="${emkPassFactoryPage.tracer }" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<select class="form-control select2" id="tracerId"  >
+					<option value=''>请选择</option>
+				</select>
+				<input id="tracer" name="tracer" readonly type="hidden" value="${emkPassFactoryPage.tracer }" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<input id="tracerName" name="tracerName"  type="hidden" value="${emkPassFactoryPage.tracerName }" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">业务员</label>
@@ -82,7 +91,10 @@
 				</label>
 			</td>
 			<td class="value">
-				<input id="developer" name="developer" readonly value="${emkPassFactoryPage.developer }" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<select class="form-control select2" id="developerId"  >
+					<option value=''>请选择</option>
+				</select>
+				<input id="developer" name="developer" readonly value="${emkPassFactoryPage.developer }" type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<input id="developerName" name="developerName" value="${emkPassFactoryPage.developerName }" type="hidden"  />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">业务员</label>

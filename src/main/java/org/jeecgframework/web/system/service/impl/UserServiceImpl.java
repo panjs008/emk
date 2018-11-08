@@ -160,14 +160,19 @@ public class UserServiceImpl extends CommonServiceImpl implements UserService {
 	 */
 	private void saveRoleUser(TSUser user, String[] roleIds) {
 		if(roleIds!=null && roleIds.length>0){
+			String roleNames = "";
 			for (int i = 0; i < roleIds.length; i++) {
 				if(StringUtils.isBlank(roleIds[i]))continue;
 				TSRoleUser rUser = new TSRoleUser();
 				TSRole role = commonDao.get(TSRole.class, roleIds[i]);
 				rUser.setTSRole(role);
 				rUser.setTSUser(user);
-				commonDao.executeSql("update t_s_base_user set userkey =? where id=?",role.getRoleName(),user.getId());
 				commonDao.save(rUser);
+				roleNames += role.getRoleName()+",";
+			}
+			if(roleNames.indexOf(",")>0){
+				roleNames = roleNames.substring(0,roleNames.length()-1);
+				commonDao.executeSql("update t_s_base_user set userkey =? where id=?",roleNames,user.getId());
 			}
 		}
 	}
