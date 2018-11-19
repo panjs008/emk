@@ -20,10 +20,10 @@
        <t:dgCol title="条款编号"  field="clauseNum" queryMode="single"  width="200"></t:dgCol>
        <t:dgCol title="内容描述"  field="clauseContent"  queryMode="single"  width="350"></t:dgCol>
           <t:dgFunOpt funname="goAdd" title="添加" exp="createName#ne#1" urlclass="ace_button" urlfont="fa-cog"></t:dgFunOpt>
-   <t:dgDelOpt title="删除" exp="createName#ne#1" url="emkOrderClauseController.do?doDel&id={id}" urlclass="ace_button"  urlfont="fa-trash-o"/>
-   &lt;%&ndash;<t:dgToolBar title="录入" icon="fa fa-plus" url="emkOrderClauseController.do?goAdd" funname="add"></t:dgToolBar>
-   <t:dgToolBar title="编辑" icon="fa fa-edit" url="emkOrderClauseController.do?goUpdate" funname="update"></t:dgToolBar>
-   <t:dgToolBar title="删除"  icon="fa fa-remove" url="emkOrderClauseController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>&ndash;%&gt;
+   <t:dgDelOpt title="删除" operationCode="delete" exp="createName#ne#1" url="emkOrderClauseController.do?doDel&id={id}" urlclass="ace_button"  urlfont="fa-trash-o"/>
+   &lt;%&ndash;<t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkOrderClauseController.do?goAdd" funname="add"></t:dgToolBar>
+   <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkOrderClauseController.do?goUpdate" funname="update"></t:dgToolBar>
+   <t:dgToolBar title="删除" operationCode="delete"  icon="fa fa-remove" url="emkOrderClauseController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>&ndash;%&gt;
   </t:datagrid>
   </div>
  </div>--%>

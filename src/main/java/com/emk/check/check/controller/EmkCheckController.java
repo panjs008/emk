@@ -593,7 +593,7 @@ public class EmkCheckController extends BaseController {
 		Map map = ParameterUtil.getParamMaps(req.getParameterMap());
 
 		sql = "SELECT DATE_FORMAT(t1.START_TIME_, '%Y-%m-%d %H:%i:%s') startTime,t1.*,CASE \n" +
-				" WHEN t1.TASK_DEF_KEY_='htTask' THEN t2.create_name \n" +
+				" WHEN t1.TASK_DEF_KEY_='checkfactoryTask' THEN t2.create_name \n" +
 				" WHEN t1.TASK_DEF_KEY_='checkTask' THEN t2.leader \n" +
 				" END workname FROM act_hi_taskinst t1 \n" +
 				" LEFT JOIN emk_check t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='" + map.get("id") + "' ";

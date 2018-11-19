@@ -347,6 +347,16 @@ public class EmkQualityCheckController extends BaseController {
 		}
 		return new ModelAndView("com/emk/check/qualitycheck/emkQualityCheck-update");
 	}
+	@RequestMapping(params = "goUpdate2")
+	public ModelAndView goUpdate2(EmkQualityCheckEntity emkQualityCheck, HttpServletRequest req) {
+		List<Map<String, Object>> codeList = this.systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", new Object[]{"A03"});
+		req.setAttribute("categoryEntityList", codeList);
+		if (StringUtil.isNotEmpty(emkQualityCheck.getId())) {
+			emkQualityCheck = emkQualityCheckService.getEntity(EmkQualityCheckEntity.class, emkQualityCheck.getId());
+			req.setAttribute("emkQualityCheckPage", emkQualityCheck);
+		}
+		return new ModelAndView("com/emk/check/qualitycheck/emkQualityCheck-update2");
+	}
 	
 	/**
 	 * 导入功能跳转
@@ -542,7 +552,7 @@ public class EmkQualityCheckController extends BaseController {
 					List<Task> task = taskService.createTaskQuery().taskAssignee(id).list();
 					if (task.size() > 0) {
 						Task task1 = (Task)task.get(task.size() - 1);
-						if (task1.getTaskDefinitionKey().equals("htTask")) {
+						if (task1.getTaskDefinitionKey().equals("qualitycheckTask")) {
 							taskService.complete(task1.getId(), variables);
 						}
 						if (task1.getTaskDefinitionKey().equals("checkTask")) {
@@ -570,7 +580,7 @@ public class EmkQualityCheckController extends BaseController {
 							}
 						}
 					}else {
-						ProcessInstance pi = processEngine.getRuntimeService().startProcessInstanceByKey("ht", "emkContractEntity", variables);
+						ProcessInstance pi = processEngine.getRuntimeService().startProcessInstanceByKey("qualitycheck", "emkQualityCheckEntity", variables);
 						task = taskService.createTaskQuery().taskAssignee(id).list();
 						Task task1 = task.get(task.size() - 1);
 						taskService.complete(task1.getId(), variables);
@@ -605,7 +615,7 @@ public class EmkQualityCheckController extends BaseController {
 		Map map = ParameterUtil.getParamMaps(req.getParameterMap());
 
 		sql = "SELECT DATE_FORMAT(t1.START_TIME_, '%Y-%m-%d %H:%i:%s') startTime,t1.*,CASE \n" +
-				" WHEN t1.TASK_DEF_KEY_='htTask' THEN t2.create_name \n" +
+				" WHEN t1.TASK_DEF_KEY_='qualitycheckTask' THEN t2.create_name \n" +
 				" WHEN t1.TASK_DEF_KEY_='checkTask' THEN t2.leader \n" +
 				" END workname FROM act_hi_taskinst t1 \n" +
 				" LEFT JOIN emk_quality_check t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='" + map.get("id") + "' ";

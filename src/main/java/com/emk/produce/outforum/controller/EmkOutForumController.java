@@ -163,6 +163,7 @@ public class EmkOutForumController extends BaseController {
         AjaxJson j = new AjaxJson();
         message = "出货通知单添加成功";
         try {
+            emkOutForum.setState("0");
             TSUser user = (TSUser) request.getSession().getAttribute("LOCAL_CLINET_USER");
             Map<String, String> map = ParameterUtil.getParamMaps(request.getParameterMap());
             Map orderNum = this.systemService.findOneForJdbc("select count(0)+1 orderNum from emk_out_forum where sys_org_code=?", new Object[]{user.getCurrentDepart().getOrgCode()});

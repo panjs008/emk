@@ -20,15 +20,15 @@ public class EmkSamplePriceEntity
     private String createBy;
     private Date createDate;
     private String sysOrgCode;
-    @Excel(name = "金额", width = 15)
+    @Excel(name = "金额")
     private Double money;
-    @Excel(name = "币种", width = 15)
+    @Excel(name = "币种")
     private String bz;
-    @Excel(name = "状态", width = 15)
+    @Excel(name = "状态")
     private String state;
-    @Excel(name = "询盘ID", width = 15)
+    @Excel(name = "询盘ID")
     private String enquiryId;
-    @Excel(name = "备注", width = 15)
+    @Excel(name = "备注")
     private String remark;
 
     @Id

@@ -31,7 +31,7 @@
 					<label class="Validform_label" style="display: none;">是否同意</label>
 				</td>
 			</tr>
-			<tr id="chooseUser">
+			<%--<tr id="chooseUser">
 				<td align="right" width="150px" valign="middle">
 					<label class="Validform_label">
 						指定下一步操作人:
@@ -43,31 +43,18 @@
 					<t:choose  hiddenName="userName"  hiddenid="userName" url="userController.do?userSelectCw" name="userList1" width="700px" height="500px"
 							   icon="icon-search" title="选择处理人" textname="realName" isclear="true" isInit="true"></t:choose>
 				</td>
-			</tr>
+			</tr>--%>
 
-			<tr>
-				<td align="right" width="150px" valign="middle">
-					<label class="Validform_label">
-						处理意见:
-					</label>
-				</td>
-				<td class="value" colspan="3"><textarea datatype="*" id="leadAdvice" style="width:95%;height:80px" class="inputxt" rows="5" name="leadAdvice"></textarea>
-				</td>
-			</tr>
 		</c:if>
-
-		<c:if test="${outFinish eq '0' && orderPorcess.taskDefinitionKey eq 'cwTask'}">
-
-			<tr>
-				<td align="right" width="150px" valign="middle">
-					<label class="Validform_label">
-						处理意见:
-					</label>
-				</td>
-				<td class="value" colspan="3"><textarea datatype="*" id="financeAdvice" style="width:95%;height:80px" class="inputxt" rows="5" name="financeAdvice"></textarea>
-				</td>
-			</tr>
-		</c:if>
+		<tr>
+			<td align="right" width="150px" valign="middle">
+				<label class="Validform_label">
+					处理意见:
+				</label>
+			</td>
+			<td class="value" colspan="3"><textarea datatype="*" id="leadAdvice" style="width:95%;height:80px" class="inputxt" rows="5" name="leadAdvice"></textarea>
+			</td>
+		</tr>
 </table>
 </t:formvalid>
 

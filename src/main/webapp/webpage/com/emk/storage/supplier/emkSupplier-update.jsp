@@ -202,7 +202,7 @@
 				</label>
 			</td>
 			<td class="value" colspan="3">
-				<img id="uploadimg" src="${emkSupplierPage.licenceUrl eq null ? 'images/bjlogo.png':emkSupplierPage.licenceUrl}" width="150" height="150">
+				<img id="uploadimg" src="${emkSupplierPage.licenceUrl eq '' ? 'images/bjlogo.png':emkSupplierPage.licenceUrl}" width="150" height="150">
 				<t:upload name="instruction2" id="instruction2" dialog="false" extend="*.jpg;*.png;*.gif;*.ico;*.dwg" buttonText="添加文件" queueID="instructionfile" view="false" auto="true" uploader="systemController.do?saveFiles"  onUploadSuccess="uploadSuccess" >
 				</t:upload>[<a href="javascript:findDetail('${emkSupplierPage.licenceUrl }')">查看</a>]
 				<span id="licenceImageId"></span>

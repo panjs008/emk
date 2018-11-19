@@ -42,8 +42,10 @@
 						<div class="liright">
 							<div class="histt"><a style="font-size: 14px;">${task.NAME_}</a></div>
 							<div class="histt"><a style="font-size: 12px;"><c:if test="${task.TASK_DEF_KEY_ eq 'outstorageTask'}">【${task.workname}】发起出库申请单，采购合同单号：${emkOutStorage.htNum}</c:if>
-								<c:if test="${task.TASK_DEF_KEY_ eq 'checkTask'}">审核人【${emkOutStorage.leader}】，指派给【${emkOutStorage.financer}】,处理意见：${emkOutStorage.leadAdvice}</c:if>
-								<c:if test="${task.TASK_DEF_KEY_ eq 'cwTask'}">审核人【${emkOutStorage.financer}】,处理意见：${emkOutStorage.financeAdvice}</c:if>
+								<c:if test="${task.TASK_DEF_KEY_ eq 'checkTask'}">审核人【${emkOutStorage.leader}】，指派给【${emkOutStorage.clUserName}】,处理意见：${emkOutStorage.leadAdvice}</c:if>
+								<c:if test="${task.TASK_DEF_KEY_ eq 'cwTask'}">处理人【${emkOutStorage.clUserName}】,处理意见：${emkOutStorage.clAdvice}</c:if>
+								<c:if test="${task.TASK_DEF_KEY_ eq 'ckTask'}">处理人【${emkOutStorage.ckUserName}】,处理意见：${emkOutStorage.ckAdvice}</c:if>
+
 							</a></div>
 						</div>
 					</div>

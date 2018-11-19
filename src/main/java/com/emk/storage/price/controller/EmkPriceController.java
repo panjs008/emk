@@ -1,9 +1,8 @@
 package com.emk.storage.price.controller;
 
 import com.alibaba.fastjson.JSONArray;
-import com.emk.bill.contract.entity.EmkContractEntity;
-import com.emk.bill.proorder.entity.EmkProOrderEntity;
 import com.emk.storage.price.entity.EmkPriceEntity;
+import com.emk.storage.price.entity.EmkPriceEntity2;
 import com.emk.storage.price.service.EmkPriceServiceI;
 import com.emk.util.FlowUtil;
 import com.emk.util.ParameterUtil;
@@ -12,8 +11,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.Map.Entry;
@@ -39,15 +36,12 @@ import org.jeecgframework.core.common.model.json.AjaxJson;
 import org.jeecgframework.core.common.model.json.DataGrid;
 import org.jeecgframework.core.constant.Globals;
 import org.jeecgframework.core.extend.hqlsearch.HqlGenerateUtil;
-import org.jeecgframework.core.util.ExceptionUtil;
 import org.jeecgframework.core.util.MyBeanUtils;
 import org.jeecgframework.core.util.ResourceUtil;
 import org.jeecgframework.core.util.StringUtil;
 import org.jeecgframework.jwt.util.ResponseMessage;
 import org.jeecgframework.jwt.util.Result;
-import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.entity.ExportParams;
-import org.jeecgframework.poi.excel.entity.ImportParams;
 import org.jeecgframework.tag.core.easyui.TagUtil;
 import org.jeecgframework.web.system.pojo.base.TSUser;
 import org.jeecgframework.web.system.service.SystemService;
@@ -60,8 +54,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -92,7 +84,13 @@ public class EmkPriceController extends BaseController {
     @RequestMapping(params = "datagrid")
     public void datagrid(EmkPriceEntity emkPrice, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid) {
         CriteriaQuery cq = new CriteriaQuery(EmkPriceEntity.class, dataGrid);
-
+        TSUser user = (TSUser) request.getSession().getAttribute(ResourceUtil.LOCAL_CLINET_USER);
+        Map roleMap = (Map) request.getSession().getAttribute("ROLE");
+        if(roleMap != null){
+            if(roleMap.get("rolecode").toString().contains("ywy") || roleMap.get("rolecode").toString().contains("ywgdy")){
+                cq.eq("createBy",user.getUserName());
+            }
+        }
         HqlGenerateUtil.installHql(cq, emkPrice, request.getParameterMap());
 
 
@@ -145,11 +143,18 @@ public class EmkPriceController extends BaseController {
 
     @RequestMapping(params = "doAdd")
     @ResponseBody
-    public AjaxJson doAdd(EmkPriceEntity emkPrice, HttpServletRequest request) {
+    public AjaxJson doAdd(EmkPriceEntity2 emkPrice, HttpServletRequest request) {
         String message = null;
         AjaxJson j = new AjaxJson();
         message = "报价单添加成功";
         try {
+            EmkWorkOrderEntity workOrderEntity = systemService.findUniqueByProperty(EmkWorkOrderEntity.class,"askNo",emkPrice.getXpNo());
+            if(workOrderEntity == null){
+                j.setSuccess(false);
+                j.setMsg("您输入的询盘单号有误，请核准后在提交");
+                return j;
+            }
+            emkPrice.setState("0");
             emkPrice.setPirceNo(emkPrice.getSampleNo() + DateUtils.format(new Date(), "yyMMdd"));
             this.emkPriceService.save(emkPrice);
             this.systemService.addLog(message, Globals.Log_Type_INSERT, Globals.Log_Leavel_INFO);
@@ -164,12 +169,18 @@ public class EmkPriceController extends BaseController {
 
     @RequestMapping(params = "doUpdate")
     @ResponseBody
-    public AjaxJson doUpdate(EmkPriceEntity emkPrice, HttpServletRequest request) {
+    public AjaxJson doUpdate(EmkPriceEntity2 emkPrice, HttpServletRequest request) {
         String message = null;
         AjaxJson j = new AjaxJson();
         message = "报价单更新成功";
         EmkPriceEntity t = (EmkPriceEntity) this.emkPriceService.get(EmkPriceEntity.class, emkPrice.getId());
         try {
+            if (!t.getState().equals("0")) {
+                message = "存在已提交的报价单，请重新选择在提交！";
+                j.setMsg(message);
+                j.setSuccess(false);
+                return  j;
+            }
             MyBeanUtils.copyBeanNotNull2Bean(emkPrice, t);
             this.emkPriceService.saveOrUpdate(t);
             this.systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
@@ -239,6 +250,55 @@ public class EmkPriceController extends BaseController {
             }
         }
         return new ModelAndView("com/emk/storage/price/emkPrice-update");
+    }
+
+    @RequestMapping(params = "goUpdate2")
+    public ModelAndView goUpdate2(EmkPriceEntity emkPrice, HttpServletRequest req) {
+        if (StringUtil.isNotEmpty(emkPrice.getId())) {
+            emkPrice = (EmkPriceEntity) this.emkPriceService.getEntity(EmkPriceEntity.class, emkPrice.getId());
+            req.setAttribute("emkPricePage", emkPrice);
+
+            Map sumYlCb = this.systemService.findOneForJdbc("select ifnull(sum(chengben),0) sumCb from emk_sample_detail where type=? and sample_id=?","0",emkPrice.getId());
+            Map sumFzCb = this.systemService.findOneForJdbc("select ifnull(sum(chengben),0) sumCb from emk_sample_detail where type=? and sample_id=?","1",emkPrice.getId());
+            Map sumBzCb = this.systemService.findOneForJdbc("select ifnull(sum(chengben),0) sumCb from emk_sample_detail where type=? and sample_id=?","2",emkPrice.getId());
+            Map sumRgCb = this.systemService.findOneForJdbc("select ifnull(sum(chengben),0) sumCb from emk_sample_gx where sample_id=?",emkPrice.getId());
+            Map sumRanCb = this.systemService.findOneForJdbc("select ifnull(sum(chengben),0) sumCb from emk_sample_ran where sample_id=?",emkPrice.getId());
+            Map sumYinCb = this.systemService.findOneForJdbc("select ifnull(sum(chengben),0) sumCb from emk_sample_yin where sample_id=?",emkPrice.getId());
+
+            emkPrice.setSumYl(Double.parseDouble(sumYlCb.get("sumCb").toString()));
+            emkPrice.setSumFeng(Double.parseDouble(sumFzCb.get("sumCb").toString()));
+            emkPrice.setSumBao(Double.parseDouble(sumBzCb.get("sumCb").toString()));
+            emkPrice.setSumRg(Double.parseDouble(sumRgCb.get("sumCb").toString()));
+            emkPrice.setSumRan(Double.parseDouble(sumRanCb.get("sumCb").toString()));
+            emkPrice.setSumYin(Double.parseDouble(sumYinCb.get("sumCb").toString()));
+
+            double tax = Double.parseDouble(sumYlCb.get("sumCb").toString())+Double.parseDouble(sumFzCb.get("sumCb").toString())+Double.parseDouble(sumBzCb.get("sumCb").toString())+Double.parseDouble(sumRgCb.get("sumCb").toString())+Double.parseDouble(sumRanCb.get("sumCb").toString())+Double.parseDouble(sumYinCb.get("sumCb").toString());
+            if(emkPrice.getTestMoney() != null){
+                tax += emkPrice.getTestMoney();
+            }
+            if(emkPrice.getGlMoney() != null){
+                tax += emkPrice.getGlMoney();
+            }
+            if(emkPrice.getUnableMoney() != null){
+                tax += emkPrice.getUnableMoney();
+            }
+            BigDecimal b = new BigDecimal(tax);
+            emkPrice.setSumMoney(b.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+
+            tax = tax * 0.17;
+            b = new BigDecimal(tax);
+            double dTax = b.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+            emkPrice.setTax(dTax);
+
+            b = new BigDecimal(emkPrice.getSumMoney()-emkPrice.getTax());
+            emkPrice.setProfit(b.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+
+            if(emkPrice.getHuilv() != null){
+                b = new BigDecimal(emkPrice.getSumMoney()/emkPrice.getHuilv());
+                emkPrice.setSumWb(b.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+            }
+        }
+        return new ModelAndView("com/emk/storage/price/emkPrice-update2");
     }
 
     @RequestMapping(params = "upload")
@@ -374,13 +434,16 @@ public class EmkPriceController extends BaseController {
                     List<Task> task = taskService.createTaskQuery().taskAssignee(id).list();
                     if (task.size() > 0) {
                         Task task1 = (Task)task.get(task.size() - 1);
-                        if (task1.getTaskDefinitionKey().equals("htTask")) {
+                        if (task1.getTaskDefinitionKey().equals("instorageTask")) {
                             taskService.complete(task1.getId(), variables);
                         }
                         if (task1.getTaskDefinitionKey().equals("checkTask")) {
                             t.setLeader(user.getRealName());
                             t.setLeadUserId(user.getId());
                             t.setLeadAdvice(emkPrice.getLeadAdvice());
+
+                            t.setJser(map.get("realName").toString());
+                            t.setJsUserId(map.get("userName").toString());
                             if (emkPrice.getIsPass().equals("0")) {
                                 variables.put("isPass", emkPrice.getIsPass());
                                 taskService.complete(task1.getId(), variables);
@@ -401,8 +464,34 @@ public class EmkPriceController extends BaseController {
                                 t.setState("0");
                             }
                         }
+                        if (task1.getTaskDefinitionKey().equals("jsTask")) {
+                            t.setJsAdvice(emkPrice.getLeadAdvice());
+
+                            t.setCger(map.get("realName").toString());
+                            t.setCgUserId(map.get("userName").toString());
+                            taskService.complete(task1.getId(), variables);
+                        }
+                        if (task1.getTaskDefinitionKey().equals("cgTask")) {
+                            t.setCgAdvice(emkPrice.getLeadAdvice());
+
+                            t.setCwer(map.get("realName").toString());
+                            t.setCwUserId(map.get("userName").toString());
+                            taskService.complete(task1.getId(), variables);
+                        }
+                        if (task1.getTaskDefinitionKey().equals("cwTask")) {
+                            t.setCwAdvice(emkPrice.getLeadAdvice());
+
+                            t.setJger(t.getCreateName());
+                            t.setJgUserId(t.getCreateBy());
+                            taskService.complete(task1.getId(), variables);
+                        }
+                        if (task1.getTaskDefinitionKey().equals("usertask1")) {
+                            t.setJgAdvice(emkPrice.getLeadAdvice());
+                            t.setState("2");
+                            taskService.complete(task1.getId(), variables);
+                        }
                     }else {
-                        ProcessInstance pi = processEngine.getRuntimeService().startProcessInstanceByKey("ht", "emkContractEntity", variables);
+                        ProcessInstance pi = processEngine.getRuntimeService().startProcessInstanceByKey("price", "emkPriceEntity", variables);
                         task = taskService.createTaskQuery().taskAssignee(id).list();
                         Task task1 = task.get(task.size() - 1);
                         taskService.complete(task1.getId(), variables);
@@ -438,12 +527,14 @@ public class EmkPriceController extends BaseController {
         Map map = ParameterUtil.getParamMaps(req.getParameterMap());
 
         sql = "SELECT DATE_FORMAT(t1.START_TIME_, '%Y-%m-%d %H:%i:%s') startTime,t1.*,CASE \n" +
-                " WHEN t1.TASK_DEF_KEY_='htTask' THEN t2.create_name \n" +
+                " WHEN t1.TASK_DEF_KEY_='instorageTask' THEN t2.create_name \n" +
                 " WHEN t1.TASK_DEF_KEY_='checkTask' THEN t2.leader \n" +
                 " END workname FROM act_hi_taskinst t1 \n" +
-                " LEFT JOIN emk_contract t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='" + map.get("id") + "' ";
+                " LEFT JOIN emk_price t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='" + map.get("id") + "' ";
 
         countsql = " SELECT COUNT(1) FROM act_hi_taskinst t1 where ASSIGNEE_='" + map.get("id") + "' ";
+        sql += " order by t1.START_TIME_ desc";
+
         if (dataGrid.getPage() == 1) {
             sql = sql + " limit 0, " + dataGrid.getRows();
         } else {
@@ -456,7 +547,7 @@ public class EmkPriceController extends BaseController {
         } else {
             req.setAttribute("stepProcess", Integer.valueOf(0));
         }
-        emkPrice = emkPriceService.getEntity(EmkContractEntity.class, emkPrice.getId());
+        emkPrice = emkPriceService.getEntity(EmkPriceEntity.class, emkPrice.getId());
         req.setAttribute("emkPrice", emkPrice);
         return new ModelAndView("com/emk/storage/price/time");
     }

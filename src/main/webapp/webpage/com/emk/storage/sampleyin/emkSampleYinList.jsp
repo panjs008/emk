@@ -10,9 +10,12 @@
     <t:dgCol title="工艺种类"  field="gyzy" dictionary="yhgyzl"  queryMode="single"  width="120"></t:dgCol>
     <t:dgCol title="大小"  field="size"  queryMode="single"  width="120"></t:dgCol>
     <t:dgCol title="成本"  field="chengben"  queryMode="single"  width="120"></t:dgCol>
-    <t:dgToolBar title="录入" icon="fa fa-plus" url="emkSampleYinController.do?goAdd&sampleId=${param.sampleId}" funname="add"></t:dgToolBar>
-    <t:dgToolBar title="编辑" icon="fa fa-edit" url="emkSampleYinController.do?goUpdate" funname="update"></t:dgToolBar>
-    <t:dgToolBar title="删除"  icon="fa fa-remove" url="emkSampleYinController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
+    <c:if test="${param.state eq '0'}">
+        <t:dgToolBar title="录入" icon="fa fa-plus" url="emkSampleYinController.do?goAdd&sampleId=${param.sampleId}" funname="add"></t:dgToolBar>
+        <t:dgToolBar title="编辑" icon="fa fa-edit"  url="emkSampleYinController.do?goUpdate" funname="update"></t:dgToolBar>
+        <t:dgToolBar title="删除"   icon="fa fa-remove" url="emkSampleYinController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
+    </c:if>
+
 </t:datagrid>
  <script src = "webpage/com/emk/storage/sampleyin/emkSampleYinList.js"></script>		
  <script type="text/javascript">

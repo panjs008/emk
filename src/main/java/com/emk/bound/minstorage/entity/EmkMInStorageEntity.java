@@ -14,6 +14,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.SequenceGenerator;
 import org.jeecgframework.poi.excel.annotation.Excel;
@@ -108,18 +110,26 @@ public class EmkMInStorageEntity implements java.io.Serializable {
 	private String rker;
 	/**入库人ID*/
 	private String rkerId;
-	@Excel(name="审核意见", width=15.0D)
+	@Excel(name="审核意见")
 	private String leadAdvice;
-	@Excel(name="处理意见", width=15.0D)
-	private String financeAdvice;
-	@Excel(name="是否通过", width=15.0D)
+	@Excel(name="是否通过")
 	private String isPass;
 	private String leadUserId;
-	@Excel(name="审核人", width=15.0D)
+	@Excel(name="审核人")
 	private String leader;
-	private String financeUserId;
-	@Excel(name="财务处理人", width=15.0D)
-	private String financer;
+
+	@Excel(name="处理意见")
+	private String jlAdvice;
+	private String jlUserId;
+	@Excel(name="处理人")
+	private String jlUserName;
+
+	@Excel(name="处理意见")
+	private String rkAdvice;
+	private String rkUserId;
+	@Excel(name="处理人")
+	private String rkUserName;
+
 	/**
 	 *方法: 取得java.lang.String
 	 *@return: java.lang.String  主键
@@ -144,7 +154,7 @@ public class EmkMInStorageEntity implements java.io.Serializable {
 	 *方法: 取得java.lang.String
 	 *@return: java.lang.String  创建人名称
 	 */
-
+	@Formula("(select p.NAME_ from act_ru_task p where p.ASSIGNEE_ = id)")
 	@Column(name ="CREATE_NAME",nullable=true,length=50)
 	public String getCreateName(){
 		return this.createName;
@@ -645,17 +655,6 @@ public class EmkMInStorageEntity implements java.io.Serializable {
 		this.leadAdvice = leadAdvice;
 	}
 
-	@Column(name="FINANCE_ADVICE", nullable=true, length=256)
-	public String getFinanceAdvice()
-	{
-		return this.financeAdvice;
-	}
-
-	public void setFinanceAdvice(String financeAdvice)
-	{
-		this.financeAdvice = financeAdvice;
-	}
-
 	@Column(name="IS_PASS", nullable=true, length=32)
 	public String getIsPass()
 	{
@@ -689,26 +688,57 @@ public class EmkMInStorageEntity implements java.io.Serializable {
 		this.leader = leader;
 	}
 
-	@Column(name="FINANCE_USER_ID", nullable=true, length=32)
-	public String getFinanceUserId()
-	{
-		return this.financeUserId;
+	@Column(name="jl_advice", nullable=true, length=32)
+	public String getJlAdvice() {
+		return jlAdvice;
 	}
 
-	public void setFinanceUserId(String financeUserId)
-	{
-		this.financeUserId = financeUserId;
+	public void setJlAdvice(String jlAdvice) {
+		this.jlAdvice = jlAdvice;
 	}
 
-	@Column(name="FINANCER", nullable=true, length=32)
-	public String getFinancer()
-	{
-		return this.financer;
+	@Column(name="jl_user_id", nullable=true, length=32)
+	public String getJlUserId() {
+		return jlUserId;
 	}
 
-	public void setFinancer(String financer)
-	{
-		this.financer = financer;
+	public void setJlUserId(String jlUserId) {
+		this.jlUserId = jlUserId;
 	}
 
+	@Column(name="jl_user_name", nullable=true, length=32)
+	public String getJlUserName() {
+		return jlUserName;
+	}
+
+	public void setJlUserName(String jlUserName) {
+		this.jlUserName = jlUserName;
+	}
+
+	@Column(name="rk_advice", nullable=true, length=32)
+	public String getRkAdvice() {
+		return rkAdvice;
+	}
+
+	public void setRkAdvice(String rkAdvice) {
+		this.rkAdvice = rkAdvice;
+	}
+
+	@Column(name="rk_user_id", nullable=true, length=32)
+	public String getRkUserId() {
+		return rkUserId;
+	}
+
+	public void setRkUserId(String rkUserId) {
+		this.rkUserId = rkUserId;
+	}
+
+	@Column(name="rk_user_name", nullable=true, length=32)
+	public String getRkUserName() {
+		return rkUserName;
+	}
+
+	public void setRkUserName(String rkUserName) {
+		this.rkUserName = rkUserName;
+	}
 }

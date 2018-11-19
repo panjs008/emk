@@ -20,19 +20,19 @@ public class EmkProductHsEntity
     private String createBy;
     private Date createDate;
     private String sysOrgCode;
-    @Excel(name = "海关编码", width = 15)
+    @Excel(name = "海关编码")
     private String hsCode;
-    @Excel(name = "海关名称", width = 15)
+    @Excel(name = "海关名称")
     private String hsName;
-    @Excel(name = "报关要素", width = 15)
+    @Excel(name = "报关要素")
     private String bgys;
-    @Excel(name = "增值税率", width = 15)
+    @Excel(name = "增值税率")
     private String zzVal;
-    @Excel(name = "退税率", width = 15)
+    @Excel(name = "退税率")
     private String tsVal;
-    @Excel(name = "销售指导价", width = 15)
+    @Excel(name = "销售指导价")
     private String salePrice;
-    @Excel(name = "备注", width = 15)
+    @Excel(name = "备注")
     private String remark;
 
     @Id

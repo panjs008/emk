@@ -19,27 +19,27 @@ public class EmkMaterialContractDetailEntity implements Serializable {
     private String createBy;
     private Date createDate;
     private String sysOrgCode;
-    @Excel(name = "采购合同ID", width = 15)
+    @Excel(name = "采购合同ID")
     private String contractId;
-    @Excel(name = "品名", width = 15)
+    @Excel(name = "品名")
     private String proZnName;
-    @Excel(name = "物料编号", width = 15)
+    @Excel(name = "物料编号")
     private String proNum;
-    @Excel(name = "规格", width = 15)
+    @Excel(name = "规格")
     private String brand;
-    @Excel(name = "单位", width = 15)
+    @Excel(name = "单位")
     private String unit;
-    @Excel(name = "物料类型", width = 15)
+    @Excel(name = "物料类型")
     private String type;
-    @Excel(name = "单价", width = 15)
+    @Excel(name = "单价")
     private Double signPrice;
-    @Excel(name = "采购数量", width = 15)
+    @Excel(name = "采购数量")
     private Integer total;
-    @Excel(name = "入库数量", width = 15)
+    @Excel(name = "入库数量")
     private Integer inTotal;
-    @Excel(name = "出库数量", width = 15)
+    @Excel(name = "出库数量")
     private Integer outTotal;
-    @Excel(name = "剩余数量", width = 15)
+    @Excel(name = "剩余数量")
     private Integer leavelTotal;
 
     @Id

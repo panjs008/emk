@@ -22,7 +22,7 @@
         <t:dgCol title="备注"  field="remark" formatterjs="formatgremark"  queryMode="single"  width="150"></t:dgCol>
 
         <t:dgFunOpt funname="addRow" title="添加"  exp="createName#ne#1"  urlclass="ace_button" urlfont="fa-cog"></t:dgFunOpt>
-        <t:dgFunOpt funname="removeit" title="删除"  exp="createName#ne#1"  urlclass="ace_button" urlfont="fa-trash-o"></t:dgFunOpt>
+        <t:dgFunOpt funname="removeit" title="删除" operationCode="delete"  exp="createName#ne#1"  urlclass="ace_button" urlfont="fa-trash-o"></t:dgFunOpt>
 
     </t:datagrid>
 </c:if>

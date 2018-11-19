@@ -54,9 +54,9 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.UriComponentsBuilder;
 
-@Api(value = "EmkMaterialRequired", description = "面料采购需求单", tags = {"emkMaterialRequiredController"})
+@Api(value = "EmkMaterialRequired", description = "面料采购需求单", tags = "emkMaterialRequiredController")
 @Controller
-@RequestMapping({"/emkMaterialRequiredController"})
+@RequestMapping("/emkMaterialRequiredController")
 public class EmkMaterialRequiredController extends BaseController {
     private static final Logger logger = Logger.getLogger(EmkMaterialRequiredController.class);
     @Autowired
@@ -66,25 +66,31 @@ public class EmkMaterialRequiredController extends BaseController {
     @Autowired
     private Validator validator;
 
-    @RequestMapping(params = {"list"})
+    @RequestMapping(params = "list")
     public ModelAndView list(HttpServletRequest request) {
         return new ModelAndView("com/emk/bill/materialrequired/emkMaterialRequiredList");
     }
 
-    @RequestMapping(params = {"list2"})
+    @RequestMapping(params = "list2")
     public ModelAndView list2(HttpServletRequest request) {
         return new ModelAndView("com/emk/bill/materialrequired/emkMaterialRequiredList2");
     }
 
-    @RequestMapping(params = {"list3"})
+    @RequestMapping(params = "list3")
     public ModelAndView list3(HttpServletRequest request) {
         return new ModelAndView("com/emk/bill/materialrequired/emkMaterialRequiredList3");
     }
 
-    @RequestMapping(params = {"datagrid"})
+    @RequestMapping(params = "datagrid")
     public void datagrid(EmkMaterialRequiredEntity emkMaterialRequired, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid) {
         CriteriaQuery cq = new CriteriaQuery(EmkMaterialRequiredEntity.class, dataGrid);
-
+        TSUser user = (TSUser) request.getSession().getAttribute(ResourceUtil.LOCAL_CLINET_USER);
+        Map roleMap = (Map) request.getSession().getAttribute("ROLE");
+        if(roleMap != null){
+            if(roleMap.get("rolecode").toString().contains("ywy") || roleMap.get("rolecode").toString().contains("ywgdy")){
+                cq.eq("createBy",user.getUserName());
+            }
+        }
         HqlGenerateUtil.installHql(cq, emkMaterialRequired, request.getParameterMap());
 
 
@@ -93,7 +99,7 @@ public class EmkMaterialRequiredController extends BaseController {
         TagUtil.datagrid(response, dataGrid);
     }
 
-    @RequestMapping(params = {"doDel"})
+    @RequestMapping(params = "doDel")
     @ResponseBody
     public AjaxJson doDel(EmkMaterialRequiredEntity emkMaterialRequired, HttpServletRequest request) {
         String message = null;
@@ -112,7 +118,7 @@ public class EmkMaterialRequiredController extends BaseController {
         return j;
     }
 
-    @RequestMapping(params = {"doBatchDel"})
+    @RequestMapping(params = "doBatchDel")
     @ResponseBody
     public AjaxJson doBatchDel(String ids, HttpServletRequest request) {
         String message = null;
@@ -135,7 +141,7 @@ public class EmkMaterialRequiredController extends BaseController {
         return j;
     }
 
-    @RequestMapping(params = {"doAdd"})
+    @RequestMapping(params = "doAdd")
     @ResponseBody
     public AjaxJson doAdd(EmkMaterialRequiredEntity emkMaterialRequired, HttpServletRequest request) {
         String message = null;
@@ -153,7 +159,7 @@ public class EmkMaterialRequiredController extends BaseController {
         return j;
     }
 
-    @RequestMapping(params = {"doUpdate"})
+    @RequestMapping(params = "doUpdate")
     @ResponseBody
     public AjaxJson doUpdate(EmkMaterialRequiredEntity emkMaterialRequired, HttpServletRequest request) {
         String message = null;
@@ -173,7 +179,7 @@ public class EmkMaterialRequiredController extends BaseController {
         return j;
     }
 
-    @RequestMapping(params = {"goAdd"})
+    @RequestMapping(params = "goAdd")
     public ModelAndView goAdd(EmkMaterialRequiredEntity emkMaterialRequired, HttpServletRequest req) {
         TSUser user = (TSUser) req.getSession().getAttribute("LOCAL_CLINET_USER");
         Map orderNum = this.systemService.findOneForJdbc("select count(0)+1 orderNum from emk_material_required where sys_org_code=?", new Object[]{user.getCurrentDepart().getOrgCode()});
@@ -185,7 +191,7 @@ public class EmkMaterialRequiredController extends BaseController {
         return new ModelAndView("com/emk/bill/materialrequired/emkMaterialRequired-add");
     }
 
-    @RequestMapping(params = {"goUpdate"})
+    @RequestMapping(params = "goUpdate")
     public ModelAndView goUpdate(EmkMaterialRequiredEntity emkMaterialRequired, HttpServletRequest req) {
         if (StringUtil.isNotEmpty(emkMaterialRequired.getId())) {
             emkMaterialRequired = (EmkMaterialRequiredEntity) this.emkMaterialRequiredService.getEntity(EmkMaterialRequiredEntity.class, emkMaterialRequired.getId());
@@ -194,13 +200,13 @@ public class EmkMaterialRequiredController extends BaseController {
         return new ModelAndView("com/emk/bill/materialrequired/emkMaterialRequired-update");
     }
 
-    @RequestMapping(params = {"upload"})
+    @RequestMapping(params = "upload")
     public ModelAndView upload(HttpServletRequest req) {
         req.setAttribute("controller_name", "emkMaterialRequiredController");
         return new ModelAndView("common/upload/pub_excel_upload");
     }
 
-    @RequestMapping(params = {"exportXls"})
+    @RequestMapping(params = "exportXls")
     public String exportXls(EmkMaterialRequiredEntity emkMaterialRequired, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid, ModelMap modelMap) {
         CriteriaQuery cq = new CriteriaQuery(EmkMaterialRequiredEntity.class, dataGrid);
         HqlGenerateUtil.installHql(cq, emkMaterialRequired, request.getParameterMap());
@@ -213,7 +219,7 @@ public class EmkMaterialRequiredController extends BaseController {
         return "jeecgExcelView";
     }
 
-    @RequestMapping(params = {"exportXlsByT"})
+    @RequestMapping(params = "exportXlsByT")
     public String exportXlsByT(EmkMaterialRequiredEntity emkMaterialRequired, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid, ModelMap modelMap) {
         modelMap.put("fileName", "面料采购需求单");
         modelMap.put("entity", EmkMaterialRequiredEntity.class);
@@ -231,7 +237,7 @@ public class EmkMaterialRequiredController extends BaseController {
         return Result.success(listEmkMaterialRequireds);
     }
 
-    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.GET})
+    @RequestMapping(value = "/{id}", method = {org.springframework.web.bind.annotation.RequestMethod.GET})
     @ResponseBody
     @ApiOperation(value = "根据ID获取面料采购需求单信息", notes = "根据ID获取面料采购需求单信息", httpMethod = "GET", produces = "application/json")
     public ResponseMessage<?> get(@ApiParam(required = true, name = "id", value = "ID") @PathVariable("id") String id) {
@@ -242,7 +248,7 @@ public class EmkMaterialRequiredController extends BaseController {
         return Result.success(task);
     }
 
-    @RequestMapping(method = {org.springframework.web.bind.annotation.RequestMethod.POST}, consumes = {"application/json"})
+    @RequestMapping(method = {org.springframework.web.bind.annotation.RequestMethod.POST}, consumes = "application/json")
     @ResponseBody
     @ApiOperation("创建面料采购需求单")
     public ResponseMessage<?> create(@ApiParam(name = "面料采购需求单对象") @RequestBody EmkMaterialRequiredEntity emkMaterialRequired, UriComponentsBuilder uriBuilder) {
@@ -259,7 +265,7 @@ public class EmkMaterialRequiredController extends BaseController {
         return Result.success(emkMaterialRequired);
     }
 
-    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.PUT}, consumes = {"application/json"})
+    @RequestMapping(value = "/{id}", method = {org.springframework.web.bind.annotation.RequestMethod.PUT}, consumes = "application/json")
     @ResponseBody
     @ApiOperation(value = "更新面料采购需求单", notes = "更新面料采购需求单")
     public ResponseMessage<?> update(@ApiParam(name = "面料采购需求单对象") @RequestBody EmkMaterialRequiredEntity emkMaterialRequired) {
@@ -276,7 +282,7 @@ public class EmkMaterialRequiredController extends BaseController {
         return Result.success("更新面料采购需求单信息成功");
     }
 
-    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.DELETE})
+    @RequestMapping(value = "/{id}", method = {org.springframework.web.bind.annotation.RequestMethod.DELETE})
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ApiOperation("删除面料采购需求单")
     public ResponseMessage<?> delete(@ApiParam(name = "id", value = "ID", required = true) @PathVariable("id") String id) {

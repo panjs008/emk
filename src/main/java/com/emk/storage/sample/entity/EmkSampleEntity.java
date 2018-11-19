@@ -19,112 +19,112 @@ public class EmkSampleEntity implements Serializable {
     private String createBy;
     private Date createDate;
     private String sysOrgCode;
-    @Excel(name = "客户编号", width = 15)
+    @Excel(name = "客户编号")
     private String cusNum;
-    @Excel(name = "客户名称", width = 15)
+    @Excel(name = "客户名称")
     private String cusName;
-    @Excel(name = "款号", width = 15)
+    @Excel(name = "款号")
     private String sampleNo;
     private String projectNo;
-    @Excel(name = "供应商", width = 15)
+    @Excel(name = "供应商")
     private String factoryName;
-    @Excel(name = "供应商代码", width = 15)
+    @Excel(name = "供应商代码")
     private String factoryCode;
     private String customSampleUrl;
-    @Excel(name = "客户原样", width = 15)
+    @Excel(name = "客户原样")
     private String customSample;
     private String sampleSizeUrl;
-    @Excel(name = "尺寸表", width = 15)
+    @Excel(name = "尺寸表")
     private String sampleSize;
-    @Excel(name = "备注", width = 15)
+    @Excel(name = "备注")
     private String remark;
-    @Excel(name = "包装方案", width = 15)
+    @Excel(name = "包装方案")
     private String packing;
-    @Excel(name = "商品名称", width = 15)
+    @Excel(name = "商品名称")
     private String proName;
-    @Excel(name = "产品类别", width = 15)
+    @Excel(name = "产品类别")
     private String proType;
-    @Excel(name = "产品类别名称", width = 15)
+    @Excel(name = "产品类别名称")
     private String proTypeName;
-    @Excel(name = "交货时间", width = 15)
+    @Excel(name = "交货时间")
     private String receviceDate;
-    @Excel(name = "样衣完成时间", width = 15)
+    @Excel(name = "样衣完成时间")
     private String finishDate;
-    @Excel(name = "生产板完成时间", width = 15)
+    @Excel(name = "生产板完成时间")
     private String produceDate;
-    @Excel(name = "要求", width = 15)
+    @Excel(name = "要求")
     private String requiretext;
-    @Excel(name = "状态", width = 15)
+    @Excel(name = "状态")
     private String state;
-    @Excel(name = "打样通知单号", width = 15)
+    @Excel(name = "打样通知单号")
     private String sampleNum;
-    @Excel(name = "样品类型", width = 15)
+    @Excel(name = "样品类型")
     private String type;
-    @Excel(name = "开单日期", width = 15)
+    @Excel(name = "开单日期")
     private String kdTime;
-    @Excel(name = "工艺种类", width = 15)
+    @Excel(name = "工艺种类")
     private String gyzl;
-    @Excel(name = "版次", width = 15)
+    @Excel(name = "版次")
     private String version;
-    @Excel(name = "克重", width = 15)
+    @Excel(name = "克重")
     private String weight;
-    @Excel(name = "成分", width = 15)
+    @Excel(name = "成分")
     private String chengf;
-    @Excel(name = "类型", width = 15)
+    @Excel(name = "类型")
     private String flag;
-    @Excel(name = "完成检查意见", width = 15)
+    @Excel(name = "完成检查意见")
     private String finishAdvice;
-    @Excel(name = "布面意见", width = 15)
+    @Excel(name = "布面意见")
     private String bmAdvice;
-    @Excel(name = "缝制意见", width = 15)
+    @Excel(name = "缝制意见")
     private String fzAdvice;
-    @Excel(name = "染色意见", width = 15)
+    @Excel(name = "染色意见")
     private String rsAdvice;
-    @Excel(name = "质检员意见", width = 15)
+    @Excel(name = "质检员意见")
     private String zjyAdvice;
-    @Excel(name = "跟单员意见", width = 15)
+    @Excel(name = "跟单员意见")
     private String traceAdvice;
-    @Excel(name = "业务员意见", width = 15)
+    @Excel(name = "业务员意见")
     private String businessAdvice;
-    @Excel(name = "综合意见", width = 15)
+    @Excel(name = "综合意见")
     private String zhAdvice;
-    @Excel(name = "下机克重", width = 15)
+    @Excel(name = "下机克重")
     private Double xjkz;
-    @Excel(name = "单件所需时间", width = 15)
+    @Excel(name = "单件所需时间")
     private Double djsxTime;
-    @Excel(name = "单位", width = 15)
+    @Excel(name = "单位")
     private String unit;
-    @Excel(name = "机台日产量", width = 15)
+    @Excel(name = "机台日产量")
     private Integer jtrcl;
-    @Excel(name = "前道损耗率", width = 15)
+    @Excel(name = "前道损耗率")
     private Double qdshl;
-    @Excel(name = "后道损耗率", width = 15)
+    @Excel(name = "后道损耗率")
     private Double hdshl;
-    @Excel(name = "业务员", width = 15)
+    @Excel(name = "业务员")
     private String businesser;
     private String businesserName;
-    @Excel(name = "业务跟单员", width = 15)
+    @Excel(name = "业务跟单员")
     private String tracer;
     private String tracerName;
-    @Excel(name = "生产跟单员", width = 15)
+    @Excel(name = "生产跟单员")
     private String developer;
     private String developerName;
-    @Excel(name = "业务部门", width = 15)
+    @Excel(name = "业务部门")
     private String businesseDeptName;
     private String businesseDeptId;
-    @Excel(name = "打样需求单号", width = 15)
+    @Excel(name = "打样需求单号")
     private String xqdh;
-    @Excel(name = "报价单号", width = 15)
+    @Excel(name = "报价单号")
     private String pirceNo;
-    @Excel(name = "订单号", width = 15)
+    @Excel(name = "订单号")
     private String orderNo;
-    @Excel(name = "审核意见", width = 15)
+    @Excel(name = "审核意见")
     private String leadAdvice;
-    @Excel(name = "是否通过", width = 15)
+    @Excel(name = "是否通过")
     private String isPass;
-    @Excel(name = "审核人ID", width = 15)
+    @Excel(name = "审核人ID")
     private String leadUserId;
-    @Excel(name = "审核人", width = 15)
+    @Excel(name = "审核人")
     private String leader;
 
 

@@ -55,42 +55,42 @@ public class EmkStorageLogEntity implements java.io.Serializable {
     /**
      * 商品ID
      */
-    @Excel(name = "商品ID", width = 15)
+    @Excel(name = "商品ID")
     private String proId;
     /**
      * 产品编号
      */
-    @Excel(name = "产品编号", width = 15)
+    @Excel(name = "产品编号")
     private String proNum;
     /**
      * 中文描述
      */
-    @Excel(name = "中文描述", width = 15)
+    @Excel(name = "中文描述")
     private String proZnName;
     /**
      * 入库前数量
      */
-    @Excel(name = "入库前数量", width = 15)
+    @Excel(name = "入库前数量")
     private String preTotal;
     /**
      * 入库后数量
      */
-    @Excel(name = "入库后数量", width = 15)
+    @Excel(name = "入库后数量")
     private String nextTotal;
     /**
      * 入库数量
      */
-    @Excel(name = "入库数量", width = 15)
+    @Excel(name = "入库数量")
     private String total;
     /**
      * 商品类型
      */
-    @Excel(name = "商品类型", width = 15)
+    @Excel(name = "商品类型")
     private String proTypeName;
     /**
      * 入库单号
      */
-    @Excel(name = "入库单号", width = 15)
+    @Excel(name = "入库单号")
     private String rkNo;
 
     /**

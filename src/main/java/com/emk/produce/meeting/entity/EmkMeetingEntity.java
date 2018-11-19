@@ -19,70 +19,70 @@ public class EmkMeetingEntity implements Serializable {
     private String createBy;
     private Date createDate;
     private String sysCompanyCode;
-    @Excel(name = "会议记录表编号", width = 15)
+    @Excel(name = "会议记录表编号")
     private String meetingNo;
-    @Excel(name = "会议时间", width = 15)
+    @Excel(name = "会议时间")
     private String meetingDate;
-    @Excel(name = "会议记录人", width = 15)
+    @Excel(name = "会议记录人")
     private String recorder;
     private String recorderId;
-    @Excel(name = "会议地点", width = 15)
+    @Excel(name = "会议地点")
     private String address;
-    @Excel(name = "入会人员", width = 15)
+    @Excel(name = "入会人员")
     private String partUsers;
     private String partUserIds;
-    @Excel(name = "客户代码", width = 15)
+    @Excel(name = "客户代码")
     private String cusNum;
-    @Excel(name = "客户名称", width = 15)
+    @Excel(name = "客户名称")
     private String cusName;
-    @Excel(name = "工艺种类", width = 15)
+    @Excel(name = "工艺种类")
     private String gyzl;
     private String proType;
-    @Excel(name = "款式大类", width = 15)
+    @Excel(name = "款式大类")
     private String proTypeName;
-    @Excel(name = "款号", width = 15)
+    @Excel(name = "款号")
     private String sampleNo;
-    @Excel(name = "描述", width = 15)
+    @Excel(name = "描述")
     private String sampleNoDesc;
-    @Excel(name = "订单号", width = 15)
+    @Excel(name = "订单号")
     private String orderNo;
-    @Excel(name = "业务部门", width = 15)
+    @Excel(name = "业务部门")
     private String businesseDeptName;
     private String businesseDeptId;
-    @Excel(name = "业务员", width = 15)
+    @Excel(name = "业务员")
     private String businesser;
     private String businesserName;
-    @Excel(name = "业务跟单员", width = 15)
+    @Excel(name = "业务跟单员")
     private String tracer;
     private String tracerName;
-    @Excel(name = "生产跟单员", width = 15)
+    @Excel(name = "生产跟单员")
     private String developer;
     private String developerName;
-    @Excel(name = "中期检查时间", width = 15)
+    @Excel(name = "中期检查时间")
     private String zqjcDate;
-    @Excel(name = "尾期检查时间", width = 15)
+    @Excel(name = "尾期检查时间")
     private String wqjcDate;
-    @Excel(name = "会议记录", width = 15)
+    @Excel(name = "会议记录")
     private String content;
-    @Excel(name = "技术部布面意见", width = 15)
+    @Excel(name = "技术部布面意见")
     private String jsbbmAdvice;
-    @Excel(name = "技术部染色意见", width = 15)
+    @Excel(name = "技术部染色意见")
     private String jsbranAdvice;
-    @Excel(name = "缝制部意见", width = 15)
+    @Excel(name = "缝制部意见")
     private String fzAdvice;
-    @Excel(name = "烫标组意见", width = 15)
+    @Excel(name = "烫标组意见")
     private String tbzAdvice;
-    @Excel(name = "包装组意见", width = 15)
+    @Excel(name = "包装组意见")
     private String bzAdvice;
-    @Excel(name = "采购部意见", width = 15)
+    @Excel(name = "采购部意见")
     private String cgAdvice;
-    @Excel(name = "业务部意见", width = 15)
+    @Excel(name = "业务部意见")
     private String ybAdvice;
-    @Excel(name = "质检组意见", width = 15)
+    @Excel(name = "质检组意见")
     private String zjzAdvice;
-    @Excel(name = "计划部意见", width = 15)
+    @Excel(name = "计划部意见")
     private String jhbAdvice;
-    @Excel(name = "生产部综合意见", width = 15)
+    @Excel(name = "生产部综合意见")
     private String scbzhAdvice;
 
     @Id

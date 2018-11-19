@@ -16,7 +16,7 @@
       <t:dgCol title="订单号"  field="orderNo" query="true"  queryMode="single"  width="80"></t:dgCol>
       <t:dgCol title="图片"  field="customSampleUrl" imageSize="30,30"  image="true"  queryMode="single"  width="50"></t:dgCol>
       <t:dgCol title="业务部门"  field="businesseDeptName"  queryMode="single"  width="80"></t:dgCol>
-      <t:dgCol title="业务员"  field="businesser"  queryMode="single"  width="60"></t:dgCol>
+      <t:dgCol title="业务员"  field="businesserName"  queryMode="single"  width="60"></t:dgCol>
    <t:dgCol title="客户代码" query="true" field="cusNum"  queryMode="single"  width="60"></t:dgCol>
    <t:dgCol title="客户名称" query="true" field="cusName"  queryMode="single"  width="120"></t:dgCol>
    <%--<t:dgCol title="原样"  field="oldImageUrl" imageSize="30,30"  image="true"  queryMode="single"  width="50"></t:dgCol>--%>
@@ -25,13 +25,13 @@
    <%--<t:dgCol title="工艺种类"  field="gyzl"  dictionary="gylx" queryMode="single"  width="70"></t:dgCol>--%>
    <t:dgCol title="款式大类"  field="proTypeName"  queryMode="single"  width="60"></t:dgCol>
       <t:dgCol title="状态"  field="state" formatterjs="formatColor"  queryMode="single"  width="50"></t:dgCol>
-      <t:dgFunOpt funname="goToProcess(id)" title="流程进度" urlclass="ace_button"  urlStyle="background-color:#ec4758;" urlfont="fa-tasks"></t:dgFunOpt>
-      <t:dgToolBar title="录入" icon="fa fa-plus" url="emkProduceScheduleController.do?goAdd&winTitle=录入订单生产单" funname="add" height="600" width="1150"></t:dgToolBar>
-       <t:dgToolBar title="编辑" icon="fa fa-edit" url="emkProduceScheduleController.do?goUpdate&winTitle=编辑订单生产单" funname="update" height="600" width="1150"></t:dgToolBar>
-      <t:dgToolBar title="提交" icon="fa fa-arrow-circle-up" funname="doSubmitV"></t:dgToolBar>
+      <t:dgFunOpt funname="goToProcess(id)" title="流程进度" operationCode="process" urlclass="ace_button"  urlStyle="background-color:#ec4758;" urlfont="fa-tasks"></t:dgFunOpt>
+      <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkProduceScheduleController.do?goAdd&winTitle=录入订单生产单" funname="add" height="600" width="1150"></t:dgToolBar>
+       <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkProduceScheduleController.do?goUpdate&winTitle=编辑订单生产单" funname="update" height="600" width="1150"></t:dgToolBar>
+      <t:dgToolBar title="提交" operationCode="submit" icon="fa fa-arrow-circle-up" funname="doSubmitV"></t:dgToolBar>
 
-      <t:dgToolBar title="删除"  icon="fa fa-remove" url="emkProduceScheduleController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
-      <t:dgToolBar title="导出" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
+      <t:dgToolBar title="删除" operationCode="delete"  icon="fa fa-remove" url="emkProduceScheduleController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
+      <t:dgToolBar title="导出" operationCode="exp" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
 
   </t:datagrid>
   </div>

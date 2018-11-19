@@ -12,12 +12,12 @@
    <t:dgCol title="条款编号"  field="clauseNum"  queryMode="single"  width="90"></t:dgCol>
    <t:dgCol title="内容描述"  field="clauseContent"   queryMode="single"  width="200"></t:dgCol>
    <t:dgCol title="备注"  field="remark"  queryMode="single"  width="150"></t:dgCol>
-       <t:dgToolBar title="录入" icon="fa fa-plus" url="emkClauseController.do?goAdd" funname="add" width="1000" height="500"></t:dgToolBar>
-       <t:dgToolBar title="编辑" icon="fa fa-edit" url="emkClauseController.do?goUpdate" funname="update" width="1000" height="500"></t:dgToolBar>
-       <t:dgToolBar title="批量删除"  icon="fa fa-remove" url="emkClauseController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
+       <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkClauseController.do?goAdd" funname="add" width="1000" height="500"></t:dgToolBar>
+       <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkClauseController.do?goUpdate" funname="update" width="1000" height="500"></t:dgToolBar>
+       <t:dgToolBar title="删除" operationCode="delete" operationCode="delete"  icon="fa fa-remove" url="emkClauseController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
        <t:dgToolBar title="查看" icon="fa fa-search" url="emkClauseController.do?goUpdate" funname="detail"></t:dgToolBar>
        <t:dgToolBar title="导入" icon="fa fa-arrow-circle-left" funname="ImportXls"></t:dgToolBar>
-       <t:dgToolBar title="导出" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
+       <t:dgToolBar title="导出" operationCode="exp" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
   </t:datagrid>
   </div>
  </div>

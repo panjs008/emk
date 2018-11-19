@@ -16,7 +16,7 @@
    <t:dgCol title="图片"  field="customSampleUrl" imageSize="30,30"  image="true"  queryMode="single"  width="50"></t:dgCol>
    <%--<t:dgCol title="原样"  field="oldImageUrl" imageSize="30,30"  image="true"  queryMode="single"  width="50"></t:dgCol>--%>
    <t:dgCol title="业务部门"  field="businesseDeptName"  queryMode="single"  width="80"></t:dgCol>
-   <t:dgCol title="业务员"  field="businesser"  queryMode="single"  width="70"></t:dgCol>
+   <t:dgCol title="业务员"  field="businesserName"  queryMode="single"  width="70"></t:dgCol>
    <t:dgCol title="客户代码" query="true" field="cusNum"  queryMode="single"  width="70"></t:dgCol>
    <t:dgCol title="客户名称" query="true" field="cusName"  queryMode="single"  width="160"></t:dgCol>
    <t:dgCol title="款号"  field="sampleNo"  queryMode="single"  width="80"></t:dgCol>
@@ -24,13 +24,14 @@
    <t:dgCol title="款式大类"  field="proTypeName"  queryMode="single"  width="70"></t:dgCol>
       <t:dgCol title="颜色名称"  field="colorZnName"  queryMode="single"  width="70"></t:dgCol>
 
-   <t:dgCol title="状态"  field="state"  queryMode="single"  width="80"></t:dgCol>
+   <%--<t:dgCol title="状态"  field="state"  queryMode="single"  width="80"></t:dgCol>--%>
       <t:dgFunOpt funname="queryDetail2(id,sampleNo)" title="主辅料" urlclass="ace_button" urlfont="fa-list-alt"></t:dgFunOpt>
       <t:dgFunOpt funname="queryDetail3(id,sampleNo)" title="工序" urlclass="ace_button" urlfont="fa-cog"></t:dgFunOpt>
-       <t:dgToolBar title="录入" icon="fa fa-plus" url="emkSampleRequiredController.do?goAdd&winTitle=录入样品需求单" funname="add" height="600" width="1260"></t:dgToolBar>
-       <t:dgToolBar title="编辑" icon="fa fa-edit" url="emkSampleRequiredController.do?goUpdate&winTitle=编辑样品需求单" funname="update" height="600" width="1260"></t:dgToolBar>
-       <t:dgToolBar title="删除"  icon="fa fa-remove" url="emkSampleRequiredController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
-      <t:dgToolBar title="导出" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
+       <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkSampleRequiredController.do?goAdd&winTitle=录入样品需求单" funname="add" height="600" width="1260"></t:dgToolBar>
+       <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit"  url="emkSampleRequiredController.do?goUpdate&winTitle=编辑样品需求单" funname="update" height="600" width="1260"></t:dgToolBar>
+      <t:dgToolBar title="查看" icon="fa fa-search" operationCode="look" url="emkSampleRequiredController.do?goUpdate&goUpdate&winTitle=查看样品需求单" funname="detail" height="600" width="1260"></t:dgToolBar>
+      <t:dgToolBar title="删除" operationCode="delete"  icon="fa fa-remove" url="emkSampleRequiredController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
+      <t:dgToolBar title="导出" operationCode="exp" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
 
   </t:datagrid>
   </div>
@@ -48,13 +49,14 @@
 	}"
      style="width: 500px; overflow: hidden;" id="eastPanel">
     <div class="easyui-panel" style="padding:0px;border:0px" fit="true" border="false" id="proDetialListpanel"></div>
+</div>
  <script src = "webpage/com/emk/storage/samplerequired/emkSampleRequiredList.js"></script>		
  <script type="text/javascript">
  $(document).ready(function(){
  });
 
  function queryDetail1(id,proName){
-     $('#emkSampleList').datagrid('unselectAll');
+     $('#emkSampleRequiredList').datagrid('unselectAll');
      var title = "技术参数表：" +proName;
      if(li_east == 0 || $('#main_list').layout('panel','east').panel('options').title != title){
          $('#main_list').layout('expand','east');
@@ -65,7 +67,7 @@
      $('#proDetialListpanel').panel("refresh", "emkSampleTotalController.do?list&sampleId=" + id);
  }
  function queryDetail2(id,proName){
-     $('#emkSampleList').datagrid('unselectAll');
+     $('#emkSampleRequiredList').datagrid('unselectAll');
      var title = "主辅料清单："+proName ;
      if(li_east == 0 || $('#main_list').layout('panel','east').panel('options').title != title){
          $('#main_list').layout('expand','east');
@@ -73,12 +75,12 @@
      $('#main_list').layout('panel','east').panel('setTitle', title);
      $('#main_list').layout('panel','east').panel('resize', {width: 600});
 
-     $('#proDetialListpanel').panel("refresh", "emkSampleDetailController.do?list&sampleType=samplerequired&sampleId=" + id);
+     $('#proDetialListpanel').panel("refresh", "emkSampleDetailController.do?list&sampleType=samplerequired&state=0&sampleId=" + id);
  }
 
 
  function queryDetail3(id,proName){
-     $('#emkSampleList').datagrid('unselectAll');
+     $('#emkSampleRequiredList').datagrid('unselectAll');
      var title = "样品工序："+proName ;
      if(li_east == 0 || $('#main_list').layout('panel','east').panel('options').title != title){
          $('#main_list').layout('expand','east');
@@ -86,7 +88,7 @@
      $('#main_list').layout('panel','east').panel('setTitle', title);
      $('#main_list').layout('panel','east').panel('resize', {width: 600});
 
-     $('#proDetialListpanel').panel("refresh", "emkSampleGxController.do?list&sampleId=" + id);
+     $('#proDetialListpanel').panel("refresh", "emkSampleGxController.do?list&state=0&sampleId=" + id);
  }
  
 //导入

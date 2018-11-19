@@ -15,13 +15,13 @@
    <t:dgCol title="备注"  field="remark"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="状态"  field="state" replace="待入库_0,已入库_1"  queryMode="single"  width="120"></t:dgCol>
    <%--<t:dgCol title="操作" field="opt" width="100"></t:dgCol>--%>
-   <%--<t:dgDelOpt title="删除" url="emkWaitStorageController.do?doDel&id={id}" urlclass="ace_button"  urlfont="fa-trash-o"/>--%>
-   <%--<t:dgToolBar title="录入" icon="fa fa-plus" url="emkWaitStorageController.do?goAdd" funname="add"></t:dgToolBar>--%>
-   <%--<t:dgToolBar title="编辑" icon="fa fa-edit" url="emkWaitStorageController.do?goUpdate" funname="update"></t:dgToolBar>--%>
-   <t:dgToolBar title="删除"  icon="fa fa-remove" url="emkWaitStorageController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
+   <%--<t:dgDelOpt title="删除" operationCode="delete" url="emkWaitStorageController.do?doDel&id={id}" urlclass="ace_button"  urlfont="fa-trash-o"/>--%>
+   <%--<t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkWaitStorageController.do?goAdd" funname="add"></t:dgToolBar>--%>
+   <%--<t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkWaitStorageController.do?goUpdate" funname="update"></t:dgToolBar>--%>
+   <t:dgToolBar title="删除" operationCode="delete"  icon="fa fa-remove" url="emkWaitStorageController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
    <%--<t:dgToolBar title="查看" icon="icon-search" url="emkWaitStorageController.do?goUpdate" funname="detail"></t:dgToolBar>--%>
    <%--<t:dgToolBar title="导入" icon="icon-put" funname="ImportXls"></t:dgToolBar>--%>
-   <%--<t:dgToolBar title="导出" icon="icon-putout" funname="ExportXls"></t:dgToolBar>--%>
+   <%--<t:dgToolBar title="导出" operationCode="exp" icon="icon-putout" funname="ExportXls"></t:dgToolBar>--%>
    <%--<t:dgToolBar title="模板下载" icon="icon-putout" funname="ExportXlsByT"></t:dgToolBar>--%>
   </t:datagrid>
   </div>

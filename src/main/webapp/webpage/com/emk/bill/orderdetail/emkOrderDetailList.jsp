@@ -48,17 +48,17 @@
           <%--<t:dgCol title="订单ID"  field="orderId"  queryMode="single"  width="120"></t:dgCol>--%>
           <%--<t:dgFunOpt funname="goAdd" title="添加" exp="createName#ne#1" urlclass="ace_button" urlfont="fa-cog"></t:dgFunOpt>
              <t:dgFunOpt funname="editRow" title="编辑"  urlclass="ace_button" urlfont="fa-edit"></t:dgFunOpt>
-             <t:dgDelOpt title="删除" exp="createName#ne#1" url="emkOrderDetailController.do?doDel&id={id}" urlclass="ace_button"  urlfont="fa-trash-o"/>--%>
+             <t:dgDelOpt title="删除" operationCode="delete" exp="createName#ne#1" url="emkOrderDetailController.do?doDel&id={id}" urlclass="ace_button"  urlfont="fa-trash-o"/>--%>
           <t:dgToolBar title="新增" icon="fa fa-plus" url="" funname="addRow"></t:dgToolBar>
-          <%--<t:dgToolBar title="编辑" icon="fa fa-edit" funname="editRow"></t:dgToolBar>--%>
+          <%--<t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" funname="editRow"></t:dgToolBar>--%>
           <%--<t:dgToolBar title="保存" icon="fa fa-save" url="emkProductController.do?saveRows" funname="saveData"></t:dgToolBar>--%>
           <t:dgToolBar title="取消"  icon="fa fa-remove" url="" funname="removeit"></t:dgToolBar>
-          <t:dgToolBar title="删除"  icon="fa fa-remove" url="emkOrderDetailController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
-          <%--<t:dgToolBar title="录入" icon="fa fa-plus" url="emkOrderDetailController.do?goAdd" funname="goAdd"></t:dgToolBar>--%>
+          <t:dgToolBar title="删除" operationCode="delete"  icon="fa fa-remove" url="emkOrderDetailController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
+          <%--<t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkOrderDetailController.do?goAdd" funname="goAdd"></t:dgToolBar>--%>
 
-          <%--<t:dgToolBar title="录入" icon="fa fa-plus" url="emkOrderDetailController.do?goAdd" funname="add"></t:dgToolBar>
-          <t:dgToolBar title="编辑" icon="fa fa-edit" url="emkOrderDetailController.do?goUpdate" funname="update"></t:dgToolBar>
-          <t:dgToolBar title="删除"  icon="fa fa-remove" url="emkOrderDetailController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>--%>
+          <%--<t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkOrderDetailController.do?goAdd" funname="add"></t:dgToolBar>
+          <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkOrderDetailController.do?goUpdate" funname="update"></t:dgToolBar>
+          <t:dgToolBar title="删除" operationCode="delete"  icon="fa fa-remove" url="emkOrderDetailController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>--%>
       </t:datagrid>
   </c:if>
 

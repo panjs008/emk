@@ -19,16 +19,16 @@
       <t:dgCol title="状态"  field="state" formatterjs="formatColor"  queryMode="single"  width="70"></t:dgCol>
 
    <t:dgCol title="备注"  field="remark"  queryMode="single"  width="150"></t:dgCol>
-      <t:dgFunOpt funname="goToProcess(id)" title="流程进度" urlclass="ace_button"  urlStyle="background-color:#ec4758;" urlfont="fa-tasks"></t:dgFunOpt>
-      <t:dgDelOpt title="删除" url="emkInStorageController.do?doDel&id={id}" exp="state#eq#0" urlclass="ace_button"  urlfont="fa-trash-o"/>
-       <t:dgToolBar title="录入" icon="fa fa-plus" url="emkInStorageController.do?goAdd&winTitle=录入采购订单" funname="add" height="550" width="1000"></t:dgToolBar>
-       <t:dgToolBar title="编辑" icon="fa fa-edit" url="emkInStorageController.do?goUpdate&winTitle=编辑采购订单" funname="update" height="550" width="1000"></t:dgToolBar>
-      <t:dgToolBar title="提交" icon="fa fa-arrow-circle-right" funname="doSubmitV"></t:dgToolBar>
+      <t:dgFunOpt funname="goToProcess(id)" title="流程进度" operationCode="process" urlclass="ace_button"  urlStyle="background-color:#ec4758;" urlfont="fa-tasks"></t:dgFunOpt>
+      <t:dgDelOpt title="删除" operationCode="delete" url="emkInStorageController.do?doDel&id={id}" exp="state#eq#0" urlclass="ace_button"  urlfont="fa-trash-o"/>
+       <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkInStorageController.do?goAdd&winTitle=录入采购订单" funname="add" height="550" width="1000"></t:dgToolBar>
+       <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkInStorageController.do?goUpdate&winTitle=编辑采购订单" funname="update" height="550" width="1000"></t:dgToolBar>
+      <t:dgToolBar title="提交" operationCode="submit" icon="fa fa-arrow-circle-right" funname="doSubmitV"></t:dgToolBar>
 
-      <%--<t:dgToolBar title="删除"  icon="fa fa-remove" url="emkInStorageController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>--%>
+      <%--<t:dgToolBar title="删除" operationCode="delete"  icon="fa fa-remove" url="emkInStorageController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>--%>
  <%--      <t:dgToolBar title="查看" icon="fa fa-search" url="emkInStorageController.do?goUpdate" funname="detail" height="550" width="1000"></t:dgToolBar>
        <t:dgToolBar title="导入" icon="fa fa-arrow-circle-left" funname="ImportXls"></t:dgToolBar>
-       <t:dgToolBar title="导出" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>--%>
+       <t:dgToolBar title="导出" operationCode="exp" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>--%>
        <%--<t:dgToolBar title="模板下载" icon="fa fa-arrow-circle-o-down" funname="ExportXlsByT"></t:dgToolBar>--%>
   </t:datagrid>
   </div>

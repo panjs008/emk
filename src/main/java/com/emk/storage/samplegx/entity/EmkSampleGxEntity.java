@@ -20,17 +20,17 @@ public class EmkSampleGxEntity
     private String createBy;
     private Date createDate;
     private String sysOrgCode;
-    @Excel(name = "工序名称", width = 15)
+    @Excel(name = "工序名称")
     private String gxmc;
-    @Excel(name = "单件耗时", width = 15)
+    @Excel(name = "单件耗时")
     private Double djhs;
-    @Excel(name = "单位", width = 15)
+    @Excel(name = "单位")
     private String unit;
-    @Excel(name = "每天产量", width = 15)
+    @Excel(name = "每天产量")
     private Integer productTotal;
-    @Excel(name = "成本", width = 15)
+    @Excel(name = "成本")
     private Double chengben;
-    @Excel(name = "样品ID", width = 15)
+    @Excel(name = "样品ID")
     private String sampleId;
 
     @Id

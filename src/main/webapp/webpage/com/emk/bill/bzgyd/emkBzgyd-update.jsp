@@ -156,7 +156,7 @@
 			</td>
 			<td class="value" rowspan="5">
 				<input id="customSample" name="customSample" type="hidden" value="${emkBzgydPage.customSample }"/>
-				<img id="uploadimg0" src="${emkBzgydPage.customSampleUrl eq null ? 'images/bjlogo.png':emkBzgydPage.customSampleUrl}" width="150" height="150">
+				<img id="uploadimg0" src="${emkBzgydPage.customSampleUrl eq '' ? 'images/bjlogo.png':emkBzgydPage.customSampleUrl}" width="150" height="150">
 				<t:upload name="instruction0" id="instruction0" dialog="false" extend="*.jpg;*.png;*.gif;*.ico;*.dwg" buttonText="添加文件" queueID="instructionfile" view="false" auto="true" uploader="systemController.do?saveFiles"  onUploadSuccess="uploadSuccess0" >
 				</t:upload>[<a href="javascript:findDetail('${emkBzgydPage.customSampleUrl }')">${emkBzgydPage.customSample }</a>]
 				<span id="customSampleId"></span>

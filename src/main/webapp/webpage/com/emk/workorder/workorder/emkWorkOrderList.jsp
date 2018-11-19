@@ -23,10 +23,10 @@
             <t:dgCol title="生产单号" field="produceNo" queryMode="single" width="90"></t:dgCol>
             <t:dgCol title="状态" field="state" formatterjs="formatColor" queryMode="single" width="60"></t:dgCol>
 
-            <t:dgFunOpt funname="goToProcess(id)" title="流程进度" urlclass="ace_button"
+            <t:dgFunOpt funname="goToProcess(id,workNo)" title="流程进度" operationCode="process" urlclass="ace_button"
                         urlStyle="background-color:#ec4758;" urlfont="fa-tasks"></t:dgFunOpt>
-            <%--<t:dgToolBar title="编辑" icon="fa fa-edit" url="emkWorkOrderController.do?goUpdate&winTitle=编辑意向询盘单" funname="update" height="600" width="1150"></t:dgToolBar>--%>
-            <%--<t:dgToolBar title="提交" icon="fa fa-arrow-circle-right" funname="doSubmitV"></t:dgToolBar>--%>
+            <%--<t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkWorkOrderController.do?goUpdate&winTitle=编辑意向询盘单" funname="update" height="600" width="1150"></t:dgToolBar>--%>
+            <%--<t:dgToolBar title="提交" operationCode="submit" icon="fa fa-arrow-circle-right" funname="doSubmitV"></t:dgToolBar>--%>
 
         </t:datagrid>
     </div>
@@ -75,7 +75,7 @@
         });
     }
 
-    function goToProcess(id) {
+    function goToProcess(id,workNo) {
         var height = window.top.document.body.offsetHeight * 0.85;
 
         $.ajax({
@@ -88,9 +88,9 @@
                 if (d.success) {
                     var msg = d.msg;
                     if (msg == "完成") {
-                        createdetailwindow('流程进度--当前环节：' + msg, 'flowController.do?goProcess&processUrl=com/emk/workorder/workorder/emkWorkOrder-process&id=' + id, 1200, height);
+                        createdetailwindow('工单'+workNo+'--当前环节：' + msg, 'flowController.do?goProcess&processUrl=com/emk/workorder/workorder/emkWorkOrder-process&id=' + id, 1200, height);
                     } else {
-                        createwindow("流程进度--当前环节：" + msg, "flowController.do?goProcess&processUrl=com/emk/workorder/workorder/emkWorkOrder-process&id=" + id, 1200, height);
+                        createwindow("工单"+workNo+"--当前环节：" + msg, "flowController.do?goProcess&processUrl=com/emk/workorder/workorder/emkWorkOrder-process&id=" + id, 1200, height);
                     }
 
                 }

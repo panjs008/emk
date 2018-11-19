@@ -19,27 +19,27 @@ public class EmkProOrderDetailEntity implements Serializable {
     private String createBy;
     private Date createDate;
     private String sysOrgCode;
-    @Excel(name = "订单ID", width = 15)
+    @Excel(name = "订单ID")
     private String proOrderId;
-    @Excel(name = "款号", width = 15)
+    @Excel(name = "款号")
     private String sampleNo;
-    @Excel(name = "数量", width = 15)
+    @Excel(name = "数量")
     private String total;
-    @Excel(name = "尺码", width = 15)
+    @Excel(name = "尺码")
     private String size;
-    @Excel(name = "颜色", width = 15)
+    @Excel(name = "颜色")
     private String color;
-    @Excel(name = "备注", width = 15)
+    @Excel(name = "备注")
     private String remark;
-    @Excel(name = "价格", width = 15)
+    @Excel(name = "价格")
     private String price;
-    @Excel(name = "产品编号", width = 15)
+    @Excel(name = "产品编号")
     private String proNum;
-    @Excel(name = "产品名称", width = 15)
+    @Excel(name = "产品名称")
     private String proName;
-    @Excel(name = "规格", width = 15)
+    @Excel(name = "规格")
     private String brand;
-    @Excel(name = "单位", width = 15)
+    @Excel(name = "单位")
     private String unit;
 
     @Id

@@ -20,21 +20,21 @@ public class EmkEnquiryDetailEntity
     private String createBy;
     private Date createDate;
     private String sysOrgCode;
-    @Excel(name = "询盘ID", width = 15)
+    @Excel(name = "询盘ID")
     private String enquiryId;
-    @Excel(name = "颜色名称", width = 15)
+    @Excel(name = "颜色名称")
     private String color;
-    @Excel(name = "色号", width = 15)
+    @Excel(name = "色号")
     private String colorValue;
-    @Excel(name = "尺码", width = 15)
+    @Excel(name = "尺码")
     private String size;
-    @Excel(name = "数量", width = 15)
+    @Excel(name = "数量")
     private Integer total;
-    @Excel(name = "单尺码总数", width = 15)
+    @Excel(name = "单尺码总数")
     private Integer sizeTotal;
-    @Excel(name = "单颜色总数", width = 15)
+    @Excel(name = "单颜色总数")
     private Integer colorTotal;
-    @Excel(name = "单价", width = 15)
+    @Excel(name = "单价")
     private Double price;
 
     @Id

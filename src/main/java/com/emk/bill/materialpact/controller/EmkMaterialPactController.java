@@ -101,7 +101,13 @@ public class EmkMaterialPactController extends BaseController {
     @RequestMapping(params = "datagrid")
     public void datagrid(EmkMaterialPactEntity emkMaterialPact, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid) {
         CriteriaQuery cq = new CriteriaQuery(EmkMaterialPactEntity.class, dataGrid);
-
+        TSUser user = (TSUser) request.getSession().getAttribute(ResourceUtil.LOCAL_CLINET_USER);
+        Map roleMap = (Map) request.getSession().getAttribute("ROLE");
+        if(roleMap != null){
+            if(roleMap.get("rolecode").toString().contains("ywy") || roleMap.get("rolecode").toString().contains("ywgdy")){
+                cq.eq("createBy",user.getUserName());
+            }
+        }
         HqlGenerateUtil.installHql(cq, emkMaterialPact, request.getParameterMap());
 
 

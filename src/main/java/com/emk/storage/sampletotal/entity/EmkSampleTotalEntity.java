@@ -21,13 +21,13 @@ public class EmkSampleTotalEntity
     private Date createDate;
     private String updateName;
     private String sysOrgCode;
-    @Excel(name = "颜色", width = 15)
+    @Excel(name = "颜色")
     private String color;
-    @Excel(name = "尺码", width = 15)
+    @Excel(name = "尺码")
     private String size;
-    @Excel(name = "数量", width = 15)
+    @Excel(name = "数量")
     private Integer total;
-    @Excel(name = "样品ID", width = 15)
+    @Excel(name = "样品ID")
     private String sampleId;
 
     @Id

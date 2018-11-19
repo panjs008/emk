@@ -14,7 +14,7 @@
     <t:dgCol title="联系人"  field="zlxr"  queryMode="single"  width="80"></t:dgCol>
     <t:dgCol title="电话"  field="telphone"  queryMode="single"  width="90"></t:dgCol>
     <t:dgCol title="业务部门"  field="businesseDeptName"  queryMode="single"  width="100"></t:dgCol>
-    <t:dgCol title="业务员"  field="businesser"  queryMode="single"  width="80"></t:dgCol>
+    <t:dgCol title="业务员"  field="businesserName"  queryMode="single"  width="80"></t:dgCol>
     <t:dgCol title="贸易国别"  field="guoJia" query="true" dictionary="trade" queryMode="single"  width="80"></t:dgCol>
     <t:dgCol title="城市"  field="chengShi" dictionary="t_s_category,code,name"    queryMode="single"  width="70"></t:dgCol>
     <t:dgCol title="片区"  field="pianQu" dictionary="t_s_category,code,name"   queryMode="single"  width="70"></t:dgCol>

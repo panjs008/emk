@@ -2,7 +2,7 @@
 <%@include file="/context/mytags.jsp"%>
 <t:base type="jquery,easyui,tools,DatePicker"></t:base>
 
-<t:datagrid name="userList" title="common.operation" actionUrl="userController.do?datagrid" fit="true" fitColumns="true" idField="id" queryMode="group" sortName="createDate,userName" btnCls="bootstrap"  sortOrder="asc,desc">
+<t:datagrid name="userList" title="common.operation" actionUrl="userController.do?datagrid" fit="true" pageSize="15" fitColumns="true" idField="id" queryMode="group" sortName="createDate,userName" btnCls="bootstrap"  sortOrder="asc,desc">
 	<t:dgCol title="common.id" field="id" hidden="true"></t:dgCol>
 	<t:dgCol title="common.username" sortable="false" field="userName" query="true" width="100"></t:dgCol>
 	<t:dgCol title="common.real.name" field="realName" query="false" width="100"></t:dgCol>

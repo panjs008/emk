@@ -14,9 +14,11 @@
     <t:dgCol title="单码总数"  field="sizeTotal"  queryMode="single"  width="78"></t:dgCol>
     <t:dgCol title="单色总数"  field="colorTotal"  queryMode="single"  width="78"></t:dgCol>
     <t:dgCol title="单价"  field="price"  queryMode="single"  width="70"></t:dgCol>
-    <t:dgToolBar title="录入" icon="fa fa-plus" url="emkEnquiryDetailController.do?goAdd&enquiryId=${param.enquiryId}" funname="add"></t:dgToolBar>
-    <t:dgToolBar title="编辑" icon="fa fa-edit" url="emkEnquiryDetailController.do?goUpdate" funname="update"></t:dgToolBar>
-    <t:dgToolBar title="删除"  icon="fa fa-remove" url="emkEnquiryDetailController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
+    <c:if test="${param.state eq '0'}">
+        <t:dgToolBar title="录入" icon="fa fa-plus"  url="emkEnquiryDetailController.do?goAdd&enquiryId=${param.enquiryId}" funname="add"></t:dgToolBar>
+        <t:dgToolBar title="编辑" icon="fa fa-edit" url="emkEnquiryDetailController.do?goUpdate" funname="update"></t:dgToolBar>
+        <t:dgToolBar title="删除"  icon="fa fa-remove" url="emkEnquiryDetailController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
+    </c:if>
 
 </t:datagrid>
  <script src = "webpage/com/emk/storage/enquirydetail/emkEnquiryDetailList.js"></script>		

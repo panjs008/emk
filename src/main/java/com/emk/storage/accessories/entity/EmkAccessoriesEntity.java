@@ -19,76 +19,82 @@ public class EmkAccessoriesEntity implements Serializable {
     private String createBy;
     private Date createDate;
     private String sysOrgCode;
-    @Excel(name = "需求单号", width = 15)
+    @Excel(name = "需求单号")
     private String materialNo;
-    @Excel(name = "提交日期", width = 15)
+    @Excel(name = "提交日期")
     private String kdDate;
-    @Excel(name = "业务员", width = 15)
+    @Excel(name = "业务员")
     private String businesser;
-    @Excel(name = "业务员ID", width = 15)
+    @Excel(name = "业务员ID")
     private String businesserName;
-    @Excel(name = "客户代码", width = 15)
+    @Excel(name = "客户代码")
     private String cusNum;
-    @Excel(name = "客户名称", width = 15)
+    @Excel(name = "客户名称")
     private String cusName;
-    @Excel(name = "工艺种类", width = 15)
+    @Excel(name = "工艺种类")
     private String gyzl;
     private String proType;
-    @Excel(name = "款式大类", width = 15)
+    @Excel(name = "款式大类")
     private String proTypeName;
-    @Excel(name = "款号", width = 15)
+    @Excel(name = "款号")
     private String sampleNo;
-    @Excel(name = "描述", width = 15)
+    @Excel(name = "描述")
     private String sampleNoDesc;
-    @Excel(name = "工厂", width = 15)
+    @Excel(name = "工厂")
     private String factoryName;
-    @Excel(name = "工厂Code", width = 15)
+    @Excel(name = "工厂Code")
     private String factoryCode;
-    @Excel(name = "业务部门", width = 15)
+    @Excel(name = "业务部门")
     private String businesseDeptName;
     private String businesseDeptId;
-    @Excel(name = "生产跟单员", width = 15)
+    @Excel(name = "生产跟单员")
     private String developer;
     private String developerName;
-    @Excel(name = "采购员", width = 15)
+    @Excel(name = "采购员")
     private String cger;
     private String cgerName;
-    @Excel(name = "样品交期", width = 15)
+    @Excel(name = "样品交期")
     private String ypjqDate;
-    @Excel(name = "距样品交期剩余天数", width = 15)
+    @Excel(name = "距样品交期剩余天数")
     private Integer leaveYpjqDays;
-    @Excel(name = "距大货交期剩余天数", width = 15)
+    @Excel(name = "距大货交期剩余天数")
     private Integer leaveDhjqDays;
-    @Excel(name = "是否有订单", width = 15)
+    @Excel(name = "是否有订单")
     private String isOrder;
-    @Excel(name = "大货交期", width = 15)
+    @Excel(name = "大货交期")
     private String dhjqDate;
-    @Excel(name = "是否现有原料面料", width = 15)
+    @Excel(name = "是否现有原料面料")
     private String isHave;
-    @Excel(name = "版次", width = 15)
+    @Excel(name = "版次")
     private String version;
-    @Excel(name = "打样原因", width = 15)
+    @Excel(name = "打样原因")
     private String sampleReason;
-    @Excel(name = "需求开发交期", width = 15)
+    @Excel(name = "需求开发交期")
     private String requiredJqDate;
-    @Excel(name = "完成时间剩余天数", width = 15)
+    @Excel(name = "完成时间剩余天数")
     private Integer leaveFinishDays;
-    @Excel(name = "开发单状态", width = 15)
     private String state;
-    @Excel(name = "技术员意见", width = 15)
+    @Excel(name = "技术员意见")
     private String jsyAdvice;
-    @Excel(name = "跟单员意见", width = 15)
+    @Excel(name = "跟单员意见")
     private String developerAdvice;
-    @Excel(name = "业务员意见", width = 15)
+    @Excel(name = "业务员意见")
     private String businesseAdvice;
-    @Excel(name = "综合意见", width = 15)
+    @Excel(name = "综合意见")
     private String zhAdvice;
     private String customSampleUrl;
-    @Excel(name = "图片", width = 15)
+    @Excel(name = "图片")
     private String customSample;
-    @Excel(name = "业务跟单员", width = 15)
+    @Excel(name = "业务跟单员")
     private String tracer;
     private String tracerName;
+
+    @Excel(name = "审核意见")
+    private String leadAdvice;
+    private String isPass;
+    private String leadUserId;
+    @Excel(name = "审核人")
+    private String leader;
 
     @Id
     @GeneratedValue(generator = "paymentableGenerator")
@@ -399,14 +405,7 @@ public class EmkAccessoriesEntity implements Serializable {
         this.leaveFinishDays = leaveFinishDays;
     }
 
-    @Column(name = "STATE", nullable = true, length = 32)
-    public String getState() {
-        return this.state;
-    }
 
-    public void setState(String state) {
-        this.state = state;
-    }
 
     @Column(name = "JSY_ADVICE", nullable = true, length = 256)
     public String getJsyAdvice() {
@@ -478,5 +477,54 @@ public class EmkAccessoriesEntity implements Serializable {
 
     public void setTracerName(String tracerName) {
         this.tracerName = tracerName;
+    }
+
+    @Column(name = "LEAD_ADVICE", nullable = true, length = 256)
+    public String getLeadAdvice() {
+        return this.leadAdvice;
+    }
+
+    public void setLeadAdvice(String leadAdvice) {
+        this.leadAdvice = leadAdvice;
+    }
+
+    @Column(name = "IS_PASS", nullable = true, length = 32)
+    public String getIsPass() {
+        return this.isPass;
+    }
+
+    public void setIsPass(String isPass) {
+        this.isPass = isPass;
+    }
+
+    @Column(name = "LEAD_USER_ID", nullable = true, length = 32)
+    public String getLeadUserId() {
+        return this.leadUserId;
+    }
+
+    public void setLeadUserId(String leadUserId) {
+        this.leadUserId = leadUserId;
+    }
+
+    @Column(name = "LEADER", nullable = true, length = 32)
+    public String getLeader() {
+        return this.leader;
+    }
+
+    public void setLeader(String leader) {
+        this.leader = leader;
+    }
+
+    @Column(name ="STATE",nullable=true,length=32)
+    public String getState(){
+        return this.state;
+    }
+
+    /**
+     *方法: 设置java.lang.String
+     *@param: java.lang.String  工单状态
+     */
+    public void setState(String state){
+        this.state = state;
     }
 }

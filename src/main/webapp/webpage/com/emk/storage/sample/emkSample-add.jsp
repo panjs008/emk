@@ -52,7 +52,7 @@
   </script>
  </head>
  <body>
-  <t:formvalid formid="formobj" dialog="true" usePlugin="password" layout="table" action="emkSampleController.do?doAdd" tiptype="1">
+  <t:formvalid formid="formobj" dialog="true" usePlugin="password" layout="table" action="emkYptzdController.do?doAdd" tiptype="1">
 					<input id="id" name="id" type="hidden" value="${emkSamplePage.id }"/>
 	  <input id="flag" name="flag" type="hidden" value="${param.flag}"/>
 	  <table style="width: 100%;" cellpadding="0" cellspacing="1" class="formtable">

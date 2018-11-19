@@ -17,20 +17,20 @@
     <t:dgCol title="单位"  field="unit"  queryMode="single"  width="50"></t:dgCol>
     <t:dgCol title="单价"  field="signPrice"  queryMode="single"  width="50"></t:dgCol>
     <t:dgCol title="成本"  field="chengben"  queryMode="single"  width="60"></t:dgCol>
-    <t:dgCol title="备注"  field="remark"  hidden="true" queryMode="single"  width="120"></t:dgCol>
-    <t:dgCol title="样品ID"  field="sampleId" hidden="true"  queryMode="single"  width="120"></t:dgCol>
-    <t:dgToolBar title="录入" icon="fa fa-plus" url="emkSampleDetailController.do?goAdd&type=${param.type}&sampleId=${param.sampleId}&sampleType=${param.sampleType}&winTitle=录入样品主辅料" funname="add"></t:dgToolBar>
-    <t:dgToolBar title="编辑" icon="fa fa-edit" url="emkSampleDetailController.do?goUpdate&sampleType=${param.sampleType}" funname="update"></t:dgToolBar>
-    <t:dgToolBar title="删除"  icon="fa fa-remove" url="emkSampleDetailController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
+    <c:if test="${param.state eq '0'}">
+        <t:dgToolBar title="录入" icon="fa fa-plus" url="emkSampleDetailController.do?goAdd&type=${param.type}&sampleId=${param.sampleId}&sampleType=${param.sampleType}&winTitle=录入样品主辅料" funname="add"></t:dgToolBar>
+        <t:dgToolBar title="编辑" icon="fa fa-edit"  url="emkSampleDetailController.do?goUpdate&sampleType=${param.sampleType}" funname="update"></t:dgToolBar>
+        <t:dgToolBar title="删除" icon="fa fa-remove" url="emkSampleDetailController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
+    </c:if>
 
 </t:datagrid>
- <script src = "webpage/com/emk/storage/sampledetail/emkSampleDetailList.js"></script>		
+ <script src = "webpage/com/emk/storage/sampledetail/emkSampleDetailList.js"></script>
  <script type="text/javascript">
  $(document).ready(function(){
  });
- 
-   
- 
+
+
+
 //导入
 function ImportXls() {
 	openuploadwin('Excel导入', 'emkSampleDetailController.do?upload', "emkSampleDetailList");

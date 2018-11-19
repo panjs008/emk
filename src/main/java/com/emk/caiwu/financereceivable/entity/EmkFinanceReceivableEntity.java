@@ -138,11 +138,11 @@ public class EmkFinanceReceivableEntity implements java.io.Serializable {
 	/**客户名称*/
 	@Excel(name="客户名称",width=15)
 	private String cusName;
-	@Excel(name = "审核意见", width = 15)
+	@Excel(name = "审核意见")
 	private String leadAdvice;
 	private String isPass;
 	private String leadUserId;
-	@Excel(name = "审核人", width = 15)
+	@Excel(name = "审核人")
 	private String leader;
 	private String state;
 	/**

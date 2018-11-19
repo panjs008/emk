@@ -20,128 +20,128 @@ public class EmkSampleRequiredEntity
     private String createBy;
     private Date createDate;
     private String sysOrgCode;
-    @Excel(name = "需求单号", width = 15)
+    @Excel(name = "需求单号")
     private String requiredNo;
-    @Excel(name = "提交日期", width = 15)
+    @Excel(name = "提交日期")
     private String kdDate;
-    @Excel(name = "业务员", width = 15)
+    @Excel(name = "业务员")
     private String businesser;
     private String businesserName;
-    @Excel(name = "客户代码", width = 15)
+    @Excel(name = "客户代码")
     private String cusNum;
-    @Excel(name = "客户名称", width = 15)
+    @Excel(name = "客户名称")
     private String cusName;
-    @Excel(name = "工艺种类", width = 15)
+    @Excel(name = "工艺种类")
     private String gyzl;
     private String proType;
-    @Excel(name = "款式大类", width = 15)
+    @Excel(name = "款式大类")
     private String proTypeName;
-    @Excel(name = "图片", width = 15)
+    @Excel(name = "图片")
     private String customSampleUrl;
-    @Excel(name = "图片", width = 15)
+    @Excel(name = "图片")
     private String customSample;
-    @Excel(name = "款号", width = 15)
+    @Excel(name = "款号")
     private String sampleNo;
-    @Excel(name = "描述", width = 15)
+    @Excel(name = "描述")
     private String sampleNoDesc;
-    @Excel(name = "是否打过初样", width = 15)
+    @Excel(name = "是否打过初样")
     private String isPrintSample;
-    @Excel(name = "是否收取打样费", width = 15)
+    @Excel(name = "是否收取打样费")
     private String isGetSample;
-    @Excel(name = "是否有原样", width = 15)
+    @Excel(name = "是否有原样")
     private String isHaveOld;
     private String oldImageUrl;
-    @Excel(name = "原样", width = 15)
+    @Excel(name = "原样")
     private String oldImage;
-    @Excel(name = "是否有设计稿", width = 15)
+    @Excel(name = "是否有设计稿")
     private String isHaveDgr;
     private String dgrImageUrl;
-    @Excel(name = "设计稿", width = 15)
+    @Excel(name = "设计稿")
     private String dgrImage;
-    @Excel(name = "是否有尺寸表", width = 15)
+    @Excel(name = "是否有尺寸表")
     private String isHaveSize;
     private String sizeImageUrl;
-    @Excel(name = "尺寸表", width = 15)
+    @Excel(name = "尺寸表")
     private String sizeImage;
-    @Excel(name = "意向货交期", width = 15)
+    @Excel(name = "意向货交期")
     private String ysDate;
-    @Excel(name = "距交期余天数", width = 15)
+    @Excel(name = "距交期余天数")
     private Integer levelDays;
-    @Excel(name = "业务跟单员", width = 15)
+    @Excel(name = "业务跟单员")
     private String tracer;
     private String tracerName;
-    @Excel(name = "版次", width = 15)
+    @Excel(name = "版次")
     private String version;
-    @Excel(name = "布面克重", width = 15)
+    @Excel(name = "布面克重")
     private String weight;
-    @Excel(name = "布面成分", width = 15)
+    @Excel(name = "布面成分")
     private String chengf;
-    @Excel(name = "业务部门", width = 15)
+    @Excel(name = "业务部门")
     private String businesseDeptName;
     private String businesseDeptId;
-    @Excel(name = "颜色英文名称", width = 15)
+    @Excel(name = "颜色英文名称")
     private String colorEnName;
-    @Excel(name = "颜色中文名称", width = 15)
+    @Excel(name = "颜色中文名称")
     private String colorZnName;
-    @Excel(name = "色号", width = 15)
+    @Excel(name = "色号")
     private String colorValue;
-    @Excel(name = "尺码", width = 15)
+    @Excel(name = "尺码")
     private String size;
-    @Excel(name = "数量", width = 15)
+    @Excel(name = "数量")
     private Integer total;
-    @Excel(name = "机台尺寸", width = 15)
+    @Excel(name = "机台尺寸")
     private String machineSize;
-    @Excel(name = "下机重量", width = 15)
+    @Excel(name = "下机重量")
     private String machineWeight;
-    @Excel(name = "下机尺寸", width = 15)
+    @Excel(name = "下机尺寸")
     private String downMachineSize;
-    @Excel(name = "密度", width = 15)
+    @Excel(name = "密度")
     private String prcent;
-    @Excel(name = "用料", width = 15)
+    @Excel(name = "用料")
     private String userLiao;
-    @Excel(name = "单件织造时间", width = 15)
+    @Excel(name = "单件织造时间")
     private String oneMakeDate;
-    @Excel(name = "染色要求", width = 15)
+    @Excel(name = "染色要求")
     private String ranRequired;
-    @Excel(name = "缝制要求", width = 15)
+    @Excel(name = "缝制要求")
     private String fengRequired;
-    @Excel(name = "状态", width = 15)
+    @Excel(name = "状态")
     private String state;
-    @Excel(name = "样品去向", width = 15)
+    @Excel(name = "样品去向")
     private String sampleTo;
-    @Excel(name = "收件人", width = 15)
+    @Excel(name = "收件人")
     private String recevier;
-    @Excel(name = "收件日期", width = 15)
+    @Excel(name = "收件日期")
     private String recevieDate;
-    @Excel(name = "寄件人", width = 15)
+    @Excel(name = "寄件人")
     private String sender;
-    @Excel(name = "寄件数量", width = 15)
+    @Excel(name = "寄件数量")
     private Integer sendTotal;
-    @Excel(name = "剩余数量", width = 15)
+    @Excel(name = "剩余数量")
     private Integer levelTotal;
-    @Excel(name = "审批意见", width = 15)
+    @Excel(name = "审批意见")
     private String checkAdvice;
-    @Excel(name = "布面意见", width = 15)
+    @Excel(name = "布面意见")
     private String buAdvice;
-    @Excel(name = "缝制意见", width = 15)
+    @Excel(name = "缝制意见")
     private String fengAdvice;
-    @Excel(name = "交期意见", width = 15)
+    @Excel(name = "交期意见")
     private String jqAdvice;
-    @Excel(name = "备注", width = 15)
+    @Excel(name = "备注")
     private String remark;
-    @Excel(name = "样品类型", width = 15)
+    @Excel(name = "样品类型")
     private String type;
-    @Excel(name = "下机克重", width = 15)
+    @Excel(name = "下机克重")
     private Double xjkz;
-    @Excel(name = "单件所需时间", width = 15)
+    @Excel(name = "单件所需时间")
     private String djsxTime;
-    @Excel(name = "单位", width = 15)
+    @Excel(name = "单位")
     private String unit;
-    @Excel(name = "机台日产量", width = 15)
+    @Excel(name = "机台日产量")
     private Integer jtrcl;
-    @Excel(name = "前道损耗率", width = 15)
+    @Excel(name = "前道损耗率")
     private Double qdshl;
-    @Excel(name = "后道损耗率", width = 15)
+    @Excel(name = "后道损耗率")
     private Double hdshl;
 
     @Id

@@ -19,17 +19,17 @@ public class EmkProOrderBarcodeEntity implements Serializable {
     private String createBy;
     private Date createDate;
     private String sysOrgCode;
-    @Excel(name = "订单ID", width = 15)
+    @Excel(name = "订单ID")
     private String orderId;
-    @Excel(name = "颜色", width = 15)
+    @Excel(name = "颜色")
     private String color;
-    @Excel(name = "尺码", width = 15)
+    @Excel(name = "尺码")
     private String size;
-    @Excel(name = "条码", width = 15)
+    @Excel(name = "条码")
     private String code;
-    @Excel(name = "数量", width = 15)
+    @Excel(name = "数量")
     private Integer total;
-    @Excel(name = "类型", width = 15)
+    @Excel(name = "类型")
     private String type;
 
     @Id

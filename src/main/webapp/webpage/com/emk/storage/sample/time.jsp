@@ -41,7 +41,7 @@
 						<div class="point"><b></b></div>
 						<div class="liright">
 							<div class="histt"><a style="font-size: 14px;">${task.NAME_}</a></div>
-							<div class="histt"><a style="font-size: 12px;"><c:if test="${task.TASK_DEF_KEY_ eq 'sampleTask'}">【${task.workname}】发起打样申请单，打样单号：${emkSample.sampleNum}</c:if>
+							<div class="histt"><a style="font-size: 12px;"><c:if test="${task.TASK_DEF_KEY_ eq 'sampleTask'}">【${task.workname}】发起样品通知单，样品通知单号：${emkSample.sampleNum}</c:if>
 								<c:if test="${task.TASK_DEF_KEY_ eq 'leadTask'}">审核人【${emkSample.leader}】，处理意见：${emkSample.leadAdvice}</c:if>
 							</a></div>
 						</div>

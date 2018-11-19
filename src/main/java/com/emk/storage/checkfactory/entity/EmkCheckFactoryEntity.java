@@ -14,6 +14,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.SequenceGenerator;
 import org.jeecgframework.poi.excel.annotation.Excel;
@@ -96,14 +98,22 @@ public class EmkCheckFactoryEntity implements java.io.Serializable {
 	@Excel(name="验厂申请编号",width=15)
 	private String ycsqbh;
 
-	@Excel(name = "审核意见", width = 15)
+	@Excel(name = "审核意见")
 	private String leadAdvice;
 	private String isPass;
 	private String leadUserId;
-	@Excel(name = "审核人", width = 15)
+	@Excel(name = "审核人")
 	private String leader;
 	private String state;
-	
+
+	private String cyUserId;
+	private String cyer;
+	private String cyAdvice;
+	private String bgUserId;
+	private String bger;
+	private String bgAdvice;
+	private String isHg;
+
 	/**
 	 *方法: 取得java.lang.String
 	 *@return: java.lang.String  主键
@@ -128,7 +138,7 @@ public class EmkCheckFactoryEntity implements java.io.Serializable {
 	 *方法: 取得java.lang.String
 	 *@return: java.lang.String  创建人名称
 	 */
-
+	@Formula("(select p.NAME_ from act_ru_task p where p.ASSIGNEE_ = id)")
 	@Column(name ="CREATE_NAME",nullable=true,length=50)
 	public String getCreateName(){
 		return this.createName;
@@ -563,5 +573,69 @@ public class EmkCheckFactoryEntity implements java.io.Serializable {
 	 */
 	public void setState(String state){
 		this.state = state;
+	}
+
+	@Column(name ="cy_user_id",nullable=true,length=32)
+	public String getCyUserId() {
+		return cyUserId;
+	}
+
+	public void setCyUserId(String cyUserId) {
+		this.cyUserId = cyUserId;
+	}
+
+	@Column(name ="cyer",nullable=true,length=32)
+	public String getCyer() {
+		return cyer;
+	}
+
+	public void setCyer(String cyer) {
+		this.cyer = cyer;
+	}
+
+	@Column(name ="cy_advice",nullable=true,length=32)
+	public String getCyAdvice() {
+		return cyAdvice;
+	}
+
+	public void setCyAdvice(String cyAdvice) {
+		this.cyAdvice = cyAdvice;
+	}
+
+	@Column(name ="bg_user_id",nullable=true,length=32)
+
+	public String getBgUserId() {
+		return bgUserId;
+	}
+
+	public void setBgUserId(String bgUserId) {
+		this.bgUserId = bgUserId;
+	}
+
+	@Column(name ="bger",nullable=true,length=32)
+	public String getBger() {
+		return bger;
+	}
+
+	public void setBger(String bger) {
+		this.bger = bger;
+	}
+
+	@Column(name ="bg_advice",nullable=true,length=32)
+	public String getBgAdvice() {
+		return bgAdvice;
+	}
+
+	public void setBgAdvice(String bgAdvice) {
+		this.bgAdvice = bgAdvice;
+	}
+
+	@Column(name ="is_hg",nullable=true,length=32)
+	public String getIsHg() {
+		return isHg;
+	}
+
+	public void setIsHg(String isHg) {
+		this.isHg = isHg;
 	}
 }

@@ -14,9 +14,9 @@
     <t:dgCol title="单位"  field="unit"  queryMode="single"  width="40"></t:dgCol>
     <t:dgCol title="捻向"  field="direction"  queryMode="single"  width="60"></t:dgCol>
     <t:dgCol title="批号"  field="betchNum"  queryMode="single"  width="60"></t:dgCol>
-    <t:dgToolBar title="录入" icon="fa fa-plus" url="emkMaterialDetailController.do?goAdd&materialId=${param.materialId}" funname="add"></t:dgToolBar>
-    <t:dgToolBar title="编辑" icon="fa fa-edit" url="emkMaterialDetailController.do?goUpdate" funname="update"></t:dgToolBar>
-    <t:dgToolBar title="删除"  icon="fa fa-remove" url="emkMaterialDetailController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
+    <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkMaterialDetailController.do?goAdd&materialId=${param.materialId}" funname="add"></t:dgToolBar>
+    <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkMaterialDetailController.do?goUpdate" funname="update"></t:dgToolBar>
+    <t:dgToolBar title="删除" operationCode="delete"  icon="fa fa-remove" url="emkMaterialDetailController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
 </t:datagrid>
  <script src = "webpage/com/emk/storage/materialdetail/emkMaterialDetailList.js"></script>		
  <script type="text/javascript">

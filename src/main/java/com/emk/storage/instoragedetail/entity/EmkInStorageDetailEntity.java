@@ -21,35 +21,35 @@ public class EmkInStorageDetailEntity
     private Date createDate;
     private String sysOrgCode;
     private String sysCompanyCode;
-    @Excel(name = "入库单ID", width = 15)
+    @Excel(name = "入库单ID")
     private String inStorageId;
-    @Excel(name = "商品ID", width = 15)
+    @Excel(name = "商品ID")
     private String proId;
-    @Excel(name = "物料编号", width = 15)
+    @Excel(name = "物料编号")
     private String proNum;
-    @Excel(name = "规格", width = 15)
+    @Excel(name = "规格")
     private String brand;
-    @Excel(name = "数量", width = 15)
+    @Excel(name = "数量")
     private String signTotal;
-    @Excel(name = "单位", width = 15)
+    @Excel(name = "单位")
     private String signUnit;
-    @Excel(name = "单价", width = 15)
+    @Excel(name = "单价")
     private String signPrice;
-    @Excel(name = "备注", width = 15)
+    @Excel(name = "备注")
     private String remark;
-    @Excel(name = "物料名称", width = 15)
+    @Excel(name = "物料名称")
     private String proName;
-    @Excel(name = "仓库ID", width = 15)
+    @Excel(name = "仓库ID")
     private String storageSetId;
-    @Excel(name = "仓库名称", width = 15)
+    @Excel(name = "仓库名称")
     private String storageName;
-    @Excel(name = "库位ID", width = 15)
+    @Excel(name = "库位ID")
     private String positionId;
-    @Excel(name = "库位名称", width = 15)
+    @Excel(name = "库位名称")
     private String positionName;
-    @Excel(name = "款号", width = 15)
+    @Excel(name = "款号")
     private String sampleNo;
-    @Excel(name = "款号名称", width = 15)
+    @Excel(name = "款号名称")
     private String sampleName;
 
     @Id

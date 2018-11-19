@@ -17,7 +17,7 @@
       <t:dgCol title="图片"  field="customSampleUrl" imageSize="30,30"  image="true"  queryMode="single"  width="50"></t:dgCol>
       <t:dgCol title="原样"  field="oldImageUrl" imageSize="30,30"  image="true"  queryMode="single"  width="50"></t:dgCol>
       <t:dgCol title="业务部门"  field="businesseDeptName"  queryMode="single"  width="80"></t:dgCol>
-      <t:dgCol title="业务员"  field="businesser"  queryMode="single"  width="70"></t:dgCol>
+      <t:dgCol title="业务员"  field="businesserName"  queryMode="single"  width="70"></t:dgCol>
    <t:dgCol title="客户代码" query="true" field="cusNum"  queryMode="single"  width="70"></t:dgCol>
    <t:dgCol title="客户名称" query="true" field="cusName"  queryMode="single"  width="140"></t:dgCol>
       <t:dgCol title="款号"  field="sampleNo"  queryMode="single"  width="70"></t:dgCol>
@@ -27,15 +27,15 @@
    <t:dgCol title="币种"  field="bz"  queryMode="single"  width="50"></t:dgCol>
    <t:dgCol title="总金额"  field="sumMoney"  queryMode="single"  width="60"></t:dgCol>
       <t:dgCol title="状态"  field="state" formatterjs="formatColor"  queryMode="single"  width="60"></t:dgCol>
-      <t:dgFunOpt funname="queryDetail1(id,enquiryNo)" title="明细" urlclass="ace_button" urlfont="fa-list-alt"></t:dgFunOpt>
-      <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkEnquiryController.do?goAdd&winTitle=录入意向询盘单" funname="add" height="580" width="1000"></t:dgToolBar>
+      <t:dgFunOpt funname="queryDetail1(id,enquiryNo,state)" title="明细" urlclass="ace_button" urlfont="fa-list-alt"></t:dgFunOpt>
+      <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add"  url="emkEnquiryController.do?goAdd&winTitle=录入意向询盘单" funname="add" height="580" width="1000"></t:dgToolBar>
        <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkEnquiryController.do?goUpdate&winTitle=编辑意向询盘单" funname="update" height="580" width="1000"></t:dgToolBar>
       <t:dgToolBar title="查看" icon="fa fa-search" operationCode="look" url="emkEnquiryController.do?goUpdate&goUpdate&winTitle=查看意向询盘单" funname="detail" height="580" width="1000"></t:dgToolBar>
-      <t:dgToolBar title="提交" icon="fa fa-arrow-circle-up" operationCode="submit" funname="doSubmitV"></t:dgToolBar>
-      <t:dgToolBar title="流程进度" icon="fa fa-plus" operationCode="process" funname="goToProcess"></t:dgToolBar>
+      <t:dgToolBar title="提交" operationCode="submit" icon="fa fa-arrow-circle-up"  funname="doSubmitV"></t:dgToolBar>
+      <t:dgToolBar title="流程进度" operationCode="process" icon="fa fa-plus"  funname="goToProcess"></t:dgToolBar>
 
-      <t:dgToolBar title="删除"  icon="fa fa-remove" operationCode="delete" url="emkEnquiryController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
-      <t:dgToolBar title="导出" icon="fa fa-arrow-circle-right" operationCode="exp" funname="ExportXls"></t:dgToolBar>
+      <t:dgToolBar title="删除" operationCode="delete"  icon="fa fa-remove"  url="emkEnquiryController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
+      <t:dgToolBar title="导出" operationCode="exp" icon="fa fa-arrow-circle-right"  funname="ExportXls"></t:dgToolBar>
 
   </t:datagrid>
   </div>
@@ -84,21 +84,25 @@
              var d = $.parseJSON(data);
              if (d.success) {
                  var msg = d.msg;
-
                  if(rowsData[0].createBy == "${CUR_USER.userName}"){
                      createdetailwindow("流程进度--当前环节：" + msg, "flowController.do?goProcess&processUrl=com/emk/storage/enquiry/emkEnquiry-process&id=" + rowsData[0].id, 1200, height);
                  }else{
                      if (msg == "完成") {
                          createdetailwindow('流程进度--当前环节：' + msg, 'flowController.do?goProcess&processUrl=com/emk/storage/enquiry/emkEnquiry-process&id=' + rowsData[0].id, 1200, height);
                      } else {
-                         createwindow("流程进度--当前环节：" + msg, "flowController.do?goProcess&processUrl=com/emk/storage/enquiry/emkEnquiry-process&id=" + rowsData[0].id, 1200, height);
+                         if("${ROLE.rolecode}" == "ywjl") {
+                             createwindow("流程进度--当前环节：" + msg, "flowController.do?goProcess&processUrl=com/emk/storage/enquiry/emkEnquiry-process&id=" + rowsData[0].id, 1200, height);
+                         }else{
+                             createdetailwindow("流程进度--当前环节：" + msg, "flowController.do?goProcess&processUrl=com/emk/storage/enquiry/emkEnquiry-process&id=" + rowsData[0].id, 1200, height);
+                         }
                      }
                  }
+
              }
          }
      });
  }
- function queryDetail1(id,eNo){
+ function queryDetail1(id,eNo,state){
      $('#emkEnquiryList').datagrid('unselectAll');
      var title = "询盘订单明细："+eNo;
      if(li_east == 0 || $('#main_list').layout('panel','east').panel('options').title != title){
@@ -107,7 +111,7 @@
      $('#main_list').layout('panel','east').panel('setTitle', title);
      $('#main_list').layout('panel','east').panel('resize', {width: 500});
 
-     $('#proDetialListpanel').panel("refresh", "emkEnquiryDetailController.do?list&enquiryId=" + id);
+     $('#proDetialListpanel').panel("refresh", "emkEnquiryDetailController.do?list&state="+state+"&enquiryId=" + id);
  }
 
  function doSubmitV() {

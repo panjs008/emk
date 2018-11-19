@@ -20,17 +20,17 @@ public class EmkSampleRanEntity
     private String createBy;
     private Date createDate;
     private String sysOrgCode;
-    @Excel(name = "布面种类", width = 15)
+    @Excel(name = "布面种类")
     private String buType;
-    @Excel(name = "染色单价", width = 15)
+    @Excel(name = "染色单价")
     private Double price;
-    @Excel(name = "单位", width = 15)
+    @Excel(name = "单位")
     private String unit;
-    @Excel(name = "单件克重", width = 15)
+    @Excel(name = "单件克重")
     private Double oneWeight;
-    @Excel(name = "成本", width = 15)
+    @Excel(name = "成本")
     private Double chengben;
-    @Excel(name = "样品ID", width = 15)
+    @Excel(name = "样品ID")
     private String sampleId;
 
     @Id

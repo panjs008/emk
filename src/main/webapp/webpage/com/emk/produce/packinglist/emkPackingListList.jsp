@@ -21,9 +21,9 @@
       <t:dgCol title="总体积"  field="sumBoxVolume"  queryMode="single"  width="80"></t:dgCol>
       <t:dgCol title="总净重"  field="sumBoxJz"  queryMode="single"  width="80"></t:dgCol>
 
-      <t:dgToolBar title="录入" icon="fa fa-plus" url="emkPackingListController.do?goAdd&winTitle=录入装箱单" funname="add" height="600" width="1000"></t:dgToolBar>
-       <t:dgToolBar title="编辑" icon="fa fa-edit" url="emkPackingListController.do?goUpdate&winTitle=编辑装箱单" funname="update" height="600" width="1000"></t:dgToolBar>
-       <t:dgToolBar title="删除"  icon="fa fa-remove" url="emkPackingListController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
+      <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkPackingListController.do?goAdd&winTitle=录入装箱单" funname="add" height="600" width="1000"></t:dgToolBar>
+       <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkPackingListController.do?goUpdate&winTitle=编辑装箱单" funname="update" height="600" width="1000"></t:dgToolBar>
+       <t:dgToolBar title="删除" operationCode="delete"  icon="fa fa-remove" url="emkPackingListController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
   </t:datagrid>
   </div>
  </div>

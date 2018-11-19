@@ -19,113 +19,113 @@ public class EmkColorEntity implements Serializable {
     private String createBy;
     private Date createDate;
     private String sysOrgCode;
-    @Excel(name = "款号", width = 15)
+    @Excel(name = "款号")
     private String sampleNo;
-    @Excel(name = "客户编号", width = 15)
+    @Excel(name = "客户编号")
     private String cusNum;
-    @Excel(name = "客户名称", width = 15)
+    @Excel(name = "客户名称")
     private String cusName;
-    @Excel(name = "是否标准色卡", width = 15)
+    @Excel(name = "是否标准色卡")
     private String isColorCard;
     private String colorCardUrl;
-    @Excel(name = "标准色卡", width = 15)
+    @Excel(name = "标准色卡")
     private String colorCard;
     private String sampleId;
-    @Excel(name = "色样需求单号", width = 15)
+    @Excel(name = "色样需求单号")
     private String colorNo;
-    @Excel(name = "是否标准色号", width = 15)
+    @Excel(name = "是否标准色号")
     private String isColorNum;
     private String colorNumUrl;
-    @Excel(name = "标准色号", width = 15)
+    @Excel(name = "标准色号")
     private String colorNum;
-    @Excel(name = "色卡说明", width = 15)
+    @Excel(name = "色卡说明")
     private String colorCardRemark;
-    @Excel(name = "色号说明", width = 15)
+    @Excel(name = "色号说明")
     private String colorNumRemark;
-    @Excel(name = "是否标准色数据", width = 15)
+    @Excel(name = "是否标准色数据")
     private String isColorData;
-    @Excel(name = "标准色数据", width = 15)
+    @Excel(name = "标准色数据")
     private String colorData;
     private String colorDataUrl;
-    @Excel(name = "是否QTX", width = 15)
+    @Excel(name = "是否QTX")
     private String isColorQtx;
-    @Excel(name = "QTX", width = 15)
+    @Excel(name = "QTX")
     private String colorQtx;
     private String colorQtxUrl;
-    @Excel(name = "色样种类", width = 15)
+    @Excel(name = "色样种类")
     private String colorType;
-    @Excel(name = "颜色中文名称", width = 15)
+    @Excel(name = "颜色中文名称")
     private String colorZnName;
-    @Excel(name = "颜色英文名称", width = 15)
+    @Excel(name = "颜色英文名称")
     private String colorEnName;
-    @Excel(name = "色号", width = 15)
+    @Excel(name = "色号")
     private String seNum;
-    @Excel(name = "色样编号", width = 15)
+    @Excel(name = "色样编号")
     private String syNum;
-    @Excel(name = "主光源", width = 15)
+    @Excel(name = "主光源")
     private String zgy;
-    @Excel(name = "次光源", width = 15)
+    @Excel(name = "次光源")
     private String cgy;
-    @Excel(name = "开单日期", width = 15)
+    @Excel(name = "开单日期")
     private String kdDate;
-    @Excel(name = "交期", width = 15)
+    @Excel(name = "交期")
     private String recevieDate;
-    @Excel(name = "色样规格", width = 15)
+    @Excel(name = "色样规格")
     private String colorBrand;
-    @Excel(name = "色样数量", width = 15)
+    @Excel(name = "色样数量")
     private String colorTotal;
-    @Excel(name = "色牢度", width = 15)
+    @Excel(name = "色牢度")
     private Double colorSlg;
-    @Excel(name = "化学物质", width = 15)
+    @Excel(name = "化学物质")
     private String hxwz;
-    @Excel(name = "重金属", width = 15)
+    @Excel(name = "重金属")
     private String gjs;
-    @Excel(name = "色样去向", width = 15)
+    @Excel(name = "色样去向")
     private String syTo;
-    @Excel(name = "收件人", width = 15)
+    @Excel(name = "收件人")
     private String recevier;
-    @Excel(name = "日期", width = 15)
+    @Excel(name = "日期")
     private String riqi;
-    @Excel(name = "寄件人", width = 15)
+    @Excel(name = "寄件人")
     private String sender;
-    @Excel(name = "寄件数量", width = 15)
+    @Excel(name = "寄件数量")
     private Integer sendTotal;
-    @Excel(name = "剩余数量", width = 15)
+    @Excel(name = "剩余数量")
     private Integer syTotal;
-    @Excel(name = "客户评语", width = 15)
+    @Excel(name = "客户评语")
     private String cusRemark;
-    @Excel(name = "色样状态", width = 15)
+    @Excel(name = "色样状态")
     private String colorState;
-    @Excel(name = "需求单审批意见", width = 15)
+    @Excel(name = "需求单审批意见")
     private String advice;
-    @Excel(name = "技术员染色意见", width = 15)
+    @Excel(name = "技术员染色意见")
     private String jsyAdvice;
-    @Excel(name = "技术部交期意见", width = 15)
+    @Excel(name = "技术部交期意见")
     private String jsbAdvice;
-    @Excel(name = "业务员", width = 15)
+    @Excel(name = "业务员")
     private String businesser;
     private String businesserName;
-    @Excel(name = "业务跟单员", width = 15)
+    @Excel(name = "业务跟单员")
     private String tracer;
     private String tracerName;
-    @Excel(name = "业务部门", width = 15)
+    @Excel(name = "业务部门")
     private String businesseDeptName;
     private String businesseDeptId;
-    @Excel(name = "寄件日期", width = 15)
+    @Excel(name = "寄件日期")
     private String sendDate;
-    @Excel(name = "工艺种类", width = 15)
+    @Excel(name = "工艺种类")
     private String gyzl;
     private String proType;
-    @Excel(name = "款式大类", width = 15)
+    @Excel(name = "款式大类")
     private String proTypeName;
     private String customSampleUrl;
-    @Excel(name = "图片", width = 15)
+    @Excel(name = "图片")
     private String customSample;
-    @Excel(name = "版次", width = 15)
+    @Excel(name = "版次")
     private String version;
-    @Excel(name = "描述", width = 15)
+    @Excel(name = "描述")
     private String sampleNoDesc;
-    @Excel(name = "备注", width = 15)
+    @Excel(name = "备注")
     private String remark;
 
     @Id

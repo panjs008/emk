@@ -223,7 +223,7 @@
 			</td>
 			<td class="value" rowspan="2" valign="bottom">
 				<input id="customSample" value="${emkColorPage.customSample }" name="customSample" type="hidden" />
-				<img id="uploadimg0" src="${emkColorPage.customSampleUrl eq null ? 'images/bjlogo.png':emkColorPage.customSampleUrl}" width="150" height="150">
+				<img id="uploadimg0" src="${emkColorPage.customSampleUrl eq '' ? 'images/bjlogo.png':emkColorPage.customSampleUrl}" width="150" height="150">
 				<t:upload name="instruction0" id="instruction0" dialog="false" extend="*.jpg;*.png;*.gif;*.ico;*.dwg" buttonText="添加文件" queueID="instructionfile" view="false" auto="true" uploader="systemController.do?saveFiles"  onUploadSuccess="uploadSuccess0" >
 				</t:upload>[<a href="javascript:findDetail('${emkColorPage.customSampleUrl }')">${emkColorPage.customSample }</a>]
 				<span id="customSampleId"></span>
@@ -265,7 +265,7 @@
 			</td>
 			<td class="value">
 				<input id="colorCard" value="${emkColorPage.colorCard }" name="colorCard" type="hidden" />
-				<img id="uploadimg1" src="${emkColorPage.colorCardUrl eq null ? 'images/bjlogo.png':emkColorPage.colorCardUrl}" width="150" height="150">
+				<img id="uploadimg1" src="${emkColorPage.colorCardUrl eq '' ? 'images/bjlogo.png':emkColorPage.colorCardUrl}" width="150" height="150">
 				<t:upload name="instruction1" id="instruction1" dialog="false" extend="*.jpg;*.png;*.gif;*.ico;*.dwg" buttonText="添加文件" queueID="instructionfile" view="false" auto="true" uploader="systemController.do?saveFiles"  onUploadSuccess="uploadSuccess1" >
 				</t:upload>[<a href="javascript:findDetail('${emkColorPage.colorCardUrl }')">${emkColorPage.colorCard }</a>]
 				<span id="colorCardId"></span>
@@ -279,7 +279,7 @@
 			</td>
 			<td class="value">
 				<input id="colorNum" value="${emkColorPage.id }" name="colorNum" type="hidden" />
-				<img id="uploadimg2" src="${emkColorPage.colorNumUrl eq null ? 'images/bjlogo.png':emkColorPage.colorNumUrl}" width="150" height="150">
+				<img id="uploadimg2" src="${emkColorPage.colorNumUrl eq '' ? 'images/bjlogo.png':emkColorPage.colorNumUrl}" width="150" height="150">
 				<t:upload name="instruction2" id="instruction2" dialog="false" extend="*.jpg;*.png;*.gif;*.ico;*.dwg" buttonText="添加文件" queueID="instructionfile" view="false" auto="true" uploader="systemController.do?saveFiles"  onUploadSuccess="uploadSuccess2" >
 				</t:upload>[<a href="javascript:findDetail('${emkColorPage.colorNumUrl }')">${emkColorPage.colorNum }</a>]
 				<span id="colorNumId"></span>
@@ -322,7 +322,7 @@
 				</label>
 			</td>
 			<td class="value">
-				<img id="uploadimg3" src="${emkColorPage.colorDataUrl eq null ? 'images/bjlogo.png':emkColorPage.colorDataUrl}" width="150" height="150">
+				<img id="uploadimg3" src="${emkColorPage.colorDataUrl eq '' ? 'images/bjlogo.png':emkColorPage.colorDataUrl}" width="150" height="150">
 				<t:upload name="instruction3" id="instruction3" dialog="false" extend="*.jpg;*.png;*.gif;*.ico;*.dwg" buttonText="添加文件" queueID="instructionfile" view="false" auto="true" uploader="systemController.do?saveFiles"  onUploadSuccess="uploadSuccess3" >
 				</t:upload>[<a href="javascript:findDetail('${emkColorPage.colorDataUrl }')">${emkColorPage.colorData }</a>]
 				<span id="colorDataId"></span>
@@ -337,7 +337,7 @@
 			</td>
 			<td class="value" colspan="3">
 				<input id="colorQtx"  value="${emkColorPage.colorQtx }" name="colorQtx" type="hidden" />
-				<img id="uploadimg4" src="${emkColorPage.colorQtxUrl eq null ? 'images/bjlogo.png':emkColorPage.colorQtxUrl}" width="150" height="150">
+				<img id="uploadimg4" src="${emkColorPage.colorQtxUrl eq '' ? 'images/bjlogo.png':emkColorPage.colorQtxUrl}" width="150" height="150">
 				<t:upload name="instruction4" id="instruction4" dialog="false" extend="*.jpg;*.png;*.gif;*.ico;*.dwg" buttonText="添加文件" queueID="instructionfile" view="false" auto="true" uploader="systemController.do?saveFiles"  onUploadSuccess="uploadSuccess4" >
 				</t:upload>[<a href="javascript:findDetail('${emkColorPage.colorQtxUrl }')">${emkColorPage.colorQtx }</a>]
 				<span id="colorQtxId"></span>

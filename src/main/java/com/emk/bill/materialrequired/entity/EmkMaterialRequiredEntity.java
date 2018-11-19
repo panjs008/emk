@@ -19,61 +19,61 @@ public class EmkMaterialRequiredEntity implements Serializable {
     private String createBy;
     private Date createDate;
     private String sysOrgCode;
-    @Excel(name = "需求单号", width = 15)
+    @Excel(name = "需求单号")
     private String materialNo;
-    @Excel(name = "提交日期", width = 15)
+    @Excel(name = "提交日期")
     private String kdDate;
-    @Excel(name = "业务员", width = 15)
+    @Excel(name = "业务员")
     private String businesser;
     private String businesserName;
-    @Excel(name = "客户代码", width = 15)
+    @Excel(name = "客户代码")
     private String cusNum;
-    @Excel(name = "客户名称", width = 15)
+    @Excel(name = "客户名称")
     private String cusName;
-    @Excel(name = "工艺种类", width = 15)
+    @Excel(name = "工艺种类")
     private String gyzl;
     private String proType;
-    @Excel(name = "款式大类", width = 15)
+    @Excel(name = "款式大类")
     private String proTypeName;
-    @Excel(name = "款号", width = 15)
+    @Excel(name = "款号")
     private String sampleNo;
-    @Excel(name = "描述", width = 15)
+    @Excel(name = "描述")
     private String sampleNoDesc;
-    @Excel(name = "工厂", width = 15)
+    @Excel(name = "工厂")
     private String factoryName;
-    @Excel(name = "工厂Code", width = 15)
+    @Excel(name = "工厂Code")
     private String factoryCode;
-    @Excel(name = "业务部门", width = 15)
+    @Excel(name = "业务部门")
     private String businesseDeptName;
     private String businesseDeptId;
-    @Excel(name = "生产跟单员", width = 15)
+    @Excel(name = "生产跟单员")
     private String developer;
     private String developerName;
-    @Excel(name = "样品交期", width = 15)
+    @Excel(name = "样品交期")
     private String ypjqDate;
-    @Excel(name = "距样品交期剩余天数", width = 15)
+    @Excel(name = "距样品交期剩余天数")
     private Integer leaveYpjqDays;
-    @Excel(name = "距大货交期剩余天数", width = 15)
+    @Excel(name = "距大货交期剩余天数")
     private Integer leaveDhjqDays;
-    @Excel(name = "大货交期", width = 15)
+    @Excel(name = "大货交期")
     private String dhjqDate;
-    @Excel(name = "业务跟单员", width = 15)
+    @Excel(name = "业务跟单员")
     private String tracer;
-    @Excel(name = "业务跟单员ID", width = 15)
+    @Excel(name = "业务跟单员ID")
     private String tracerName;
-    @Excel(name = "合同编号", width = 15)
+    @Excel(name = "合同编号")
     private String htNum;
-    @Excel(name = "入库状态", width = 15)
+    @Excel(name = "入库状态")
     private String rkState;
-    @Excel(name = "总数量", width = 15)
+    @Excel(name = "总数量")
     private Integer sumTotal;
-    @Excel(name = "类型", width = 15)
+    @Excel(name = "类型")
     private String type;
-    @Excel(name = "订单号", width = 15)
+    @Excel(name = "订单号")
     private String orderNum;
-    @Excel(name = "供应商", width = 15)
+    @Excel(name = "供应商")
     private String gys;
-    @Excel(name = "供应商Code", width = 15)
+    @Excel(name = "供应商Code")
     private String gysCode;
 
     @Column(name = "GYS", nullable = true, length = 32)

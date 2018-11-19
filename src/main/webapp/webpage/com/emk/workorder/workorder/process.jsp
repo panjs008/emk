@@ -23,7 +23,7 @@
     <iframe scrolling="yes" id="processHisFrm" frameborder="0" src="flowController.do?processHis&id=${param.id}" width="99%" height="100%"></iframe>
 </div>--%>
 <div id="hisProcessDiv" title="" style="width:100%;height:230px;overflow:hidden;overflow-x: hidden;overflow-y: hidden" >
-    <iframe scrolling="no" id="hisProcessFrm" frameborder="0" style="overflow-x: hidden;overflow-y: hidden"  src="flowController.do?processHis&sqlType=inStorage&id=${param.id}" width="100%" height="100%"></iframe>
+    <iframe scrolling="no" id="hisProcessFrm" frameborder="0" style="overflow-x: hidden;overflow-y: hidden"  src="flowController.do?processHis&sqlType=emk&id=${param.id}" width="100%" height="100%"></iframe>
 
     </div>
 <%--

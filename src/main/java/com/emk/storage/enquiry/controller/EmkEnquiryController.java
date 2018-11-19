@@ -1,8 +1,6 @@
 package com.emk.storage.enquiry.controller;
 
 import com.alibaba.fastjson.JSONArray;
-import com.emk.bill.contract.entity.EmkContractEntity;
-import com.emk.bill.proorder.entity.EmkProOrderEntity;
 import com.emk.storage.enquiry.entity.EmkEnquiryEntity;
 import com.emk.storage.enquiry.service.EmkEnquiryServiceI;
 import com.emk.storage.sampleprice.entity.EmkSamplePriceEntity;
@@ -14,13 +12,9 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.*;
-import java.util.Map.Entry;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
@@ -30,7 +24,6 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.jeecgframework.core.util.DateUtils;
 import org.jeecgframework.core.beanvalidator.BeanValidators;
 import org.jeecgframework.core.common.controller.BaseController;
 import org.jeecgframework.core.common.exception.BusinessException;
@@ -39,17 +32,13 @@ import org.jeecgframework.core.common.model.json.AjaxJson;
 import org.jeecgframework.core.common.model.json.DataGrid;
 import org.jeecgframework.core.constant.Globals;
 import org.jeecgframework.core.extend.hqlsearch.HqlGenerateUtil;
-import org.jeecgframework.core.util.ExceptionUtil;
 import org.jeecgframework.core.util.MyBeanUtils;
 import org.jeecgframework.core.util.ResourceUtil;
 import org.jeecgframework.core.util.StringUtil;
 import org.jeecgframework.jwt.util.ResponseMessage;
 import org.jeecgframework.jwt.util.Result;
-import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.entity.ExportParams;
-import org.jeecgframework.poi.excel.entity.ImportParams;
 import org.jeecgframework.tag.core.easyui.TagUtil;
-import org.jeecgframework.web.system.pojo.base.TSDepart;
 import org.jeecgframework.web.system.pojo.base.TSUser;
 import org.jeecgframework.web.system.service.SystemService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,14 +50,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.UriComponentsBuilder;
 
-@Api(value = "EmkEnquiry", description = "询盘单", tags = {"emkEnquiryController"})
+@Api(value = "EmkEnquiry", description = "询盘单", tags = "emkEnquiryController")
 @Controller
-@RequestMapping({"/emkEnquiryController"})
+@RequestMapping("/emkEnquiryController")
 public class EmkEnquiryController extends BaseController {
     private static final Logger logger = Logger.getLogger(EmkEnquiryController.class);
     @Autowired
@@ -86,17 +73,17 @@ public class EmkEnquiryController extends BaseController {
     HistoryService historyService;
 
 
-    @RequestMapping(params = {"list"})
+    @RequestMapping(params = "list")
     public ModelAndView list(HttpServletRequest request) {
         return new ModelAndView("com/emk/storage/enquiry/emkEnquiryList");
     }
 
-    @RequestMapping(params = {"photo"})
+    @RequestMapping(params = "photo")
     public ModelAndView photo(HttpServletRequest request) {
         return new ModelAndView("com/emk/storage/enquiry/photo");
     }
 
-    @RequestMapping(params = {"datagrid"})
+    @RequestMapping(params = "datagrid")
     public void datagrid(EmkEnquiryEntity emkEnquiry, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid) {
         CriteriaQuery cq = new CriteriaQuery(EmkEnquiryEntity.class, dataGrid);
         TSUser user = (TSUser) request.getSession().getAttribute(ResourceUtil.LOCAL_CLINET_USER);
@@ -114,7 +101,7 @@ public class EmkEnquiryController extends BaseController {
         TagUtil.datagrid(response, dataGrid);
     }
 
-    @RequestMapping(params = {"doDel"})
+    @RequestMapping(params = "doDel")
     @ResponseBody
     public AjaxJson doDel(EmkEnquiryEntity emkEnquiry, HttpServletRequest request) {
         String message = null;
@@ -133,7 +120,7 @@ public class EmkEnquiryController extends BaseController {
         return j;
     }
 
-    @RequestMapping(params = {"doBatchDel"})
+    @RequestMapping(params = "doBatchDel")
     @ResponseBody
     public AjaxJson doBatchDel(String ids, HttpServletRequest request) {
         String message = null;
@@ -156,7 +143,7 @@ public class EmkEnquiryController extends BaseController {
         return j;
     }
 
-    @RequestMapping(params = {"doAdd"})
+    @RequestMapping(params = "doAdd")
     @ResponseBody
     public AjaxJson doAdd(EmkEnquiryEntity emkEnquiry, HttpServletRequest request) {
         String message = null;
@@ -190,7 +177,7 @@ public class EmkEnquiryController extends BaseController {
         return j;
     }
 
-    @RequestMapping(params = {"doUpdate"})
+    @RequestMapping(params = "doUpdate")
     @ResponseBody
     public AjaxJson doUpdate(EmkEnquiryEntity emkEnquiry, HttpServletRequest request) {
         String message = null;
@@ -227,7 +214,7 @@ public class EmkEnquiryController extends BaseController {
         return j;
     }
 
-    @RequestMapping(params = {"goAdd"})
+    @RequestMapping(params = "goAdd")
     public ModelAndView goAdd(EmkEnquiryEntity emkEnquiry, HttpServletRequest req) {
         req.setAttribute("kdDate", DateUtil.format(new Date(), "yyyy-MM-dd"));
         if (StringUtil.isNotEmpty(emkEnquiry.getId())) {
@@ -237,7 +224,7 @@ public class EmkEnquiryController extends BaseController {
         return new ModelAndView("com/emk/storage/enquiry/emkEnquiry-add");
     }
 
-    @RequestMapping(params = {"goUpdate"})
+    @RequestMapping(params = "goUpdate")
     public ModelAndView goUpdate(EmkEnquiryEntity emkEnquiry, HttpServletRequest req) {
         if (StringUtil.isNotEmpty(emkEnquiry.getId())) {
             emkEnquiry = (EmkEnquiryEntity) this.emkEnquiryService.getEntity(EmkEnquiryEntity.class, emkEnquiry.getId());
@@ -249,7 +236,7 @@ public class EmkEnquiryController extends BaseController {
         return new ModelAndView("com/emk/storage/enquiry/emkEnquiry-update");
     }
 
-    @RequestMapping(params = {"goUpdate2"})
+    @RequestMapping(params = "goUpdate2")
     public ModelAndView goUpdate2(EmkEnquiryEntity emkEnquiry, HttpServletRequest req) {
         if (StringUtil.isNotEmpty(emkEnquiry.getId())) {
             emkEnquiry = (EmkEnquiryEntity) this.emkEnquiryService.getEntity(EmkEnquiryEntity.class, emkEnquiry.getId());
@@ -269,13 +256,13 @@ public class EmkEnquiryController extends BaseController {
         return new ModelAndView("com/emk/storage/enquiry/emkEnquiry-update2");
     }
 
-    @RequestMapping(params = {"upload"})
+    @RequestMapping(params = "upload")
     public ModelAndView upload(HttpServletRequest req) {
         req.setAttribute("controller_name", "emkEnquiryController");
         return new ModelAndView("common/upload/pub_excel_upload");
     }
 
-    @RequestMapping(params = {"exportXls"})
+    @RequestMapping(params = "exportXls")
     public String exportXls(EmkEnquiryEntity emkEnquiry, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid, ModelMap modelMap) {
         CriteriaQuery cq = new CriteriaQuery(EmkEnquiryEntity.class, dataGrid);
         HqlGenerateUtil.installHql(cq, emkEnquiry, request.getParameterMap());
@@ -288,7 +275,7 @@ public class EmkEnquiryController extends BaseController {
         return "jeecgExcelView";
     }
 
-    @RequestMapping(params = {"exportXlsByT"})
+    @RequestMapping(params = "exportXlsByT")
     public String exportXlsByT(EmkEnquiryEntity emkEnquiry, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid, ModelMap modelMap) {
         modelMap.put("fileName", "询盘单");
         modelMap.put("entity", EmkEnquiryEntity.class);
@@ -306,7 +293,7 @@ public class EmkEnquiryController extends BaseController {
         return Result.success(listEmkEnquirys);
     }
 
-    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.GET})
+    @RequestMapping(value = "/{id}", method = {org.springframework.web.bind.annotation.RequestMethod.GET})
     @ResponseBody
     @ApiOperation(value = "根据ID获取询盘单信息", notes = "根据ID获取询盘单信息", httpMethod = "GET", produces = "application/json")
     public ResponseMessage<?> get(@ApiParam(required = true, name = "id", value = "ID") @PathVariable("id") String id) {
@@ -317,7 +304,7 @@ public class EmkEnquiryController extends BaseController {
         return Result.success(task);
     }
 
-    @RequestMapping(method = {org.springframework.web.bind.annotation.RequestMethod.POST}, consumes = {"application/json"})
+    @RequestMapping(method = {org.springframework.web.bind.annotation.RequestMethod.POST}, consumes = "application/json")
     @ResponseBody
     @ApiOperation("创建询盘单")
     public ResponseMessage<?> create(@ApiParam(name = "询盘单对象") @RequestBody EmkEnquiryEntity emkEnquiry, UriComponentsBuilder uriBuilder) {
@@ -334,7 +321,7 @@ public class EmkEnquiryController extends BaseController {
         return Result.success(emkEnquiry);
     }
 
-    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.PUT}, consumes = {"application/json"})
+    @RequestMapping(value = "/{id}", method = {org.springframework.web.bind.annotation.RequestMethod.PUT}, consumes = "application/json")
     @ResponseBody
     @ApiOperation(value = "更新询盘单", notes = "更新询盘单")
     public ResponseMessage<?> update(@ApiParam(name = "询盘单对象") @RequestBody EmkEnquiryEntity emkEnquiry) {
@@ -351,7 +338,7 @@ public class EmkEnquiryController extends BaseController {
         return Result.success("更新询盘单信息成功");
     }
 
-    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.DELETE})
+    @RequestMapping(value = "/{id}", method = {org.springframework.web.bind.annotation.RequestMethod.DELETE})
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ApiOperation("删除询盘单")
     public ResponseMessage<?> delete(@ApiParam(name = "id", value = "ID", required = true) @PathVariable("id") String id) {
@@ -411,6 +398,33 @@ public class EmkEnquiryController extends BaseController {
                             if (emkEnquiryEntity.getIsPass().equals("0")) {
                                 variables.put("isPass", emkEnquiryEntity.getIsPass());
                                 taskService.complete(task1.getId(), variables);
+
+                                t.setState("2");
+
+                                //发起工单流程
+                                EmkWorkOrderEntity emkWorkOrderEntity = new EmkWorkOrderEntity();
+                                emkWorkOrderEntity.setIsPrint(t.getIsPrint());
+                                emkWorkOrderEntity.setAskNo(t.getEnquiryNo());
+                                emkWorkOrderEntity.setState("1");
+                                emkWorkOrderEntity.setAskWorkAdvice(t.getLeadAdvice());
+                                emkWorkOrderEntity.setAskWorkUserId(user.getUserName());
+                                emkWorkOrderEntity.setAskWorkUser(user.getRealName());
+                                emkWorkOrderEntity.setAskWorkDate(org.apache.tools.ant.util.DateUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
+                                emkWorkOrderEntity.setCreateName(t.getCreateName());
+                                emkWorkOrderEntity.setKdDate(t.getKdDate());
+                                Map orderNum = this.systemService.findOneForJdbc("select CAST(ifnull(max(right(workNo, 6)),0)+1 AS signed) orderNum from emk_work_order");
+                                emkWorkOrderEntity.setWorkNo("GD" + DateUtil.format(new Date(), "yyMMdd") + String.format("%03d", Integer.parseInt(orderNum.get("orderNum").toString())));
+                                systemService.save(emkWorkOrderEntity);
+                                variables.put("isPrint", emkWorkOrderEntity.getIsPrint());
+                                variables.put("inputUser", emkWorkOrderEntity.getId());
+
+                                task = taskService.createTaskQuery().taskAssignee(emkWorkOrderEntity.getId()).list();
+                                if (task.size()== 0 || task == null) {
+                                    ProcessInstance pi = processEngine.getRuntimeService().startProcessInstanceByKey("emk", "emkWorkOrderPage", variables);
+                                    task = taskService.createTaskQuery().taskAssignee(emkWorkOrderEntity.getId()).list();
+                                }
+                                task1 = task.get(task.size() - 1);
+                                taskService.complete(task1.getId(), variables);
                             } else {
                                 List<HistoricTaskInstance> hisTasks = historyService.createHistoricTaskInstanceQuery().taskAssignee(t.getId()).list();
 
@@ -430,28 +444,7 @@ public class EmkEnquiryController extends BaseController {
 
                         }
                         if (task1.getTaskDefinitionKey().equals("cwTask")) {
-                            t.setState("2");
-                            this.taskService.complete(task1.getId(), variables);
 
-                            //发起工单流程
-                            EmkWorkOrderEntity emkWorkOrderEntity = new EmkWorkOrderEntity();
-                            emkWorkOrderEntity.setIsPrint(t.getIsPrint());
-                            emkWorkOrderEntity.setAskNo(t.getEnquiryNo());
-                            emkWorkOrderEntity.setState("1");
-                            emkWorkOrderEntity.setCreateName(t.getCreateName());
-                            emkWorkOrderEntity.setKdDate(t.getKdDate());
-                            Map orderNum = this.systemService.findOneForJdbc("select count(0)+1 orderNum from emk_work_order where sys_org_code=?",user.getCurrentDepart().getOrgCode());
-                            emkWorkOrderEntity.setWorkNo("GD" + DateUtil.format(new Date(), "yyMMdd") + String.format("%03d", Integer.parseInt(orderNum.get("orderNum").toString())));
-                            systemService.save(emkWorkOrderEntity);
-                            variables.put("isPrint", emkWorkOrderEntity.getIsPrint());
-                            variables.put("inputUser", emkWorkOrderEntity.getId());
-
-                            task = taskService.createTaskQuery().taskAssignee(emkWorkOrderEntity.getId()).list();
-                            if (task.size()== 0 || task == null) {
-                                ProcessInstance pi = processEngine.getRuntimeService().startProcessInstanceByKey("emk", "emkWorkOrderPage", variables);
-                                task = taskService.createTaskQuery().taskAssignee(emkWorkOrderEntity.getId()).list();
-                            }
-                            taskService.complete(task1.getId(), variables);
                         }
                     }else {
                         ProcessInstance pi = processEngine.getRuntimeService().startProcessInstanceByKey("enquiry", "emkEnquiryEntity", variables);

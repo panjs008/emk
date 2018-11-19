@@ -210,7 +210,7 @@
 			</td>
 			<td class="value" rowspan="5">
 				<input id="customSample" name="customSample" value="${emkProOrderPage.customSample }" type="hidden" />
-				<img id="uploadimg0" src="${emkProOrderPage.customSampleUrl eq null ? 'images/bjlogo.png':emkProOrderPage.customSampleUrl}" width="150" height="150">
+				<img id="uploadimg0" src="${emkProOrderPage.customSampleUrl eq '' ? 'images/bjlogo.png':emkProOrderPage.customSampleUrl}" width="150" height="150">
 				<br/>[<a href="javascript:findDetail('${emkProOrderPage.customSampleUrl }')">${emkProOrderPage.customSample }</a>]
 				<span id="customSampleId"></span>
 				<input id="customSampleUrl" name="customSampleUrl" value="${emkProOrderPage.customSampleUrl }" type="hidden" />
@@ -329,7 +329,7 @@
 			</td>
 			<td class="value" rowspan="5">
 				<input id="boxImage" name="boxImage" type="hidden" value="${emkProOrderPage.boxImage }" />
-				<img id="uploadimg1" src="${emkProOrderPage.boxImageUrl eq null ? 'images/bjlogo.png':emkProOrderPage.boxImageUrl}" width="150" height="150">
+				<img id="uploadimg1" src="${emkProOrderPage.boxImageUrl eq '' ? 'images/bjlogo.png':emkProOrderPage.boxImageUrl}" width="150" height="150">
 				<br/>[<a href="javascript:findDetail('${emkProOrderPage.boxImageUrl }')">${emkProOrderPage.boxImage }</a>]
 				<span id="boxImageId"></span>
 				<input id="boxImageUrl" name="boxImageUrl" type="hidden" value="${emkProOrderPage.boxImageUrl }" />

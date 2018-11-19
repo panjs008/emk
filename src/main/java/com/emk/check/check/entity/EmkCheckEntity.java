@@ -102,13 +102,21 @@ public class EmkCheckEntity implements java.io.Serializable {
 	@Excel(name="状态",width=15)
 	private String state;
 
-	@Excel(name="审核意见", width=15.0D)
+	@Excel(name="审核意见")
 	private String leadAdvice;
-	@Excel(name="是否通过", width=15.0D)
+	@Excel(name="是否通过")
 	private String isPass;
 	private String leadUserId;
-	@Excel(name="审核人", width=15.0D)
+	@Excel(name="审核人")
 	private String leader;
+
+	private String cyUserId;
+	private String cyer;
+	private String cyAdvice;
+	private String bgUserId;
+	private String bger;
+	private String bgAdvice;
+	private String isHg;
 	
 	/**
 	 *方法: 取得java.lang.String
@@ -598,6 +606,70 @@ public class EmkCheckEntity implements java.io.Serializable {
 	public void setLeader(String leader)
 	{
 		this.leader = leader;
+	}
+
+	@Column(name ="cy_user_id",nullable=true,length=32)
+	public String getCyUserId() {
+		return cyUserId;
+	}
+
+	public void setCyUserId(String cyUserId) {
+		this.cyUserId = cyUserId;
+	}
+
+	@Column(name ="cyer",nullable=true,length=32)
+	public String getCyer() {
+		return cyer;
+	}
+
+	public void setCyer(String cyer) {
+		this.cyer = cyer;
+	}
+
+	@Column(name ="cy_advice",nullable=true,length=32)
+	public String getCyAdvice() {
+		return cyAdvice;
+	}
+
+	public void setCyAdvice(String cyAdvice) {
+		this.cyAdvice = cyAdvice;
+	}
+
+	@Column(name ="bg_user_id",nullable=true,length=32)
+
+	public String getBgUserId() {
+		return bgUserId;
+	}
+
+	public void setBgUserId(String bgUserId) {
+		this.bgUserId = bgUserId;
+	}
+
+	@Column(name ="bger",nullable=true,length=32)
+	public String getBger() {
+		return bger;
+	}
+
+	public void setBger(String bger) {
+		this.bger = bger;
+	}
+
+	@Column(name ="bg_advice",nullable=true,length=32)
+	public String getBgAdvice() {
+		return bgAdvice;
+	}
+
+	public void setBgAdvice(String bgAdvice) {
+		this.bgAdvice = bgAdvice;
+	}
+
+	@Column(name ="is_hg",nullable=true,length=32)
+	public String getIsHg() {
+		return isHg;
+	}
+
+	public void setIsHg(String isHg) {
+		this.isHg = isHg;
 	}
 
 }

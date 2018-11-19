@@ -23,32 +23,32 @@ public class EmkProductEntity
     private String sysOrgCode;
     private String hsCode;
     private String hsName;
-    @Excel(name = "产品编号", width = 15)
+    @Excel(name = "产品编号")
     private String proNum;
     private String proType;
-    @Excel(name = "产品类别", width = 15)
+    @Excel(name = "产品类别")
     private String proTypeName;
     private String proEnName;
-    @Excel(name = "中文名称", width = 15)
+    @Excel(name = "中文名称")
     private String proZnName;
-    @Excel(name = "规格型号", width = 15)
+    @Excel(name = "规格型号")
     private String brand;
-    @Excel(name = "单位", width = 15)
+    @Excel(name = "单位")
     private String unit;
     private String remarkEn;
     private String remarkZn;
-    @Excel(name = "产品备注", width = 15)
+    @Excel(name = "产品备注")
     private String proRemark;
     private String hsId;
     private String zzVal;
     private String tsVal;
-    @Excel(name = "比例", width = 15)
+    @Excel(name = "比例")
     private String precent;
-    @Excel(name = "单件用量", width = 15)
+    @Excel(name = "单件用量")
     private String yongliang;
-    @Excel(name = "损耗率", width = 15)
+    @Excel(name = "损耗率")
     private String sunhaoPrecent;
-    @Excel(name = "成本", width = 15)
+    @Excel(name = "成本")
     private String chengben;
     private String type;
 

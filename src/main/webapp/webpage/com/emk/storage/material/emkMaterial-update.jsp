@@ -10,7 +10,7 @@
 	<script type="text/javascript">
 		//编写自定义JS代码
 		$(function() {
-			BindSelect("cgerId","ymkCustomController.do?findUserList&userKey=采购员",1,"${emkMaterialPage.cgerName},${emkMaterialPage.cger}");
+			BindSelect("cgerId","ymkCustomController.do?findUserList&userKey=采购员",1,"${emkMaterialPage.cger},${emkMaterialPage.cgerName}");
 
 			$("#cgerId").change(function(){
 				var itemarr = $("#cgerId").val().split(","); //字符分割
@@ -41,6 +41,30 @@
 		<tr>
 			<td align="right" style="width: 18%">
 				<label class="Validform_label">
+					客户编号:
+				</label>
+			</td>
+			<td class="value" style="width: 32%">
+				<input id="cusNum" name="cusNum" readonly type="text" value="${emkMaterialPage.cusNum }" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">客户编号</label>
+			</td>
+			<td align="right" style="width: 18%">
+				<label class="Validform_label">
+					客户名称:
+				</label>
+			</td>
+			<td class="value" style="width: 32%">
+				<input id="cusName" name="cusName" readonly type="text" value="${emkMaterialPage.cusName }" style="width: 150px" class="inputxt"  datatype="*"/>
+				<t:choose  hiddenName="cusNum"  hiddenid="cusNum" url="ymkCustomController.do?select" name="ymkCustomList" width="700px" height="500px"
+						   icon="icon-search" title="选择客户" textname="cusName,businesseDeptName,businesseDeptId,businesser,businesserName,tracer,tracerName,developer,developerName,bz" isclear="true" isInit="true"></t:choose>
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">客户名称</label>
+			</td>
+		</tr>
+		<tr>
+			<td align="right" style="width: 18%">
+				<label class="Validform_label">
 					业务部门:
 				</label>
 			</td>
@@ -66,29 +90,17 @@
 			</td>
 		</tr>
 
-		<tr>
 
-			<td align="right" style="width: 18%">
+		<tr>
+			<td align="right">
 				<label class="Validform_label">
-					客户编号:
+					原料面料需求单号:
 				</label>
 			</td>
-			<td class="value" style="width: 32%">
-				<input id="cusNum" name="cusNum" readonly type="text" value="${emkMaterialPage.cusNum }" style="width: 150px" class="inputxt"  ignore="ignore" />
+			<td class="value" colspan="3">
+				<input id="materialNo" name="materialNo" type="text" value="${emkMaterialPage.materialNo }" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">客户编号</label>
-			</td>
-			<td align="right" style="width: 18%">
-				<label class="Validform_label">
-					客户名称:
-				</label>
-			</td>
-			<td class="value" style="width: 32%">
-				<input id="cusName" name="cusName" readonly type="text" value="${emkMaterialPage.cusName }" style="width: 150px" class="inputxt"  datatype="*"/>
-				<t:choose  hiddenName="cusNum"  hiddenid="cusNum" url="ymkCustomController.do?select" name="ymkCustomList" width="700px" height="500px"
-						   icon="icon-search" title="选择客户" textname="cusName,businesseDeptName,businesseDeptId,businesser,businesserName,tracer,tracerName,developer,developerName,bz" isclear="true" isInit="true"></t:choose>
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">客户名称</label>
+				<label class="Validform_label" style="display: none;">原料面料需求单号</label>
 			</td>
 		</tr>
 		<tr>
@@ -195,7 +207,7 @@
 			</td>
 			<td class="value" rowspan="5">
 				<input id="customSample" name="customSample" value="${emkMaterialPage.customSample }" type="hidden" />
-				<img id="uploadimg0" src="${emkMaterialPage.customSampleUrl eq null ? 'images/bjlogo.png':emkMaterialPage.customSampleUrl}" width="150" height="150">
+				<img id="uploadimg0" src="${emkMaterialPage.customSampleUrl eq '' ? 'images/bjlogo.png':emkMaterialPage.customSampleUrl}" width="150" height="150">
 				<t:upload name="instruction0" id="instruction0" dialog="false" extend="*.jpg;*.png;*.gif;*.ico;*.dwg" buttonText="添加文件" queueID="instructionfile" view="false" auto="true" uploader="systemController.do?saveFiles"  onUploadSuccess="uploadSuccess0" >
 				</t:upload>[<a href="javascript:findDetail('${emkMaterialPage.customSampleUrl }')">${emkMaterialPage.customSample }</a>]
 				<span id="customSampleId"></span>

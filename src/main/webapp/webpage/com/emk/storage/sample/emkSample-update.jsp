@@ -53,7 +53,7 @@
 	</script>
 </head>
 <body>
-<t:formvalid formid="formobj" dialog="true" usePlugin="password" layout="table" action="emkSampleController.do?doUpdate" tiptype="1">
+<t:formvalid formid="formobj" dialog="true" usePlugin="password" layout="table" action="emkYptzdController.do?doUpdate" tiptype="1">
 	<input id="id" name="id" type="hidden" value="${emkSamplePage.id }"/>
 	<input id="flag" name="flag" type="hidden" value="${emkSamplePage.flag}"/>
 	<table style="width: 100%;" cellpadding="0" cellspacing="1" class="formtable">
@@ -82,13 +82,13 @@
 			<tr>
                 <td align="right" style="width: 18%">
                     <label class="Validform_label">
-                        打样通知单号:
+						样品通知单号:
                     </label>
                 </td>
                 <td class="value" style="width: 32%">
                     <input id="sampleNum" name="sampleNum" readonly value="${emkSamplePage.sampleNum}" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
                         <span class="Validform_checktip"></span>
-                        <label class="Validform_label" style="display: none;">打样通知单号</label>
+                        <label class="Validform_label" style="display: none;">样品通知单号</label>
                     </td>
 
 				<td align="right" style="width: 18%">
@@ -310,7 +310,7 @@
 			</td>
 			<td class="value">
 				<input id="customSample" name="customSample" value="${emkSamplePage.customSample}" type="hidden" />
-				<img id="uploadimg" src="${emkSamplePage.customSampleUrl eq null ? 'images/bjlogo.png':emkSamplePage.customSampleUrl}" width="150" height="150">
+				<img id="uploadimg" src="${emkSamplePage.customSampleUrl eq '' ? 'images/bjlogo.png':emkSamplePage.customSampleUrl}" width="150" height="150">
 				<t:upload name="instruction" id="instruction" dialog="false" extend="*.jpg;*.png;*.gif;*.ico;*.dwg" buttonText="添加文件" queueID="instructionfile" view="false" auto="true" uploader="systemController.do?saveFiles"  onUploadSuccess="uploadSuccess" >
 				</t:upload>[<a href="javascript:findDetail('${emkSamplePage.customSampleUrl }')">${emkSamplePage.customSample }</a>]
 				<span id="khyyId"></span>
@@ -323,7 +323,7 @@
 				</label>
 			</td>
 			<td class="value">
-				<img id="uploadimg2" src="${emkSamplePage.sampleSizeUrl eq null ? 'images/bjlogo.png':emkSamplePage.sampleSizeUrl}" width="150" height="150">
+				<img id="uploadimg2" src="${emkSamplePage.sampleSizeUrl eq '' ? 'images/bjlogo.png':emkSamplePage.sampleSizeUrl}" width="150" height="150">
 				<t:upload name="instruction2" id="instruction2" dialog="false" extend="*.jpg;*.png;*.gif;*.ico;*.dwg" buttonText="添加文件" queueID="instructionfile" view="false" auto="true" uploader="systemController.do?saveFiles"  onUploadSuccess="uploadSuccess2" >
 				</t:upload>[<a href="javascript:findDetail('${emkSamplePage.customSampleUrl }')">${emkSamplePage.customSample }</a>]
 				<span id="ccbId"></span>

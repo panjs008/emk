@@ -70,7 +70,7 @@ import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @Controller
-@RequestMapping({"/ymkCustomController"})
+@RequestMapping("/ymkCustomController")
 public class YmkCustomController
         extends BaseController {
     private static final Logger logger = Logger.getLogger(YmkCustomController.class);
@@ -83,22 +83,22 @@ public class YmkCustomController
     @Autowired
     private UserService userService;
 
-    @RequestMapping(params = {"list"})
+    @RequestMapping(params = "list")
     public ModelAndView list(HttpServletRequest request) {
         return new ModelAndView("com/service/custom/ymkCustomList");
     }
 
-    @RequestMapping(params = {"select"})
+    @RequestMapping(params = "select")
     public ModelAndView select(HttpServletRequest request) {
         return new ModelAndView("com/service/custom/ymkCustomList-select");
     }
 
-    @RequestMapping(params = {"list1"})
+    @RequestMapping(params = "list1")
     public ModelAndView list1(HttpServletRequest request) {
         return new ModelAndView("com/service/custom/ymkCustomList1");
     }
 
-    @RequestMapping({"/customDetail"})
+    @RequestMapping("/customDetail")
     public Object customDetail(HttpServletRequest request, HttpServletResponse response) {
         Map<String, String> map = ParameterUtil.getParamMaps(request.getParameterMap());
 
@@ -106,7 +106,7 @@ public class YmkCustomController
         return "forward:/metro/custom.html";
     }
 
-    @RequestMapping(params = {"datagrid"})
+    @RequestMapping(params = "datagrid")
     public void datagrid(YmkCustomEntity ymkCustom, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid) {
         CriteriaQuery cq = new CriteriaQuery(YmkCustomEntity.class, dataGrid);
 
@@ -121,10 +121,10 @@ public class YmkCustomController
             Map roleMap = (Map) request.getSession().getAttribute("ROLE");
             if(roleMap != null){
                 if(roleMap.get("rolecode").toString().contains("ywy") ){
-                    cq.eq("businesserName",user.getUserName());
+                    cq.eq("businesser",user.getUserName());
                 }
                 if(roleMap.get("rolecode").toString().contains("ywgdy")){
-                    cq.eq("tracerName",user.getUserName());
+                    cq.eq("tracer",user.getUserName());
                 }
             }
         } catch (Exception e) {
@@ -135,7 +135,7 @@ public class YmkCustomController
         TagUtil.datagrid(response, dataGrid);
     }
 
-    @RequestMapping(params = {"doDel"})
+    @RequestMapping(params = "doDel")
     @ResponseBody
     public AjaxJson doDel(YmkCustomEntity ymkCustom, HttpServletRequest request) {
         String message = null;
@@ -167,7 +167,7 @@ public class YmkCustomController
         return j;
     }
 
-    @RequestMapping(params = {"check"})
+    @RequestMapping(params = "check")
     @ResponseBody
     public AjaxJson check(YmkCustomEntity ymkCustom, HttpServletRequest request) {
         String message = null;
@@ -188,7 +188,7 @@ public class YmkCustomController
         return j;
     }
 
-    @RequestMapping(params = {"doBatchDel"})
+    @RequestMapping(params = "doBatchDel")
     @ResponseBody
     public AjaxJson doBatchDel(String ids, HttpServletRequest request) {
         String message = null;
@@ -245,7 +245,7 @@ public class YmkCustomController
         return returnCode;
     }
 
-    @RequestMapping(params = {"doAdd"})
+    @RequestMapping(params = "doAdd")
     @ResponseBody
     public AjaxJson doAdd(YmkCustomEntity ymkCustom, HttpServletRequest request) {
         String message = null;
@@ -292,7 +292,7 @@ public class YmkCustomController
         return j;
     }
 
-    @RequestMapping(params = {"doAddUser"})
+    @RequestMapping(params = "doAddUser")
     @ResponseBody
     public AjaxJson doAddUser(YmkCustomEntity ymkCustom, HttpServletRequest request) {
         String message = null;
@@ -330,7 +330,7 @@ public class YmkCustomController
         return j;
     }
 
-    @RequestMapping(params = {"doUpdate"})
+    @RequestMapping(params = "doUpdate")
     @ResponseBody
     public AjaxJson doUpdate(YmkCustomEntity ymkCustom, HttpServletRequest request) {
         String message = null;
@@ -362,7 +362,7 @@ public class YmkCustomController
         return j;
     }
 
-    @RequestMapping(params = {"findCustomList"})
+    @RequestMapping(params = "findCustomList")
     @ResponseBody
     public Object findCustomList(YmkCustomEntity customEntity, HttpServletRequest request) {
         TSUser user = (TSUser) request.getSession().getAttribute("LOCAL_CLINET_USER");
@@ -377,7 +377,7 @@ public class YmkCustomController
         return temp;
     }
 
-    @RequestMapping(params = {"findUserList"})
+    @RequestMapping(params = "findUserList")
     @ResponseBody
     public AjaxJson findUserList(YmkCustomEntity customEntity, HttpServletRequest request) {
         AjaxJson j = new AjaxJson();
@@ -407,7 +407,7 @@ public class YmkCustomController
         return dept;
     }
 
-    @RequestMapping(params = {"findSupplierList"})
+    @RequestMapping(params = "findSupplierList")
     @ResponseBody
     public AjaxJson findSupplierList(YmkCustomEntity customEntity, HttpServletRequest request) {
         AjaxJson j = new AjaxJson();
@@ -417,7 +417,7 @@ public class YmkCustomController
         return j;
     }
 
-    @RequestMapping(params = {"getCity"}, method = {org.springframework.web.bind.annotation.RequestMethod.POST})
+    @RequestMapping(params = "getCity", method = {org.springframework.web.bind.annotation.RequestMethod.POST})
     @ResponseBody
     public AjaxJson getCity(HttpServletRequest request, HttpServletResponse response) {
         AjaxJson j = new AjaxJson();
@@ -442,7 +442,7 @@ public class YmkCustomController
         return j;
     }
 
-    @RequestMapping(params = {"doCustomData"})
+    @RequestMapping(params = "doCustomData")
     @ResponseBody
     public Object doCustomData(YmkCustomEntity ymkCustom, HttpServletRequest request) {
         String message = null;
@@ -450,7 +450,7 @@ public class YmkCustomController
         return JSONHelper.bean2json(t);
     }
 
-    @RequestMapping(params = {"regCustom"})
+    @RequestMapping(params = "regCustom")
     public ModelAndView regCustom(YmkCustomEntity ymkCustom, HttpServletRequest req) {
         Map orderNum = this.systemService.findOneForJdbc("select count(0)+1 cusNum from ymk_custom", new Object[0]);
         req.setAttribute("cusNum", DateUtils.format(new Date(), "yyyy") + String.format("%06d", new Object[]{Integer.valueOf(Integer.parseInt(orderNum.get("cusNum").toString()))}));
@@ -461,7 +461,7 @@ public class YmkCustomController
         return new ModelAndView("com/service/custom/ymkCustom-reg");
     }
 
-    @RequestMapping(params = {"goAdd"})
+    @RequestMapping(params = "goAdd")
     public ModelAndView goAdd(YmkCustomEntity ymkCustom, HttpServletRequest req) {
         Map orderNum = this.systemService.findOneForJdbc("select CAST(max(right(cus_num, 4))+1 AS signed) orderNum from ymk_custom ");
         req.setAttribute("daanNum", "KHDA1" + String.format("%04d", new Object[]{Integer.valueOf(Integer.parseInt(orderNum.get("orderNum").toString()))}));
@@ -474,7 +474,7 @@ public class YmkCustomController
         return new ModelAndView("com/service/custom/ymkCustom-add");
     }
 
-    @RequestMapping(params = {"goUpdate"})
+    @RequestMapping(params = "goUpdate")
     public ModelAndView goUpdate(YmkCustomEntity ymkCustom, HttpServletRequest req) {
         if (StringUtil.isNotEmpty(ymkCustom.getId())) {
             ymkCustom = (YmkCustomEntity) this.ymkCustomService.getEntity(YmkCustomEntity.class, ymkCustom.getId());
@@ -489,7 +489,7 @@ public class YmkCustomController
         return new ModelAndView("com/service/custom/ymkCustom-update");
     }
 
-    @RequestMapping(params = {"jump"})
+    @RequestMapping(params = "jump")
     public Object jump(HttpServletRequest req) {
         Map<String, String> map = ParameterUtil.getParamMaps(req.getParameterMap());
         String showflag = "";
@@ -525,13 +525,13 @@ public class YmkCustomController
         return "forward:/context/" + (String) map.get("r") + ".jsp";
     }
 
-    @RequestMapping(params = {"upload"})
+    @RequestMapping(params = "upload")
     public ModelAndView upload(HttpServletRequest req) {
         req.setAttribute("controller_name", "ymkCustomController");
         return new ModelAndView("common/upload/pub_excel_upload");
     }
 
-    @RequestMapping(params = {"exportXls"})
+    @RequestMapping(params = "exportXls")
     public String exportXls(YmkCustomEntity ymkCustom, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid, ModelMap modelMap) {
         CriteriaQuery cq = new CriteriaQuery(YmkCustomEntity.class, dataGrid);
         HqlGenerateUtil.installHql(cq, ymkCustom, request.getParameterMap());
@@ -544,7 +544,7 @@ public class YmkCustomController
         return "jeecgExcelView";
     }
 
-    @RequestMapping(params = {"exportXlsByT"})
+    @RequestMapping(params = "exportXlsByT")
     public String exportXlsByT(YmkCustomEntity ymkCustom, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid, ModelMap modelMap) {
         modelMap.put("fileName", "客户表");
         modelMap.put("entity", YmkCustomEntity.class);
@@ -561,7 +561,7 @@ public class YmkCustomController
         return listYmkCustoms;
     }
 
-    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.GET})
+    @RequestMapping(value = "/{id}", method = {org.springframework.web.bind.annotation.RequestMethod.GET})
     @ResponseBody
     public ResponseEntity<?> get(@PathVariable("id") String id) {
         YmkCustomEntity task = (YmkCustomEntity) this.ymkCustomService.get(YmkCustomEntity.class, id);
@@ -571,7 +571,7 @@ public class YmkCustomController
         return new ResponseEntity(task, HttpStatus.OK);
     }
 
-    @RequestMapping(method = {org.springframework.web.bind.annotation.RequestMethod.POST}, consumes = {"application/json"})
+    @RequestMapping(method = {org.springframework.web.bind.annotation.RequestMethod.POST}, consumes = "application/json")
     @ResponseBody
     public ResponseEntity<?> create(@RequestBody YmkCustomEntity ymkCustom, UriComponentsBuilder uriBuilder) {
         Set<ConstraintViolation<YmkCustomEntity>> failures = this.validator.validate(ymkCustom, new Class[0]);
@@ -592,7 +592,7 @@ public class YmkCustomController
         return new ResponseEntity(headers, HttpStatus.CREATED);
     }
 
-    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.PUT}, consumes = {"application/json"})
+    @RequestMapping(value = "/{id}", method = {org.springframework.web.bind.annotation.RequestMethod.PUT}, consumes = "application/json")
     public ResponseEntity<?> update(@RequestBody YmkCustomEntity ymkCustom) {
         Set<ConstraintViolation<YmkCustomEntity>> failures = this.validator.validate(ymkCustom, new Class[0]);
         if (!failures.isEmpty()) {
@@ -607,7 +607,7 @@ public class YmkCustomController
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
-    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.DELETE})
+    @RequestMapping(value = "/{id}", method = {org.springframework.web.bind.annotation.RequestMethod.DELETE})
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable("id") String id) {
         this.ymkCustomService.deleteEntityById(YmkCustomEntity.class, id);

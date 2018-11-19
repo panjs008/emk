@@ -202,23 +202,23 @@
 			BindSelect("businesserId","ymkCustomController.do?findUserList&userKey=业务员",1,"${ymkCustomPage.businesserName},${ymkCustomPage.businesser}");
 			$("#businesserId").change(function(){
 				var itemarr = $("#businesserId").val().split(","); //字符分割
-				$("#businesser").val(itemarr[0]);
-				$("#businesserName").val(itemarr[1]);
+				$("#businesser").val(itemarr[1]);
+				$("#businesserName").val(itemarr[0]);
 			});
 
 			BindSelect("tracerId","ymkCustomController.do?findUserList&userKey=业务跟单员",1,"${ymkCustomPage.tracerName},${ymkCustomPage.tracer}");
 			$("#tracerId").change(function(){
 				var itemarr = $("#tracerId").val().split(","); //字符分割
-				$("#tracer").val(itemarr[0]);
-				$("#tracerName").val(itemarr[1]);
+				$("#tracer").val(itemarr[1]);
+				$("#tracerName").val(itemarr[0]);
 			});
 
 
 			BindSelect("developerId","ymkCustomController.do?findUserList&userKey=生产跟单员",1,"${ymkCustomPage.developerName},${ymkCustomPage.developer}");
 			$("#developerId").change(function(){
 				var itemarr = $("#developerId").val().split(","); //字符分割
-				$("#developer").val(itemarr[0]);
-				$("#developerName").val(itemarr[1]);
+				$("#developer").val(itemarr[1]);
+				$("#developerName").val(itemarr[0]);
 			});
 		});
 		function BindSelect(ctrlName, url,type,categoryId) {
@@ -236,7 +236,7 @@
 				control.empty();//清空下拉框
 				control.append("<option value=''>请选择</option>");
 				$.each(data.obj, function (i, item) {
-					control.append("<option value='" + item.userName + ","+item.realName +"'>&nbsp;" + item.realName + "</option>");
+					control.append("<option value='" + item.realName + ","+item.userName +"'>&nbsp;" + item.realName + "</option>");
 				});
 				if(type ==1){
 					$("#"+ctrlName).select2('val',categoryId);

@@ -12,7 +12,7 @@
       <%--<t:dgCol title="操作" field="opt" width="200" frozenColumn="true"></t:dgCol>--%>
       <t:dgCol title="订单号"  field="orderNo" query="true"  queryMode="single"  width="90"></t:dgCol>
       <t:dgCol title="业务部门"  field="businesseDeptName"  queryMode="single"  width="80"></t:dgCol>
-      <t:dgCol title="业务员"  field="businesser"  queryMode="single"  width="70"></t:dgCol>
+      <t:dgCol title="业务员"  field="businesserName"  queryMode="single"  width="70"></t:dgCol>
       <t:dgCol title="业务跟单员"  field="tracer"  queryMode="single"  width="80"></t:dgCol>
       <t:dgCol title="客户代码" query="true" field="cusNum"  queryMode="single"  width="70"></t:dgCol>
       <t:dgCol title="客户名称" query="true" field="cusName"  queryMode="single"  width="180"></t:dgCol>
@@ -23,11 +23,11 @@
       <t:dgCol title="中期验货状态"  field="zqyhSate"  queryMode="single"  width="80"></t:dgCol>
       <t:dgCol title="尾期验货状态"  field="wqyhState"  queryMode="single"  width="80"></t:dgCol>
 
-      <t:dgToolBar title="录入" icon="fa fa-plus" url="emkYjyhTimeController.do?goAdd&winTitle=录入预计验货时间" funname="add" height="600" width="1000"></t:dgToolBar>
-      <t:dgToolBar title="编辑" icon="fa fa-edit" url="emkYjyhTimeController.do?goUpdate&winTitle=编辑预计验货时间" funname="update" height="600" width="1000"></t:dgToolBar>
-      <t:dgToolBar title="提交" icon="fa fa-arrow-circle-up" funname="doSubmitV"></t:dgToolBar>
-      <t:dgToolBar title="删除"  icon="fa fa-remove" url="emkYjyhTimeController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
-      <t:dgToolBar title="导出" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
+      <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkYjyhTimeController.do?goAdd&winTitle=录入预计验货时间" funname="add" height="600" width="1000"></t:dgToolBar>
+      <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkYjyhTimeController.do?goUpdate&winTitle=编辑预计验货时间" funname="update" height="600" width="1000"></t:dgToolBar>
+      <t:dgToolBar title="提交" operationCode="submit" icon="fa fa-arrow-circle-up" funname="doSubmitV"></t:dgToolBar>
+      <t:dgToolBar title="删除" operationCode="delete"  icon="fa fa-remove" url="emkYjyhTimeController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
+      <t:dgToolBar title="导出" operationCode="exp" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
   </t:datagrid>
   </div>
  </div>

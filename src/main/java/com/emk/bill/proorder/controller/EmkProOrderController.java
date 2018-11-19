@@ -129,7 +129,13 @@ public class EmkProOrderController extends BaseController {
     @RequestMapping(params = "datagrid")
     public void datagrid(EmkProOrderEntity emkProOrder, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid) {
         CriteriaQuery cq = new CriteriaQuery(EmkProOrderEntity.class, dataGrid);
-
+        TSUser user = (TSUser) request.getSession().getAttribute(ResourceUtil.LOCAL_CLINET_USER);
+        Map roleMap = (Map) request.getSession().getAttribute("ROLE");
+        if(roleMap != null){
+            if(roleMap.get("rolecode").toString().contains("ywy") || roleMap.get("rolecode").toString().contains("ywgdy")){
+                cq.eq("createBy",user.getUserName());
+            }
+        }
         HqlGenerateUtil.installHql(cq, emkProOrder, request.getParameterMap());
 
 
@@ -480,12 +486,11 @@ public class EmkProOrderController extends BaseController {
                             variables.put("isPass", emkProOrderEntity.getIsPass());
 
                             if (emkProOrderEntity.getIsPass().equals("0")) {
-                                if ((map.get("realName") == null) || (map.get("realName").toString().equals(""))) {
+                                /*if ((map.get("realName") == null) || (map.get("realName").toString().equals(""))) {
                                     j.setSuccess(false);
                                     j.setMsg("请选择下一处理人");
                                     return j;
-                                }
-
+                                }*/
                                 EmkMaterialRequiredEntity materialRequiredEntity = null;
                                 EmkMaterialPactEntity materialPactEntity = null;
                                 EmkMaterialPactEntity pactEntity = null;

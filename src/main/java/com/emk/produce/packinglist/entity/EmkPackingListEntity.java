@@ -14,58 +14,58 @@ import org.jeecgframework.poi.excel.annotation.Excel;
 @Entity
 @Table(name = "emk_packing_list", schema = "")
 public class EmkPackingListEntity implements Serializable {
-    @Excel(name = "款号", width = 15)
+    @Excel(name = "款号")
     private String sampleNo;
-    @Excel(name = "描述", width = 15)
+    @Excel(name = "描述")
     private String sampleNoDesc;
-    @Excel(name = "总箱数", width = 15)
+    @Excel(name = "总箱数")
     private Integer sumBoxTotal;
-    @Excel(name = "总体积", width = 15)
+    @Excel(name = "总体积")
     private Double sumBoxVolume;
-    @Excel(name = "总净重", width = 15)
+    @Excel(name = "总净重")
     private Double sumBoxJz;
-    @Excel(name = "总毛重", width = 15)
+    @Excel(name = "总毛重")
     private Double sumBoxMao;
     private String id;
     private String createName;
     private String createBy;
     private Date createDate;
     private String sysOrgCode;
-    @Excel(name = "订单号", width = 15)
+    @Excel(name = "订单号")
     private String orderNo;
-    @Excel(name = "数量", width = 15)
+    @Excel(name = "数量")
     private String total;
-    @Excel(name = "生产方名称", width = 15)
+    @Excel(name = "生产方名称")
     private String scfmc;
-    @Excel(name = "地址", width = 15)
+    @Excel(name = "地址")
     private String address;
-    @Excel(name = "法定代表签名", width = 15)
+    @Excel(name = "法定代表签名")
     private String signer;
-    @Excel(name = "签名日期", width = 15)
+    @Excel(name = "签名日期")
     private String signDate;
-    @Excel(name = "发票编号", width = 15)
+    @Excel(name = "发票编号")
     private String fpbh;
-    @Excel(name = "发票日期", width = 15)
+    @Excel(name = "发票日期")
     private String fpDate;
-    @Excel(name = "长度", width = 15)
+    @Excel(name = "长度")
     private String changdu;
-    @Excel(name = "宽度", width = 15)
+    @Excel(name = "宽度")
     private String kuandu;
-    @Excel(name = "高度", width = 15)
+    @Excel(name = "高度")
     private String gaodu;
-    @Excel(name = "单箱毛重", width = 15)
+    @Excel(name = "单箱毛重")
     private String oneBoxVolume;
-    @Excel(name = "单箱毛重", width = 15)
+    @Excel(name = "单箱毛重")
     private String oneBoxMz;
-    @Excel(name = "单箱净重", width = 15)
+    @Excel(name = "单箱净重")
     private String oneBoxJz;
-    @Excel(name = "尺码", width = 15)
+    @Excel(name = "尺码")
     private String size;
-    @Excel(name = "颜色", width = 15)
+    @Excel(name = "颜色")
     private String color;
-    @Excel(name = "客户代码", width = 15)
+    @Excel(name = "客户代码")
     private String cusNum;
-    @Excel(name = "客户名称", width = 15)
+    @Excel(name = "客户名称")
     private String cusName;
 
     @Column(name = "SAMPLE_NO", nullable = true, length = 32)

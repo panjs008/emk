@@ -19,31 +19,31 @@ public class EmkOfferPriceEntity implements Serializable {
     private String createBy;
     private Date createDate;
     private String sysOrgCode;
-    @Excel(name = "客户编号", width = 15)
+    @Excel(name = "客户编号")
     private String cusNum;
-    @Excel(name = "客户名称", width = 15)
+    @Excel(name = "客户名称")
     private String cusName;
-    @Excel(name = "开单日期", width = 15)
+    @Excel(name = "开单日期")
     private String kdTime;
-    @Excel(name = "款号", width = 15)
+    @Excel(name = "款号")
     private String sampleNo;
-    @Excel(name = "款式", width = 15)
+    @Excel(name = "款式")
     private String proTypeName;
-    @Excel(name = "款式", width = 15)
+    @Excel(name = "款式")
     private String proType;
-    @Excel(name = "加工费", width = 15)
+    @Excel(name = "加工费")
     private Double workPrice;
-    @Excel(name = "厂皮损耗费", width = 15)
+    @Excel(name = "厂皮损耗费")
     private Double lossPrice;
-    @Excel(name = "商检运费", width = 15)
+    @Excel(name = "商检运费")
     private Double freightPrice;
-    @Excel(name = "税费", width = 15)
+    @Excel(name = "税费")
     private Double tax;
-    @Excel(name = "备注", width = 15)
+    @Excel(name = "备注")
     private String remark;
-    @Excel(name = "图片", width = 15)
+    @Excel(name = "图片")
     private String customSampleUrl;
-    @Excel(name = "图片", width = 15)
+    @Excel(name = "图片")
     private String customSample;
 
     @Id

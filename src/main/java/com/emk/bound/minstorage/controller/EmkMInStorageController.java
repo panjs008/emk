@@ -2,6 +2,7 @@ package com.emk.bound.minstorage.controller;
 import com.emk.bill.materialcontract.entity.EmkMaterialContractEntity;
 import com.emk.bill.materialcontractdetail.entity.EmkMaterialContractDetailEntity;
 import com.emk.bound.minstorage.entity.EmkMInStorageEntity;
+import com.emk.bound.minstorage.entity.EmkMInStorageEntity2;
 import com.emk.bound.minstorage.service.EmkMInStorageServiceI;
 
 import java.io.InputStream;
@@ -146,6 +147,16 @@ public class EmkMInStorageController extends BaseController {
 		return new ModelAndView("com/emk/bound/minstorage/emkMInStorageList");
 	}
 
+	@RequestMapping(params = "list2")
+	public ModelAndView list2(HttpServletRequest request) {
+		return new ModelAndView("com/emk/bound/minstorage/emkMInStorageList2");
+	}
+
+	@RequestMapping(params = "list3")
+	public ModelAndView list3(HttpServletRequest request) {
+		return new ModelAndView("com/emk/bound/minstorage/emkMInStorageList3");
+	}
+
 	@RequestMapping(params={"emkMInStorageDetailList"})
 	public ModelAndView rkglMxList(HttpServletRequest request) {
 		Map map = ParameterUtil.getParamMaps(request.getParameterMap());
@@ -240,7 +251,7 @@ public class EmkMInStorageController extends BaseController {
 	 */
 	@RequestMapping(params = "doAdd")
 	@ResponseBody
-	public AjaxJson doAdd(EmkMInStorageEntity emkMInStorage, HttpServletRequest request) {
+	public AjaxJson doAdd(EmkMInStorageEntity2 emkMInStorage, HttpServletRequest request) {
 		String message = null;
 		AjaxJson j = new AjaxJson();
 		message = "入库申请表添加成功";
@@ -289,7 +300,7 @@ public class EmkMInStorageController extends BaseController {
 	 */
 	@RequestMapping(params = "doUpdate")
 	@ResponseBody
-	public AjaxJson doUpdate(EmkMInStorageEntity emkMInStorage, HttpServletRequest request) {
+	public AjaxJson doUpdate(EmkMInStorageEntity2 emkMInStorage, HttpServletRequest request) {
 		String message = null;
 		AjaxJson j = new AjaxJson();
 		message = "入库申请表更新成功";
@@ -546,7 +557,7 @@ public class EmkMInStorageController extends BaseController {
 
 	@RequestMapping(params="doSubmit")
 	@ResponseBody
-	public AjaxJson doSubmit(EmkMInStorageEntity emkMInStorageEntity, HttpServletRequest request) {
+	public AjaxJson doSubmit(EmkMInStorageEntity2 emkMInStorageEntity, HttpServletRequest request) {
 		String message = null;
 		AjaxJson j = new AjaxJson();
 		message = "入库申请单提交成功";
@@ -573,6 +584,7 @@ public class EmkMInStorageController extends BaseController {
 					EmkMInStorageEntity t = emkMInStorageService.get(EmkMInStorageEntity.class, id);
 					t.setState("1");
 					variables.put("optUser", t.getId());
+					message = "操作成功";
 
 					List<Task> task = taskService.createTaskQuery().taskAssignee(id).list();
 					if (task.size() > 0) {
@@ -584,15 +596,11 @@ public class EmkMInStorageController extends BaseController {
 							t.setLeader(user.getRealName());
 							t.setLeadUserId(user.getId());
 							t.setLeadAdvice(emkMInStorageEntity.getLeadAdvice());
+
 							if (emkMInStorageEntity.getIsPass().equals("0")) {
-								if ((map.get("realName") == null) || (map.get("realName").toString().equals(""))) {
-									j.setSuccess(false);
-									j.setMsg("请选择下一处理人");
-									return j;
-								}
-								t.setFinancer(map.get("realName").toString());
-								t.setFinanceUserId(map.get("userName").toString());
 								variables.put("isPass", emkMInStorageEntity.getIsPass());
+								t.setJlUserId(t.getCreateBy());
+								t.setJlUserName(t.getCreateName());
 								taskService.complete(task1.getId(), variables);
 							} else {
 								List<HistoricTaskInstance> hisTasks = historyService.createHistoricTaskInstanceQuery().taskAssignee(emkMInStorageEntity.getId()).list();
@@ -611,6 +619,13 @@ public class EmkMInStorageController extends BaseController {
 								t.setState("0");
 							}
 						}else if (task1.getTaskDefinitionKey().equals("cwTask")) {
+							t.setRkUserName(user.getRealName());
+							t.setRkUserId(user.getId());
+							t.setJlAdvice(emkMInStorageEntity.getLeadAdvice());
+							taskService.complete(task1.getId(), variables);
+
+						}else if (task1.getTaskDefinitionKey().equals("rkTask")) {
+							t.setRkAdvice(emkMInStorageEntity.getLeadAdvice());
 							EmkStorageLogEntity storageLogEntity = new EmkStorageLogEntity();
 							List<EmkMInStorageDetailEntity> inStorageDetailEntityList = systemService.findHql("from EmkMInStorageDetailEntity where inStorageId=?",t.getId());
 							for(EmkMInStorageDetailEntity inStorageDetailEntity : inStorageDetailEntityList){
@@ -681,7 +696,8 @@ public class EmkMInStorageController extends BaseController {
 		sql = "SELECT DATE_FORMAT(t1.START_TIME_, '%Y-%m-%d %H:%i:%s') startTime,t1.*,CASE \n" +
 				" WHEN t1.TASK_DEF_KEY_='instorageTask' THEN t2.create_name \n" +
 				" WHEN t1.TASK_DEF_KEY_='checkTask' THEN t2.leader \n" +
-				" WHEN t1.TASK_DEF_KEY_='cwTask' THEN t2.financer\nELSE ''\n" +
+				" WHEN t1.TASK_DEF_KEY_='cwTask' THEN t2.jl_user_name \n " +
+				" WHEN t1.TASK_DEF_KEY_='rkTask' THEN t2.rk_user_name \n ELSE ''\n" +
 				" END workname FROM act_hi_taskinst t1 \n" +
 				" LEFT JOIN emk_m_in_storage t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='" + map.get("id") + "' ";
 

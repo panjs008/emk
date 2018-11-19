@@ -1,38 +1,19 @@
 package com.emk.workorder.workorder.controller;
 import com.emk.bound.minstorage.entity.EmkMInStorageEntity;
-import com.emk.bound.minstoragedetail.entity.EmkMInStorageDetailEntity;
-import com.emk.storage.instorage.entity.EmkInStorageEntity;
-import com.emk.storage.storage.entity.EmkStorageEntity;
-import com.emk.storage.storagelog.entity.EmkStorageLogEntity;
 import com.emk.util.FlowUtil;
 import com.emk.util.ParameterUtil;
 import com.emk.workorder.workorder.entity.EmkWorkOrderEntity;
 import com.emk.workorder.workorder.service.EmkWorkOrderServiceI;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.text.SimpleDateFormat;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.*;
-import org.activiti.engine.history.HistoricActivityInstance;
-import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
-import org.activiti.engine.impl.RepositoryServiceImpl;
-import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
-import org.activiti.engine.impl.persistence.entity.TaskEntity;
-import org.activiti.engine.impl.pvm.PvmTransition;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
-import org.activiti.engine.impl.pvm.process.TransitionImpl;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
-import org.activiti.image.ProcessDiagramGenerator;
 import org.apache.log4j.Logger;
 import org.jeecgframework.core.util.*;
 import org.jeecgframework.p3.core.common.utils.DateUtil;
@@ -47,24 +28,16 @@ import org.springframework.web.servlet.ModelAndView;
 import org.jeecgframework.core.common.controller.BaseController;
 import org.jeecgframework.core.common.exception.BusinessException;
 import org.jeecgframework.core.common.hibernate.qbc.CriteriaQuery;
-import org.jeecgframework.core.common.model.common.TreeChildCount;
 import org.jeecgframework.core.common.model.json.AjaxJson;
 import org.jeecgframework.core.common.model.json.DataGrid;
 import org.jeecgframework.core.constant.Globals;
 import org.jeecgframework.tag.core.easyui.TagUtil;
-import org.jeecgframework.web.system.pojo.base.TSDepart;
 import org.jeecgframework.web.system.service.SystemService;
 
-import java.io.OutputStream;
-
-import org.jeecgframework.poi.excel.ExcelExportUtil;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.entity.ExportParams;
 import org.jeecgframework.poi.excel.entity.ImportParams;
-import org.jeecgframework.poi.excel.entity.TemplateExportParams;
 import org.jeecgframework.poi.excel.entity.vo.NormalExcelConstants;
-import org.jeecgframework.poi.excel.entity.vo.TemplateExcelConstants;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 import java.io.IOException;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -73,30 +46,21 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import java.util.Map;
 import java.util.HashMap;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.jeecgframework.core.beanvalidator.BeanValidators;
 import java.util.Set;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
-import java.net.URI;
 import org.springframework.http.MediaType;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.apache.commons.lang3.StringUtils;
-import org.jeecgframework.jwt.util.GsonUtil;
 import org.jeecgframework.jwt.util.ResponseMessage;
 import org.jeecgframework.jwt.util.Result;
 import com.alibaba.fastjson.JSONArray;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
@@ -659,13 +623,13 @@ public class EmkWorkOrderController extends BaseController {
 		Map map = ParameterUtil.getParamMaps(req.getParameterMap());
 
 		sql = " SELECT DATE_FORMAT(t1.START_TIME_, '%Y-%m-%d %H:%i:%s') startTime,t1.*,CASE \n" +
-				" WHEN t1.TASK_DEF_KEY_='khxpTask' THEN t2.create_name \n" +
-				" WHEN t1.TASK_DEF_KEY_='sampleTask' THEN t2.ask_work_user \n" +
-				" WHEN t1.TASK_DEF_KEY_='sampleCheckTask' THEN t2.ask_work_user \n" +
-				" WHEN t1.TASK_DEF_KEY_='billTask' THEN t2.ask_work_user \n" +
-				" WHEN t1.TASK_DEF_KEY_='htTask' THEN t2.ask_work_user \n" +
-				" WHEN t1.TASK_DEF_KEY_='produceTask' THEN t2.ask_work_user \n" +
-				" WHEN t1.TASK_DEF_KEY_='outTask' THEN t2.ask_work_user \n" +
+				" WHEN t1.TASK_DEF_KEY_='khxpTask' THEN t2.ask_work_user \n" +
+				" WHEN t1.TASK_DEF_KEY_='sampleTask' THEN t2.sample_user \n" +
+				" WHEN t1.TASK_DEF_KEY_='sampleCheckTask' THEN t2.sample_check_user \n" +
+				" WHEN t1.TASK_DEF_KEY_='billTask' THEN t2.order_user \n" +
+				" WHEN t1.TASK_DEF_KEY_='htTask' THEN t2.ht_user \n" +
+				" WHEN t1.TASK_DEF_KEY_='produceTask' THEN t2.produce_user \n" +
+				" WHEN t1.TASK_DEF_KEY_='outTask' THEN t2.out_user \n" +
 
 				" END workname FROM act_hi_taskinst t1 \n" +
 				" LEFT JOIN emk_work_order t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='" + map.get("id") + "' ";

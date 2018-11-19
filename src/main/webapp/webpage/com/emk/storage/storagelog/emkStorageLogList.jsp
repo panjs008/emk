@@ -18,13 +18,13 @@
    <t:dgCol title="商品类型"  field="proTypeName"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="入库单号"  field="rkNo"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="操作" field="opt" width="100"></t:dgCol>
-   <t:dgDelOpt title="删除" url="emkStorageLogController.do?doDel&id={id}" urlclass="ace_button"  urlfont="fa-trash-o"/>
-       <t:dgToolBar title="录入" icon="fa fa-plus" url="emkStorageLogController.do?goAdd" funname="add"></t:dgToolBar>
-       <t:dgToolBar title="编辑" icon="fa fa-edit" url="emkStorageLogController.do?goUpdate" funname="update"></t:dgToolBar>
-       <t:dgToolBar title="批量删除"  icon="fa fa-remove" url="emkStorageLogController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
+   <t:dgDelOpt title="删除" operationCode="delete" url="emkStorageLogController.do?doDel&id={id}" urlclass="ace_button"  urlfont="fa-trash-o"/>
+       <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkStorageLogController.do?goAdd" funname="add"></t:dgToolBar>
+       <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkStorageLogController.do?goUpdate" funname="update"></t:dgToolBar>
+       <t:dgToolBar title="删除" operationCode="delete" operationCode="delete"  icon="fa fa-remove" url="emkStorageLogController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
        <t:dgToolBar title="查看" icon="fa fa-search" url="emkStorageLogController.do?goUpdate" funname="detail"></t:dgToolBar>
        <t:dgToolBar title="导入" icon="fa fa-arrow-circle-left" funname="ImportXls"></t:dgToolBar>
-       <t:dgToolBar title="导出" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
+       <t:dgToolBar title="导出" operationCode="exp" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
        <t:dgToolBar title="模板下载" icon="fa fa-arrow-circle-o-down" funname="ExportXlsByT"></t:dgToolBar>
   </t:datagrid>
   </div>

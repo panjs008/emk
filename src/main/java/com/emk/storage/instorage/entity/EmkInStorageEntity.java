@@ -20,37 +20,37 @@ public class EmkInStorageEntity
     private String createBy;
     private Date createDate;
     private String sysOrgCode;
-    @Excel(name = "入库单号", width = 15)
+    @Excel(name = "入库单号")
     private String rkNo;
-    @Excel(name = "状态", width = 15)
+    @Excel(name = "状态")
     private String state;
-    @Excel(name = "供应商", width = 15)
+    @Excel(name = "供应商")
     private String factoryName;
-    @Excel(name = "供应商代码", width = 15)
+    @Excel(name = "供应商代码")
     private String factoryCode;
-    @Excel(name = "运费", width = 15)
+    @Excel(name = "运费")
     private Double yunfei;
-    @Excel(name = "交付日期", width = 15)
+    @Excel(name = "交付日期")
     private String receiveDate;
-    @Excel(name = "类型", width = 15)
+    @Excel(name = "类型")
     private String type;
-    @Excel(name = "备注", width = 15)
+    @Excel(name = "备注")
     private String remark;
-    @Excel(name = "开单日期", width = 15)
+    @Excel(name = "开单日期")
     private String kdDate;
-    @Excel(name = "审核人", width = 15)
+    @Excel(name = "审核人")
     private String leader;
-    @Excel(name = "审核人ID", width = 15)
+    @Excel(name = "审核人ID")
     private String leadUserId;
-    @Excel(name = "审核意见", width = 15)
+    @Excel(name = "审核意见")
     private String leadAdvice;
-    @Excel(name = "是否通过", width = 15)
+    @Excel(name = "是否通过")
     private String isPass;
-    @Excel(name = "财务处理人", width = 15)
+    @Excel(name = "财务处理人")
     private String financer;
-    @Excel(name = "财务处理人ID", width = 15)
+    @Excel(name = "财务处理人ID")
     private String financeUserId;
-    @Excel(name = "处理意见", width = 15)
+    @Excel(name = "处理意见")
     private String financeAdvice;
 
     @Id

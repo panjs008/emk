@@ -341,7 +341,7 @@
 			</td>
 			<td class="value">
 				<input id="customSample" name="customSample" value="${emkSampleRequiredPage.customSample }" type="hidden" />
-				<img id="uploadimg0" src="${emkSampleRequiredPage.customSampleUrl eq null ? 'images/bjlogo.png':emkSampleRequiredPage.customSampleUrl}" width="150" height="150">
+				<img id="uploadimg0" src="${emkSampleRequiredPage.customSampleUrl eq '' ? 'images/bjlogo.png':emkSampleRequiredPage.customSampleUrl}" width="150" height="150">
 				<t:upload name="instruction0" id="instruction0" dialog="false" extend="*.jpg;*.png;*.gif;*.ico;*.dwg" buttonText="添加文件" queueID="instructionfile" view="false" auto="true" uploader="systemController.do?saveFiles"  onUploadSuccess="uploadSuccess0" >
 				</t:upload>[<a href="javascript:findDetail('${emkSampleRequiredPage.customSampleUrl }')">${emkSampleRequiredPage.customSample }</a>]
 				<span id="customSampleId"></span>
@@ -354,7 +354,7 @@
 			</td>
 			<td class="value">
 				<input id="dgrImage" name="dgrImage" type="hidden" value="${emkSampleRequiredPage.dgrImage }"/>
-				<img id="uploadimg3" src="${emkSampleRequiredPage.dgrImageUrl eq null ? 'images/bjlogo.png':emkSampleRequiredPage.dgrImageUrl}" width="150" height="150">
+				<img id="uploadimg3" src="${emkSampleRequiredPage.dgrImageUrl eq '' ? 'images/bjlogo.png':emkSampleRequiredPage.dgrImageUrl}" width="150" height="150">
 				<t:upload name="instruction3" id="instruction3" dialog="false" extend="*.jpg;*.png;*.gif;*.ico;*.dwg" buttonText="添加文件" queueID="instructionfile" view="false" auto="true" uploader="systemController.do?saveFiles"  onUploadSuccess="uploadSuccess3" >
 				</t:upload>[<a href="javascript:findDetail('${emkSampleRequiredPage.dgrImageUrl }')">${emkSampleRequiredPage.dgrImage }</a>]
 				<span id="dgrImageId"></span>
@@ -367,7 +367,7 @@
 			</td>
 			<td class="value">
 				<input id="oldImage" name="oldImage" type="hidden" value="${emkSampleRequiredPage.oldImage }"/>
-				<img id="uploadimg" src="${emkSampleRequiredPage.oldImageUrl eq null ? 'images/bjlogo.png':emkSampleRequiredPage.oldImageUrl}" width="150" height="150">
+				<img id="uploadimg" src="${emkSampleRequiredPage.oldImageUrl eq '' ? 'images/bjlogo.png':emkSampleRequiredPage.oldImageUrl}" width="150" height="150">
 				<t:upload name="instruction" id="instruction" dialog="false" extend="*.jpg;*.png;*.gif;*.ico;*.dwg" buttonText="添加文件" queueID="instructionfile" view="false" auto="true" uploader="systemController.do?saveFiles"  onUploadSuccess="uploadSuccess" >
 				</t:upload>[<a href="javascript:findDetail('${emkSampleRequiredPage.oldImageUrl }')">${emkSampleRequiredPage.oldImage }</a>]
 				<span id="oldImageId"></span>
@@ -380,7 +380,7 @@
 				</label>
 			</td>
 			<td class="value">
-				<img id="uploadimg2" src="${emkSampleRequiredPage.sizeImageUrl eq null ? 'images/bjlogo.png':emkSampleRequiredPage.sizeImageUrl}" width="150" height="150">
+				<img id="uploadimg2" src="${emkSampleRequiredPage.sizeImageUrl eq '' ? 'images/bjlogo.png':emkSampleRequiredPage.sizeImageUrl}" width="150" height="150">
 				<t:upload name="instruction2" id="instruction2" dialog="false" extend="*.jpg;*.png;*.gif;*.ico;*.dwg" buttonText="添加文件" queueID="instructionfile" view="false" auto="true" uploader="systemController.do?saveFiles"  onUploadSuccess="uploadSuccess2" >
 				</t:upload>[<a href="javascript:findDetail('${emkSampleRequiredPage.sizeImageUrl }')">${emkSampleRequiredPage.sizeImage }</a>]
 				<span id="sizeImageId"></span>

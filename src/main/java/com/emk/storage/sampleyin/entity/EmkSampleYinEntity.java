@@ -20,13 +20,13 @@ public class EmkSampleYinEntity
     private String createBy;
     private Date createDate;
     private String sysOrgCode;
-    @Excel(name = "工艺种类", width = 15)
+    @Excel(name = "工艺种类")
     private String gyzy;
-    @Excel(name = "大小", width = 15)
+    @Excel(name = "大小")
     private String size;
-    @Excel(name = "成本", width = 15)
+    @Excel(name = "成本")
     private Double chengben;
-    @Excel(name = "样品ID", width = 15)
+    @Excel(name = "样品ID")
     private String sampleId;
 
     @Id

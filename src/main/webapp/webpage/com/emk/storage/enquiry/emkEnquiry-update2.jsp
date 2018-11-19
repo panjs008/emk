@@ -242,7 +242,7 @@
 			</td>
 			<td class="value">
 				<input id="customSample" name="customSample" value="${emkEnquiryPage.customSample }" type="hidden" />
-				<img id="uploadimg0" src="${emkEnquiryPage.customSampleUrl eq null ? 'images/bjlogo.png':emkEnquiryPage.customSampleUrl}" width="150" height="150">
+				<img id="uploadimg0" src="${emkEnquiryPage.customSampleUrl eq '' ? 'images/bjlogo.png':emkEnquiryPage.customSampleUrl}" width="150" height="150">
 				<br/>[<a href="javascript:findDetail('${emkEnquiryPage.customSampleUrl }')">${emkEnquiryPage.customSample }</a>]
 				<span id="customSampleId"></span>
 				<input id="customSampleUrl" name="customSampleUrl" value="${emkEnquiryPage.customSampleUrl }" type="hidden" />
@@ -254,7 +254,7 @@
 			</td>
 			<td class="value">
 				<input id="dgrImage" name="dgrImage" type="hidden" value="${emkEnquiryPage.dgrImage }"/>
-				<img id="uploadimg3" src="${emkEnquiryPage.dgrImageUrl eq null ? 'images/bjlogo.png':emkEnquiryPage.dgrImageUrl}" width="150" height="150">
+				<img id="uploadimg3" src="${emkEnquiryPage.dgrImageUrl eq '' ? 'images/bjlogo.png':emkEnquiryPage.dgrImageUrl}" width="150" height="150">
 				<br/>[<a href="javascript:findDetail('${emkEnquiryPage.dgrImageUrl }')">${emkEnquiryPage.dgrImage }</a>]
 				<span id="dgrImageId"></span>
 				<input id="dgrImageUrl" name="dgrImageUrl" type="hidden" value="${emkEnquiryPage.dgrImageUrl }"/>
@@ -299,7 +299,7 @@
 			</td>
 			<td class="value">
 				<input id="oldImage" name="oldImage" type="hidden" value="${emkEnquiryPage.oldImage }"/>
-				<img id="uploadimg" src="${emkEnquiryPage.oldImageUrl eq null ? 'images/bjlogo.png':emkEnquiryPage.oldImageUrl}" width="150" height="150">
+				<img id="uploadimg" src="${emkEnquiryPage.oldImageUrl eq '' ? 'images/bjlogo.png':emkEnquiryPage.oldImageUrl}" width="150" height="150">
 				<br/>[<a href="javascript:findDetail('${emkEnquiryPage.oldImageUrl }')">${emkEnquiryPage.oldImage }</a>]
 				<span id="oldImageId"></span>
 				<input id="oldImageUrl" name="oldImageUrl" type="hidden" value="${emkEnquiryPage.oldImageUrl }"/>
@@ -311,7 +311,7 @@
 				</label>
 			</td>
 			<td class="value">
-				<img id="uploadimg2" src="${emkEnquiryPage.sizeImageUrl eq null ? 'images/bjlogo.png':emkEnquiryPage.sizeImageUrl}" width="150" height="150">
+				<img id="uploadimg2" src="${emkEnquiryPage.sizeImageUrl eq '' ? 'images/bjlogo.png':emkEnquiryPage.sizeImageUrl}" width="150" height="150">
 				<br/>[<a href="javascript:findDetail('${emkEnquiryPage.sizeImageUrl }')">${emkEnquiryPage.sizeImage }</a>]
 				<span id="sizeImageId"></span>
 				<input id="sizeImageUrl" name="sizeImageUrl" type="hidden" value="${emkEnquiryPage.sizeImageUrl }"/>

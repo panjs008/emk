@@ -275,7 +275,7 @@
 			</td>
 			<td class="value" >
 				<input id="customSample" name="customSample" type="hidden" value="${emkPricePage.customSample }"/>
-				<img id="uploadimg0" src="${emkPricePage.customSampleUrl eq null ? 'images/bjlogo.png':emkPricePage.customSampleUrl}" width="140" height="140">
+				<img id="uploadimg0" src="${emkPricePage.customSampleUrl eq '' ? 'images/bjlogo.png':emkPricePage.customSampleUrl}" width="140" height="140">
 				<t:upload name="instruction0" id="instruction0" dialog="false" extend="*.jpg;*.png;*.gif;*.ico;*.dwg" buttonText="添加文件" queueID="instructionfile" view="false" auto="true" uploader="systemController.do?saveFiles"  onUploadSuccess="uploadSuccess0" >
 				</t:upload>[<a href="javascript:findDetail('${emkPricePage.customSampleUrl }')">${emkPricePage.customSample }</a>]
 				<span id="customSampleId"></span>
@@ -288,7 +288,7 @@
 			</td>
 			<td class="value">
 				<input id="dgrImage" name="dgrImage" type="hidden" value="${emkPricePage.dgrImage }"/>
-				<img id="uploadimg3" src="${emkPricePage.dgrImageUrl eq null ? 'images/bjlogo.png':emkPricePage.dgrImageUrl}" width="140" height="140">
+				<img id="uploadimg3" src="${emkPricePage.dgrImageUrl eq '' ? 'images/bjlogo.png':emkPricePage.dgrImageUrl}" width="140" height="140">
 				<t:upload name="instruction3" id="instruction3" dialog="false" extend="*.jpg;*.png;*.gif;*.ico;*.dwg" buttonText="添加文件" queueID="instructionfile" view="false" auto="true" uploader="systemController.do?saveFiles"  onUploadSuccess="uploadSuccess3" >
 				</t:upload>[<a href="javascript:findDetail('${emkPricePage.dgrImageUrl }')">${emkPricePage.dgrImage }</a>]
 				<span id="dgrImageId"></span>
@@ -301,7 +301,7 @@
 			</td>
 			<td class="value">
 				<input id="oldImage" name="oldImage" type="hidden" value="${emkPricePage.oldImage }"/>
-				<img id="uploadimg" src="${emkPricePage.oldImageUrl eq null ? 'images/bjlogo.png':emkPricePage.oldImageUrl}" width="140" height="140">
+				<img id="uploadimg" src="${emkPricePage.oldImageUrl eq '' ? 'images/bjlogo.png':emkPricePage.oldImageUrl}" width="140" height="140">
 				<t:upload name="instruction" id="instruction" dialog="false" extend="*.jpg;*.png;*.gif;*.ico;*.dwg" buttonText="添加文件" queueID="instructionfile" view="false" auto="true" uploader="systemController.do?saveFiles"  onUploadSuccess="uploadSuccess" >
 				</t:upload>[<a href="javascript:findDetail('${emkPricePage.oldImageUrl }')">${emkPricePage.oldImage }</a>]
 				<span id="oldImageId"></span>
@@ -314,7 +314,7 @@
 				</label>
 			</td>
 			<td class="value">
-				<img id="uploadimg2" src="${emkPricePage.sizeImageUrl eq null ? 'images/bjlogo.png':emkPricePage.sizeImageUrl}" width="140" height="140">
+				<img id="uploadimg2" src="${emkPricePage.sizeImageUrl eq '' ? 'images/bjlogo.png':emkPricePage.sizeImageUrl}" width="140" height="140">
 				<t:upload name="instruction2" id="instruction2" dialog="false" extend="*.jpg;*.png;*.gif;*.ico;*.dwg" buttonText="添加文件" queueID="instructionfile" view="false" auto="true" uploader="systemController.do?saveFiles"  onUploadSuccess="uploadSuccess2" >
 				</t:upload>[<a href="javascript:findDetail('${emkPricePage.sizeImageUrl }')">${emkPricePage.sizeImage }</a>]
 				<span id="sizeImageId"></span>

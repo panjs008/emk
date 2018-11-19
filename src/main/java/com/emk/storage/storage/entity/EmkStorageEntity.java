@@ -55,72 +55,72 @@ public class EmkStorageEntity implements java.io.Serializable {
     /**
      * 产品编号
      */
-    @Excel(name = "产品编号", width = 15)
+    @Excel(name = "产品编号")
     private String proNum;
     /**
      * 商品ID
      */
-    @Excel(name = "商品ID", width = 15)
+    @Excel(name = "商品ID")
     private String proId;
     /**
      * 中文描述
      */
-    @Excel(name = "中文描述", width = 15)
+    @Excel(name = "中文描述")
     private String proZnName;
     /**
      * 规格型号
      */
-    @Excel(name = "规格型号", width = 15)
+    @Excel(name = "规格型号")
     private String brand;
     /**
      * 数量
      */
-    @Excel(name = "数量", width = 15)
+    @Excel(name = "数量")
     private String total;
     /**
      * 单位
      */
-    @Excel(name = "单位", width = 15)
+    @Excel(name = "单位")
     private String unit;
     /**
      * 英文描述
      */
-    @Excel(name = "英文描述", width = 15)
+    @Excel(name = "英文描述")
     private String proEnName;
     /**
      * 商品类型
      */
-    @Excel(name = "商品类型", width = 15)
+    @Excel(name = "商品类型")
     private String proType;
     /**
      * 备注
      */
-    @Excel(name = "备注", width = 15)
+    @Excel(name = "备注")
     private String remark;
     /**
      * 商品类型
      */
-    @Excel(name = "商品类型", width = 15)
+    @Excel(name = "商品类型")
     private String proTypeName;
     /**
      * 仓库ID
      */
-    @Excel(name = "仓库ID", width = 15)
+    @Excel(name = "仓库ID")
     private String storageSetId;
     /**
      * 仓库名称
      */
-    @Excel(name = "仓库名称", width = 15)
+    @Excel(name = "仓库名称")
     private String storageName;
     /**
      * 库位ID
      */
-    @Excel(name = "库位ID", width = 15)
+    @Excel(name = "库位ID")
     private String positionId;
     /**
      * 库位名称
      */
-    @Excel(name = "库位名称", width = 15)
+    @Excel(name = "库位名称")
     private String positionName;
 
     /**

@@ -19,97 +19,97 @@ public class EmkMaterialPactEntity implements Serializable {
     private String createBy;
     private Date createDate;
     private String sysOrgCode;
-    @Excel(name = "采购合同编号", width = 15)
+    @Excel(name = "采购合同编号")
     private String materialNo;
-    @Excel(name = "提交日期", width = 15)
+    @Excel(name = "提交日期")
     private String kdDate;
-    @Excel(name = "业务员", width = 15)
+    @Excel(name = "业务员")
     private String businesser;
-    @Excel(name = "业务员ID", width = 15)
+    @Excel(name = "业务员ID")
     private String businesserName;
-    @Excel(name = "客户代码", width = 15)
+    @Excel(name = "客户代码")
     private String cusNum;
-    @Excel(name = "客户名称", width = 15)
+    @Excel(name = "客户名称")
     private String cusName;
-    @Excel(name = "工艺种类", width = 15)
+    @Excel(name = "工艺种类")
     private String gyzl;
     private String proType;
-    @Excel(name = "款式大类", width = 15)
+    @Excel(name = "款式大类")
     private String proTypeName;
-    @Excel(name = "款号", width = 15)
+    @Excel(name = "款号")
     private String sampleNo;
-    @Excel(name = "描述", width = 15)
+    @Excel(name = "描述")
     private String sampleNoDesc;
-    @Excel(name = "工厂", width = 15)
+    @Excel(name = "工厂")
     private String factoryName;
-    @Excel(name = "工厂Code", width = 15)
+    @Excel(name = "工厂Code")
     private String factoryCode;
-    @Excel(name = "业务部门", width = 15)
+    @Excel(name = "业务部门")
     private String businesseDeptName;
-    @Excel(name = "业务部门ID", width = 15)
+    @Excel(name = "业务部门ID")
     private String businesseDeptId;
-    @Excel(name = "生产跟单员", width = 15)
+    @Excel(name = "生产跟单员")
     private String developer;
-    @Excel(name = "生产跟单员ID", width = 15)
+    @Excel(name = "生产跟单员ID")
     private String developerName;
-    @Excel(name = "样品交期", width = 15)
+    @Excel(name = "样品交期")
     private String ypjqDate;
-    @Excel(name = "距样品交期剩余天数", width = 15)
+    @Excel(name = "距样品交期剩余天数")
     private Integer leaveYpjqDays;
-    @Excel(name = "距大货交期剩余天数", width = 15)
+    @Excel(name = "距大货交期剩余天数")
     private Integer leaveDhjqDays;
-    @Excel(name = "大货交期", width = 15)
+    @Excel(name = "大货交期")
     private String dhjqDate;
-    @Excel(name = "业务跟单员", width = 15)
+    @Excel(name = "业务跟单员")
     private String tracer;
-    @Excel(name = "业务跟单员ID", width = 15)
+    @Excel(name = "业务跟单员ID")
     private String tracerName;
-    @Excel(name = "合同编号", width = 15)
+    @Excel(name = "合同编号")
     private String htNum;
-    @Excel(name = "入库状态", width = 15)
+    @Excel(name = "入库状态")
     private String rkState;
-    @Excel(name = "总数量", width = 15)
+    @Excel(name = "总数量")
     private Double sumTotal;
-    @Excel(name = "总用量", width = 15)
+    @Excel(name = "总用量")
     private String sumUse;
-    @Excel(name = "甲方", width = 15)
+    @Excel(name = "甲方")
     private String partyA;
-    @Excel(name = "甲方ID", width = 15)
+    @Excel(name = "甲方ID")
     private String partyAId;
-    @Excel(name = "乙方", width = 15)
+    @Excel(name = "乙方")
     private String partyB;
-    @Excel(name = "乙方ID", width = 15)
+    @Excel(name = "乙方ID")
     private String partyBId;
-    @Excel(name = "FOB", width = 15)
+    @Excel(name = "FOB")
     private String fob;
-    @Excel(name = "交货地点", width = 15)
+    @Excel(name = "交货地点")
     private String place;
-    @Excel(name = "类型", width = 15)
+    @Excel(name = "类型")
     private String type;
-    @Excel(name = "原产地", width = 15)
+    @Excel(name = "原产地")
     private String ycd;
-    @Excel(name = "付款方式", width = 15)
+    @Excel(name = "付款方式")
     private String payType;
-    @Excel(name = "授权代表", width = 15)
+    @Excel(name = "授权代表")
     private String sqdb;
-    @Excel(name = "地址", width = 15)
+    @Excel(name = "地址")
     private String address;
-    @Excel(name = "电话", width = 15)
+    @Excel(name = "电话")
     private String telphone;
-    @Excel(name = "签定日期", width = 15)
+    @Excel(name = "签定日期")
     private String signDate;
-    @Excel(name = "订单号", width = 15)
+    @Excel(name = "订单号")
     private String orderNum;
-    @Excel(name = "供应商", width = 15)
+    @Excel(name = "供应商")
     private String gys;
-    @Excel(name = "供应商Code", width = 15)
+    @Excel(name = "供应商Code")
     private String gysCode;
 
-    @Excel(name = "正式采购合同编号", width = 15)
+    @Excel(name = "正式采购合同编号")
     private String zscghtbh;
-    @Excel(name = "采购需求单号", width = 15)
+    @Excel(name = "采购需求单号")
     private String cgxqdh;
-    @Excel(name = "采购合同号", width = 15)
+    @Excel(name = "采购合同号")
     private String cghtbh;
     private String flag;
 

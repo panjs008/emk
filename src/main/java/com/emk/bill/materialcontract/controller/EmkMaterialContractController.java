@@ -2,6 +2,7 @@ package com.emk.bill.materialcontract.controller;
 
 import com.alibaba.fastjson.JSONArray;
 import com.emk.bill.materialcontract.entity.EmkMaterialContractEntity;
+import com.emk.bill.materialcontract.entity.EmkMaterialContractEntity2;
 import com.emk.bill.materialcontract.service.EmkMaterialContractServiceI;
 import com.emk.bill.materialcontractdetail.entity.EmkMaterialContractDetailEntity;
 import com.emk.storage.instorage.entity.EmkInStorageEntity;
@@ -93,9 +94,9 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.UriComponentsBuilder;
 
-@Api(value = "EmkMaterialContract", description = "原料采购合同表", tags = {"emkMaterialContractController"})
+@Api(value = "EmkMaterialContract", description = "原料采购合同表", tags = "emkMaterialContractController")
 @Controller
-@RequestMapping({"/emkMaterialContractController"})
+@RequestMapping("/emkMaterialContractController")
 public class EmkMaterialContractController extends BaseController {
     private static final Logger logger = Logger.getLogger(EmkMaterialContractController.class);
     @Autowired
@@ -111,12 +112,20 @@ public class EmkMaterialContractController extends BaseController {
     @Autowired
     HistoryService historyService;
 
-    @RequestMapping(params = {"list"})
+    @RequestMapping(params = "list")
     public ModelAndView list(HttpServletRequest request) {
         return new ModelAndView("com/emk/bill/materialcontract/emkMaterialContractList");
     }
+    @RequestMapping(params = "list2")
+    public ModelAndView list2(HttpServletRequest request) {
+        return new ModelAndView("com/emk/bill/materialcontract/emkMaterialContractList2");
+    }
+    @RequestMapping(params = "list3")
+    public ModelAndView list3(HttpServletRequest request) {
+        return new ModelAndView("com/emk/bill/materialcontract/emkMaterialContractList3");
+    }
 
-    @RequestMapping(params = {"emkMaterialContractDetailList"})
+    @RequestMapping(params = "emkMaterialContractDetailList")
     public ModelAndView rkglMxList(HttpServletRequest request) {
         Map map = ParameterUtil.getParamMaps(request.getParameterMap());
         if ((map.get("contractId") != null) && (!map.get("contractId").equals(""))) {
@@ -126,17 +135,23 @@ public class EmkMaterialContractController extends BaseController {
         return new ModelAndView("com/emk/bill/materialcontract/emkMaterialContractDetailList");
     }
 
-    @RequestMapping(params = {"datagrid"})
+    @RequestMapping(params = "datagrid")
     public void datagrid(EmkMaterialContractEntity emkMaterialContract, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid) {
         CriteriaQuery cq = new CriteriaQuery(EmkMaterialContractEntity.class, dataGrid);
-
+        TSUser user = (TSUser) request.getSession().getAttribute(ResourceUtil.LOCAL_CLINET_USER);
+        Map roleMap = (Map) request.getSession().getAttribute("ROLE");
+        if(roleMap != null){
+            if(roleMap.get("rolecode").toString().contains("ywy") || roleMap.get("rolecode").toString().contains("ywgdy")){
+                cq.eq("createBy",user.getUserName());
+            }
+        }
         HqlGenerateUtil.installHql(cq, emkMaterialContract, request.getParameterMap());
         cq.add();
         this.emkMaterialContractService.getDataGridReturn(cq, true);
         TagUtil.datagrid(response, dataGrid);
     }
 
-    @RequestMapping(params = {"doDel"})
+    @RequestMapping(params = "doDel")
     @ResponseBody
     public AjaxJson doDel(EmkMaterialContractEntity emkMaterialContract, HttpServletRequest request) {
         String message = null;
@@ -155,7 +170,7 @@ public class EmkMaterialContractController extends BaseController {
         return j;
     }
 
-    @RequestMapping(params = {"doBatchDel"})
+    @RequestMapping(params = "doBatchDel")
     @ResponseBody
     public AjaxJson doBatchDel(String ids, HttpServletRequest request) {
         String message = null;
@@ -178,9 +193,9 @@ public class EmkMaterialContractController extends BaseController {
         return j;
     }
 
-    @RequestMapping(params = {"doAdd"})
+    @RequestMapping(params = "doAdd")
     @ResponseBody
-    public AjaxJson doAdd(EmkMaterialContractEntity emkMaterialContract, HttpServletRequest request) {
+    public AjaxJson doAdd(EmkMaterialContractEntity2 emkMaterialContract, HttpServletRequest request) {
         String message = null;
         AjaxJson j = new AjaxJson();
         message = "原料采购合同表添加成功";
@@ -217,9 +232,9 @@ public class EmkMaterialContractController extends BaseController {
         return j;
     }
 
-    @RequestMapping(params = {"doUpdate"})
+    @RequestMapping(params = "doUpdate")
     @ResponseBody
-    public AjaxJson doUpdate(EmkMaterialContractEntity emkMaterialContract, HttpServletRequest request) {
+    public AjaxJson doUpdate(EmkMaterialContractEntity2 emkMaterialContract, HttpServletRequest request) {
         String message = null;
         AjaxJson j = new AjaxJson();
         message = "原料采购合同表更新成功";
@@ -260,7 +275,7 @@ public class EmkMaterialContractController extends BaseController {
         return j;
     }
 
-    @RequestMapping(params = {"goAdd"})
+    @RequestMapping(params = "goAdd")
     public ModelAndView goAdd(EmkMaterialContractEntity emkMaterialContract, HttpServletRequest req) {
         req.setAttribute("kdDate", DateUtils.format(new Date(), "yyyy-MM-dd"));
         if (StringUtil.isNotEmpty(emkMaterialContract.getId())) {
@@ -271,7 +286,7 @@ public class EmkMaterialContractController extends BaseController {
         return new ModelAndView("com/emk/bill/materialcontract/emkMaterialContract-add");
     }
 
-    @RequestMapping(params = {"goUpdate"})
+    @RequestMapping(params = "goUpdate")
     public ModelAndView goUpdate(EmkMaterialContractEntity emkMaterialContract, HttpServletRequest req) {
         if (StringUtil.isNotEmpty(emkMaterialContract.getId())) {
             emkMaterialContract = emkMaterialContractService.getEntity(EmkMaterialContractEntity.class, emkMaterialContract.getId());
@@ -282,7 +297,7 @@ public class EmkMaterialContractController extends BaseController {
         return new ModelAndView("com/emk/bill/materialcontract/emkMaterialContract-update");
     }
 
-    @RequestMapping(params = {"goUpdate2"})
+    @RequestMapping(params = "goUpdate2")
     public ModelAndView goUpdate2(EmkMaterialContractEntity emkMaterialContract, HttpServletRequest req) {
         if (StringUtil.isNotEmpty(emkMaterialContract.getId())) {
             emkMaterialContract = emkMaterialContractService.getEntity(EmkMaterialContractEntity.class, emkMaterialContract.getId());
@@ -291,13 +306,13 @@ public class EmkMaterialContractController extends BaseController {
         return new ModelAndView("com/emk/bill/materialcontract/emkMaterialContract-update2");
     }
 
-    @RequestMapping(params = {"upload"})
+    @RequestMapping(params = "upload")
     public ModelAndView upload(HttpServletRequest req) {
         req.setAttribute("controller_name", "emkMaterialContractController");
         return new ModelAndView("common/upload/pub_excel_upload");
     }
 
-    @RequestMapping(params = {"exportXls"})
+    @RequestMapping(params = "exportXls")
     public String exportXls(EmkMaterialContractEntity emkMaterialContract, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid, ModelMap modelMap) {
         CriteriaQuery cq = new CriteriaQuery(EmkMaterialContractEntity.class, dataGrid);
         HqlGenerateUtil.installHql(cq, emkMaterialContract, request.getParameterMap());
@@ -310,7 +325,7 @@ public class EmkMaterialContractController extends BaseController {
         return "jeecgExcelView";
     }
 
-    @RequestMapping(params = {"exportXlsByT"})
+    @RequestMapping(params = "exportXlsByT")
     public String exportXlsByT(EmkMaterialContractEntity emkMaterialContract, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid, ModelMap modelMap) {
         modelMap.put("fileName", "原料采购合同表");
         modelMap.put("entity", EmkMaterialContractEntity.class);
@@ -329,7 +344,7 @@ public class EmkMaterialContractController extends BaseController {
         return Result.success(listEmkMaterialContracts);
     }
 
-    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.GET})
+    @RequestMapping(value = "/{id}", method = {org.springframework.web.bind.annotation.RequestMethod.GET})
     @ResponseBody
     @ApiOperation(value = "根据ID获取原料采购合同表信息", notes = "根据ID获取原料采购合同表信息", httpMethod = "GET", produces = "application/json")
     public ResponseMessage<?> get(@ApiParam(required = true, name = "id", value = "ID") @PathVariable("id") String id) {
@@ -340,7 +355,7 @@ public class EmkMaterialContractController extends BaseController {
         return Result.success(task);
     }
 
-    @RequestMapping(method = {org.springframework.web.bind.annotation.RequestMethod.POST}, consumes = {"application/json"})
+    @RequestMapping(method = {org.springframework.web.bind.annotation.RequestMethod.POST}, consumes = "application/json")
     @ResponseBody
     @ApiOperation("创建原料采购合同表")
     public ResponseMessage<?> create(@ApiParam(name = "原料采购合同表对象") @RequestBody EmkMaterialContractEntity emkMaterialContract, UriComponentsBuilder uriBuilder) {
@@ -357,7 +372,7 @@ public class EmkMaterialContractController extends BaseController {
         return Result.success(emkMaterialContract);
     }
 
-    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.PUT}, consumes = {"application/json"})
+    @RequestMapping(value = "/{id}", method = {org.springframework.web.bind.annotation.RequestMethod.PUT}, consumes = "application/json")
     @ResponseBody
     @ApiOperation(value = "更新原料采购合同表", notes = "更新原料采购合同表")
     public ResponseMessage<?> update(@ApiParam(name = "原料采购合同表对象") @RequestBody EmkMaterialContractEntity emkMaterialContract) {
@@ -374,7 +389,7 @@ public class EmkMaterialContractController extends BaseController {
         return Result.success("更新原料采购合同表信息成功");
     }
 
-    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.DELETE})
+    @RequestMapping(value = "/{id}", method = {org.springframework.web.bind.annotation.RequestMethod.DELETE})
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ApiOperation("删除原料采购合同表")
     public ResponseMessage<?> delete(@ApiParam(name = "id", value = "ID", required = true) @PathVariable("id") String id) {
@@ -391,9 +406,9 @@ public class EmkMaterialContractController extends BaseController {
         return Result.success();
     }
 
-    @RequestMapping(params = {"doSubmit"})
+    @RequestMapping(params = "doSubmit")
     @ResponseBody
-    public AjaxJson doSubmit(EmkMaterialContractEntity emkMaterialContractEntity, HttpServletRequest request) {
+    public AjaxJson doSubmit(EmkMaterialContractEntity2 emkMaterialContractEntity, HttpServletRequest request) {
         String message = null;
         AjaxJson j = new AjaxJson();
         message = "原料布料采购单提交成功";
@@ -433,13 +448,9 @@ public class EmkMaterialContractController extends BaseController {
                             t.setLeadUserId(user.getId());
                             t.setLeadAdvice(emkMaterialContractEntity.getLeadAdvice());
                             if (emkMaterialContractEntity.getIsPass().equals("0")) {
-                                if ((map.get("realName") == null) || (map.get("realName").toString().equals(""))) {
-                                    j.setSuccess(false);
-                                    j.setMsg("请选择下一处理人");
-                                    return j;
-                                }
-                                t.setFinancer(map.get("realName").toString());
-                                t.setFinanceUserId(map.get("userName").toString());
+                                t.setYhtUserId(map.get("userName").toString());
+                                t.setYhtUserName(map.get("realName").toString());
+
                                 variables.put("isPass", emkMaterialContractEntity.getIsPass());
                                 this.taskService.complete(task1.getId(), variables);
                             } else {
@@ -458,9 +469,23 @@ public class EmkMaterialContractController extends BaseController {
                                 }
                                 t.setState("0");
                             }
-                        } else if (task1.getTaskDefinitionKey().equals("cwTask")) {
+                        }else if(task1.getTaskDefinitionKey().equals("ycghtTask")) {
+                            t.setHtUserId(map.get("userName").toString());
+                            t.setHtUserName(map.get("realName").toString());
+                            t.setYhtAdvice(t.getLeadAdvice());
+                            this.taskService.complete(task1.getId(), variables);
+                        }else if(task1.getTaskDefinitionKey().equals("htTask")) {
+                            t.setRkUserId(t.getCreateBy());
+                            t.setRkUserName(t.getCreateName());
+                            t.setHtAdvice(t.getLeadAdvice());
+                            this.taskService.complete(task1.getId(), variables);
+                        }else if(task1.getTaskDefinitionKey().equals("rkTask")) {
+                            t.setCkUserId(t.getCreateBy());
+                            t.setCkUserName(t.getCreateName());
+                            t.setRkAdvice(t.getLeadAdvice());
+                            this.taskService.complete(task1.getId(), variables);
+                        }else if(task1.getTaskDefinitionKey().equals("ckTask")) {
                             t.setState("2");
-
                             this.taskService.complete(task1.getId(), variables);
                         }
                     } else {
@@ -483,23 +508,35 @@ public class EmkMaterialContractController extends BaseController {
         return j;
     }
 
-    @RequestMapping(params = {"goWork"})
+    @RequestMapping(params = "goWork")
     public ModelAndView goWork(EmkMaterialContractEntity emkMaterialContractEntity, HttpServletRequest req) {
         if (StringUtil.isNotEmpty(emkMaterialContractEntity.getId())) {
             emkMaterialContractEntity = emkMaterialContractService.getEntity(EmkMaterialContractEntity.class, emkMaterialContractEntity.getId());
-            req.setAttribute("emkInStoragePage", emkMaterialContractEntity);
+            req.setAttribute("emkMaterialContract", emkMaterialContractEntity);
         }
         return new ModelAndView("com/emk/bill/materialcontract/emkMaterialContract-work");
     }
 
-    @RequestMapping(params = {"goTime"})
+    @RequestMapping(params = "goTime")
     public ModelAndView goTime(EmkMaterialContractEntity emkMaterialContractEntity, HttpServletRequest req, DataGrid dataGrid) {
         String sql = "";
         String countsql = "";
         Map map = ParameterUtil.getParamMaps(req.getParameterMap());
 
-        sql = "SELECT DATE_FORMAT(t1.START_TIME_, '%Y-%m-%d %H:%i:%s') startTime,t1.*,CASE\nWHEN t1.TASK_DEF_KEY_='orderTask' THEN t2.create_name\nWHEN t1.TASK_DEF_KEY_='checkTask' THEN t2.leader\nWHEN t1.TASK_DEF_KEY_='cwTask' THEN t2.financer\nELSE ''\nEND workname FROM act_hi_taskinst t1 \nLEFT JOIN emk_material_contract t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='" + map.get("id") + "' ";
+        sql = "SELECT DATE_FORMAT(t1.START_TIME_, '%Y-%m-%d %H:%i:%s') startTime,t1.*,CASE \n" +
+                " WHEN t1.TASK_DEF_KEY_='orderTask' THEN t2.create_name \n" +
+                " WHEN t1.TASK_DEF_KEY_='checkTask' THEN t2.leader \n" +
+                " WHEN t1.TASK_DEF_KEY_='ycghtTask' THEN t2.yht_user_name \n" +
+                " WHEN t1.TASK_DEF_KEY_='htTask' THEN t2.ht_user_name \n" +
+                " WHEN t1.TASK_DEF_KEY_='rkTask' THEN t2.rk_user_name \n" +
+                " WHEN t1.TASK_DEF_KEY_='ckTask' THEN t2.ck_user_name \n" +
+
+                " END workname FROM act_hi_taskinst t1 \n" +
+                " LEFT JOIN emk_material_contract t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='" + map.get("id") + "' ";
+
         countsql = " SELECT COUNT(1) FROM act_hi_taskinst t1 where ASSIGNEE_='" + map.get("id") + "' ";
+
+        sql += " order by t1.START_TIME_ desc";
         if (dataGrid.getPage() == 1) {
             sql = sql + " limit 0, " + dataGrid.getRows();
         } else {
@@ -513,11 +550,11 @@ public class EmkMaterialContractController extends BaseController {
             req.setAttribute("stepProcess", Integer.valueOf(0));
         }
         emkMaterialContractEntity = emkMaterialContractService.getEntity(EmkMaterialContractEntity.class, emkMaterialContractEntity.getId());
-        req.setAttribute("emkInStorage", emkMaterialContractEntity);
+        req.setAttribute("emkMaterialContract", emkMaterialContractEntity);
         return new ModelAndView("com/emk/bill/materialcontract/time");
     }
 
-    @RequestMapping(params = {"goProcess"})
+    @RequestMapping(params = "goProcess")
     public ModelAndView goProcess(EmkMaterialContractEntity emkMaterialContractEntity, HttpServletRequest req) {
         EmkMaterialContractEntity t = systemService.get(EmkMaterialContractEntity.class, emkMaterialContractEntity.getId());
         List<Task> task = taskService.createTaskQuery().taskAssignee(t.getId()).list();

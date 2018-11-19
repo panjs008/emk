@@ -14,97 +14,97 @@ import org.jeecgframework.poi.excel.annotation.Excel;
 @Entity
 @Table(name = "emk_produce_qa", schema = "")
 public class EmkProduceQaEntity implements Serializable {
-    @Excel(name = "业务员", width = 15)
+    @Excel(name = "业务员")
     private String businesser;
     private String businesserName;
-    @Excel(name = "业务跟单员", width = 15)
+    @Excel(name = "业务跟单员")
     private String tracer;
     private String tracerName;
-    @Excel(name = "业务部门", width = 15)
+    @Excel(name = "业务部门")
     private String businesseDeptName;
     private String businesseDeptId;
-    @Excel(name = "生产跟单员", width = 15)
+    @Excel(name = "生产跟单员")
     private String developer;
-    @Excel(name = "生产跟单员ID", width = 15)
+    @Excel(name = "生产跟单员ID")
     private String developerName;
-    @Excel(name = "工艺种类", width = 15)
+    @Excel(name = "工艺种类")
     private String gyzl;
     private String proType;
-    @Excel(name = "款式大类", width = 15)
+    @Excel(name = "款式大类")
     private String proTypeName;
-    @Excel(name = "款号", width = 15)
+    @Excel(name = "款号")
     private String sampleNo;
-    @Excel(name = "描述", width = 15)
+    @Excel(name = "描述")
     private String sampleNoDesc;
-    @Excel(name = "总数量", width = 15)
+    @Excel(name = "总数量")
     private Integer sumTotal;
-    @Excel(name = "出厂日期", width = 15)
+    @Excel(name = "出厂日期")
     private String outDate;
-    @Excel(name = "距交期剩余天数", width = 15)
+    @Excel(name = "距交期剩余天数")
     private Integer levelDays;
     private String id;
     private String createName;
     private String createBy;
     private Date createDate;
     private String sysOrgCode;
-    @Excel(name = "生产问题函号", width = 15)
+    @Excel(name = "生产问题函号")
     private String qaNo;
-    @Excel(name = "发函日期", width = 15)
+    @Excel(name = "发函日期")
     private String qaDate;
-    @Excel(name = "订单号", width = 15)
+    @Excel(name = "订单号")
     private String orderNo;
-    @Excel(name = "生产合同号", width = 15)
+    @Excel(name = "生产合同号")
     private String produceNum;
-    @Excel(name = "供应商", width = 15)
+    @Excel(name = "供应商")
     private String gys;
-    @Excel(name = "供应商Code", width = 15)
+    @Excel(name = "供应商Code")
     private String gysCode;
-    @Excel(name = "颜色", width = 15)
+    @Excel(name = "颜色")
     private String color;
-    @Excel(name = "收函部门", width = 15)
+    @Excel(name = "收函部门")
     private String recevieDeptName;
-    @Excel(name = "收函部门代码", width = 15)
+    @Excel(name = "收函部门代码")
     private String recevieDeptCode;
-    @Excel(name = "收函人", width = 15)
+    @Excel(name = "收函人")
     private String recevier;
-    @Excel(name = "抄送部门", width = 15)
+    @Excel(name = "抄送部门")
     private String copyDeptName;
-    @Excel(name = "抄送部门代码", width = 15)
+    @Excel(name = "抄送部门代码")
     private String copyDeptCode;
-    @Excel(name = "抄送收函人", width = 15)
+    @Excel(name = "抄送收函人")
     private String copyer;
-    @Excel(name = "问题描述", width = 15)
+    @Excel(name = "问题描述")
     private String qaDesc;
-    @Excel(name = "经济损失", width = 15)
+    @Excel(name = "经济损失")
     private String loss;
-    @Excel(name = "解决方案", width = 15)
+    @Excel(name = "解决方案")
     private String solve;
-    @Excel(name = "相关抄送人意见", width = 15)
+    @Excel(name = "相关抄送人意见")
     private String copyerAdvice;
-    @Excel(name = "财务意见", width = 15)
+    @Excel(name = "财务意见")
     private String cwAdvice;
-    @Excel(name = "总经理意见", width = 15)
+    @Excel(name = "总经理意见")
     private String zjlAdvice;
-    @Excel(name = "生产问题函状态", width = 15)
+    @Excel(name = "生产问题函状态")
     private String qaState;
     private String scanUrl;
-    @Excel(name = "扫描件", width = 15)
+    @Excel(name = "扫描件")
     private String scanName;
-    @Excel(name = "收函人", width = 15)
+    @Excel(name = "收函人")
     private String recevierUserNames;
-    @Excel(name = "抄送收函人", width = 15)
+    @Excel(name = "抄送收函人")
     private String copyerUserNames;
-    @Excel(name = "发函部门", width = 15)
+    @Excel(name = "发函部门")
     private String sendDeptName;
-    @Excel(name = "发函部门代码", width = 15)
+    @Excel(name = "发函部门代码")
     private String sendDeptCode;
-    @Excel(name = "发函人", width = 15)
+    @Excel(name = "发函人")
     private String sender;
-    @Excel(name = "发函人", width = 15)
+    @Excel(name = "发函人")
     private String senderUserNames;
-    @Excel(name = "客户代码", width = 15)
+    @Excel(name = "客户代码")
     private String cusNum;
-    @Excel(name = "客户名称", width = 15)
+    @Excel(name = "客户名称")
     private String cusName;
 
     @Column(name = "BUSINESSER", nullable = true, length = 32)

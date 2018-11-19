@@ -3,14 +3,14 @@
 <t:base type="jquery,easyui,tools,DatePicker"></t:base>
 <div id="main_list" class="easyui-layout" fit="true">
   <div region="center" style="padding:0px;border:0px">
-  <t:datagrid name="emkSampleList" checkbox="false" pagination="true" sortName="sampleNum" sortOrder="desc" fitColumns="false" title="" actionUrl="emkSampleController.do?datagrid&flag=${param.flag}" idField="id" fit="true" btnCls="bootstrap"  queryMode="group">
+  <t:datagrid name="emkSampleList" checkbox="false" pagination="true" sortName="sampleNum" sortOrder="desc" fitColumns="false" title="" actionUrl="emkYptzdController.do?datagrid&flag=${param.flag}" idField="id" fit="true" btnCls="bootstrap"  queryMode="group">
    <t:dgCol title="主键"  field="id"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="创建人名称"  field="createName"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="创建人登录名称"  field="createBy"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="创建日期"  field="createDate"  formatter="yyyy-MM-dd"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="所属部门"  field="sysOrgCode"  hidden="true"  queryMode="single"  width="140"></t:dgCol>
       <t:dgCol title="操作" field="opt" width="245" frozenColumn="true"></t:dgCol>
-      <t:dgCol title="打样通知单号" query="true"  field="sampleNum"  queryMode="single"  width="115"></t:dgCol>
+      <t:dgCol title="样品通知单号" query="true"  field="sampleNum"  queryMode="single"  width="115"></t:dgCol>
       <t:dgCol title="通知单日期"  field="kdTime"  queryMode="single"  width="80"></t:dgCol>
       <t:dgCol title="客户编号" query="true"  field="cusNum"  queryMode="single"  width="70"></t:dgCol>
       <t:dgCol title="客户名称"  field="cusName"  queryMode="single"  width="130"></t:dgCol>
@@ -28,17 +28,18 @@
    <t:dgCol title="交货时间"  field="receviceDate"  queryMode="single"  width="80"></t:dgCol>
       <t:dgCol title="状态"  field="state" formatterjs="formatColor"  queryMode="single"  width="60"></t:dgCol>
       <%--<t:dgFunOpt funname="queryDetail1(id,sampleNo)" title="数量" urlclass="ace_button" urlfont="fa-list-alt"></t:dgFunOpt>--%>
-      <t:dgFunOpt funname="queryDetail2(id,sampleNum)" title="主辅料" urlclass="ace_button" urlfont="fa-list-alt"></t:dgFunOpt>
-      <t:dgFunOpt funname="queryDetail3(id,sampleNum)" title="染色" urlStyle="background-color:#ec4758;" urlclass="ace_button" urlfont="fa-file-photo-o"></t:dgFunOpt>
-      <t:dgFunOpt funname="queryDetail4(id,sampleNum)" title="印花" urlStyle="background-color:#18a689;" urlclass="ace_button" urlfont="fa-asterisk"></t:dgFunOpt>
-      <t:dgFunOpt funname="queryDetail5(id,sampleNum)" title="工序" urlStyle="background-color:#ec4758;" urlclass="ace_button" urlfont="fa-tasks"></t:dgFunOpt>
+      <t:dgFunOpt funname="queryDetail2(id,sampleNum,state)" title="主辅料" urlclass="ace_button" urlfont="fa-list-alt"></t:dgFunOpt>
+      <t:dgFunOpt funname="queryDetail3(id,sampleNum,state)" title="染色" urlStyle="background-color:#ec4758;" urlclass="ace_button" urlfont="fa-file-photo-o"></t:dgFunOpt>
+      <t:dgFunOpt funname="queryDetail4(id,sampleNum,state)" title="印花" urlStyle="background-color:#18a689;" urlclass="ace_button" urlfont="fa-asterisk"></t:dgFunOpt>
+      <t:dgFunOpt funname="queryDetail5(id,sampleNum,state)" title="工序" urlStyle="background-color:#ec4758;" urlclass="ace_button" urlfont="fa-tasks"></t:dgFunOpt>
 
-      <t:dgToolBar title="录入" icon="fa fa-plus" url="emkSampleController.do?goAdd&flag=${param.flag}&winTitle=录入样品通知单" funname="add" height="550" width="1000"></t:dgToolBar>
-       <t:dgToolBar title="编辑" icon="fa fa-edit" url="emkSampleController.do?goUpdate&winTitle=编辑样品通知单" funname="update" height="550" width="1000"></t:dgToolBar>
-      <t:dgToolBar title="提交" icon="fa fa-arrow-circle-up" funname="doSubmitV"></t:dgToolBar>
-      <t:dgToolBar title="流程进度" icon="fa fa-plus" funname="goToProcess"></t:dgToolBar>
-      <t:dgToolBar title="删除"  icon="fa fa-remove" url="emkSampleController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
-      <t:dgToolBar title="导出" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
+      <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkYptzdController.do?goAdd&flag=${param.flag}&winTitle=录入样品通知单" funname="add" height="550" width="1000"></t:dgToolBar>
+       <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkYptzdController.do?goUpdate&winTitle=编辑样品通知单" funname="update" height="550" width="1000"></t:dgToolBar>
+      <t:dgToolBar title="提交" operationCode="submit" icon="fa fa-arrow-circle-up" funname="doSubmitV"></t:dgToolBar>
+      <t:dgToolBar title="查看" icon="fa fa-search" operationCode="look" url="emkYptzdController.do?goUpdate&goUpdate&winTitle=查看样品通知单" funname="detail" height="600" width="1210"></t:dgToolBar>
+      <t:dgToolBar title="流程进度" operationCode="process" icon="fa fa-plus" funname="goToProcess"></t:dgToolBar>
+      <t:dgToolBar title="删除" operationCode="delete"  icon="fa fa-remove" url="emkYptzdController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
+      <t:dgToolBar title="导出" operationCode="exp" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
 
   </t:datagrid>
   </div>
@@ -56,7 +57,8 @@
 	}"
      style="width: 500px; overflow: hidden;" id="eastPanel">
     <div class="easyui-panel" style="padding:0px;border:0px" fit="true" border="false" id="proDetialListpanel"></div>
- <script src = "webpage/com/emk/storage/sample/emkSampleList.js"></script>		
+</div>
+ <script src = "webpage/com/emk/storage/sample/emkSampleList.js"></script>
  <script type="text/javascript">
  $(document).ready(function(){
  });
@@ -84,7 +86,7 @@
      $.dialog.confirm('您是否确定提交打样单?', function(r) {
          if (r) {
              $.ajax({
-                 url : "emkSampleController.do?doSubmit&ids="+ids,
+                 url : "emkYptzdController.do?doSubmit&ids="+ids,
                  type : 'post',
                  cache : false,
                  data: null,
@@ -115,10 +117,18 @@
              var d = $.parseJSON(data);
              if (d.success) {
                  var msg = d.msg;
-                 if (msg == "完成") {
+                 if(rowsData[0].createBy == "${CUR_USER.userName}"){
                      createdetailwindow('流程进度--当前环节：' + msg, 'flowController.do?goProcess&processUrl=com/emk/storage/sample/emkSample-process&id=' + rowsData[0].id, 1200, height);
-                 } else {
-                     createwindow("流程进度--当前环节：" + msg, "flowController.do?goProcess&processUrl=com/emk/storage/sample/emkSample-process&id=" + rowsData[0].id, 1200, height);
+                 }else{
+                     if (msg == "完成") {
+                         createdetailwindow('流程进度--当前环节：' + msg, 'flowController.do?goProcess&processUrl=com/emk/storage/sample/emkSample-process&id=' + rowsData[0].id, 1200, height);
+                     } else {
+                         if("${ROLE.rolecode}" == "ywjl") {
+                             createwindow("流程进度--当前环节：" + msg, "flowController.do?goProcess&processUrl=com/emk/storage/sample/emkSample-process&id=" + rowsData[0].id, 1200, height);
+                         }else{
+                             createdetailwindow('流程进度--当前环节：' + msg, 'flowController.do?goProcess&processUrl=com/emk/storage/sample/emkSample-process&id=' + rowsData[0].id, 1200, height);
+                         }
+                     }
                  }
 
              }
@@ -137,7 +147,7 @@
 
      $('#proDetialListpanel').panel("refresh", "emkSampleTotalController.do?list&sampleId=" + id);
  }
- function queryDetail2(id,proName){
+ function queryDetail2(id,proName,state){
      $('#emkSampleList').datagrid('unselectAll');
      var title = "主辅料清单："+proName ;
      if(li_east == 0 || $('#main_list').layout('panel','east').panel('options').title != title){
@@ -146,11 +156,11 @@
      $('#main_list').layout('panel','east').panel('setTitle', title);
      $('#main_list').layout('panel','east').panel('resize', {width: 600});
 
-     $('#proDetialListpanel').panel("refresh", "emkSampleDetailController.do?list&sampleType=sample&sampleId=" + id);
+     $('#proDetialListpanel').panel("refresh", "emkSampleDetailController.do?list&sampleType=sample&state="+state+"&sampleId=" + id);
  }
 
 
- function queryDetail3(id,proName){
+ function queryDetail3(id,proName,state){
      $('#emkSampleList').datagrid('unselectAll');
      var title = "样品染色："+proName ;
      if(li_east == 0 || $('#main_list').layout('panel','east').panel('options').title != title){
@@ -159,10 +169,10 @@
      $('#main_list').layout('panel','east').panel('setTitle', title);
      $('#main_list').layout('panel','east').panel('resize', {width: 600});
 
-     $('#proDetialListpanel').panel("refresh", "emkSampleRanController.do?list&type=sample&sampleId=" + id);
+     $('#proDetialListpanel').panel("refresh", "emkSampleRanController.do?list&type=sample&state="+state+"&sampleId=" + id);
  }
 
- function queryDetail4(id,proName){
+ function queryDetail4(id,proName,state){
      $('#emkSampleList').datagrid('unselectAll');
      var title = "印花染色："+proName ;
      if(li_east == 0 || $('#main_list').layout('panel','east').panel('options').title != title){
@@ -171,10 +181,10 @@
      $('#main_list').layout('panel','east').panel('setTitle', title);
      $('#main_list').layout('panel','east').panel('resize', {width: 600});
 
-     $('#proDetialListpanel').panel("refresh", "emkSampleYinController.do?list&sampleId=" + id);
+     $('#proDetialListpanel').panel("refresh", "emkSampleYinController.do?list&state="+state+"&sampleId=" + id);
  }
 
- function queryDetail5(id,proName){
+ function queryDetail5(id,proName,state){
      $('#emkSampleList').datagrid('unselectAll');
      var title = "样品工序："+proName ;
      if(li_east == 0 || $('#main_list').layout('panel','east').panel('options').title != title){
@@ -183,21 +193,21 @@
      $('#main_list').layout('panel','east').panel('setTitle', title);
      $('#main_list').layout('panel','east').panel('resize', {width: 600});
 
-     $('#proDetialListpanel').panel("refresh", "emkSampleGxController.do?list&sampleId=" + id);
+     $('#proDetialListpanel').panel("refresh", "emkSampleGxController.do?list&state="+state+"&sampleId=" + id);
  }
 //导入
 function ImportXls() {
-	openuploadwin('Excel导入', 'emkSampleController.do?upload', "emkSampleList");
+	openuploadwin('Excel导入', 'emkYptzdController.do?upload', "emkSampleList");
 }
 
 //导出
 function ExportXls() {
-	JeecgExcelExport("emkSampleController.do?exportXls","emkSampleList");
+	JeecgExcelExport("emkYptzdController.do?exportXls","emkSampleList");
 }
 
 //模板下载
 function ExportXlsByT() {
-	JeecgExcelExport("emkSampleController.do?exportXlsByT","emkSampleList");
+	JeecgExcelExport("emkYptzdController.do?exportXlsByT","emkSampleList");
 }
 
  </script>

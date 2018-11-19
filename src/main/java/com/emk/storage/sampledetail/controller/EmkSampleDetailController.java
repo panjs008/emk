@@ -2,6 +2,10 @@ package com.emk.storage.sampledetail.controller;
 
 import com.alibaba.fastjson.JSONArray;
 import com.emk.bill.proorder.entity.EmkProOrderEntity;
+import com.emk.storage.accessories.entity.EmkAccessoriesEntity;
+import com.emk.storage.enquiry.entity.EmkEnquiryEntity;
+import com.emk.storage.material.entity.EmkMaterialEntity;
+import com.emk.storage.pack.entity.EmkPackEntity;
 import com.emk.storage.price.entity.EmkPriceEntity;
 import com.emk.storage.sample.entity.EmkSampleEntity;
 import com.emk.storage.sampledetail.entity.EmkSampleDetailEntity;
@@ -62,9 +66,9 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.UriComponentsBuilder;
 
-@Api(value = "EmkSampleDetail", description = "样品单明细", tags = {"emkSampleDetailController"})
+@Api(value = "EmkSampleDetail", description = "样品单明细", tags = "emkSampleDetailController")
 @Controller
-@RequestMapping({"/emkSampleDetailController"})
+@RequestMapping("/emkSampleDetailController")
 public class EmkSampleDetailController extends BaseController {
     private static final Logger logger = Logger.getLogger(EmkSampleDetailController.class);
     @Autowired
@@ -74,12 +78,13 @@ public class EmkSampleDetailController extends BaseController {
     @Autowired
     private Validator validator;
 
-    @RequestMapping(params = {"list"})
+    @RequestMapping(params = "list")
     public ModelAndView list(HttpServletRequest request) {
+
         return new ModelAndView("com/emk/storage/sampledetail/emkSampleDetailList");
     }
 
-    @RequestMapping(params = {"datagrid"})
+    @RequestMapping(params = "datagrid")
     public void datagrid(EmkSampleDetailEntity emkSampleDetail, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid) {
         CriteriaQuery cq = new CriteriaQuery(EmkSampleDetailEntity.class, dataGrid);
 
@@ -91,7 +96,7 @@ public class EmkSampleDetailController extends BaseController {
         TagUtil.datagrid(response, dataGrid);
     }
 
-    @RequestMapping(params = {"doDel"})
+    @RequestMapping(params = "doDel")
     @ResponseBody
     public AjaxJson doDel(EmkSampleDetailEntity emkSampleDetail, HttpServletRequest request) {
         String message = null;
@@ -110,7 +115,7 @@ public class EmkSampleDetailController extends BaseController {
         return j;
     }
 
-    @RequestMapping(params = {"doBatchDel"})
+    @RequestMapping(params = "doBatchDel")
     @ResponseBody
     public AjaxJson doBatchDel(String ids, HttpServletRequest request) {
         String message = null;
@@ -133,7 +138,7 @@ public class EmkSampleDetailController extends BaseController {
         return j;
     }
 
-    @RequestMapping(params = {"doAdd"})
+    @RequestMapping(params = "doAdd")
     @ResponseBody
     public AjaxJson doAdd(EmkSampleDetailEntity emkSampleDetail, HttpServletRequest request) {
         String message = null;
@@ -153,7 +158,7 @@ public class EmkSampleDetailController extends BaseController {
         return j;
     }
 
-    @RequestMapping(params = {"doUpdate"})
+    @RequestMapping(params = "doUpdate")
     @ResponseBody
     public AjaxJson doUpdate(EmkSampleDetailEntity emkSampleDetail, HttpServletRequest request) {
         String message = null;
@@ -176,15 +181,24 @@ public class EmkSampleDetailController extends BaseController {
         return j;
     }
 
-    @RequestMapping(params = {"goAdd"})
+    @RequestMapping(params = "goAdd")
     public ModelAndView goAdd(EmkSampleDetailEntity emkSampleDetail, HttpServletRequest req, String sampleType) {
         if (sampleType.equals("sample")) {
             EmkSampleEntity emkSampleEntity =  this.systemService.getEntity(EmkSampleEntity.class, emkSampleDetail.getSampleId());
             req.setAttribute("emkSampleEntity", emkSampleEntity);
-        } else if (sampleType.equals("price")) {
+        }else if (sampleType.equals("price")) {
             EmkPriceEntity priceEntity =  this.systemService.getEntity(EmkPriceEntity.class, emkSampleDetail.getSampleId());
             req.setAttribute("emkSampleEntity", priceEntity);
-        } else if (sampleType.equals("samplerequired")) {
+        }else if (sampleType.equals("pack")) {
+            EmkPackEntity packEntity =  this.systemService.getEntity(EmkPackEntity.class, emkSampleDetail.getSampleId());
+            req.setAttribute("emkSampleEntity", packEntity);
+        }else if (sampleType.equals("material")) {
+            EmkMaterialEntity materialEntity =  this.systemService.getEntity(EmkMaterialEntity.class, emkSampleDetail.getSampleId());
+            req.setAttribute("emkSampleEntity", materialEntity);
+        }else if (sampleType.equals("accessories")){
+            EmkAccessoriesEntity accessoriesEntity =  this.systemService.getEntity(EmkAccessoriesEntity.class, emkSampleDetail.getSampleId());
+            req.setAttribute("emkSampleEntity", accessoriesEntity);
+        }else if (sampleType.equals("samplerequired")) {
             EmkSampleRequiredEntity emkSampleEntity = (EmkSampleRequiredEntity) this.systemService.getEntity(EmkSampleRequiredEntity.class, emkSampleDetail.getSampleId());
             req.setAttribute("emkSampleEntity", emkSampleEntity);
         } else if (sampleType.equals("order")) {
@@ -198,7 +212,7 @@ public class EmkSampleDetailController extends BaseController {
         return new ModelAndView("com/emk/storage/sampledetail/emkSampleDetail-add");
     }
 
-    @RequestMapping(params = {"goUpdate"})
+    @RequestMapping(params = "goUpdate")
     public ModelAndView goUpdate(EmkSampleDetailEntity emkSampleDetail, HttpServletRequest req) {
         if (StringUtil.isNotEmpty(emkSampleDetail.getId())) {
             emkSampleDetail = (EmkSampleDetailEntity) this.emkSampleDetailService.getEntity(EmkSampleDetailEntity.class, emkSampleDetail.getId());
@@ -207,13 +221,13 @@ public class EmkSampleDetailController extends BaseController {
         return new ModelAndView("com/emk/storage/sampledetail/emkSampleDetail-update");
     }
 
-    @RequestMapping(params = {"upload"})
+    @RequestMapping(params = "upload")
     public ModelAndView upload(HttpServletRequest req) {
         req.setAttribute("controller_name", "emkSampleDetailController");
         return new ModelAndView("common/upload/pub_excel_upload");
     }
 
-    @RequestMapping(params = {"exportXls"})
+    @RequestMapping(params = "exportXls")
     public String exportXls(EmkSampleDetailEntity emkSampleDetail, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid, ModelMap modelMap) {
         CriteriaQuery cq = new CriteriaQuery(EmkSampleDetailEntity.class, dataGrid);
         HqlGenerateUtil.installHql(cq, emkSampleDetail, request.getParameterMap());
@@ -226,7 +240,7 @@ public class EmkSampleDetailController extends BaseController {
         return "jeecgExcelView";
     }
 
-    @RequestMapping(params = {"exportXlsByT"})
+    @RequestMapping(params = "exportXlsByT")
     public String exportXlsByT(EmkSampleDetailEntity emkSampleDetail, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid, ModelMap modelMap) {
         modelMap.put("fileName", "样品单明细");
         modelMap.put("entity", EmkSampleDetailEntity.class);
@@ -244,7 +258,7 @@ public class EmkSampleDetailController extends BaseController {
         return Result.success(listEmkSampleDetails);
     }
 
-    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.GET})
+    @RequestMapping(value = "/{id}", method = {org.springframework.web.bind.annotation.RequestMethod.GET})
     @ResponseBody
     @ApiOperation(value = "根据ID获取样品单明细信息", notes = "根据ID获取样品单明细信息", httpMethod = "GET", produces = "application/json")
     public ResponseMessage<?> get(@ApiParam(required = true, name = "id", value = "ID") @PathVariable("id") String id) {
@@ -255,7 +269,7 @@ public class EmkSampleDetailController extends BaseController {
         return Result.success(task);
     }
 
-    @RequestMapping(method = {org.springframework.web.bind.annotation.RequestMethod.POST}, consumes = {"application/json"})
+    @RequestMapping(method = {org.springframework.web.bind.annotation.RequestMethod.POST}, consumes = "application/json")
     @ResponseBody
     @ApiOperation("创建样品单明细")
     public ResponseMessage<?> create(@ApiParam(name = "样品单明细对象") @RequestBody EmkSampleDetailEntity emkSampleDetail, UriComponentsBuilder uriBuilder) {
@@ -272,7 +286,7 @@ public class EmkSampleDetailController extends BaseController {
         return Result.success(emkSampleDetail);
     }
 
-    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.PUT}, consumes = {"application/json"})
+    @RequestMapping(value = "/{id}", method = {org.springframework.web.bind.annotation.RequestMethod.PUT}, consumes = "application/json")
     @ResponseBody
     @ApiOperation(value = "更新样品单明细", notes = "更新样品单明细")
     public ResponseMessage<?> update(@ApiParam(name = "样品单明细对象") @RequestBody EmkSampleDetailEntity emkSampleDetail) {
@@ -289,7 +303,7 @@ public class EmkSampleDetailController extends BaseController {
         return Result.success("更新样品单明细信息成功");
     }
 
-    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.DELETE})
+    @RequestMapping(value = "/{id}", method = {org.springframework.web.bind.annotation.RequestMethod.DELETE})
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ApiOperation("删除样品单明细")
     public ResponseMessage<?> delete(@ApiParam(name = "id", value = "ID", required = true) @PathVariable("id") String id) {

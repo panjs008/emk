@@ -19,75 +19,82 @@ public class EmkTestEntity implements Serializable {
     private String createBy;
     private Date createDate;
     private String sysOrgCode;
-    @Excel(name = "测试申请表编号", width = 15)
+    @Excel(name = "测试申请表编号")
     private String cssqdh;
-    @Excel(name = "业务员", width = 15)
+    @Excel(name = "业务员")
     private String businesser;
     private String businesserName;
-    @Excel(name = "业务部门", width = 15)
+    @Excel(name = "业务部门")
     private String businesseDeptName;
     private String businesseDeptId;
-    @Excel(name = "业务跟单员", width = 15)
+    @Excel(name = "业务跟单员")
     private String tracer;
     private String tracerName;
-    @Excel(name = "生产跟单员", width = 15)
+    @Excel(name = "生产跟单员")
     private String developer;
     private String developerName;
-    @Excel(name = "客户代码", width = 15)
+    @Excel(name = "客户代码")
     private String cusNum;
-    @Excel(name = "客户名称", width = 15)
+    @Excel(name = "客户名称")
     private String cusName;
-    @Excel(name = "订单号", width = 15)
+    @Excel(name = "订单号")
     private String orderNo;
-    @Excel(name = "款号", width = 15)
+    @Excel(name = "款号")
     private String sampleNo;
-    @Excel(name = "描述", width = 15)
+    @Excel(name = "描述")
     private String sampleNoDesc;
-    @Excel(name = "数量", width = 15)
+    @Excel(name = "数量")
     private Integer total;
-    @Excel(name = "测试种类", width = 15)
+    @Excel(name = "测试种类")
     private String testType;
-    @Excel(name = "生产合同号", width = 15)
+    @Excel(name = "生产合同号")
     private String produceNum;
 
-    @Excel(name = "测试样品要求", width = 15)
+    @Excel(name = "测试样品要求")
     private String testRequired;
-    @Excel(name = "测试内容", width = 15)
+    @Excel(name = "测试内容")
     private String testContent;
     private String testContentUrl;
-    @Excel(name = "报告有效期", width = 15)
+    @Excel(name = "报告有效期")
     private String limitDate;
-    @Excel(name = "大货交期", width = 15)
+    @Excel(name = "大货交期")
     private String ysDate;
-    @Excel(name = "距交期余天数", width = 15)
+    @Excel(name = "距交期余天数")
     private Integer levelDays;
-    @Excel(name = "提交日期", width = 15)
+    @Excel(name = "提交日期")
     private String kdDate;
-    @Excel(name = "测试进度", width = 15)
+    @Excel(name = "测试进度")
     private String testJd;
-    @Excel(name = "测试样通知日期", width = 15)
+    @Excel(name = "测试样通知日期")
     private String testNoticDate;
-    @Excel(name = "寄出测试日期", width = 15)
+    @Excel(name = "寄出测试日期")
     private String sendDate;
-    @Excel(name = "测试报告收到日期", width = 15)
+    @Excel(name = "测试报告收到日期")
     private String recevieDate;
-    @Excel(name = "测试结果", width = 15)
+    @Excel(name = "测试结果")
     private String testResult;
-    @Excel(name = "测试费付款状态", width = 15)
+    @Excel(name = "测试费付款状态")
     private String testState;
-    @Excel(name = "测试机构代码", width = 15)
+    @Excel(name = "测试机构代码")
     private String testCode;
-    @Excel(name = "测试机构", width = 15)
+    @Excel(name = "测试机构")
     private String testOrgName;
 
-    @Excel(name = "审核意见", width = 15)
+    @Excel(name = "审核意见")
     private String leadAdvice;
     private String isPass;
     private String leadUserId;
-    @Excel(name = "审核人", width = 15)
+    @Excel(name = "审核人")
     private String leader;
     private String state;
 
+    private String cyUserId;
+    private String cyer;
+    private String cyAdvice;
+    private String bgUserId;
+    private String bger;
+    private String bgAdvice;
+    private String isHg;
 
     @Id
     @GeneratedValue(generator = "paymentableGenerator")
@@ -473,6 +480,70 @@ public class EmkTestEntity implements Serializable {
      */
     public void setState(String state){
         this.state = state;
+    }
+
+    @Column(name ="cy_user_id",nullable=true,length=32)
+    public String getCyUserId() {
+        return cyUserId;
+    }
+
+    public void setCyUserId(String cyUserId) {
+        this.cyUserId = cyUserId;
+    }
+
+    @Column(name ="cyer",nullable=true,length=32)
+    public String getCyer() {
+        return cyer;
+    }
+
+    public void setCyer(String cyer) {
+        this.cyer = cyer;
+    }
+
+    @Column(name ="cy_advice",nullable=true,length=32)
+    public String getCyAdvice() {
+        return cyAdvice;
+    }
+
+    public void setCyAdvice(String cyAdvice) {
+        this.cyAdvice = cyAdvice;
+    }
+
+    @Column(name ="bg_user_id",nullable=true,length=32)
+
+    public String getBgUserId() {
+        return bgUserId;
+    }
+
+    public void setBgUserId(String bgUserId) {
+        this.bgUserId = bgUserId;
+    }
+
+    @Column(name ="bger",nullable=true,length=32)
+    public String getBger() {
+        return bger;
+    }
+
+    public void setBger(String bger) {
+        this.bger = bger;
+    }
+
+    @Column(name ="bg_advice",nullable=true,length=32)
+    public String getBgAdvice() {
+        return bgAdvice;
+    }
+
+    public void setBgAdvice(String bgAdvice) {
+        this.bgAdvice = bgAdvice;
+    }
+
+    @Column(name ="is_hg",nullable=true,length=32)
+    public String getIsHg() {
+        return isHg;
+    }
+
+    public void setIsHg(String isHg) {
+        this.isHg = isHg;
     }
 
 }

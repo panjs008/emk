@@ -14,6 +14,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.SequenceGenerator;
 import org.jeecgframework.poi.excel.annotation.Excel;
@@ -107,19 +109,25 @@ public class EmkMOutStorageEntity implements java.io.Serializable {
 	@Excel(name="出库日期",width=15)
 	private String kdDate;
 
-	@Excel(name="审核意见", width=15.0D)
+	@Excel(name="审核意见")
 	private String leadAdvice;
-	@Excel(name="处理意见", width=15.0D)
-	private String financeAdvice;
-	@Excel(name="是否通过", width=15.0D)
+	@Excel(name="是否通过")
 	private String isPass;
 	private String leadUserId;
-	@Excel(name="审核人", width=15.0D)
+	@Excel(name="审核人")
 	private String leader;
-	private String financeUserId;
-	@Excel(name="财务处理人", width=15.0D)
-	private String financer;
-	
+
+	@Excel(name="处理意见")
+	private String clAdvice;
+	private String clUserId;
+	@Excel(name="处理人")
+	private String clUserName;
+
+	@Excel(name="处理意见")
+	private String ckAdvice;
+	private String ckUserId;
+	@Excel(name="处理人")
+	private String ckUserName;
 	/**
 	 *方法: 取得java.lang.String
 	 *@return: java.lang.String  业务员
@@ -435,7 +443,7 @@ public class EmkMOutStorageEntity implements java.io.Serializable {
 	 *方法: 取得java.lang.String
 	 *@return: java.lang.String  创建人名称
 	 */
-
+	@Formula("(select p.NAME_ from act_ru_task p where p.ASSIGNEE_ = id)")
 	@Column(name ="CREATE_NAME",nullable=true,length=32)
 	public String getCreateName(){
 		return this.createName;
@@ -628,17 +636,6 @@ public class EmkMOutStorageEntity implements java.io.Serializable {
 		this.leadAdvice = leadAdvice;
 	}
 
-	@Column(name="FINANCE_ADVICE", nullable=true, length=256)
-	public String getFinanceAdvice()
-	{
-		return this.financeAdvice;
-	}
-
-	public void setFinanceAdvice(String financeAdvice)
-	{
-		this.financeAdvice = financeAdvice;
-	}
-
 	@Column(name="IS_PASS", nullable=true, length=32)
 	public String getIsPass()
 	{
@@ -672,25 +669,57 @@ public class EmkMOutStorageEntity implements java.io.Serializable {
 		this.leader = leader;
 	}
 
-	@Column(name="FINANCE_USER_ID", nullable=true, length=32)
-	public String getFinanceUserId()
-	{
-		return this.financeUserId;
+	@Column(name="cl_advice", nullable=true, length=32)
+	public String getClAdvice() {
+		return clAdvice;
 	}
 
-	public void setFinanceUserId(String financeUserId)
-	{
-		this.financeUserId = financeUserId;
+	public void setClAdvice(String clAdvice) {
+		this.clAdvice = clAdvice;
 	}
 
-	@Column(name="FINANCER", nullable=true, length=32)
-	public String getFinancer()
-	{
-		return this.financer;
+	@Column(name="cl_user_id", nullable=true, length=32)
+	public String getClUserId() {
+		return clUserId;
 	}
 
-	public void setFinancer(String financer)
-	{
-		this.financer = financer;
+	public void setClUserId(String clUserId) {
+		this.clUserId = clUserId;
+	}
+
+	@Column(name="cl_user_name", nullable=true, length=32)
+	public String getClUserName() {
+		return clUserName;
+	}
+
+	public void setClUserName(String clUserName) {
+		this.clUserName = clUserName;
+	}
+
+	@Column(name="ck_advice", nullable=true, length=32)
+	public String getCkAdvice() {
+		return ckAdvice;
+	}
+
+	public void setCkAdvice(String ckAdvice) {
+		this.ckAdvice = ckAdvice;
+	}
+
+	@Column(name="ck_user_id", nullable=true, length=32)
+	public String getCkUserId() {
+		return ckUserId;
+	}
+
+	public void setCkUserId(String ckUserId) {
+		this.ckUserId = ckUserId;
+	}
+
+	@Column(name="ck_user_name", nullable=true, length=32)
+	public String getCkUserName() {
+		return ckUserName;
+	}
+
+	public void setCkUserName(String ckUserName) {
+		this.ckUserName = ckUserName;
 	}
 }

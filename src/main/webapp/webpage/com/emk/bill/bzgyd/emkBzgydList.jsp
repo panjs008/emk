@@ -12,7 +12,7 @@
       <t:dgCol title="操作" field="opt" width="200" frozenColumn="true"></t:dgCol>
       <t:dgCol title="订单号"  field="orderNo"  queryMode="single"  width="110"></t:dgCol>
       <t:dgCol title="业务部门"  field="businesseDeptName"  queryMode="single"  width="80"></t:dgCol>
-      <t:dgCol title="业务员"  field="businesser"  queryMode="single"  width="70"></t:dgCol>
+      <t:dgCol title="业务员"  field="businesserName"  queryMode="single"  width="70"></t:dgCol>
       <t:dgCol title="业务跟单员"  field="tracer"  queryMode="single"  width="80"></t:dgCol>
       <%--<t:dgCol title="生产跟单员"  field="developer"  queryMode="single"  width="80"></t:dgCol>--%>
       <t:dgCol title="客户代码" query="true" field="cusNum"  queryMode="single"  width="70"></t:dgCol>
@@ -25,11 +25,11 @@
       <t:dgFunOpt funname="queryDetail3(id,orderNo)" title="条码" urlStyle="background-color:#ec4758;" urlclass="ace_button" ></t:dgFunOpt>
       <t:dgFunOpt funname="queryDetail4(id,orderNo)" title="包装" urlStyle="background-color:#18a689;" urlclass="ace_button" ></t:dgFunOpt>
       <t:dgFunOpt funname="queryDetail5(id,orderNo)" title="纸箱" urlStyle="background-color:#ec4758;" urlclass="ace_button" ></t:dgFunOpt>
-      <t:dgToolBar title="录入" icon="fa fa-plus" url="emkBzgydController.do?goAdd&winTitle=录入包装工艺单" funname="add" height="600" width="1000"></t:dgToolBar>
-      <t:dgToolBar title="编辑" icon="fa fa-edit" url="emkBzgydController.do?goUpdate&winTitle=编辑包装工艺单" funname="update" height="600" width="1000"></t:dgToolBar>
-      <t:dgToolBar title="提交" icon="fa fa-arrow-circle-up" funname="doSubmitV"></t:dgToolBar>
-      <t:dgToolBar title="删除"  icon="fa fa-remove" url="emkBzgydController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
-      <t:dgToolBar title="导出" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
+      <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkBzgydController.do?goAdd&winTitle=录入包装工艺单" funname="add" height="600" width="1000"></t:dgToolBar>
+      <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkBzgydController.do?goUpdate&winTitle=编辑包装工艺单" funname="update" height="600" width="1000"></t:dgToolBar>
+      <t:dgToolBar title="提交" operationCode="submit" icon="fa fa-arrow-circle-up" funname="doSubmitV"></t:dgToolBar>
+      <t:dgToolBar title="删除" operationCode="delete"  icon="fa fa-remove" url="emkBzgydController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
+      <t:dgToolBar title="导出" operationCode="exp" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
   </t:datagrid>
   </div>
  </div>

@@ -21,60 +21,60 @@ public class EmkContractEntity implements Serializable {
     private String sysOrgCode;
     /**状态*/
     private String state;
-    @Excel(name = "业务员", width = 15)
+    @Excel(name = "业务员")
     private String businesser;
     private String businesserName;
-    @Excel(name = "业务部门", width = 15)
+    @Excel(name = "业务部门")
     private String businesseDeptName;
     private String businesseDeptId;
-    @Excel(name = "业务跟单员", width = 15)
+    @Excel(name = "业务跟单员")
     private String tracer;
     private String tracerName;
-    @Excel(name = "生产跟单员", width = 15)
+    @Excel(name = "生产跟单员")
     private String developer;
     private String developerName;
-    @Excel(name = "合同编号", width = 15)
+    @Excel(name = "合同编号")
     private String htNum;
-    @Excel(name = "甲方", width = 15)
+    @Excel(name = "甲方")
     private String partyA;
     private String partyAId;
-    @Excel(name = "乙方", width = 15)
+    @Excel(name = "乙方")
     private String partyB;
     private String partyBId;
-    @Excel(name = "FOB", width = 15)
+    @Excel(name = "FOB")
     private String fob;
-    @Excel(name = "交货地点", width = 15)
+    @Excel(name = "交货地点")
     private String place;
-    @Excel(name = "原产地", width = 15)
+    @Excel(name = "原产地")
     private String ycd;
-    @Excel(name = "付款方式", width = 15)
+    @Excel(name = "付款方式")
     private String payType;
-    @Excel(name = "授权代表", width = 15)
+    @Excel(name = "授权代表")
     private String sqdb;
-    @Excel(name = "地址", width = 15)
+    @Excel(name = "地址")
     private String address;
-    @Excel(name = "电话", width = 15)
+    @Excel(name = "电话")
     private String telphone;
-    @Excel(name = "签定日期", width = 15)
+    @Excel(name = "签定日期")
     private String signDate;
-    @Excel(name = "订单号", width = 15)
+    @Excel(name = "订单号")
     private String orderNo;
-    @Excel(name = "款号", width = 15)
+    @Excel(name = "款号")
     private String sampleNo;
-    @Excel(name = "描述", width = 15)
+    @Excel(name = "描述")
     private String sampleNoDesc;
-    @Excel(name = "总数量", width = 15)
+    @Excel(name = "总数量")
     private Integer sumTotal;
-    @Excel(name = "总金额", width = 15)
+    @Excel(name = "总金额")
     private Double sumMoney;
-    @Excel(name = "交货期", width = 15)
+    @Excel(name = "交货期")
     private String recevieDate;
-    @Excel(name="审核意见", width=15.0D)
+    @Excel(name="审核意见")
     private String leadAdvice;
-    @Excel(name="是否通过", width=15.0D)
+    @Excel(name="是否通过")
     private String isPass;
     private String leadUserId;
-    @Excel(name="审核人", width=15.0D)
+    @Excel(name="审核人")
     private String leader;
     @Id
     @GeneratedValue(generator = "paymentableGenerator")

@@ -11,7 +11,7 @@
    <t:dgCol title="所属部门"  field="sysOrgCode"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="客户手册编号"  field="kyscbh"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="业务部门"  field="businesseDeptName"  queryMode="single"  width="80"></t:dgCol>
-   <t:dgCol title="业务员"  field="businesser"  queryMode="single"  width="70"></t:dgCol>
+   <t:dgCol title="业务员"  field="businesserName"  queryMode="single"  width="70"></t:dgCol>
    <t:dgCol title="业务跟单员"  field="tracer"  queryMode="single"  width="80"></t:dgCol>
    <t:dgCol title="客户代码" query="true" field="cusNum"  queryMode="single"  width="70"></t:dgCol>
       <t:dgCol title="客户名称" query="true" field="cusName"  queryMode="single"  width="130"></t:dgCol>
@@ -21,11 +21,11 @@
    <t:dgCol title="电话"  field="telphone"  queryMode="single"  width="90"></t:dgCol>
    <t:dgCol title="起运港"  field="lyg"  queryMode="single"  width="90"></t:dgCol>
 
-       <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkCustomUseController.do?goAdd&winTitle=录入客户手册" funname="add" height="600" width="1100"></t:dgToolBar>
-       <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkCustomUseController.do?goUpdate&winTitle=编辑客户手册" funname="update" height="600" width="1100"></t:dgToolBar>
-       <t:dgToolBar title="删除"  icon="fa fa-remove" operationCode="delete" url="emkCustomUseController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
+       <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add"  url="emkCustomUseController.do?goAdd&winTitle=录入客户手册" funname="add" height="600" width="1100"></t:dgToolBar>
+       <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit"  url="emkCustomUseController.do?goUpdate&winTitle=编辑客户手册" funname="update" height="600" width="1100"></t:dgToolBar>
+       <t:dgToolBar title="删除" operationCode="delete"  icon="fa fa-remove"  url="emkCustomUseController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
        <t:dgToolBar title="查看" icon="fa fa-search"  operationCode="look" url="emkCustomUseController.do?goUpdate&goUpdate&winTitle=查看客户手册" funname="detail" height="600" width="1100"></t:dgToolBar>
-       <t:dgToolBar title="导出" icon="fa fa-arrow-circle-right" operationCode="exp" funname="ExportXls"></t:dgToolBar>
+       <t:dgToolBar title="导出" operationCode="exp" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
   </t:datagrid>
   </div>
  </div>

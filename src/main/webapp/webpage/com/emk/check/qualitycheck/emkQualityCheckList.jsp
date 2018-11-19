@@ -15,26 +15,100 @@
    <t:dgCol title="检查日期"  field="checkDate"  query="true" queryMode="single"  width="80"></t:dgCol>
 
    <t:dgCol title="业务部门"  field="businesseDeptName"  queryMode="single"  width="70"></t:dgCol>
-   <t:dgCol title="业务员"  field="businesser"  queryMode="single"  width="50"></t:dgCol>
+   <t:dgCol title="业务员"  field="businesserName"  queryMode="single"  width="50"></t:dgCol>
    <t:dgCol title="客户代码"  field="cusNum"  queryMode="single"  width="60"></t:dgCol>
    <t:dgCol title="客户名称"  field="cusName"  queryMode="single"  width="145"></t:dgCol>
    <t:dgCol title="款号"  field="sampleNo"  queryMode="single"  width="80"></t:dgCol>
-   <t:dgToolBar title="录入" icon="fa fa-plus" url="emkQualityCheckController.do?goAdd&winTitle=录入质量检查表" funname="add" height="600" width="1250"></t:dgToolBar>
-   <t:dgToolBar title="编辑" icon="fa fa-edit" url="emkQualityCheckController.do?goUpdate&winTitle=编辑质量检查表" funname="update" height="600" width="1250"></t:dgToolBar>
-   <t:dgToolBar title="删除"  icon="fa fa-remove" url="emkQualityCheckController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
-   <t:dgToolBar title="导出" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
+      <t:dgCol title="状态"  field="state" formatterjs="formatColor"  queryMode="single"  width="70"></t:dgCol>
+
+      <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkQualityCheckController.do?goAdd&winTitle=录入质量检查表" funname="add" height="600" width="1250"></t:dgToolBar>
+   <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkQualityCheckController.do?goUpdate&winTitle=编辑质量检查表" funname="update" height="600" width="1250"></t:dgToolBar>
+      <t:dgToolBar title="查看" icon="fa fa-search" operationCode="look" url="emkQualityCheckController.do?goUpdate&winTitle=查看质量检查表" funname="detail" height="580" width="1000"></t:dgToolBar>
+      <t:dgToolBar title="提交" operationCode="submit" icon="fa fa-arrow-circle-up" funname="doSubmitV"></t:dgToolBar>
+      
+      <t:dgToolBar title="删除" operationCode="delete"  icon="fa fa-remove" url="emkQualityCheckController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
+   <t:dgToolBar title="导出" operationCode="exp" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
 
   </t:datagrid>
   </div>
  </div>
- <script src = "webpage/com/emk/check/qualitycheck/emkQualityCheckList.js"></script>		
+ <script src = "webpage/com/emk/check/qualitycheck/emkQualityCheckList.js"></script>
  <script type="text/javascript">
  $(document).ready(function(){
  });
- 
-   
- 
-//导入
+
+
+ function formatColor(val, row) {
+     if (row.state == "1") {
+         return '<span style="color:	#FF0000;">处理中</span>';
+     } else if (row.state == "2") {
+         return '<span style="color:	#0000FF;">完成</span>';
+     } else {
+         return '创建';
+     }
+ }
+
+ function doSubmitV() {
+     var rowsData = $('#emkQualityCheckList').datagrid('getSelections');
+     var ids = [];
+     if (!rowsData || rowsData.length == 0) {
+         tip('请选择需要提交的质量检查单');
+         return;
+     }
+     for (var i = 0; i < rowsData.length; i++) {
+         ids.push(rowsData[i].id);
+     }
+     $.dialog.confirm('您是否确定提交质量检查单?', function (r) {
+         if (r) {
+             $.ajax({
+                 url: "emkQualityCheckController.do?doSubmit&ids=" + ids,
+                 type: 'post',
+                 cache: false,
+                 data: null,
+                 success: function (data) {
+                     var d = $.parseJSON(data);
+                     tip(d.msg);
+                     if (d.success) {
+                         $('#emkQualityCheckList').datagrid('reload');
+                     }
+                 }
+             });
+         }
+     });
+ }
+
+ function goToProcess(id, createBy) {
+     var height = window.top.document.body.offsetHeight * 0.85;
+
+     $.ajax({
+         url: "flowController.do?getCurrentProcess&tableName=emk_quality_check&title=质量检查单&id=" + id,
+         type: 'post',
+         cache: false,
+         data: null,
+         success: function (data) {
+             var d = $.parseJSON(data);
+             if (d.success) {
+                 var msg = d.msg;
+                 if (createBy == "${CUR_USER.userName}") {
+                     createdetailwindow('流程进度--当前环节：' + msg, 'flowController.do?goProcess&processUrl=com/emk/check/qualitycheck/emkQualityCheck-process&id=' + id, 1200, height);
+                 } else {
+                     if (msg == "完成") {
+                         createdetailwindow('流程进度--当前环节：' + msg, 'flowController.do?goProcess&processUrl=com/emk/check/qualitycheck/emkQualityCheck-process&id=' + id, 1200, height);
+                     } else {
+                         if ("${ROLE.rolecode}" == "ycjl") {
+                             createwindow("流程进度--当前环节：" + msg, "flowController.do?goProcess&processUrl=com/emk/check/qualitycheck/emkQualityCheck-process&id=" + id, 1200, height);
+                         } else {
+                             createdetailwindow('流程进度--当前环节：' + msg, 'flowController.do?goProcess&processUrl=com/emk/check/qualitycheck/emkQualityCheck-process&id=' + id, 1200, height);
+                         }
+                     }
+                 }
+             }
+         }
+     });
+ }
+
+
+ //导入
 function ImportXls() {
 	openuploadwin('Excel导入', 'emkQualityCheckController.do?upload', "emkQualityCheckList");
 }

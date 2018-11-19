@@ -14,72 +14,72 @@ import org.jeecgframework.poi.excel.annotation.Excel;
 @Entity
 @Table(name = "emk_exam_time", schema = "")
 public class EmkExamTimeEntity implements Serializable {
-    @Excel(name = "业务员", width = 15)
+    @Excel(name = "业务员")
     private String businesser;
     private String businesserName;
-    @Excel(name = "业务跟单员", width = 15)
+    @Excel(name = "业务跟单员")
     private String tracer;
     private String tracerName;
-    @Excel(name = "业务部门", width = 15)
+    @Excel(name = "业务部门")
     private String businesseDeptName;
     private String businesseDeptId;
-    @Excel(name = "生产跟单员", width = 15)
+    @Excel(name = "生产跟单员")
     private String developer;
     private String developerName;
-    @Excel(name = "工艺种类", width = 15)
+    @Excel(name = "工艺种类")
     private String gyzl;
     private String proType;
-    @Excel(name = "款式大类", width = 15)
+    @Excel(name = "款式大类")
     private String proTypeName;
-    @Excel(name = "款号", width = 15)
+    @Excel(name = "款号")
     private String sampleNo;
-    @Excel(name = "描述", width = 15)
+    @Excel(name = "描述")
     private String sampleNoDesc;
     private String customSampleUrl;
-    @Excel(name = "图片", width = 15)
+    @Excel(name = "图片")
     private String customSample;
-    @Excel(name = "数量", width = 15)
+    @Excel(name = "数量")
     private Integer total;
-    @Excel(name = "颜色", width = 15)
+    @Excel(name = "颜色")
     private Double color;
-    @Excel(name = "尺码", width = 15)
+    @Excel(name = "尺码")
     private String size;
-    @Excel(name = "预计中期验货日期", width = 15)
+    @Excel(name = "预计中期验货日期")
     private String zqyhDate;
-    @Excel(name = "预计尾期验货日期", width = 15)
+    @Excel(name = "预计尾期验货日期")
     private String wqyhDate;
-    @Excel(name = "距交期剩余天数", width = 15)
+    @Excel(name = "距交期剩余天数")
     private Integer levelDays;
-    @Excel(name = "中期验货状态", width = 15)
+    @Excel(name = "中期验货状态")
     private String zqyhState;
-    @Excel(name = "距中期验货剩余天数", width = 15)
+    @Excel(name = "距中期验货剩余天数")
     private Integer levealZqyh;
-    @Excel(name = "确认中期验货日期", width = 15)
+    @Excel(name = "确认中期验货日期")
     private String qrzqyhDate;
-    @Excel(name = "尾期验货状态", width = 15)
+    @Excel(name = "尾期验货状态")
     private String wqyhState;
-    @Excel(name = "距尾期验货剩余天数", width = 15)
+    @Excel(name = "距尾期验货剩余天数")
     private Integer levealWqyh;
-    @Excel(name = "确认尾期验货日期", width = 15)
+    @Excel(name = "确认尾期验货日期")
     private String qrwqyhDate;
-    @Excel(name = "供应商", width = 15)
+    @Excel(name = "供应商")
     private String gys;
-    @Excel(name = "供应商", width = 15)
+    @Excel(name = "供应商")
     private String gysCode;
     private String id;
     private String createName;
     private String createBy;
     private Date createDate;
     private String sysOrgCode;
-    @Excel(name = "生产合同号", width = 15)
+    @Excel(name = "生产合同号")
     private String produceNum;
-    @Excel(name = "订单号", width = 15)
+    @Excel(name = "订单号")
     private String orderNo;
-    @Excel(name = "客户代码", width = 15)
+    @Excel(name = "客户代码")
     private String cusNum;
-    @Excel(name = "客户名称", width = 15)
+    @Excel(name = "客户名称")
     private String cusName;
-    @Excel(name = "更新时间", width = 15)
+    @Excel(name = "更新时间")
     private String kdDate;
 
     @Column(name = "BUSINESSER", nullable = true, length = 32)

@@ -14,95 +14,95 @@ import org.jeecgframework.poi.excel.annotation.Excel;
 @Entity
 @Table(name = "emk_out_forum", schema = "")
 public class EmkOutForumEntity implements Serializable {
-    @Excel(name = "业务员", width = 15)
+    @Excel(name = "业务员")
     private String businesser;
     private String businesserName;
-    @Excel(name = "业务跟单员", width = 15)
+    @Excel(name = "业务跟单员")
     private String tracer;
     private String tracerName;
-    @Excel(name = "业务部门", width = 15)
+    @Excel(name = "业务部门")
     private String businesseDeptName;
     private String businesseDeptId;
-    @Excel(name = "生产跟单员", width = 15)
+    @Excel(name = "生产跟单员")
     private String developer;
     private String developerName;
-    @Excel(name = "工艺种类", width = 15)
+    @Excel(name = "工艺种类")
     private String gyzl;
     private String proType;
-    @Excel(name = "款式大类", width = 15)
+    @Excel(name = "款式大类")
     private String proTypeName;
-    @Excel(name = "款号", width = 15)
+    @Excel(name = "款号")
     private String sampleNo;
-    @Excel(name = "描述", width = 15)
+    @Excel(name = "描述")
     private String sampleNoDesc;
-    @Excel(name = "总数量", width = 15)
+    @Excel(name = "总数量")
     private Integer total;
-    @Excel(name = "总金额", width = 15)
+    @Excel(name = "总金额")
     private Double sumMoney;
-    @Excel(name = "尺码", width = 15)
+    @Excel(name = "尺码")
     private String size;
-    @Excel(name = "单价", width = 15)
+    @Excel(name = "单价")
     private Double price;
-    @Excel(name = "币种", width = 15)
+    @Excel(name = "币种")
     private String bz;
-    @Excel(name = "总箱数", width = 15)
+    @Excel(name = "总箱数")
     private Integer sumBoxTotal;
-    @Excel(name = "总体积", width = 15)
+    @Excel(name = "总体积")
     private Double sumBoxVolume;
-    @Excel(name = "总净重", width = 15)
+    @Excel(name = "总净重")
     private Double sumBoxJz;
-    @Excel(name = "总毛重", width = 15)
+    @Excel(name = "总毛重")
     private Double sumBoxMao;
     private String id;
     private String createName;
     private String createBy;
     private Date createDate;
     private String sysOrgCode;
-    @Excel(name = "出货通知单号", width = 15)
+    @Excel(name = "出货通知单号")
     private String outForumNo;
-    @Excel(name = "提交日期", width = 15)
+    @Excel(name = "提交日期")
     private String kdDate;
-    @Excel(name = "订舱通知单号", width = 15)
+    @Excel(name = "订舱通知单号")
     private String cargoNo;
-    @Excel(name = "离厂放行条号", width = 15)
+    @Excel(name = "离厂放行条号")
     private String levealFactoryNo;
-    @Excel(name = "船务员", width = 15)
+    @Excel(name = "船务员")
     private String cwyer;
-    @Excel(name = "订单号", width = 15)
+    @Excel(name = "订单号")
     private String orderNo;
-    @Excel(name = "生产合同号", width = 15)
+    @Excel(name = "生产合同号")
     private String produceNum;
-    @Excel(name = "供应商", width = 15)
+    @Excel(name = "供应商")
     private String gys;
-    @Excel(name = "供应商", width = 15)
+    @Excel(name = "供应商")
     private String gysCode;
-    @Excel(name = "cargo_state", width = 15)
+    @Excel(name = "cargo_state")
     private String cargoState;
-    @Excel(name = "出厂状态", width = 15)
+    @Excel(name = "出厂状态")
     private String outFactoryState;
-    @Excel(name = "离厂日期", width = 15)
+    @Excel(name = "离厂日期")
     private String levalFactoryDate;
-    @Excel(name = "预计收款日期", width = 15)
+    @Excel(name = "预计收款日期")
     private String skDate;
-    @Excel(name = "收款方式", width = 15)
+    @Excel(name = "收款方式")
     private String skType;
-    @Excel(name = "提单号", width = 15)
+    @Excel(name = "提单号")
     private String tdNum;
-    @Excel(name = "提单状态", width = 15)
+    @Excel(name = "提单状态")
     private String tdState;
-    @Excel(name = "客户代码", width = 15)
+    @Excel(name = "客户代码")
     private String cusNum;
-    @Excel(name = "客户名称", width = 15)
+    @Excel(name = "客户名称")
     private String cusName;
-    @Excel(name = "订舱状态", width = 15)
+    @Excel(name = "订舱状态")
     private String dcState;
 
-    @Excel(name="审核意见", width=15.0D)
+    @Excel(name="审核意见")
     private String leadAdvice;
-    @Excel(name="是否通过", width=15.0D)
+    @Excel(name="是否通过")
     private String isPass;
     private String leadUserId;
-    @Excel(name="审核人", width=15.0D)
+    @Excel(name="审核人")
     private String leader;
     private String state;
 

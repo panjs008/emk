@@ -256,12 +256,12 @@ public class EmkQualityCheckEntity implements java.io.Serializable {
 	@Excel(name="检查日期",width=15)
 	private String checkDate;
 
-	@Excel(name="审核意见", width=15.0D)
+	@Excel(name="审核意见")
 	private String leadAdvice;
-	@Excel(name="是否通过", width=15.0D)
+	@Excel(name="是否通过")
 	private String isPass;
 	private String leadUserId;
-	@Excel(name="审核人", width=15.0D)
+	@Excel(name="审核人")
 	private String leader;
 	private String state;
 	

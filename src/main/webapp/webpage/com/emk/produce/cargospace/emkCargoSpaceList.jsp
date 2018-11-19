@@ -23,9 +23,9 @@
    <t:dgCol title="总箱数"  field="sumBoxTotal"  queryMode="single"  width="80"></t:dgCol>
    <t:dgCol title="总体积"  field="sumBoxVolume"  queryMode="single"  width="80"></t:dgCol>
    <t:dgCol title="总净重"  field="sumBoxJz"  queryMode="single"  width="80"></t:dgCol>
-       <t:dgToolBar title="录入" icon="fa fa-plus" url="emkCargoSpaceController.do?goAdd&winTitle=录入订舱通知单" funname="add" height="600" width="1000"></t:dgToolBar>
-       <t:dgToolBar title="编辑" icon="fa fa-edit" url="emkCargoSpaceController.do?goUpdate&winTitle=编辑订舱通知单" funname="update" height="600" width="1000"></t:dgToolBar>
-       <t:dgToolBar title="删除"  icon="fa fa-remove" url="emkCargoSpaceController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
+       <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkCargoSpaceController.do?goAdd&winTitle=录入订舱通知单" funname="add" height="600" width="1000"></t:dgToolBar>
+       <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkCargoSpaceController.do?goUpdate&winTitle=编辑订舱通知单" funname="update" height="600" width="1000"></t:dgToolBar>
+       <t:dgToolBar title="删除" operationCode="delete"  icon="fa fa-remove" url="emkCargoSpaceController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
   </t:datagrid>
   </div>
  </div>

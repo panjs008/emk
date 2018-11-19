@@ -423,7 +423,7 @@ public class CriteriaQuery {
 	 */
 	public void eq(String keyname, Object keyvalue) {
 		if (keyvalue != null && keyvalue != "") {
-			if(keyname.equals("userKey") || keyname.equals("cusName")){
+			if(keyname.equals("cusName")){
 				criterionList.addPara(Restrictions.like(keyname, "%"+keyvalue+"%"));
 			}else{
 				criterionList.addPara(Restrictions.eq(keyname, keyvalue));

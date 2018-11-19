@@ -14,63 +14,63 @@ import org.jeecgframework.poi.excel.annotation.Excel;
 @Entity
 @Table(name = "emk_reception", schema = "")
 public class EmkReceptionEntity implements Serializable {
-    @Excel(name = "业务员", width = 15)
+    @Excel(name = "业务员")
     private String businesser;
     private String businesserName;
-    @Excel(name = "业务跟单员", width = 15)
+    @Excel(name = "业务跟单员")
     private String tracer;
     private String tracerName;
-    @Excel(name = "业务部门", width = 15)
+    @Excel(name = "业务部门")
     private String businesseDeptName;
     private String businesseDeptId;
-    @Excel(name = "生产跟单员", width = 15)
+    @Excel(name = "生产跟单员")
     private String developer;
     private String developerName;
-    @Excel(name = "工艺种类", width = 15)
+    @Excel(name = "工艺种类")
     private String gyzl;
     private String proType;
-    @Excel(name = "款式大类", width = 15)
+    @Excel(name = "款式大类")
     private String proTypeName;
-    @Excel(name = "款号", width = 15)
+    @Excel(name = "款号")
     private String sampleNo;
-    @Excel(name = "描述", width = 15)
+    @Excel(name = "描述")
     private String sampleNoDesc;
     private String id;
     private String createName;
     private String createBy;
     private Date createDate;
     private String sysOrgCode;
-    @Excel(name = "业务接待单号", width = 15)
+    @Excel(name = "业务接待单号")
     private String recevieNum;
-    @Excel(name = "接待单日期", width = 15)
+    @Excel(name = "接待单日期")
     private String recevieDate;
-    @Excel(name = "颜色", width = 15)
+    @Excel(name = "颜色")
     private String color;
-    @Excel(name = "总数量", width = 15)
+    @Excel(name = "总数量")
     private String total;
-    @Excel(name = "出货日期", width = 15)
+    @Excel(name = "出货日期")
     private String outDate;
-    @Excel(name = "接待事由", width = 15)
+    @Excel(name = "接待事由")
     private String recevieDesc;
-    @Excel(name = "接待地点", width = 15)
+    @Excel(name = "接待地点")
     private String address;
-    @Excel(name = "接待时间", width = 15)
+    @Excel(name = "接待时间")
     private String jdsj;
-    @Excel(name = "出席人员", width = 15)
+    @Excel(name = "出席人员")
     private String outUserNames;
-    @Excel(name = "出席人员", width = 15)
+    @Excel(name = "出席人员")
     private String outUserIds;
-    @Excel(name = "供应商", width = 15)
+    @Excel(name = "供应商")
     private String gys;
-    @Excel(name = "供应商", width = 15)
+    @Excel(name = "供应商")
     private String gysCode;
-    @Excel(name = "客户代码", width = 15)
+    @Excel(name = "客户代码")
     private String cusNum;
-    @Excel(name = "客户名称", width = 15)
+    @Excel(name = "客户名称")
     private String cusName;
-    @Excel(name = "订单号", width = 15)
+    @Excel(name = "订单号")
     private String orderNo;
-    @Excel(name = "生产合同号", width = 15)
+    @Excel(name = "生产合同号")
     private String produceNum;
 
     @Column(name = "BUSINESSER", nullable = true, length = 32)

@@ -12,7 +12,7 @@
    <t:dgCol title="色样需求单号"  field="colorNo"  queryMode="single"  width="130"></t:dgCol>
    <%--<t:dgCol title="原样"  field="oldImageUrl" imageSize="30,30"  image="true"  queryMode="single"  width="50"></t:dgCol>--%>
    <t:dgCol title="业务部门"  field="businesseDeptName"  queryMode="single"  width="80"></t:dgCol>
-   <t:dgCol title="业务员"  field="businesser"  queryMode="single"  width="70"></t:dgCol>
+   <t:dgCol title="业务员"  field="businesserName"  queryMode="single"  width="70"></t:dgCol>
    <t:dgCol title="客户代码" query="true" field="cusNum"  queryMode="single"  width="70"></t:dgCol>
    <t:dgCol title="客户名称" query="true" field="cusName"  queryMode="single"  width="160"></t:dgCol>
    <t:dgCol title="图片"  field="customSampleUrl" imageSize="30,30"  image="true"  queryMode="single"  width="50"></t:dgCol>
@@ -28,10 +28,11 @@
    <t:dgCol title="色样编号"  field="cyNum"  queryMode="single"  width="70"></t:dgCol>
 
 
-       <t:dgToolBar title="录入" icon="fa fa-plus" url="emkColorController.do?goAdd&winTitle=录入色样需求单" funname="add" height="580" width="1100"></t:dgToolBar>
-       <t:dgToolBar title="编辑" icon="fa fa-edit" url="emkColorController.do?goUpdate&winTitle=编辑色样需求单" funname="update" height="580" width="1100"></t:dgToolBar>
-       <t:dgToolBar title="删除"  icon="fa fa-remove" url="emkColorController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
-      <t:dgToolBar title="导出" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
+       <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add"  url="emkColorController.do?goAdd&winTitle=录入色样需求单" funname="add" height="580" width="1100"></t:dgToolBar>
+       <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit"  url="emkColorController.do?goUpdate&winTitle=编辑色样需求单" funname="update" height="580" width="1100"></t:dgToolBar>
+      <t:dgToolBar title="查看" icon="fa fa-search" operationCode="look" url="emkColorController.do?goUpdate&goUpdate&winTitle=查看色样需求单" funname="detail" height="580" width="1100"></t:dgToolBar>
+      <t:dgToolBar title="删除" operationCode="delete"  icon="fa fa-remove"  url="emkColorController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
+      <t:dgToolBar title="导出" operationCode="exp" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
 
 
   </t:datagrid>

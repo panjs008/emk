@@ -19,80 +19,88 @@ public class EmkPackEntity implements Serializable {
     private String createBy;
     private Date createDate;
     private String sysOrgCode;
-    @Excel(name = "意向订单号", width = 15)
+    @Excel(name = "包装辅料需求单号")
     private String parkNo;
-    @Excel(name = "提交日期", width = 15)
+    @Excel(name = "提交日期")
     private String kdDate;
-    @Excel(name = "业务跟单员", width = 15)
+    @Excel(name = "业务跟单员")
     private String businesser;
     private String businesserName;
-    @Excel(name = "客户代码", width = 15)
+    @Excel(name = "客户代码")
     private String cusNum;
-    @Excel(name = "客户名称", width = 15)
+    @Excel(name = "客户名称")
     private String cusName;
-    @Excel(name = "工艺种类", width = 15)
+    @Excel(name = "工艺种类")
     private String gyzl;
     private String proType;
-    @Excel(name = "款式大类", width = 15)
+    @Excel(name = "款式大类")
     private String proTypeName;
     private String customSampleUrl;
-    @Excel(name = "图片", width = 15)
+    @Excel(name = "图片")
     private String customSample;
-    @Excel(name = "款号", width = 15)
+    @Excel(name = "款号")
     private String sampleNo;
-    @Excel(name = "描述", width = 15)
+    @Excel(name = "描述")
     private String sampleNoDesc;
-    @Excel(name = "是否打过初样", width = 15)
+    @Excel(name = "是否打过初样")
     private String isPrintSample;
-    @Excel(name = "是否有原样", width = 15)
+    @Excel(name = "是否有原样")
     private String isHaveOld;
     private String oldImageUrl;
-    @Excel(name = "原样", width = 15)
+    @Excel(name = "原样")
     private String oldImage;
-    @Excel(name = "是否有设计稿", width = 15)
+    @Excel(name = "是否有设计稿")
     private String isHaveDgr;
     private String dgrImageUrl;
-    @Excel(name = "计稿", width = 15)
+    @Excel(name = "计稿")
     private String dgrImage;
-    @Excel(name = "意向货交期", width = 15)
+    @Excel(name = "意向货交期")
     private String ysDate;
-    @Excel(name = "距交期余天数", width = 15)
+    @Excel(name = "距交期余天数")
     private Integer levelDays;
-    @Excel(name = "备注", width = 15)
+    @Excel(name = "备注")
     private String remark;
-    @Excel(name = "业务跟单员", width = 15)
+    @Excel(name = "业务跟单员")
     private String tracer;
     private String tracerName;
-    @Excel(name = "订单号", width = 15)
+    @Excel(name = "订单号")
     private String orderNo;
-    @Excel(name = "生产合同号", width = 15)
+    @Excel(name = "生产合同号")
     private String productHtNo;
-    @Excel(name = "布面成分", width = 15)
+    @Excel(name = "布面成分")
     private String chengf;
-    @Excel(name = "布面克重", width = 15)
+    @Excel(name = "布面克重")
     private String weight;
-    @Excel(name = "规格", width = 15)
+    @Excel(name = "规格")
     private String brand;
-    @Excel(name = "目标价位", width = 15)
+    @Excel(name = "目标价位")
     private Double targetPrice;
-    @Excel(name = "预计数量", width = 15)
+    @Excel(name = "预计数量")
     private Integer total;
-    @Excel(name = "开发完成交期", width = 15)
+    @Excel(name = "开发完成交期")
     private String endDate;
-    @Excel(name = "客户意见", width = 15)
+    @Excel(name = "客户意见")
     private String cusAdvice;
-    @Excel(name = "业务意见", width = 15)
+    @Excel(name = "业务意见")
     private String yeAdvice;
-    @Excel(name = "采购部意见", width = 15)
+    @Excel(name = "采购部意见")
     private String cgAdvice;
-    @Excel(name = "是否参考图片", width = 15)
+    @Excel(name = "是否参考图片")
     private String isCkImage;
     private String ckImageUrl;
-    @Excel(name = "参考图片", width = 15)
+    @Excel(name = "参考图片")
     private String ckImage;
-    @Excel(name = "业务部门", width = 15)
+    @Excel(name = "业务部门")
     private String businesseDeptName;
     private String businesseDeptId;
+
+    @Excel(name = "审核意见")
+    private String leadAdvice;
+    private String isPass;
+    private String leadUserId;
+    @Excel(name = "审核人")
+    private String leader;
+    private String state;
 
     @Id
     @GeneratedValue(generator = "paymentableGenerator")
@@ -509,5 +517,54 @@ public class EmkPackEntity implements Serializable {
 
     public void setBusinesseDeptId(String businesseDeptId) {
         this.businesseDeptId = businesseDeptId;
+    }
+
+    @Column(name = "LEAD_ADVICE", nullable = true, length = 256)
+    public String getLeadAdvice() {
+        return this.leadAdvice;
+    }
+
+    public void setLeadAdvice(String leadAdvice) {
+        this.leadAdvice = leadAdvice;
+    }
+
+    @Column(name = "IS_PASS", nullable = true, length = 32)
+    public String getIsPass() {
+        return this.isPass;
+    }
+
+    public void setIsPass(String isPass) {
+        this.isPass = isPass;
+    }
+
+    @Column(name = "LEAD_USER_ID", nullable = true, length = 32)
+    public String getLeadUserId() {
+        return this.leadUserId;
+    }
+
+    public void setLeadUserId(String leadUserId) {
+        this.leadUserId = leadUserId;
+    }
+
+    @Column(name = "LEADER", nullable = true, length = 32)
+    public String getLeader() {
+        return this.leader;
+    }
+
+    public void setLeader(String leader) {
+        this.leader = leader;
+    }
+
+    @Column(name ="STATE",nullable=true,length=32)
+    public String getState(){
+        return this.state;
+    }
+
+    /**
+     *方法: 设置java.lang.String
+     *@param: java.lang.String  工单状态
+     */
+    public void setState(String state){
+        this.state = state;
     }
 }

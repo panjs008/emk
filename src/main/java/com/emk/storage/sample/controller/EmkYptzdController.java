@@ -1,12 +1,9 @@
 package com.emk.storage.sample.controller;
 
 import com.alibaba.fastjson.JSONArray;
-import com.emk.bill.proorder.entity.EmkProOrderEntity;
-import com.emk.produce.produceschedule.entity.EmkProduceScheduleEntity;
-import com.emk.storage.enquiry.entity.EmkEnquiryEntity;
+import com.emk.storage.price.entity.EmkPriceEntity;
 import com.emk.storage.sample.entity.EmkSampleEntity;
 import com.emk.storage.sample.service.EmkSampleServiceI;
-import com.emk.util.DateUtil;
 import com.emk.util.FlowUtil;
 import com.emk.util.ParameterUtil;
 import com.emk.workorder.workorder.entity.EmkWorkOrderEntity;
@@ -14,13 +11,9 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.*;
-import java.util.Map.Entry;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
@@ -41,17 +34,13 @@ import org.jeecgframework.core.common.model.json.AjaxJson;
 import org.jeecgframework.core.common.model.json.DataGrid;
 import org.jeecgframework.core.constant.Globals;
 import org.jeecgframework.core.extend.hqlsearch.HqlGenerateUtil;
-import org.jeecgframework.core.util.ExceptionUtil;
 import org.jeecgframework.core.util.MyBeanUtils;
 import org.jeecgframework.core.util.ResourceUtil;
 import org.jeecgframework.core.util.StringUtil;
 import org.jeecgframework.jwt.util.ResponseMessage;
 import org.jeecgframework.jwt.util.Result;
-import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.entity.ExportParams;
-import org.jeecgframework.poi.excel.entity.ImportParams;
 import org.jeecgframework.tag.core.easyui.TagUtil;
-import org.jeecgframework.web.system.pojo.base.TSDepart;
 import org.jeecgframework.web.system.pojo.base.TSUser;
 import org.jeecgframework.web.system.service.SystemService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,16 +52,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.UriComponentsBuilder;
 
-@Api(value = "EmkSample", description = "样品单", tags = {"emkSampleController"})
+@Api(value = "EmkSample", description = "样品通知单", tags = "emkSampleController")
 @Controller
-@RequestMapping({"/emkSampleController"})
-public class EmkSampleController extends BaseController {
-    private static final Logger logger = Logger.getLogger(EmkSampleController.class);
+@RequestMapping("/emkYptzdController")
+public class EmkYptzdController extends BaseController {
+    private static final Logger logger = Logger.getLogger(EmkYptzdController.class);
     @Autowired
     private EmkSampleServiceI emkSampleService;
     @Autowired
@@ -87,20 +74,26 @@ public class EmkSampleController extends BaseController {
     @Autowired
     HistoryService historyService;
 
-    @RequestMapping(params = {"list"})
+    @RequestMapping(params = "list")
     public ModelAndView list(HttpServletRequest request) {
         return new ModelAndView("com/emk/storage/sample/emkSampleList");
     }
 
-    @RequestMapping(params = {"list0"})
+    /*@RequestMapping(params = "list0")
     public ModelAndView list0(HttpServletRequest request) {
         return new ModelAndView("com/emk/storage/sample/emkSampleList0");
-    }
+    }*/
 
-    @RequestMapping(params = {"datagrid"})
+    @RequestMapping(params = "datagrid")
     public void datagrid(EmkSampleEntity emkSample, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid) {
         CriteriaQuery cq = new CriteriaQuery(EmkSampleEntity.class, dataGrid);
-
+        TSUser user = (TSUser) request.getSession().getAttribute(ResourceUtil.LOCAL_CLINET_USER);
+        Map roleMap = (Map) request.getSession().getAttribute("ROLE");
+        if(roleMap != null){
+            if(roleMap.get("rolecode").toString().contains("ywy") || roleMap.get("rolecode").toString().contains("ywgdy")){
+                cq.eq("createBy",user.getUserName());
+            }
+        }
         HqlGenerateUtil.installHql(cq, emkSample, request.getParameterMap());
 
 
@@ -109,16 +102,16 @@ public class EmkSampleController extends BaseController {
         TagUtil.datagrid(response, dataGrid);
     }
 
-    @RequestMapping(params = {"doDel"})
+    @RequestMapping(params = "doDel")
     @ResponseBody
     public AjaxJson doDel(EmkSampleEntity emkSample, HttpServletRequest request) {
         String message = null;
         AjaxJson j = new AjaxJson();
         emkSample = (EmkSampleEntity) this.systemService.getEntity(EmkSampleEntity.class, emkSample.getId());
-        message = "样品单删除成功";
+        message = "样品通知单删除成功";
         try {
             if (!emkSample.getState().equals("0")) {
-                message = "样品单单已经提交处理，无法删除";
+                message = "样品通知单已经提交处理，无法删除";
                 j.setMsg(message);
                 j.setSuccess(false);
                 return j;
@@ -130,24 +123,24 @@ public class EmkSampleController extends BaseController {
             this.systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
         } catch (Exception e) {
             e.printStackTrace();
-            message = "样品单删除失败";
+            message = "样品通知单删除失败";
             throw new BusinessException(e.getMessage());
         }
         j.setMsg(message);
         return j;
     }
 
-    @RequestMapping(params = {"doBatchDel"})
+    @RequestMapping(params = "doBatchDel")
     @ResponseBody
     public AjaxJson doBatchDel(String ids, HttpServletRequest request) {
         String message = null;
         AjaxJson j = new AjaxJson();
-        message = "样品单删除成功";
+        message = "样品通知单删除成功";
         try {
             for (String id : ids.split(",")) {
                 EmkSampleEntity emkSample = (EmkSampleEntity) this.systemService.getEntity(EmkSampleEntity.class, id);
                 if (!emkSample.getState().equals("0")) {
-                    message = "样品单单已经提交处理，无法删除";
+                    message = "样品通知单单已经提交处理，无法删除";
                     j.setMsg(message);
                     j.setSuccess(false);
                     return j;
@@ -162,19 +155,19 @@ public class EmkSampleController extends BaseController {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            message = "样品单删除失败";
+            message = "样品通知单删除失败";
             throw new BusinessException(e.getMessage());
         }
         j.setMsg(message);
         return j;
     }
 
-    @RequestMapping(params = {"doAdd"})
+    @RequestMapping(params = "doAdd")
     @ResponseBody
     public AjaxJson doAdd(EmkSampleEntity emkSample, HttpServletRequest request) {
         String message = null;
         AjaxJson j = new AjaxJson();
-        message = "样品单添加成功";
+        message = "样品通知单添加成功";
         try {
             emkSample.setState("0");
             if(emkSample.getType().equals("ss") || emkSample.getType().equals("cq")){
@@ -194,19 +187,19 @@ public class EmkSampleController extends BaseController {
             this.systemService.addLog(message, Globals.Log_Type_INSERT, Globals.Log_Leavel_INFO);
         } catch (Exception e) {
             e.printStackTrace();
-            message = "样品单添加失败";
+            message = "样品通知单添加失败";
             throw new BusinessException(e.getMessage());
         }
         j.setMsg(message);
         return j;
     }
 
-    @RequestMapping(params = {"doUpdate"})
+    @RequestMapping(params = "doUpdate")
     @ResponseBody
     public AjaxJson doUpdate(EmkSampleEntity emkSample, HttpServletRequest request) {
         String message = null;
         AjaxJson j = new AjaxJson();
-        message = "样品单更新成功";
+        message = "样品通知单更新成功";
         if(emkSample.getType().equals("ss") || emkSample.getType().equals("cq")){
             if(emkSample.getOrderNo() == null || emkSample.getOrderNo().equals("")){
                 j.setSuccess(false);
@@ -218,6 +211,7 @@ public class EmkSampleController extends BaseController {
         try {
             if (!t.getState().equals("0")) {
                 message = "存在已提交的打样单，请重新选择在提交！";
+                j.setMsg(message);
                 j.setSuccess(false);
                 return  j;
             }
@@ -232,14 +226,14 @@ public class EmkSampleController extends BaseController {
             this.systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
         } catch (Exception e) {
             e.printStackTrace();
-            message = "样品单更新失败";
+            message = "样品通知单更新失败";
             throw new BusinessException(e.getMessage());
         }
         j.setMsg(message);
         return j;
     }
 
-    @RequestMapping(params = {"goAdd"})
+    @RequestMapping(params = "goAdd")
     public ModelAndView goAdd(EmkSampleEntity emkSample, HttpServletRequest req) {
         req.setAttribute("kdDate", DateUtils.format(new Date(), "yyyy-MM-dd"));
         TSUser user = (TSUser) req.getSession().getAttribute("LOCAL_CLINET_USER");
@@ -252,7 +246,7 @@ public class EmkSampleController extends BaseController {
         return new ModelAndView("com/emk/storage/sample/emkSample-add");
     }
 
-    @RequestMapping(params = {"goUpdate"})
+    @RequestMapping(params = "goUpdate")
     public ModelAndView goUpdate(EmkSampleEntity emkSample, HttpServletRequest req) {
         if (StringUtil.isNotEmpty(emkSample.getId())) {
             emkSample = (EmkSampleEntity) this.emkSampleService.getEntity(EmkSampleEntity.class, emkSample.getId());
@@ -261,7 +255,7 @@ public class EmkSampleController extends BaseController {
         return new ModelAndView("com/emk/storage/sample/emkSample-update");
     }
 
-    @RequestMapping(params = {"goUpdate2"})
+    @RequestMapping(params = "goUpdate2")
     public ModelAndView goUpdate2(EmkSampleEntity emkSample, HttpServletRequest req) {
         if (StringUtil.isNotEmpty(emkSample.getId())) {
             emkSample = (EmkSampleEntity) this.emkSampleService.getEntity(EmkSampleEntity.class, emkSample.getId());
@@ -270,30 +264,30 @@ public class EmkSampleController extends BaseController {
         return new ModelAndView("com/emk/storage/sample/emkSample-update2");
     }
 
-    @RequestMapping(params = {"upload"})
+    @RequestMapping(params = "upload")
     public ModelAndView upload(HttpServletRequest req) {
         req.setAttribute("controller_name", "emkSampleController");
         return new ModelAndView("common/upload/pub_excel_upload");
     }
 
-    @RequestMapping(params = {"exportXls"})
+    @RequestMapping(params = "exportXls")
     public String exportXls(EmkSampleEntity emkSample, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid, ModelMap modelMap) {
         CriteriaQuery cq = new CriteriaQuery(EmkSampleEntity.class, dataGrid);
         HqlGenerateUtil.installHql(cq, emkSample, request.getParameterMap());
         List<EmkSampleEntity> emkSamples = this.emkSampleService.getListByCriteriaQuery(cq, Boolean.valueOf(false));
-        modelMap.put("fileName", "样品单");
+        modelMap.put("fileName", "样品通知单");
         modelMap.put("entity", EmkSampleEntity.class);
-        modelMap.put("params", new ExportParams("样品单列表", "导出人:" + ResourceUtil.getSessionUser().getRealName(), "导出信息"));
+        modelMap.put("params", new ExportParams("样品通知单列表", "导出人:" + ResourceUtil.getSessionUser().getRealName(), "导出信息"));
 
         modelMap.put("data", emkSamples);
         return "jeecgExcelView";
     }
 
-    @RequestMapping(params = {"exportXlsByT"})
+    @RequestMapping(params = "exportXlsByT")
     public String exportXlsByT(EmkSampleEntity emkSample, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid, ModelMap modelMap) {
-        modelMap.put("fileName", "样品单");
+        modelMap.put("fileName", "样品通知单");
         modelMap.put("entity", EmkSampleEntity.class);
-        modelMap.put("params", new ExportParams("样品单列表", "导出人:" + ResourceUtil.getSessionUser().getRealName(), "导出信息"));
+        modelMap.put("params", new ExportParams("样品通知单列表", "导出人:" + ResourceUtil.getSessionUser().getRealName(), "导出信息"));
 
         modelMap.put("data", new ArrayList());
         return "jeecgExcelView";
@@ -301,27 +295,27 @@ public class EmkSampleController extends BaseController {
 
     @RequestMapping(method = {org.springframework.web.bind.annotation.RequestMethod.GET})
     @ResponseBody
-    @ApiOperation(value = "样品单列表信息", produces = "application/json", httpMethod = "GET")
+    @ApiOperation(value = "样品通知单列表信息", produces = "application/json", httpMethod = "GET")
     public ResponseMessage<List<EmkSampleEntity>> list() {
         List<EmkSampleEntity> listEmkSamples = this.emkSampleService.getList(EmkSampleEntity.class);
         return Result.success(listEmkSamples);
     }
 
-    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.GET})
+    @RequestMapping(value = "/{id}", method = {org.springframework.web.bind.annotation.RequestMethod.GET})
     @ResponseBody
-    @ApiOperation(value = "根据ID获取样品单信息", notes = "根据ID获取样品单信息", httpMethod = "GET", produces = "application/json")
+    @ApiOperation(value = "根据ID获取样品通知单信息", notes = "根据ID获取样品通知单信息", httpMethod = "GET", produces = "application/json")
     public ResponseMessage<?> get(@ApiParam(required = true, name = "id", value = "ID") @PathVariable("id") String id) {
         EmkSampleEntity task = (EmkSampleEntity) this.emkSampleService.get(EmkSampleEntity.class, id);
         if (task == null) {
-            return Result.error("根据ID获取样品单信息为空");
+            return Result.error("根据ID获取样品通知单信息为空");
         }
         return Result.success(task);
     }
 
-    @RequestMapping(method = {org.springframework.web.bind.annotation.RequestMethod.POST}, consumes = {"application/json"})
+    @RequestMapping(method = {org.springframework.web.bind.annotation.RequestMethod.POST}, consumes = "application/json")
     @ResponseBody
-    @ApiOperation("创建样品单")
-    public ResponseMessage<?> create(@ApiParam(name = "样品单对象") @RequestBody EmkSampleEntity emkSample, UriComponentsBuilder uriBuilder) {
+    @ApiOperation("创建样品通知单")
+    public ResponseMessage<?> create(@ApiParam(name = "样品通知单对象") @RequestBody EmkSampleEntity emkSample, UriComponentsBuilder uriBuilder) {
         Set<ConstraintViolation<EmkSampleEntity>> failures = this.validator.validate(emkSample, new Class[0]);
         if (!failures.isEmpty()) {
             return Result.error(JSONArray.toJSONString(BeanValidators.extractPropertyAndMessage(failures)));
@@ -330,15 +324,15 @@ public class EmkSampleController extends BaseController {
             this.emkSampleService.save(emkSample);
         } catch (Exception e) {
             e.printStackTrace();
-            return Result.error("样品单信息保存失败");
+            return Result.error("样品通知单信息保存失败");
         }
         return Result.success(emkSample);
     }
 
-    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.PUT}, consumes = {"application/json"})
+    @RequestMapping(value = "/{id}", method = {org.springframework.web.bind.annotation.RequestMethod.PUT}, consumes = "application/json")
     @ResponseBody
-    @ApiOperation(value = "更新样品单", notes = "更新样品单")
-    public ResponseMessage<?> update(@ApiParam(name = "样品单对象") @RequestBody EmkSampleEntity emkSample) {
+    @ApiOperation(value = "更新样品通知单", notes = "更新样品通知单")
+    public ResponseMessage<?> update(@ApiParam(name = "样品通知单对象") @RequestBody EmkSampleEntity emkSample) {
         Set<ConstraintViolation<EmkSampleEntity>> failures = this.validator.validate(emkSample, new Class[0]);
         if (!failures.isEmpty()) {
             return Result.error(JSONArray.toJSONString(BeanValidators.extractPropertyAndMessage(failures)));
@@ -347,14 +341,14 @@ public class EmkSampleController extends BaseController {
             this.emkSampleService.saveOrUpdate(emkSample);
         } catch (Exception e) {
             e.printStackTrace();
-            return Result.error("更新样品单信息失败");
+            return Result.error("更新样品通知单信息失败");
         }
-        return Result.success("更新样品单信息成功");
+        return Result.success("更新样品通知单信息成功");
     }
 
-    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.DELETE})
+    @RequestMapping(value = "/{id}", method = {org.springframework.web.bind.annotation.RequestMethod.DELETE})
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @ApiOperation("删除样品单")
+    @ApiOperation("删除样品通知单")
     public ResponseMessage<?> delete(@ApiParam(name = "id", value = "ID", required = true) @PathVariable("id") String id) {
         logger.info("delete[{}]" + id);
         if (StringUtils.isEmpty(id)) {
@@ -364,7 +358,7 @@ public class EmkSampleController extends BaseController {
             this.emkSampleService.deleteEntityById(EmkSampleEntity.class, id);
         } catch (Exception e) {
             e.printStackTrace();
-            return Result.error("样品单删除失败");
+            return Result.error("样品通知单删除失败");
         }
         return Result.success();
     }
@@ -413,6 +407,21 @@ public class EmkSampleController extends BaseController {
                                 variables.put("isPass", emkSampleEntity.getIsPass());
                                 taskService.complete(task1.getId(), variables);
                                 t.setState("2");
+
+                                EmkPriceEntity priceEntity = systemService.findUniqueByProperty(EmkPriceEntity.class,"pirceNo",t.getPirceNo());
+
+                                EmkWorkOrderEntity workOrderEntity = systemService.findUniqueByProperty(EmkWorkOrderEntity.class,"askNo",priceEntity.getXpNo());
+                                workOrderEntity.setSampleNum(t.getSampleNum());
+                                workOrderEntity.setSampleUserId(user.getUserName());
+                                workOrderEntity.setSampleUser(user.getRealName());
+                                workOrderEntity.setSampleCheckDate(DateUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
+                                workOrderEntity.setSampleAdvice(emkSampleEntity.getLeadAdvice());
+                                systemService.saveOrUpdate(workOrderEntity);
+
+                                variables.put("inputUser", workOrderEntity.getId());
+                                task = taskService.createTaskQuery().taskAssignee(workOrderEntity.getId()).list();
+                                task1 = task.get(task.size() - 1);
+                                taskService.complete(task1.getId(), variables);
                                 /*if(t.getType().equals("cy")){
                                     Map enquiry = this.systemService.findOneForJdbc("SELECT t3.id,t3.enquiry_no FROM emk_sample t1 LEFT JOIN emk_price t2 ON t1.PIRCE_NO=t2.pirce_no LEFT JOIN emk_enquiry t3 ON t3.enquiry_no=t2.xp_no where t1.id=? LIMIT 0,1",id);
                                     if(enquiry != null){
@@ -459,7 +468,7 @@ public class EmkSampleController extends BaseController {
                                     Task taskH = (Task)taskList.get(taskList.size() - 1);
                                     HistoricTaskInstance historicTaskInstance = hisTasks.get(hisTasks.size() - 2);
                                     FlowUtil.turnTransition(taskH.getId(), historicTaskInstance.getTaskDefinitionKey(), variables);
-                                    Map activityMap = systemService.findOneForJdbc("SELECT GROUP_CONCAT(t0.ID_) ids,GROUP_CONCAT(t0.TASK_ID_) taskids FROM act_hi_actinst t0 WHERE t0.ASSIGNEE_=? AND t0.ACT_ID_=? ORDER BY ID_ ASC", new Object[] { t.getId(), historicTaskInstance.getTaskDefinitionKey() });
+                                    Map activityMap = systemService.findOneForJdbc("SELECT GROUP_CONCAT(t0.ID_) ids,GROUP_CONCAT(t0.TASK_ID_) taskids FROM act_hi_actinst t0 WHERE t0.ASSIGNEE_=? AND t0.ACT_ID_=? ORDER BY ID_ ASC", t.getId(), historicTaskInstance.getTaskDefinitionKey());
                                     String[] activitIdArr = activityMap.get("ids").toString().split(",");
                                     String[] taskIdArr = activityMap.get("taskids").toString().split(",");
                                     systemService.executeSql("UPDATE act_hi_taskinst SET  NAME_=CONCAT('【驳回后】','',NAME_) WHERE ASSIGNEE_>=? AND ID_=?",t.getId(), taskIdArr[1]);

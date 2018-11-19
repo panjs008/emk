@@ -20,13 +20,13 @@ public class EmkStorageSetEntity
     private String createBy;
     private Date createDate;
     private String sysOrgCode;
-    @Excel(name = "仓库名称", width = 15)
+    @Excel(name = "仓库名称")
     private String storageName;
-    @Excel(name = "地区", width = 15)
+    @Excel(name = "地区")
     private String areaCode;
-    @Excel(name = "仓库地址", width = 15)
+    @Excel(name = "仓库地址")
     private String storageAddress;
-    @Excel(name = "备注", width = 15)
+    @Excel(name = "备注")
     private String remark;
 
     @Id

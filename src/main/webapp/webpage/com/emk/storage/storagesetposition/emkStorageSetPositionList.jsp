@@ -11,9 +11,9 @@
     <t:dgCol title="位置代码"  field="code"  queryMode="single"  width="70"></t:dgCol>
     <t:dgCol title="位置名称"  field="positionName"  queryMode="single"  width="150"></t:dgCol>
     <t:dgCol title="备注"  field="remark" hidden="true"  queryMode="single"  width="120"></t:dgCol>
-    <t:dgToolBar title="录入" icon="fa fa-plus" url="emkStorageSetPositionController.do?goAdd&storageId=${param.storageId}" funname="add"></t:dgToolBar>
-    <t:dgToolBar title="编辑" icon="fa fa-edit" url="emkStorageSetPositionController.do?goUpdate" funname="update"></t:dgToolBar>
-    <t:dgToolBar title="删除"  icon="fa fa-remove" url="emkStorageSetPositionController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
+    <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkStorageSetPositionController.do?goAdd&storageId=${param.storageId}" funname="add"></t:dgToolBar>
+    <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkStorageSetPositionController.do?goUpdate" funname="update"></t:dgToolBar>
+    <t:dgToolBar title="删除" operationCode="delete"  icon="fa fa-remove" url="emkStorageSetPositionController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
 </t:datagrid>
  <script src = "webpage/com/emk/storage/storagesetposition/emkStorageSetPositionList.js"></script>		
  <script type="text/javascript">

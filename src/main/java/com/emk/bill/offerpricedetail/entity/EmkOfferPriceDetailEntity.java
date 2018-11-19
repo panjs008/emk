@@ -19,27 +19,27 @@ public class EmkOfferPriceDetailEntity implements Serializable {
     private String createBy;
     private Date createDate;
     private String sysOrgCode;
-    @Excel(name = "方案ID", width = 15)
+    @Excel(name = "方案ID")
     private String offerPriceId;
-    @Excel(name = "物料ID", width = 15)
+    @Excel(name = "物料ID")
     private String proId;
-    @Excel(name = "物料编号", width = 15)
+    @Excel(name = "物料编号")
     private String proNum;
-    @Excel(name = "规格", width = 15)
+    @Excel(name = "规格")
     private String brand;
-    @Excel(name = "数量", width = 15)
+    @Excel(name = "数量")
     private Double signTotal;
-    @Excel(name = "单价", width = 15)
+    @Excel(name = "单价")
     private Double signPrice;
-    @Excel(name = "单位", width = 15)
+    @Excel(name = "单位")
     private String unit;
-    @Excel(name = "备注", width = 15)
+    @Excel(name = "备注")
     private String remark;
-    @Excel(name = "款号", width = 15)
+    @Excel(name = "款号")
     private String sampleNo;
-    @Excel(name = "颜色", width = 15)
+    @Excel(name = "颜色")
     private String color;
-    @Excel(name = "产品名称", width = 15)
+    @Excel(name = "产品名称")
     private String proName;
 
     @Id

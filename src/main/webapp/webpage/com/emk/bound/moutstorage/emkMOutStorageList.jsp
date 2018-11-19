@@ -3,7 +3,7 @@
 <t:base type="jquery,easyui,tools,DatePicker"></t:base>
 <div class="easyui-layout" fit="true">
   <div region="center" style="padding:0px;border:0px">
-  <t:datagrid name="emkMOutStorageList" checkbox="false" pagination="true" fitColumns="true" title="" actionUrl="emkMOutStorageController.do?datagrid&type=${param.type}" idField="id" fit="true" btnCls="bootstrap"  queryMode="group">
+  <t:datagrid name="emkMOutStorageList" checkbox="false" pagination="true" fitColumns="true" title="" actionUrl="emkMOutStorageController.do?datagrid&type=0" idField="id" fit="true" btnCls="bootstrap"  queryMode="group">
       <t:dgCol title="主键"  field="id"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
       <t:dgCol title="创建人名称"  field="createName"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
       <t:dgCol title="创建人登录名称"  field="createBy"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
@@ -17,19 +17,21 @@
       <t:dgCol title="出库日期"  field="kdDate"  queryMode="single"  width="80"></t:dgCol>
       <t:dgCol title="出货日期"  field="outDate"  queryMode="single"  width="80"></t:dgCol>
       <t:dgCol title="业务部门"  field="businesseDeptName"  queryMode="single"  width="80"></t:dgCol>
-      <t:dgCol title="业务员"  field="businesser"  queryMode="single"  width="70"></t:dgCol>
+      <t:dgCol title="业务员"  field="businesserName"  queryMode="single"  width="70"></t:dgCol>
       <t:dgCol title="跟单员"  field="developer"  queryMode="single"  width="70"></t:dgCol>
       <t:dgCol title="客户代码" field="cusNum"  queryMode="single"  width="70"></t:dgCol>
       <t:dgCol title="客户名称" field="cusName"  queryMode="single"  width="160"></t:dgCol>
       <t:dgCol title="款号"  field="sampleNo"  queryMode="single"  width="80"></t:dgCol>
       <t:dgCol title="状态"  field="state" formatterjs="formatColor"  queryMode="single"  width="70"></t:dgCol>
 
-      <t:dgFunOpt funname="goToProcess(id)" title="流程进度" urlclass="ace_button"  urlStyle="background-color:#ec4758;" urlfont="fa-tasks"></t:dgFunOpt>
-      <t:dgToolBar title="录入" icon="fa fa-plus" url="emkMOutStorageController.do?goAdd&winTitle=添加出库申请单&type=${param.type}" funname="add" height="600" width="1100"></t:dgToolBar>
-      <t:dgToolBar title="编辑" icon="fa fa-edit" url="emkMOutStorageController.do?goUpdate&winTitle=编辑出库申请单" funname="update" height="600" width="1100"></t:dgToolBar>
-      <t:dgToolBar title="提交" icon="fa fa-arrow-circle-up" funname="doSubmitV"></t:dgToolBar>
-      <t:dgToolBar title="删除"  icon="fa fa-remove" url="emkMOutStorageController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
-      <t:dgToolBar title="导出" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
+      <t:dgFunOpt funname="goToProcess(id,createBy,createName)" title="流程进度" operationCode="process" urlclass="ace_button"  urlStyle="background-color:#ec4758;" urlfont="fa-tasks"></t:dgFunOpt>
+      <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkMOutStorageController.do?goAdd&type=0&winTitle=添加原料布料出库申请单" funname="add" height="600" width="1100"></t:dgToolBar>
+      <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkMOutStorageController.do?goUpdate&winTitle=编辑原料布料出库申请单" funname="update" height="600" width="1100"></t:dgToolBar>
+      <t:dgToolBar title="查看" icon="fa fa-search" operationCode="look" url="emkMOutStorageController.do?goUpdate&goUpdate&winTitle=查看原料布料出库申请单" funname="detail" height="600" width="1100"></t:dgToolBar>
+
+      <t:dgToolBar title="提交" operationCode="submit" icon="fa fa-arrow-circle-up" funname="doSubmitV"></t:dgToolBar>
+      <t:dgToolBar title="删除" operationCode="delete"  icon="fa fa-remove" url="emkMOutStorageController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
+      <t:dgToolBar title="导出" operationCode="exp" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
 
   </t:datagrid>
   </div>
@@ -53,13 +55,13 @@
      var rowsData = $('#emkMOutStorageList').datagrid('getSelections');
      var ids = [];
      if (!rowsData || rowsData.length == 0) {
-         tip('请选择需要提交的出库申请单');
+         tip('请选择需要提交的原料布料出库申请单');
          return;
      }
      for ( var i = 0; i < rowsData.length; i++) {
          ids.push(rowsData[i].id);
      }
-     $.dialog.confirm('您是否确定提交出库申请单?', function(r) {
+     $.dialog.confirm('您是否确定提交原料布料出库申请单?', function(r) {
          if (r) {
              $.ajax({
                  url : "emkMOutStorageController.do?doSubmit&ids="+ids,
@@ -78,7 +80,7 @@
      });
  }
 
- function goToProcess(id){
+ function goToProcess(id,createBy,createName){
      var height =window.top.document.body.offsetHeight*0.85;
 
      $.ajax({
@@ -90,11 +92,28 @@
              var d = $.parseJSON(data);
              if (d.success) {
                  var msg = d.msg;
-                 if(msg == "完成"){
+                 if(createName != "出料" && createName != "出库" && createBy == "${CUR_USER.userName}"){
                      createdetailwindow('流程进度--当前环节：'+msg,'emkMOutStorageController.do?goProcess&id='+id,1150,height);
+
                  }else{
-                     createwindow("流程进度--当前环节："+msg, "emkMOutStorageController.do?goProcess&id="+id,1150,height);
+                     if (msg == "完成") {
+                         createdetailwindow('流程进度--当前环节：'+msg,'emkMOutStorageController.do?goProcess&id='+id,1150,height);
+                     } else {
+                         if(createName == "领导审核" && "${ROLE.rolecode}" == "cgjl") {
+                             createwindow("流程进度--当前环节："+msg, "emkMOutStorageController.do?goProcess&id="+id,1150,height);
+
+                         }else if(createName == "出料" &&  createBy == "${CUR_USER.userName}") {
+                             createwindow("流程进度--当前环节："+msg, "emkMOutStorageController.do?goProcess&id="+id,1150,height);
+
+                         }else if(createName == "出库" &&  createBy == "${CUR_USER.userName}") {
+                             createwindow("流程进度--当前环节："+msg, "emkMOutStorageController.do?goProcess&id="+id,1150,height);
+
+                         }else{
+                             createdetailwindow('流程进度--当前环节：'+msg,'emkMOutStorageController.do?goProcess&id='+id,1150,height);
+                         }
+                     }
                  }
+
 
              }
          }

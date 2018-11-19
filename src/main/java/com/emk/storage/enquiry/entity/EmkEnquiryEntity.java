@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.GenericGenerator;
 import org.jeecgframework.poi.excel.annotation.Excel;
 
@@ -19,86 +20,86 @@ public class EmkEnquiryEntity implements Serializable {
     private String createBy;
     private Date createDate;
     private String sysOrgCode;
-    @Excel(name = "意向订单号", width = 15)
+    @Excel(name = "意向订单号")
     private String enquiryNo;
     @Excel(name="是否先打样",width=15)
     private String isPrint;
     @Excel(name="询盘状态",width=15)
     private String state;
-    @Excel(name = "提交日期", width = 15)
+    @Excel(name = "提交日期")
     private String kdDate;
-    @Excel(name = "业务员", width = 15)
+    @Excel(name = "业务员")
     private String businesser;
     private String businesserName;
-    @Excel(name = "客户代码", width = 15)
+    @Excel(name = "客户代码")
     private String cusNum;
-    @Excel(name = "客户名称", width = 15)
+    @Excel(name = "客户名称")
     private String cusName;
-    @Excel(name = "工艺种类", width = 15)
+    @Excel(name = "工艺种类")
     private String gyzl;
     private String proType;
-    @Excel(name = "款式大类", width = 15)
+    @Excel(name = "款式大类")
     private String proTypeName;
     private String customSampleUrl;
-    @Excel(name = "图片", width = 15)
+    @Excel(name = "图片")
     private String customSample;
-    @Excel(name = "款号", width = 15)
+    @Excel(name = "款号")
     private String sampleNo;
-    @Excel(name = "描述", width = 15)
+    @Excel(name = "描述")
     private String sampleNoDesc;
-    @Excel(name = "总数量", width = 15)
+    @Excel(name = "总数量")
     private Integer sumTotal;
-    @Excel(name = "币种", width = 15)
+    @Excel(name = "币种")
     private String bz;
-    @Excel(name = "总金额", width = 15)
+    @Excel(name = "总金额")
     private Double sumMoney;
-    @Excel(name = "是否打过初样", width = 15)
+    @Excel(name = "是否打过初样")
     private String isPrintSample;
-    @Excel(name = "是否收取打样费", width = 15)
+    @Excel(name = "是否收取打样费")
     private String isGetSample;
-    @Excel(name = "是否有原样", width = 15)
+    @Excel(name = "是否有原样")
     private String isHaveOld;
     private String oldImageUrl;
-    @Excel(name = "原样", width = 15)
+    @Excel(name = "原样")
     private String oldImage;
-    @Excel(name = "是否有设计稿", width = 15)
+    @Excel(name = "是否有设计稿")
     private String isHaveDgr;
     private String dgrImageUrl;
-    @Excel(name = "计稿", width = 15)
+    @Excel(name = "计稿")
     private String dgrImage;
-    @Excel(name = "是否有尺寸表", width = 15)
+    @Excel(name = "是否有尺寸表")
     private String isHaveSize;
     private String sizeImageUrl;
-    @Excel(name = "尺寸表", width = 15)
+    @Excel(name = "尺寸表")
     private String sizeImage;
-    @Excel(name = "意向货交期", width = 15)
+    @Excel(name = "意向货交期")
     private String ysDate;
-    @Excel(name = "距交期余天数", width = 15)
+    @Excel(name = "距交期余天数")
     private Integer levelDays;
-    @Excel(name = "备注", width = 15)
+    @Excel(name = "备注")
     private String remark;
-    @Excel(name = "业务跟单员", width = 15)
+    @Excel(name = "业务跟单员")
     private String tracer;
     private String tracerName;
-    @Excel(name = "生产跟单员", width = 15)
+    @Excel(name = "生产跟单员")
     private String developer;
     private String developerName;
-    @Excel(name = "业务部门", width = 15)
+    @Excel(name = "业务部门")
     private String businesseDeptName;
     private String businesseDeptId;
-    @Excel(name = "审核意见", width = 15)
+    @Excel(name = "审核意见")
     private String leadAdvice;
-    @Excel(name = "处理意见", width = 15)
+    @Excel(name = "处理意见")
     private String financeAdvice;
-    @Excel(name = "是否通过", width = 15)
+    @Excel(name = "是否通过")
     private String isPass;
-    @Excel(name = "审核人ID", width = 15)
+    @Excel(name = "审核人ID")
     private String leadUserId;
-    @Excel(name = "审核人", width = 15)
+    @Excel(name = "审核人")
     private String leader;
-    @Excel(name = "财务处理人ID", width = 15)
+    @Excel(name = "财务处理人ID")
     private String financeUserId;
-    @Excel(name = "财务处理人", width = 15)
+    @Excel(name = "财务处理人")
     private String financer;
 
     @Id

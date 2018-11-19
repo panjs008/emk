@@ -33,9 +33,9 @@
    <t:dgCol title="版次"  field="version"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="成分"  field="chengf"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="克重"  field="weight"  queryMode="single"  width="120"></t:dgCol>--%>
-       <t:dgToolBar title="录入" icon="fa fa-plus" url="emkSyController.do?goAdd" funname="add" height="550" width="1000"></t:dgToolBar>
-       <t:dgToolBar title="编辑" icon="fa fa-edit" url="emkSyController.do?goUpdate" funname="update" height="550" width="1000"></t:dgToolBar>
-       <t:dgToolBar title="删除"  icon="fa fa-remove" url="emkSyController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
+       <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkSyController.do?goAdd" funname="add" height="550" width="1000"></t:dgToolBar>
+       <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkSyController.do?goUpdate" funname="update" height="550" width="1000"></t:dgToolBar>
+       <t:dgToolBar title="删除" operationCode="delete"  icon="fa fa-remove" url="emkSyController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
 
   </t:datagrid>
   </div>

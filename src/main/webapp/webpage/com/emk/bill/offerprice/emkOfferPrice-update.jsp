@@ -100,7 +100,7 @@
 			<td class="value" rowspan="5">
 				<input id="customSample" name="customSample" value="${emkOfferPricePage.customSample }" type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<input id="customSampleUrl" name="customSampleUrl" value="${emkOfferPricePage.customSampleUrl }" type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<img id="uploadimg" src="${emkOfferPricePage.customSampleUrl eq null ? 'images/bjlogo.png':emkOfferPricePage.customSampleUrl}" width="150" height="150">
+				<img id="uploadimg" src="${emkOfferPricePage.customSampleUrl eq '' ? 'images/bjlogo.png':emkOfferPricePage.customSampleUrl}" width="150" height="150">
 				<t:upload name="instruction" id="instruction" dialog="false" extend="*.jpg;*.png;*.gif;*.ico;*.dwg" buttonText="添加文件" queueID="instructionfile" view="false" auto="true" uploader="systemController.do?saveFiles"  onUploadSuccess="uploadSuccess" >
 				</t:upload>
 			</td>

@@ -12,10 +12,12 @@
     <t:dgCol title="单位"  field="unit" dictionary="units"  queryMode="single"  width="70"></t:dgCol>
     <t:dgCol title="单件克重"  field="oneWeight"  queryMode="single"  width="120"></t:dgCol>
     <t:dgCol title="成本"  field="chengben"  queryMode="single"  width="120"></t:dgCol>
-    <t:dgCol title="样品ID" hidden="true"  field="sampleId"  queryMode="single"  width="120"></t:dgCol>
-    <t:dgToolBar title="录入" icon="fa fa-plus" url="emkSampleRanController.do?goAdd&type=${param.type}&sampleId=${param.sampleId}" funname="add"></t:dgToolBar>
-    <t:dgToolBar title="编辑" icon="fa fa-edit" url="emkSampleRanController.do?goUpdate" funname="update"></t:dgToolBar>
-    <t:dgToolBar title="删除"  icon="fa fa-remove" url="emkSampleRanController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
+    <c:if test="${param.state eq '0'}">
+        <t:dgToolBar title="录入" icon="fa fa-plus" url="emkSampleRanController.do?goAdd&type=${param.type}&sampleId=${param.sampleId}" funname="add"></t:dgToolBar>
+        <t:dgToolBar title="编辑" icon="fa fa-edit" url="emkSampleRanController.do?goUpdate" funname="update"></t:dgToolBar>
+        <t:dgToolBar title="删除"  icon="fa fa-remove" url="emkSampleRanController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
+    </c:if>
+
 
 </t:datagrid>
  <script src = "webpage/com/emk/storage/sampleran/emkSampleRanList.js"></script>		

@@ -1,9 +1,6 @@
 package com.process.common;
 
-import com.emk.bill.contract.entity.EmkContractEntity;
 import com.emk.util.ParameterUtil;
-import com.emk.workorder.workorder.entity.EmkWorkOrderEntity;
-import com.process.repair.entity.URepairEntity;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.*;
 import org.activiti.engine.history.HistoricActivityInstance;
@@ -13,20 +10,12 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.image.ProcessDiagramGenerator;
 import org.jeecgframework.core.common.exception.BusinessException;
 import org.jeecgframework.core.common.model.json.AjaxJson;
 import org.jeecgframework.core.common.model.json.DataGrid;
-import org.jeecgframework.core.constant.Globals;
-import org.jeecgframework.core.util.DateUtils;
-import org.jeecgframework.core.util.MyBeanUtils;
-import org.jeecgframework.core.util.ResourceUtil;
-import org.jeecgframework.core.util.StringUtil;
-import org.jeecgframework.p3.core.common.utils.DateUtil;
 import org.jeecgframework.tag.core.easyui.TagUtil;
-import org.jeecgframework.web.system.pojo.base.TSUser;
 import org.jeecgframework.web.system.service.SystemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -91,10 +80,36 @@ public class FlowController {
             sql.append( " WHEN t1.TASK_DEF_KEY_='outstorageTask' THEN t2.create_name \n");
             sql.append( " WHEN t1.TASK_DEF_KEY_='instorageTask' THEN t2.create_name \n");
             sql.append( " WHEN t1.TASK_DEF_KEY_='sampleTask' THEN t2.create_name \n");
-            sql.append( " WHEN t1.TASK_DEF_KEY_='checkTask' THEN t2.create_name \n");
+            if(!map.get("sqlType").equals("emk")) {
+                sql.append( " WHEN t1.TASK_DEF_KEY_='checkTask' THEN t2.leader \n");
+            }
             sql.append( " WHEN t1.TASK_DEF_KEY_='ysTask' THEN t2.create_name \n");
             sql.append( " WHEN t1.TASK_DEF_KEY_='yfTask' THEN t2.create_name \n");
+            sql.append( " WHEN t1.TASK_DEF_KEY_='packTask' THEN t2.create_name \n");
+            sql.append( " WHEN t1.TASK_DEF_KEY_='materialTask' THEN t2.create_name \n");
+            sql.append( " WHEN t1.TASK_DEF_KEY_='accessoriesTask' THEN t2.create_name \n");
+            sql.append( " WHEN t1.TASK_DEF_KEY_='qualitycheckTask' THEN t2.create_name \n");
+            sql.append( " WHEN t1.TASK_DEF_KEY_='sizecheckTask' THEN t2.create_name \n");
+            sql.append( " WHEN t1.TASK_DEF_KEY_='checkfactoryTask' THEN t2.create_name \n");
 
+
+            //ERP工单流程
+            /*" WHEN t1.TASK_DEF_KEY_='khxpTask' THEN t2.ask_work_user \n" +
+                    " WHEN t1.TASK_DEF_KEY_='sampleTask' THEN t2.sample_user \n" +
+                    " WHEN t1.TASK_DEF_KEY_='sampleCheckTask' THEN t2.sample_check_user \n" +
+                    " WHEN t1.TASK_DEF_KEY_='billTask' THEN t2.order_user \n" +
+                    " WHEN t1.TASK_DEF_KEY_='htTask' THEN t2.ht_user \n" +
+                    " WHEN t1.TASK_DEF_KEY_='produceTask' THEN t2.produce_user \n" +
+                    " WHEN t1.TASK_DEF_KEY_='outTask' THEN t2.out_user \n" +*/
+            if(map.get("sqlType").equals("emk")){
+                sql.append( " WHEN t1.TASK_DEF_KEY_='khxpTask' THEN t2.ask_work_user \n");
+                sql.append( " WHEN t1.TASK_DEF_KEY_='sampleTask' THEN t2.sample_user \n");
+                sql.append( " WHEN t1.TASK_DEF_KEY_='sampleCheckTask' THEN t2.sample_check_user \n");
+                sql.append( " WHEN t1.TASK_DEF_KEY_='billTask' THEN t2.order_user \n");
+                sql.append( " WHEN t1.TASK_DEF_KEY_='htTask' THEN t2.ht_user \n");
+                sql.append( " WHEN t1.TASK_DEF_KEY_='produceTask' THEN t2.produce_user \n");
+                sql.append( " WHEN t1.TASK_DEF_KEY_='outTask' THEN t2.out_user \n");
+            }
 
             //订单生产流程
             if(map.get("sqlType").equals("produce")){
@@ -116,16 +131,50 @@ public class FlowController {
                 sql.append( " WHEN t1.TASK_DEF_KEY_='outTask' THEN t2.out_user_name \n");
                 sql.append( " WHEN t1.TASK_DEF_KEY_='wqTask' THEN t2.wei_user_name \n");
                 sql.append( " WHEN t1.TASK_DEF_KEY_='skTask' THEN t2.shou_user_name \n");
-
             }
 
+            //报价单生产流程
+            if(map.get("sqlType").equals("price")){
+                sql.append( " WHEN t1.TASK_DEF_KEY_='jsTask' THEN t2.jser \n");
+                sql.append( " WHEN t1.TASK_DEF_KEY_='cgTask' THEN t2.cger \n");
+                sql.append( " WHEN t1.TASK_DEF_KEY_='cwTask' THEN t2.cwer \n");
+                sql.append( " WHEN t1.TASK_DEF_KEY_='jgTask' THEN t2.jger \n");
+            }
+            //采购单流程
+            if(map.get("sqlType").equals("order")){
+                sql.append( " WHEN t1.TASK_DEF_KEY_='ycghtTask' THEN t2.yht_user_name \n");
+                sql.append( " WHEN t1.TASK_DEF_KEY_='htTask' THEN t2.ht_user_name \n");
+                sql.append( " WHEN t1.TASK_DEF_KEY_='rkTask' THEN t2.rk_user_name \n");
+                sql.append( " WHEN t1.TASK_DEF_KEY_='ckTask' THEN t2.ck_user_name \n");
+            }
+            //验厂流程
+            if(map.get("sqlType").equals("checkfactory")){
+                sql.append( " WHEN t1.TASK_DEF_KEY_='cyTask' THEN t2.cyer \n");
+                sql.append( " WHEN t1.TASK_DEF_KEY_='bgTask' THEN t2.bger \n");
+            }
 
-            if(map.get("sqlType").equals("enquiry") || map.get("sqlType").equals("inStorage") || map.get("sqlType").equals("outStorage") || map.get("sqlType").equals("order") || map.get("sqlType").equals("testcost")){
+            if(map.get("sqlType").equals("inStorage") || map.get("sqlType").equals("outStorage") || map.get("sqlType").equals("order") || map.get("sqlType").equals("testcost")){
                 sql.append( " WHEN t1.TASK_DEF_KEY_='cwTask' THEN t2.financer \n");
             }
+
+            //入库流程
+            if(map.get("sqlType").equals("inStorage")){
+                sql.append( " WHEN t1.TASK_DEF_KEY_='cwTask' THEN t2.jl_user_name \n");
+                sql.append( " WHEN t1.TASK_DEF_KEY_='rkTask' THEN t2.rk_user_name \n");
+            }
+            //出库流程
+            if(map.get("sqlType").equals("outStorage")){
+                sql.append( " WHEN t1.TASK_DEF_KEY_='cwTask' THEN t2.cl_user_name \n");
+                sql.append( " WHEN t1.TASK_DEF_KEY_='ckTask' THEN t2.ck_user_name \n");
+            }
+
             sql.append( " ELSE ''  END workname FROM act_hi_taskinst t1 \n");
 
             switch(map.get("sqlType").toString()){
+                case "enquiry":
+                    sql.append("left join emk_enquiry t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='"+map.get("id")+"'");break;
+                case "price":
+                    sql.append("left join emk_price t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='"+map.get("id")+"'");break;
                 case "outStorage":
                     sql.append("left join emk_m_out_storage t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='"+map.get("id")+"'");break;
                 case "inStorage":
@@ -136,8 +185,6 @@ public class FlowController {
                     sql.append("left join emk_pro_order t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='"+map.get("id")+"'");break;
                 case "ht":
                     sql.append("left join emk_contract t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='"+map.get("id")+"'");break;
-                case "enquiry":
-                    sql.append("left join emk_enquiry t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='"+map.get("id")+"'");break;
                 case "sample":
                     sql.append("left join emk_sample t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='"+map.get("id")+"'");break;
                 case "produce":
@@ -152,7 +199,20 @@ public class FlowController {
                     sql.append("left join emk_finance_receivable t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='"+map.get("id")+"'");break;
                 case "yf":
                     sql.append("left join emk_finance_receivable t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='"+map.get("id")+"'");break;
-
+                case "emk":
+                    sql.append("left join emk_work_order t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='"+map.get("id")+"'");break;
+                case "pack":
+                    sql.append("left join emk_pack t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='"+map.get("id")+"'");break;
+                case "material":
+                    sql.append("left join emk_material t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='"+map.get("id")+"'");break;
+                case "accessories":
+                    sql.append("left join emk_accessories t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='"+map.get("id")+"'");break;
+                case "check":
+                    sql.append("left join emk_check t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='"+map.get("id")+"'");break;
+                case "qualitycheck":
+                    sql.append("left join emk_quality_check t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='"+map.get("id")+"'");break;
+                case "sizecheck":
+                    sql.append("left join emk_size_check t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='"+map.get("id")+"'");break;
             }
 
             countsql.append("SELECT COUNT(1) FROM act_hi_taskinst t1 where ASSIGNEE_='"+map.get("id")+"' ");
@@ -270,12 +330,12 @@ public class FlowController {
         RepositoryService repositoryService = processEngine.getRepositoryService();
 
         //获取在classpath下的流程文件
-        InputStream in = this.getClass().getClassLoader().getResourceAsStream("/process/qualitycheck.zip");
+        InputStream in = this.getClass().getClassLoader().getResourceAsStream("/process/order.zip");
         ZipInputStream zipInputStream = new ZipInputStream(in);
         //使用deploy方法发布流程
         repositoryService.createDeployment()
                 .addZipInputStream(zipInputStream)
-                .name("qualitycheck")
+                .name("order")
                 .deploy();
       /*  Map<String, Object> variables = new HashMap<String,Object>();
         variables.put("inputUser", "panjs");//表示惟一用户

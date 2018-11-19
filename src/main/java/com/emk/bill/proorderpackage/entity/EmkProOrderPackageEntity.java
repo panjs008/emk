@@ -19,19 +19,19 @@ public class EmkProOrderPackageEntity implements Serializable {
     private String createBy;
     private Date createDate;
     private String sysOrgCode;
-    @Excel(name = "订单ID", width = 15)
+    @Excel(name = "订单ID")
     private String orderId;
-    @Excel(name = "颜色", width = 15)
+    @Excel(name = "颜色")
     private String color;
-    @Excel(name = "尺码", width = 15)
+    @Excel(name = "尺码")
     private String size;
-    @Excel(name = "箱内数量", width = 15)
+    @Excel(name = "箱内数量")
     private Integer inboxTotal;
-    @Excel(name = "箱数", width = 15)
+    @Excel(name = "箱数")
     private Integer boxTotal;
-    @Excel(name = "总数量", width = 15)
+    @Excel(name = "总数量")
     private Integer sumTotal;
-    @Excel(name = "类型", width = 15)
+    @Excel(name = "类型")
     private String packageType;
 
     @Id

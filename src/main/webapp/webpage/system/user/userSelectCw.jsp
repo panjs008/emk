@@ -9,7 +9,7 @@
 <div class="easyui-layout" style="width:700px;height:500px;">
 
     <div data-options="region:'center'">
-        <t:datagrid checkbox="false" name="userList1" title="common.user.select" actionUrl="userController.do?datagrid&userKey=财务"
+        <t:datagrid checkbox="false" name="userList1" title="common.user.select" actionUrl="userController.do?datagrid&userKey=${sessionScope.userKey }"
                     fit="true" fitColumns="true" idField="id" queryMode="group" sortName="createDate" sortOrder="desc">
             <t:dgCol title="common.id" field="id" hidden="true"></t:dgCol>
             <t:dgCol title="common.username" sortable="false" field="userName" query="true" width="150"></t:dgCol>

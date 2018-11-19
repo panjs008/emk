@@ -16,12 +16,12 @@
        <t:dgCol title="退税率(%)"  field="tsVal"  queryMode="single"  width="80"></t:dgCol>
    <t:dgCol title="销售指导价"  field="salePrice"  queryMode="single"  width="100"></t:dgCol>
    <t:dgCol title="备注"  field="remark"  queryMode="single"  width="120"></t:dgCol>
-   <t:dgToolBar title="录入" icon="fa fa-plus" url="emkProductHsController.do?goAdd" funname="add"></t:dgToolBar>
-   <t:dgToolBar title="编辑" icon="fa fa-edit" url="emkProductHsController.do?goUpdate" funname="update"></t:dgToolBar>
-   <t:dgToolBar title="删除"  icon="fa fa-remove" url="emkProductHsController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
+   <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkProductHsController.do?goAdd" funname="add"></t:dgToolBar>
+   <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkProductHsController.do?goUpdate" funname="update"></t:dgToolBar>
+   <t:dgToolBar title="删除" operationCode="delete"  icon="fa fa-remove" url="emkProductHsController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
    <t:dgToolBar title="查看" icon="fa fa-search" url="emkProductHsController.do?goUpdate" funname="detail"></t:dgToolBar>
    <t:dgToolBar title="导入" icon="fa fa-arrow-circle-left" funname="ImportXls"></t:dgToolBar>
-   <t:dgToolBar title="导出" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
+   <t:dgToolBar title="导出" operationCode="exp" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
   </t:datagrid>
   </div>
  </div>

@@ -44,7 +44,7 @@
 			</td>
 			<td class="value" style="width: 32%">
 				<%--<input id="workNo" name="workNo" datatype="*" value="${emkProOrderPage.workNo}" validType="emk_pro_order,work_no,id"  type="text" style="width: 150px" class="inputxt"  ignore="ignore" />--%>
-				<input id="workNo" name="workNo" datatype="*" value="${emkProOrderPage.workNo}"  type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="workNo" name="workNo" datatype="*" value="${emkProOrderPage.workNo}"  type="text" style="width: 150px" class="inputxt" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">工单号</label>
 			</td>

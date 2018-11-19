@@ -20,9 +20,11 @@
     <t:dgCol title="总体积"  field="sumVolume"  queryMode="single"  width="50"></t:dgCol>
     <t:dgCol title="总净重"  field="sumWeightJz"  queryMode="single"  width="50"></t:dgCol>
     <t:dgCol title="总箱数"  field="sumTotal"  queryMode="single"  width="50"></t:dgCol>
-    <t:dgToolBar title="录入" icon="fa fa-plus" url="emkProOrderBoxController.do?goAdd&orderId=${param.orderId}" funname="add"></t:dgToolBar>
-    <t:dgToolBar title="编辑" icon="fa fa-edit" url="emkProOrderBoxController.do?goUpdate" funname="update"></t:dgToolBar>
-    <t:dgToolBar title="删除"  icon="fa fa-remove" url="emkProOrderBoxController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
+    <c:if test="${param.state eq '0'}">
+        <t:dgToolBar title="录入" icon="fa fa-plus"  url="emkProOrderBoxController.do?goAdd&orderId=${param.orderId}" funname="add"></t:dgToolBar>
+        <t:dgToolBar title="编辑" icon="fa fa-edit" url="emkProOrderBoxController.do?goUpdate" funname="update"></t:dgToolBar>
+        <t:dgToolBar title="删除"  icon="fa fa-remove" url="emkProOrderBoxController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
+    </c:if>
 
 </t:datagrid>
  <script src = "webpage/com/emk/bill/proorderbox/emkProOrderBoxList.js"></script>		

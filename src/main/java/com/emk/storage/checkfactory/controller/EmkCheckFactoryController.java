@@ -1,6 +1,7 @@
 package com.emk.storage.checkfactory.controller;
 import com.emk.produce.testcost.entity.EmkTestCostEntity;
 import com.emk.storage.checkfactory.entity.EmkCheckFactoryEntity;
+import com.emk.storage.checkfactory.entity.EmkCheckFactoryEntity2;
 import com.emk.storage.checkfactory.service.EmkCheckFactoryServiceI;
 
 import java.util.*;
@@ -210,7 +211,7 @@ public class EmkCheckFactoryController extends BaseController {
 	 */
 	@RequestMapping(params = "doAdd")
 	@ResponseBody
-	public AjaxJson doAdd(EmkCheckFactoryEntity emkCheckFactory, HttpServletRequest request) {
+	public AjaxJson doAdd(EmkCheckFactoryEntity2 emkCheckFactory, HttpServletRequest request) {
 		String message = null;
 		AjaxJson j = new AjaxJson();
 		message = "验厂申请表添加成功";
@@ -237,7 +238,7 @@ public class EmkCheckFactoryController extends BaseController {
 	 */
 	@RequestMapping(params = "doUpdate")
 	@ResponseBody
-	public AjaxJson doUpdate(EmkCheckFactoryEntity emkCheckFactory, HttpServletRequest request) {
+	public AjaxJson doUpdate(EmkCheckFactoryEntity2 emkCheckFactory, HttpServletRequest request) {
 		String message = null;
 		AjaxJson j = new AjaxJson();
 		message = "验厂申请表更新成功";
@@ -493,9 +494,14 @@ public class EmkCheckFactoryController extends BaseController {
 							t.setLeader(user.getRealName());
 							t.setLeadUserId(user.getId());
 							t.setLeadAdvice(emkCheckFactoryEntity.getLeadAdvice());
-							if (t.getIsPass().equals("0")) {
+							if (emkCheckFactoryEntity.getIsPass().equals("0")) {
 								variables.put("isPass", emkCheckFactoryEntity.getIsPass());
 								taskService.complete(task1.getId(), variables);
+								t.setCyUserId(t.getCreateBy());
+								t.setCyer(t.getCreateName());
+								/*t.setCyer(map.get("realName").toString());
+								t.setCyUserId(map.get("userName").toString());*/
+
 							} else {
 								List<HistoricTaskInstance> hisTasks = historyService.createHistoricTaskInstanceQuery().taskAssignee(t.getId()).list();
 
@@ -513,6 +519,35 @@ public class EmkCheckFactoryController extends BaseController {
 								t.setState("0");
 							}
 
+						}
+						if (task1.getTaskDefinitionKey().equals("cyTask")) {
+							t.setCyAdvice(emkCheckFactoryEntity.getLeadAdvice());
+							t.setBgUserId(t.getCreateBy());
+							t.setBger(t.getCreateName());
+							taskService.complete(task1.getId(), variables);
+
+						}
+						if (task1.getTaskDefinitionKey().equals("bgTask")) {
+							t.setBgAdvice(emkCheckFactoryEntity.getLeadAdvice());
+							if (emkCheckFactoryEntity.getIsHg().equals("0")) {
+								variables.put("isHg", emkCheckFactoryEntity.getIsHg());
+								taskService.complete(task1.getId(), variables);
+								t.setState("2");
+							} else {
+								List<HistoricTaskInstance> hisTasks = historyService.createHistoricTaskInstanceQuery().taskAssignee(t.getId()).list();
+
+								List<Task> taskList = taskService.createTaskQuery().taskAssignee(t.getId()).list();
+								if (taskList.size() > 0) {
+									Task taskH = (Task)taskList.get(taskList.size() - 1);
+									HistoricTaskInstance historicTaskInstance = hisTasks.get(hisTasks.size() - 2);
+									FlowUtil.turnTransition(taskH.getId(), historicTaskInstance.getTaskDefinitionKey(), variables);
+									Map activityMap = systemService.findOneForJdbc("SELECT GROUP_CONCAT(t0.ID_) ids,GROUP_CONCAT(t0.TASK_ID_) taskids FROM act_hi_actinst t0 WHERE t0.ASSIGNEE_=? AND t0.ACT_ID_=? ORDER BY ID_ ASC", new Object[] { t.getId(), historicTaskInstance.getTaskDefinitionKey() });
+									String[] activitIdArr = activityMap.get("ids").toString().split(",");
+									String[] taskIdArr = activityMap.get("taskids").toString().split(",");
+									systemService.executeSql("UPDATE act_hi_taskinst SET  NAME_=CONCAT('【驳回后】','',NAME_) WHERE ASSIGNEE_>=? AND ID_=?",t.getId(), taskIdArr[1]);
+									systemService.executeSql("delete from act_hi_actinst where ID_>=? and ID_<?", activitIdArr[0], activitIdArr[1] );
+								}
+							}
 						}
 
 					}else {
@@ -574,6 +609,5 @@ public class EmkCheckFactoryController extends BaseController {
 		emkCheckFactoryEntity = emkCheckFactoryService.getEntity(EmkCheckFactoryEntity.class, emkCheckFactoryEntity.getId());
 		req.setAttribute("emkCheckFactory", emkCheckFactoryEntity);
 		return new ModelAndView("com/emk/storage/checkfactory/time");
-
 	}
 }

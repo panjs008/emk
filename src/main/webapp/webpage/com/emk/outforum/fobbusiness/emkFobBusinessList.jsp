@@ -19,10 +19,10 @@
       <t:dgCol title="款号"  field="sampleNo"  queryMode="single"  width="80"></t:dgCol>
       <t:dgCol title="总箱数"  field="sumBox"  queryMode="single"  width="80"></t:dgCol>
       <t:dgCol title="总金额"  field="sumMoney"  queryMode="single"  width="80"></t:dgCol>
-      <t:dgToolBar title="录入" icon="fa fa-plus" url="emkFobBusinessController.do?goAdd&winTitle=录入订舱进度" funname="add" height="600" width="1000"></t:dgToolBar>
-      <t:dgToolBar title="编辑" icon="fa fa-edit" url="emkFobBusinessController.do?goUpdate&winTitle=编辑订舱进度" funname="update" height="600" width="1000"></t:dgToolBar>
-      <t:dgToolBar title="删除"  icon="fa fa-remove" url="emkFobBusinessController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
-      <t:dgToolBar title="导出" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
+      <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkFobBusinessController.do?goAdd&winTitle=录入订舱进度" funname="add" height="600" width="1000"></t:dgToolBar>
+      <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkFobBusinessController.do?goUpdate&winTitle=编辑订舱进度" funname="update" height="600" width="1000"></t:dgToolBar>
+      <t:dgToolBar title="删除" operationCode="delete"  icon="fa fa-remove" url="emkFobBusinessController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
+      <t:dgToolBar title="导出" operationCode="exp" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
 
   </t:datagrid>
   </div>

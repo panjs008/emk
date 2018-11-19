@@ -19,33 +19,33 @@ public class EmkProOrderBoxEntity implements Serializable {
     private String createBy;
     private Date createDate;
     private String sysOrgCode;
-    @Excel(name = "订单ID", width = 15)
+    @Excel(name = "订单ID")
     private String orderId;
-    @Excel(name = "长度", width = 15)
+    @Excel(name = "长度")
     private Double longVal;
-    @Excel(name = "宽度", width = 15)
+    @Excel(name = "宽度")
     private Double widthVal;
-    @Excel(name = "高度", width = 15)
+    @Excel(name = "高度")
     private Double heightVal;
-    @Excel(name = "总箱数", width = 15)
+    @Excel(name = "总箱数")
     private Integer sumTotal;
-    @Excel(name = "单件毛重", width = 15)
+    @Excel(name = "单件毛重")
     private Double oneWeightMao;
-    @Excel(name = "单件净重", width = 15)
+    @Excel(name = "单件净重")
     private Double oneWeightJz;
-    @Excel(name = "箱内数量", width = 15)
+    @Excel(name = "箱内数量")
     private Integer inboxTotal;
-    @Excel(name = "单箱毛重", width = 15)
+    @Excel(name = "单箱毛重")
     private Double boxWeightMao;
-    @Excel(name = "单箱净重", width = 15)
+    @Excel(name = "单箱净重")
     private Double boxWeightJz;
-    @Excel(name = "单箱体积", width = 15)
+    @Excel(name = "单箱体积")
     private Double boxVolume;
-    @Excel(name = "总体积", width = 15)
+    @Excel(name = "总体积")
     private Double sumVolume;
-    @Excel(name = "总净重", width = 15)
+    @Excel(name = "总净重")
     private Double sumWeightJz;
-    @Excel(name = "类型", width = 15)
+    @Excel(name = "类型")
     private String boxType;
 
     @Id

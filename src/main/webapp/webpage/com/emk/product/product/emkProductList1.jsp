@@ -76,13 +76,13 @@
    <%--<t:dgCol title="中文描述"  field="remarkZn"  queryMode="single"  width="120"></t:dgCol>--%>
    <%--<t:dgCol title="产品备注" hidden="true" field="proRemark"  queryMode="single"  width="120"></t:dgCol>--%>
    <%--<t:dgCol title="操作" field="opt" width="100"></t:dgCol>--%>
-   <%--<t:dgDelOpt title="删除" url="emkProductController.do?doDel&id={id}" urlclass="ace_button"  urlfont="fa-trash-o"/>--%>
-   <t:dgToolBar title="录入" icon="fa fa-plus" url="emkProductController.do?goAdd&type=1&winTitle=录入缝制辅料" funname="add" width="800" height="400"></t:dgToolBar>
-   <t:dgToolBar title="编辑" icon="fa fa-edit" url="emkProductController.do?goUpdate&winTitle=编辑缝制辅料" funname="update" width="800" height="400"></t:dgToolBar>
-   <t:dgToolBar title="删除"  icon="fa fa-remove" url="emkProductController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
+   <%--<t:dgDelOpt title="删除" operationCode="delete" url="emkProductController.do?doDel&id={id}" urlclass="ace_button"  urlfont="fa-trash-o"/>--%>
+   <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkProductController.do?goAdd&type=1&winTitle=录入缝制辅料" funname="add" width="800" height="400"></t:dgToolBar>
+   <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkProductController.do?goUpdate&winTitle=编辑缝制辅料" funname="update" width="800" height="400"></t:dgToolBar>
+   <t:dgToolBar title="删除" operationCode="delete"  icon="fa fa-remove" url="emkProductController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
    <%--<t:dgToolBar title="查看" icon="fa fa-search" url="emkProductController.do?goUpdate" funname="detail" width="800" height="400"></t:dgToolBar>--%>
    <t:dgToolBar title="导入" icon="fa fa-arrow-circle-left" funname="ImportXls"></t:dgToolBar>
-   <t:dgToolBar title="导出" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
+   <t:dgToolBar title="导出" operationCode="exp" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
    <%--<t:dgToolBar title="模板下载" icon="fa fa-arrow-circle-o-down" funname="ExportXlsByT"></t:dgToolBar>--%>
   </t:datagrid>
   </div>

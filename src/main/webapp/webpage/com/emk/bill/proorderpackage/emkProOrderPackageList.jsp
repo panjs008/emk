@@ -13,10 +13,11 @@
     <t:dgCol title="箱内数量"  field="inboxTotal"  queryMode="single"  width="120"></t:dgCol>
     <t:dgCol title="箱数"  field="boxTotal"  queryMode="single"  width="120"></t:dgCol>
     <t:dgCol title="总数量"  field="sumTotal"  queryMode="single"  width="120"></t:dgCol>
-    <t:dgDelOpt title="删除" url="emkProOrderPackageController.do?doDel&id={id}" urlclass="ace_button"  urlfont="fa-trash-o"/>
-    <t:dgToolBar title="录入" icon="fa fa-plus" url="emkProOrderPackageController.do?goAdd&orderId=${param.orderId}" funname="add"></t:dgToolBar>
-    <t:dgToolBar title="编辑" icon="fa fa-edit" url="emkProOrderPackageController.do?goUpdate" funname="update"></t:dgToolBar>
-    <t:dgToolBar title="删除"  icon="fa fa-remove" url="emkProOrderPackageController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
+    <c:if test="${param.state eq '0'}">
+        <t:dgToolBar title="录入" icon="fa fa-plus" url="emkProOrderPackageController.do?goAdd&orderId=${param.orderId}" funname="add"></t:dgToolBar>
+        <t:dgToolBar title="编辑" icon="fa fa-edit" url="emkProOrderPackageController.do?goUpdate" funname="update"></t:dgToolBar>
+        <t:dgToolBar title="删除"  icon="fa fa-remove" url="emkProOrderPackageController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
+            </c:if>
 
 </t:datagrid>
  <script src = "webpage/com/emk/bill/proorderpackage/emkProOrderPackageList.js"></script>		

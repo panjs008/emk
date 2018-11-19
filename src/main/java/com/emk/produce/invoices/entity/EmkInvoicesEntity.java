@@ -15,66 +15,66 @@ import org.jeecgframework.poi.excel.annotation.Excel;
 @Table(name = "emk_invoices", schema = "")
 public class EmkInvoicesEntity
         implements Serializable {
-    @Excel(name = "业务员", width = 15)
+    @Excel(name = "业务员")
     private String businesser;
     private String businesserName;
-    @Excel(name = "业务跟单员", width = 15)
+    @Excel(name = "业务跟单员")
     private String tracer;
     private String tracerName;
-    @Excel(name = "业务部门", width = 15)
+    @Excel(name = "业务部门")
     private String businesseDeptName;
     private String businesseDeptId;
-    @Excel(name = "生产跟单员", width = 15)
+    @Excel(name = "生产跟单员")
     private String developer;
     private String developerName;
-    @Excel(name = "款号", width = 15)
+    @Excel(name = "款号")
     private String sampleNo;
-    @Excel(name = "描述", width = 15)
+    @Excel(name = "描述")
     private String sampleNoDesc;
-    @Excel(name = "出厂日期", width = 15)
+    @Excel(name = "出厂日期")
     private String outDate;
     private String id;
     private String createName;
     private String createBy;
     private Date createDate;
     private String sysOrgCode;
-    @Excel(name = "订单号", width = 15)
+    @Excel(name = "订单号")
     private String orderNo;
-    @Excel(name = "船务员", width = 15)
+    @Excel(name = "船务员")
     private String cwyer;
-    @Excel(name = "生产方名称", width = 15)
+    @Excel(name = "生产方名称")
     private String scfmc;
-    @Excel(name = "地址", width = 15)
+    @Excel(name = "地址")
     private String address;
-    @Excel(name = "法定代表签名", width = 15)
+    @Excel(name = "法定代表签名")
     private String signer;
-    @Excel(name = "签名日期", width = 15)
+    @Excel(name = "签名日期")
     private String signDate;
-    @Excel(name = "发票编号", width = 15)
+    @Excel(name = "发票编号")
     private String fpbh;
-    @Excel(name = "发票日期", width = 15)
+    @Excel(name = "发票日期")
     private String fpDate;
-    @Excel(name = "币种", width = 15)
+    @Excel(name = "币种")
     private String bz;
-    @Excel(name = "总金额", width = 15)
+    @Excel(name = "总金额")
     private String sumMoney;
-    @Excel(name = "收款方式", width = 15)
+    @Excel(name = "收款方式")
     private String skfs;
-    @Excel(name = "提单号", width = 15)
+    @Excel(name = "提单号")
     private String tdNum;
-    @Excel(name = "提单状态", width = 15)
+    @Excel(name = "提单状态")
     private String tdzt;
-    @Excel(name = "地址", width = 15)
+    @Excel(name = "地址")
     private String signAddress;
-    @Excel(name = "电话", width = 15)
+    @Excel(name = "电话")
     private String signTelphone;
-    @Excel(name = "订舱通知单号", width = 15)
+    @Excel(name = "订舱通知单号")
     private String cargoNo;
-    @Excel(name = "离厂放行条号", width = 15)
+    @Excel(name = "离厂放行条号")
     private String levealFactoryNo;
-    @Excel(name = "客户代码", width = 15)
+    @Excel(name = "客户代码")
     private String cusNum;
-    @Excel(name = "客户名称", width = 15)
+    @Excel(name = "客户名称")
     private String cusName;
 
     @Column(name = "BUSINESSER", nullable = true, length = 32)

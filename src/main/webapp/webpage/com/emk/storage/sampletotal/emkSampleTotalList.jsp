@@ -11,11 +11,11 @@
     <t:dgCol title="颜色"  field="color"  queryMode="single"  width="100"></t:dgCol>
     <t:dgCol title="尺码"  field="size"  queryMode="single"  width="100"></t:dgCol>
     <t:dgCol title="备注"  field="total"  queryMode="single"  width="100"></t:dgCol>
-    <t:dgToolBar title="录入" icon="fa fa-plus" url="emkSampleTotalController.do?goAdd&sampleId=${param.sampleId}" funname="add"></t:dgToolBar>
-    <t:dgToolBar title="编辑" icon="fa fa-edit" url="emkSampleTotalController.do?goUpdate" funname="update"></t:dgToolBar>
-    <t:dgToolBar title="删除"  icon="fa fa-remove" url="emkSampleTotalController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
+    <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkSampleTotalController.do?goAdd&sampleId=${param.sampleId}" funname="add"></t:dgToolBar>
+    <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkSampleTotalController.do?goUpdate" funname="update"></t:dgToolBar>
+    <t:dgToolBar title="删除" operationCode="delete"  icon="fa fa-remove" url="emkSampleTotalController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
     <t:dgToolBar title="导入" icon="fa fa-arrow-circle-left" funname="ImportXls"></t:dgToolBar>
-    <t:dgToolBar title="导出" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
+    <t:dgToolBar title="导出" operationCode="exp" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
 </t:datagrid>
  <script src = "webpage/com/emk/storage/sampletotal/emkSampleTotalList.js"></script>		
  <script type="text/javascript">

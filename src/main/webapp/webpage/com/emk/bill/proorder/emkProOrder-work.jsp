@@ -31,19 +31,7 @@
 					<label class="Validform_label" style="display: none;">是否同意</label>
 				</td>
 			</tr>
-			<tr id="chooseUser">
-				<td align="right" width="150px" valign="middle">
-					<label class="Validform_label">
-						指定下一步操作人:
-					</label>
-				</td>
-				<td class="value" colspan="3">
-					<input id="realName" name="realName" type="text" readonly style="width: 300px" class="inputxt" >
-					<input name="userName"   type="hidden"  id="userName" type="text"  />
-					<t:choose  hiddenName="userName"  hiddenid="userName" url="userController.do?userSelectCw" name="userList1" width="700px" height="500px"
-							   icon="icon-search" title="选择处理人" textname="realName" isclear="true" isInit="true"></t:choose>
-				</td>
-			</tr>
+
 
 			<tr>
 				<td align="right" width="150px" valign="middle">

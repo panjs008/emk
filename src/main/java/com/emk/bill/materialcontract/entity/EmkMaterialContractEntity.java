@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.GenericGenerator;
 import org.jeecgframework.poi.excel.annotation.Excel;
 
@@ -19,77 +20,105 @@ public class EmkMaterialContractEntity implements Serializable {
     private String createBy;
     private Date createDate;
     private String sysOrgCode;
-    @Excel(name = "业务员", width = 15)
+    @Excel(name = "业务员")
     private String businesser;
-    @Excel(name = "业务员ID", width = 15)
+    @Excel(name = "业务员ID")
     private String businesserName;
-    @Excel(name = "业务部门", width = 15)
+    @Excel(name = "业务部门")
     private String businesseDeptName;
-    @Excel(name = "业务部门ID", width = 15)
+    @Excel(name = "业务部门ID")
     private String businesseDeptId;
-    @Excel(name = "业务跟单员", width = 15)
+    @Excel(name = "业务跟单员")
     private String tracer;
-    @Excel(name = "业务跟单员ID", width = 15)
+    @Excel(name = "业务跟单员ID")
     private String tracerName;
-    @Excel(name = "生产跟单员", width = 15)
+    @Excel(name = "生产跟单员")
     private String developer;
-    @Excel(name = "生产跟单员ID", width = 15)
+    @Excel(name = "生产跟单员ID")
     private String developerName;
-    @Excel(name = "合同编号", width = 15)
+    @Excel(name = "合同编号")
     private String htNum;
-    @Excel(name = "订单号", width = 15)
+    @Excel(name = "订单号")
     private String orderNo;
-    @Excel(name = "款号", width = 15)
+    @Excel(name = "款号")
     private String sampleNo;
-    @Excel(name = "描述", width = 15)
+    @Excel(name = "描述")
     private String sampleNoDesc;
-    @Excel(name = "总数量", width = 15)
+    @Excel(name = "总数量")
     private Integer sumTotal;
     private String proType;
-    @Excel(name = "款式大类", width = 15)
+    @Excel(name = "款式大类")
     private String proTypeName;
-    @Excel(name = "工艺种类", width = 15)
+    @Excel(name = "工艺种类")
     private String gyzl;
-    @Excel(name = "预采购合同号", width = 15)
+    @Excel(name = "预采购合同号")
     private String yhtNum;
-    @Excel(name = "生产合同号", width = 15)
+    @Excel(name = "生产合同号")
     private String produceNum;
-    @Excel(name = "供应商", width = 15)
+    @Excel(name = "供应商")
     private String gys;
-    @Excel(name = "供应商Code", width = 15)
+    @Excel(name = "供应商Code")
     private String gysCode;
-    @Excel(name = "出货日期", width = 15)
+    @Excel(name = "出货日期")
     private String outDate;
-    @Excel(name = "最迟到厂日期", width = 15)
+    @Excel(name = "最迟到厂日期")
     private String limitDate;
-    @Excel(name = "距最迟到厂剩余天数", width = 15)
+    @Excel(name = "距最迟到厂剩余天数")
     private Integer leaveLimit;
-    @Excel(name = "类型", width = 15)
+    @Excel(name = "类型")
     private String type;
-    @Excel(name = "原料布料状态", width = 15)
+    @Excel(name = "原料布料状态")
     private String mState;
-    @Excel(name = "开单日期", width = 15)
+    @Excel(name = "开单日期")
     private String kdDate;
-    @Excel(name = "审核意见", width = 15)
+    @Excel(name = "审核意见")
     private String leadAdvice;
-    @Excel(name = "处理意见", width = 15)
+    @Excel(name = "处理意见")
     private String financeAdvice;
-    @Excel(name = "是否通过", width = 15)
+    @Excel(name = "是否通过")
     private String isPass;
-    @Excel(name = "审核人ID", width = 15)
+    @Excel(name = "审核人ID")
     private String leadUserId;
-    @Excel(name = "审核人", width = 15)
+    @Excel(name = "审核人")
     private String leader;
-    @Excel(name = "财务处理人ID", width = 15)
+    @Excel(name = "财务处理人ID")
     private String financeUserId;
-    @Excel(name = "财务处理人", width = 15)
+    @Excel(name = "财务处理人")
     private String financer;
-    @Excel(name = "状态", width = 15)
+    @Excel(name = "状态")
     private String state;
-    @Excel(name = "客户代码", width = 15)
+    @Excel(name = "客户代码")
     private String cusNum;
-    @Excel(name = "客户名称", width = 15)
+    @Excel(name = "客户名称")
     private String cusName;
+
+    @Excel(name = "预合同处理人ID")
+    private String yhtUserId;
+    @Excel(name = "预合同处理人")
+    private String yhtUserName;
+    @Excel(name = "预合同处理意见")
+    private String yhtAdvice;
+
+    @Excel(name = "合同处理人ID")
+    private String htUserId;
+    @Excel(name = "合同处理人")
+    private String htUserName;
+    @Excel(name = "合同处理意见")
+    private String htAdvice;
+
+    @Excel(name = "入库处理人ID")
+    private String rkUserId;
+    @Excel(name = "入库处理人")
+    private String rkUserName;
+    @Excel(name = "入库处理意见")
+    private String rkAdvice;
+
+    @Excel(name = "出库处理人ID")
+    private String ckUserId;
+    @Excel(name = "出库处理人")
+    private String ckUserName;
+    @Excel(name = "出库处理意见")
+    private String ckAdvice;
 
     @Id
     @GeneratedValue(generator = "paymentableGenerator")
@@ -102,7 +131,7 @@ public class EmkMaterialContractEntity implements Serializable {
     public void setId(String id) {
         this.id = id;
     }
-
+    @Formula("(select p.NAME_ from act_ru_task p where p.ASSIGNEE_ = id)")
     @Column(name = "CREATE_NAME", nullable = true, length = 50)
     public String getCreateName() {
         return this.createName;
@@ -461,5 +490,113 @@ public class EmkMaterialContractEntity implements Serializable {
 
     public void setCusName(String cusName) {
         this.cusName = cusName;
+    }
+
+    @Column(name = "yht_user_id", nullable = true, length = 32)
+    public String getYhtUserId() {
+        return yhtUserId;
+    }
+
+    public void setYhtUserId(String yhtUserId) {
+        this.yhtUserId = yhtUserId;
+    }
+
+    @Column(name = "yht_user_name", nullable = true, length = 32)
+    public String getYhtUserName() {
+        return yhtUserName;
+    }
+
+    public void setYhtUserName(String yhtUserName) {
+        this.yhtUserName = yhtUserName;
+    }
+
+    @Column(name = "yht_advice", nullable = true, length = 32)
+    public String getYhtAdvice() {
+        return yhtAdvice;
+    }
+
+    public void setYhtAdvice(String yhtAdvice) {
+        this.yhtAdvice = yhtAdvice;
+    }
+
+    @Column(name = "ht_user_id", nullable = true, length = 32)
+    public String getHtUserId() {
+        return htUserId;
+    }
+
+    public void setHtUserId(String htUserId) {
+        this.htUserId = htUserId;
+    }
+
+    @Column(name = "ht_user_name", nullable = true, length = 32)
+    public String getHtUserName() {
+        return htUserName;
+    }
+
+    public void setHtUserName(String htUserName) {
+        this.htUserName = htUserName;
+    }
+
+    @Column(name = "ht_advice", nullable = true, length = 32)
+    public String getHtAdvice() {
+        return htAdvice;
+    }
+
+    public void setHtAdvice(String htAdvice) {
+        this.htAdvice = htAdvice;
+    }
+
+    @Column(name = "rk_user_id", nullable = true, length = 32)
+    public String getRkUserId() {
+        return rkUserId;
+    }
+
+    public void setRkUserId(String rkUserId) {
+        this.rkUserId = rkUserId;
+    }
+
+    @Column(name = "rk_user_name", nullable = true, length = 32)
+    public String getRkUserName() {
+        return rkUserName;
+    }
+
+    public void setRkUserName(String rkUserName) {
+        this.rkUserName = rkUserName;
+    }
+
+    @Column(name = "rk_advice", nullable = true, length = 32)
+    public String getRkAdvice() {
+        return rkAdvice;
+    }
+
+    public void setRkAdvice(String rkAdvice) {
+        this.rkAdvice = rkAdvice;
+    }
+
+    @Column(name = "ck_user_id", nullable = true, length = 32)
+    public String getCkUserId() {
+        return ckUserId;
+    }
+
+    public void setCkUserId(String ckUserId) {
+        this.ckUserId = ckUserId;
+    }
+
+    @Column(name = "ck_user_name", nullable = true, length = 32)
+    public String getCkUserName() {
+        return ckUserName;
+    }
+
+    public void setCkUserName(String ckUserName) {
+        this.ckUserName = ckUserName;
+    }
+
+    @Column(name = "ck_advice", nullable = true, length = 32)
+    public String getCkAdvice() {
+        return ckAdvice;
+    }
+
+    public void setCkAdvice(String ckAdvice) {
+        this.ckAdvice = ckAdvice;
     }
 }

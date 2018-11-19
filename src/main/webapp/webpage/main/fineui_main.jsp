@@ -196,7 +196,7 @@
 				<a href="javascript:;" id="personInfo">
 					<span>
 						<img src="plug-in/themes/fineui/common/image/head.jpg" style="width:24px;display:inline-block;border-radius:20px">
-						<span><c:if test="${custom.cusName eq null}">${CUR_USER.currentDepart.departname},</c:if><c:if test="${custom.cusName ne null}">${custom.cusName},</c:if>${ROLE.rolename},${userName}</span>
+						<span><c:if test="${custom.cusName eq null}">${CUR_USER.currentDepart.departname},</c:if>${ROLE.rolename},${CUR_USER.realName}</span>
 						<i class="icon-font adminIcon" style="margin-right:5px;">&#xe607;</i>
 					</span>
 				</a>
@@ -254,8 +254,17 @@
                 <button class="tab-btn btn-right"><i class="icon-font">&#xe629;</i></button>
 			</div>
 			<div class="layout-main-body" style="margin:0;overflow-y: hidden;">
-				<iframe class="body-iframe" name="iframe0" width="100%" height="100%" 
-						src="loginController.do?fineuiHome" frameborder="0" data-id="home.html" seamless></iframe>
+				<c:choose>
+					<c:when test="${ROLE.rolecode eq 'cgjl' || ROLE.rolecode eq 'cgy' }">
+						<iframe class="body-iframe" name="iframe0" width="100%" height="100%"
+								src="emkMaterialContractController.do?list" frameborder="0" data-id="home.html" seamless></iframe>
+					</c:when>
+					<c:otherwise>
+						<iframe class="body-iframe" name="iframe0" width="100%" height="100%"
+								src="emkProOrderController.do?list" frameborder="0" data-id="home.html" seamless></iframe>
+					</c:otherwise>
+				</c:choose>
+
 			</div>
 		</section>
 		

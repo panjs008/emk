@@ -41,9 +41,13 @@
 						<div class="point"><b></b></div>
 						<div class="liright">
 							<div class="histt"><a style="font-size: 14px;">${task.NAME_}</a></div>
-							<div class="histt"><a style="font-size: 12px;"><c:if test="${task.TASK_DEF_KEY_ eq 'orderTask'}">【${task.workname}】发起采购订单，原料布料采购合同单号：${emkInStorage.htNum}</c:if>
-								<c:if test="${task.TASK_DEF_KEY_ eq 'checkTask'}">审核人【${emkInStorage.leader}】，指派给【${emkInStorage.financer}】,处理意见：${emkInStorage.leadAdvice}</c:if>
-								<c:if test="${task.TASK_DEF_KEY_ eq 'cwTask'}">审核人【${emkInStorage.financer}】,处理意见：${emkInStorage.financeAdvice}</c:if>
+							<div class="histt"><a style="font-size: 12px;"><c:if test="${task.TASK_DEF_KEY_ eq 'orderTask'}">【${task.workname}】发起采购订单，原料布料采购合同单号：${emkMaterialContract.htNum}</c:if>
+								<c:if test="${task.TASK_DEF_KEY_ eq 'checkTask'}">审核人【${emkMaterialContract.leader}】，指派给【${emkInStorage.yhtUserName}】,处理意见：${emkMaterialContract.leadAdvice}</c:if>
+								<c:if test="${task.TASK_DEF_KEY_ eq 'ycghtTask'}">审核人【${emkMaterialContract.yhtUserName}】，指派给【${emkInStorage.htUserName}】,处理意见：${emkMaterialContract.yhtAdvice}</c:if>
+								<c:if test="${task.TASK_DEF_KEY_ eq 'htTask'}">审核人【${emkMaterialContract.htUserName}】，指派给【${emkInStorage.rkUserName}】,处理意见：${emkMaterialContract.htAdvice}</c:if>
+								<c:if test="${task.TASK_DEF_KEY_ eq 'rkTask'}">处理人【${emkMaterialContract.rkUserName}】,处理意见：${emkMaterialContract.rkAdvice}</c:if>
+								<c:if test="${task.TASK_DEF_KEY_ eq 'ckTask'}">处理人【${emkMaterialContract.ckUserName}】,处理意见：${emkMaterialContract.ckAdvice}</c:if>
+
 							</a></div>
 						</div>
 					</div>

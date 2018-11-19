@@ -15,20 +15,21 @@
       <t:dgCol title="申请日期"  field="kdDate"  queryMode="single"  width="80"></t:dgCol>
       <t:dgCol title="审核日期"  field="shDate"  queryMode="single"  width="80"></t:dgCol>
       <t:dgCol title="业务部门"  field="businesseDeptName"  queryMode="single"  width="80"></t:dgCol>
-      <t:dgCol title="业务员"  field="businesser"  queryMode="single"  width="70"></t:dgCol>
+      <t:dgCol title="业务员"  field="businesserName"  queryMode="single"  width="70"></t:dgCol>
       <t:dgCol title="客户代码" query="true" field="cusNum"  queryMode="single"  width="70"></t:dgCol>
       <t:dgCol title="客户名称" query="true" field="cusName"  queryMode="single"  width="130"></t:dgCol>
       <t:dgCol title="供应商" query="true" field="gys"  queryMode="single"  width="130"></t:dgCol>
       <t:dgCol title="工厂名称" query="true" field="factoryCode"  dictionary="gongchang" queryMode="single"  width="130"></t:dgCol>
       <t:dgCol title="状态"  field="state" formatterjs="formatColor"  queryMode="single"  width="60"></t:dgCol>
 
-      <t:dgFunOpt funname="goToProcess(id)" title="流程进度" urlclass="ace_button"  urlStyle="background-color:#ec4758;" urlfont="fa-tasks"></t:dgFunOpt>
-      <t:dgToolBar title="录入" icon="fa fa-plus" url="emkCheckFactoryController.do?goAdd&winTitle=录入验厂申请" funname="add" height="600" width="1000"></t:dgToolBar>
-      <t:dgToolBar title="编辑" icon="fa fa-edit" url="emkCheckFactoryController.do?goUpdate&winTitle=编辑验厂申请" funname="update" height="600" width="1000"></t:dgToolBar>
-      <t:dgToolBar title="提交" icon="fa fa-arrow-circle-up" funname="doSubmitV"></t:dgToolBar>
+      <t:dgFunOpt funname="goToProcess(id,createBy,createName)" title="流程进度" operationCode="process" urlclass="ace_button"  urlStyle="background-color:#ec4758;" urlfont="fa-tasks"></t:dgFunOpt>
+      <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add"  url="emkCheckFactoryController.do?goAdd&winTitle=录入验厂申请" funname="add" height="600" width="1000"></t:dgToolBar>
+      <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkCheckFactoryController.do?goUpdate&winTitle=编辑验厂申请" funname="update" height="600" width="1000"></t:dgToolBar>
+      <t:dgToolBar title="查看" icon="fa fa-search" operationCode="look" url="emkCheckFactoryController.do?goUpdate&winTitle=查看验厂申请" funname="detail" height="580" width="1000"></t:dgToolBar>
+      <t:dgToolBar title="提交" operationCode="submit" icon="fa fa-arrow-circle-up" funname="doSubmitV"></t:dgToolBar>
 
-      <t:dgToolBar title="删除"  icon="fa fa-remove" url="emkCheckFactoryController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
-      <t:dgToolBar title="导出" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
+      <t:dgToolBar title="删除" operationCode="delete"  icon="fa fa-remove" url="emkCheckFactoryController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
+      <t:dgToolBar title="导出" operationCode="exp" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
   </t:datagrid>
   </div>
  </div>
@@ -76,11 +77,11 @@
      });
  }
 
- function goToProcess(id) {
+ function goToProcess(id,createBy,processName) {
      var height = window.top.document.body.offsetHeight * 0.85;
 
      $.ajax({
-         url: "flowController.do?getCurrentProcess&tableName=emk_test_cost&title=验厂申请单&id=" + id,
+         url: "flowController.do?getCurrentProcess&tableName=emk_check_factory&title=验厂申请单&id=" + id,
          type: 'post',
          cache: false,
          data: null,
@@ -88,12 +89,24 @@
              var d = $.parseJSON(data);
              if (d.success) {
                  var msg = d.msg;
-                 if (msg == "完成") {
+                 console.log("${ROLE.rolecode}");
+                 if(processName == "" && createBy == "${CUR_USER.userName}"){
                      createdetailwindow('流程进度--当前环节：' + msg, 'flowController.do?goProcess&processUrl=com/emk/storage/checkfactory/emkCheckFactory-process&id=' + id, 1200, height);
-                 } else {
-                     createwindow("流程进度--当前环节：" + msg, "flowController.do?goProcess&processUrl=com/emk/storage/checkfactory/emkCheckFactory-process&id=" + id, 1200, height);
+                 }else{
+                     if (msg == "完成") {
+                         createdetailwindow('流程进度--当前环节：' + msg, 'flowController.do?goProcess&processUrl=com/emk/storage/checkfactory/emkCheckFactory-process&id=' + id, 1200, height);
+                     } else {
+                         if(processName =="领导审核" && "${ROLE.rolecode}" == "ycjl") {
+                             createwindow("流程进度--当前环节：" + msg, "flowController.do?goProcess&processUrl=com/emk/storage/checkfactory/emkCheckFactory-process&id=" + id, 1200, height);
+                         }else if(processName =="查验" && "${ROLE.rolecode}" == "ycy") {
+                             createwindow("流程进度--当前环节：" + msg, "flowController.do?goProcess&processUrl=com/emk/storage/checkfactory/emkCheckFactory-process&id=" + id, 1200, height);
+                         }else if(processName =="报告" && "${ROLE.rolecode}" == "ycy") {
+                             createwindow("流程进度--当前环节：" + msg, "flowController.do?goProcess&processUrl=com/emk/storage/checkfactory/emkCheckFactory-process&id=" + id, 1200, height);
+                         }else{
+                             createdetailwindow('流程进度--当前环节：' + msg, 'flowController.do?goProcess&processUrl=com/emk/storage/checkfactory/emkCheckFactory-process&id=' + id, 1200, height);
+                         }
+                     }
                  }
-
              }
          }
      });

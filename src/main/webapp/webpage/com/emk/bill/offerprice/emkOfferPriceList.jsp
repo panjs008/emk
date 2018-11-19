@@ -22,10 +22,10 @@
    <t:dgCol title="税费"  field="tax"  queryMode="single"  width="80"></t:dgCol>
    <t:dgCol title="备注"  field="remark"  queryMode="single"  width="80"></t:dgCol>
    <%--<t:dgCol title="图片"  field="customSample"  queryMode="single"  width="120"></t:dgCol>--%>
-       <t:dgToolBar title="录入" icon="fa fa-plus" url="emkOfferPriceController.do?goAdd" funname="add" height="550" width="1000"></t:dgToolBar>
-       <t:dgToolBar title="编辑" icon="fa fa-edit" url="emkOfferPriceController.do?goUpdate" funname="update" height="550" width="1000"></t:dgToolBar>
-       <t:dgToolBar title="删除"  icon="fa fa-remove" url="emkOfferPriceController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
-      <t:dgToolBar title="导出" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
+       <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkOfferPriceController.do?goAdd" funname="add" height="550" width="1000"></t:dgToolBar>
+       <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkOfferPriceController.do?goUpdate" funname="update" height="550" width="1000"></t:dgToolBar>
+       <t:dgToolBar title="删除" operationCode="delete"  icon="fa fa-remove" url="emkOfferPriceController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
+      <t:dgToolBar title="导出" operationCode="exp" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
 
   </t:datagrid>
   </div>

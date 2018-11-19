@@ -20,25 +20,25 @@ public class EmkProductInfoEntity
     private String createBy;
     private Date createDate;
     private String sysOrgCode;
-    @Excel(name = "款号", width = 15)
+    @Excel(name = "款号")
     private String hsCode;
-    @Excel(name = "款号名称", width = 15)
+    @Excel(name = "款号名称")
     private String hsName;
-    @Excel(name = "产品编号", width = 15)
+    @Excel(name = "产品编号")
     private String proNum;
-    @Excel(name = "产品名称", width = 15)
+    @Excel(name = "产品名称")
     private String proName;
-    @Excel(name = "规格", width = 15)
+    @Excel(name = "规格")
     private String brand;
-    @Excel(name = "单位", width = 15)
+    @Excel(name = "单位")
     private String unit;
-    @Excel(name = "单价", width = 15)
+    @Excel(name = "单价")
     private Double price;
-    @Excel(name = "产品类别", width = 15)
+    @Excel(name = "产品类别")
     private String proType;
-    @Excel(name = "产品类别名称", width = 15)
+    @Excel(name = "产品类别名称")
     private String proTypeName;
-    @Excel(name = "备注", width = 15)
+    @Excel(name = "备注")
     private String remark;
 
     @Id

@@ -20,37 +20,37 @@ public class EmkMaterialDetailEntity
     private String createBy;
     private Date createDate;
     private String sysOrgCode;
-    @Excel(name = "物料ID", width = 15)
+    @Excel(name = "物料ID")
     private String proId;
-    @Excel(name = "物料编号", width = 15)
+    @Excel(name = "物料编号")
     private String proNum;
-    @Excel(name = "数量", width = 15)
+    @Excel(name = "数量")
     private Integer signTotal;
-    @Excel(name = "单位", width = 15)
+    @Excel(name = "单位")
     private String unit;
-    @Excel(name = "捻向", width = 15)
+    @Excel(name = "捻向")
     private String direction;
-    @Excel(name = "批号", width = 15)
+    @Excel(name = "批号")
     private String betchNum;
-    @Excel(name = "幅宽", width = 15)
+    @Excel(name = "幅宽")
     private String width;
-    @Excel(name = "颜色", width = 15)
+    @Excel(name = "颜色")
     private String color;
-    @Excel(name = "克重", width = 15)
+    @Excel(name = "克重")
     private String weight;
-    @Excel(name = "成分", width = 15)
+    @Excel(name = "成分")
     private String chengf;
-    @Excel(name = "备注", width = 15)
+    @Excel(name = "备注")
     private String remark;
-    @Excel(name = "供应商", width = 15)
+    @Excel(name = "供应商")
     private String gys;
-    @Excel(name = "供应商Code", width = 15)
+    @Excel(name = "供应商Code")
     private String gysCode;
-    @Excel(name = "原料面料名称", width = 15)
+    @Excel(name = "原料面料名称")
     private String proZnName;
-    @Excel(name = "需求ID", width = 15)
+    @Excel(name = "需求ID")
     private String materialId;
-    @Excel(name = "规格", width = 15)
+    @Excel(name = "规格")
     private String brand;
 
     @Id

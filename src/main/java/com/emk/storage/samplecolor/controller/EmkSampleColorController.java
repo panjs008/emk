@@ -61,9 +61,9 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.UriComponentsBuilder;
 
-@Api(value = "EmkSampleColor", description = "色样通知单", tags = {"emkSampleColorController"})
+@Api(value = "EmkSampleColor", description = "色样通知单", tags = "emkSampleColorController")
 @Controller
-@RequestMapping({"/emkSampleColorController"})
+@RequestMapping("/emkSampleColorController")
 public class EmkSampleColorController extends BaseController {
     private static final Logger logger = Logger.getLogger(EmkSampleColorController.class);
     @Autowired
@@ -73,15 +73,21 @@ public class EmkSampleColorController extends BaseController {
     @Autowired
     private Validator validator;
 
-    @RequestMapping(params = {"list"})
+    @RequestMapping(params = "list")
     public ModelAndView list(HttpServletRequest request) {
         return new ModelAndView("com/emk/storage/samplecolor/emkSampleColorList");
     }
 
-    @RequestMapping(params = {"datagrid"})
+    @RequestMapping(params = "datagrid")
     public void datagrid(EmkSampleColorEntity emkSampleColor, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid) {
         CriteriaQuery cq = new CriteriaQuery(EmkSampleColorEntity.class, dataGrid);
-
+        TSUser user = (TSUser) request.getSession().getAttribute(ResourceUtil.LOCAL_CLINET_USER);
+        Map roleMap = (Map) request.getSession().getAttribute("ROLE");
+        if(roleMap != null){
+            if(roleMap.get("rolecode").toString().contains("ywy") || roleMap.get("rolecode").toString().contains("ywgdy")){
+                cq.eq("createBy",user.getUserName());
+            }
+        }
         HqlGenerateUtil.installHql(cq, emkSampleColor, request.getParameterMap());
 
 
@@ -90,7 +96,7 @@ public class EmkSampleColorController extends BaseController {
         TagUtil.datagrid(response, dataGrid);
     }
 
-    @RequestMapping(params = {"doDel"})
+    @RequestMapping(params = "doDel")
     @ResponseBody
     public AjaxJson doDel(EmkSampleColorEntity emkSampleColor, HttpServletRequest request) {
         String message = null;
@@ -109,7 +115,7 @@ public class EmkSampleColorController extends BaseController {
         return j;
     }
 
-    @RequestMapping(params = {"doBatchDel"})
+    @RequestMapping(params = "doBatchDel")
     @ResponseBody
     public AjaxJson doBatchDel(String ids, HttpServletRequest request) {
         String message = null;
@@ -132,7 +138,7 @@ public class EmkSampleColorController extends BaseController {
         return j;
     }
 
-    @RequestMapping(params = {"doAdd"})
+    @RequestMapping(params = "doAdd")
     @ResponseBody
     public AjaxJson doAdd(EmkSampleColorEntity emkSampleColor, HttpServletRequest request) {
         String message = null;
@@ -153,7 +159,7 @@ public class EmkSampleColorController extends BaseController {
         return j;
     }
 
-    @RequestMapping(params = {"doUpdate"})
+    @RequestMapping(params = "doUpdate")
     @ResponseBody
     public AjaxJson doUpdate(EmkSampleColorEntity emkSampleColor, HttpServletRequest request) {
         String message = null;
@@ -173,7 +179,7 @@ public class EmkSampleColorController extends BaseController {
         return j;
     }
 
-    @RequestMapping(params = {"goAdd"})
+    @RequestMapping(params = "goAdd")
     public ModelAndView goAdd(EmkSampleColorEntity emkSampleColor, HttpServletRequest req) {
         req.setAttribute("kdDate", DateUtils.format(new Date(), "yyyy-MM-dd"));
         if (StringUtil.isNotEmpty(emkSampleColor.getId())) {
@@ -183,7 +189,7 @@ public class EmkSampleColorController extends BaseController {
         return new ModelAndView("com/emk/storage/samplecolor/emkSampleColor-add");
     }
 
-    @RequestMapping(params = {"goUpdate"})
+    @RequestMapping(params = "goUpdate")
     public ModelAndView goUpdate(EmkSampleColorEntity emkSampleColor, HttpServletRequest req) {
         if (StringUtil.isNotEmpty(emkSampleColor.getId())) {
             emkSampleColor = (EmkSampleColorEntity) this.emkSampleColorService.getEntity(EmkSampleColorEntity.class, emkSampleColor.getId());
@@ -192,13 +198,13 @@ public class EmkSampleColorController extends BaseController {
         return new ModelAndView("com/emk/storage/samplecolor/emkSampleColor-update");
     }
 
-    @RequestMapping(params = {"upload"})
+    @RequestMapping(params = "upload")
     public ModelAndView upload(HttpServletRequest req) {
         req.setAttribute("controller_name", "emkSampleColorController");
         return new ModelAndView("common/upload/pub_excel_upload");
     }
 
-    @RequestMapping(params = {"exportXls"})
+    @RequestMapping(params = "exportXls")
     public String exportXls(EmkSampleColorEntity emkSampleColor, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid, ModelMap modelMap) {
         CriteriaQuery cq = new CriteriaQuery(EmkSampleColorEntity.class, dataGrid);
         HqlGenerateUtil.installHql(cq, emkSampleColor, request.getParameterMap());
@@ -211,7 +217,7 @@ public class EmkSampleColorController extends BaseController {
         return "jeecgExcelView";
     }
 
-    @RequestMapping(params = {"exportXlsByT"})
+    @RequestMapping(params = "exportXlsByT")
     public String exportXlsByT(EmkSampleColorEntity emkSampleColor, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid, ModelMap modelMap) {
         modelMap.put("fileName", "色样通知单");
         modelMap.put("entity", EmkSampleColorEntity.class);
@@ -229,7 +235,7 @@ public class EmkSampleColorController extends BaseController {
         return Result.success(listEmkSampleColors);
     }
 
-    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.GET})
+    @RequestMapping(value = "/{id}", method = {org.springframework.web.bind.annotation.RequestMethod.GET})
     @ResponseBody
     @ApiOperation(value = "根据ID获取色样通知单信息", notes = "根据ID获取色样通知单信息", httpMethod = "GET", produces = "application/json")
     public ResponseMessage<?> get(@ApiParam(required = true, name = "id", value = "ID") @PathVariable("id") String id) {
@@ -240,7 +246,7 @@ public class EmkSampleColorController extends BaseController {
         return Result.success(task);
     }
 
-    @RequestMapping(method = {org.springframework.web.bind.annotation.RequestMethod.POST}, consumes = {"application/json"})
+    @RequestMapping(method = {org.springframework.web.bind.annotation.RequestMethod.POST}, consumes = "application/json")
     @ResponseBody
     @ApiOperation("创建色样通知单")
     public ResponseMessage<?> create(@ApiParam(name = "色样通知单对象") @RequestBody EmkSampleColorEntity emkSampleColor, UriComponentsBuilder uriBuilder) {
@@ -257,7 +263,7 @@ public class EmkSampleColorController extends BaseController {
         return Result.success(emkSampleColor);
     }
 
-    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.PUT}, consumes = {"application/json"})
+    @RequestMapping(value = "/{id}", method = {org.springframework.web.bind.annotation.RequestMethod.PUT}, consumes = "application/json")
     @ResponseBody
     @ApiOperation(value = "更新色样通知单", notes = "更新色样通知单")
     public ResponseMessage<?> update(@ApiParam(name = "色样通知单对象") @RequestBody EmkSampleColorEntity emkSampleColor) {
@@ -274,7 +280,7 @@ public class EmkSampleColorController extends BaseController {
         return Result.success("更新色样通知单信息成功");
     }
 
-    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.DELETE})
+    @RequestMapping(value = "/{id}", method = {org.springframework.web.bind.annotation.RequestMethod.DELETE})
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ApiOperation("删除色样通知单")
     public ResponseMessage<?> delete(@ApiParam(name = "id", value = "ID", required = true) @PathVariable("id") String id) {

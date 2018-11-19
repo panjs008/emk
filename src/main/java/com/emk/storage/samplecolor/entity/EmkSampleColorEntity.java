@@ -25,86 +25,86 @@ public class EmkSampleColorEntity
     private String sysOrgCode;
     private String sysCompanyCode;
     private String bpmStatus;
-    @Excel(name = "色样通知单号", width = 15)
+    @Excel(name = "色样通知单号")
     private String sytzdbh;
-    @Excel(name = "日期", width = 15)
+    @Excel(name = "日期")
     private String sytzdrq;
-    @Excel(name = "工厂", width = 15)
+    @Excel(name = "工厂")
     private String gc;
-    @Excel(name = "业务员", width = 15)
+    @Excel(name = "业务员")
     private String businesser;
-    @Excel(name = "业务跟单员", width = 15)
+    @Excel(name = "业务跟单员")
     private String tracer;
-    @Excel(name = "工艺种类", width = 15)
+    @Excel(name = "工艺种类")
     private String gyzl;
-    @Excel(name = "描述 ", width = 15)
+    @Excel(name = "描述 ")
     private String sampleNoDesc;
-    @Excel(name = "颜色英文名", width = 15)
+    @Excel(name = "颜色英文名")
     private String ysywm;
-    @Excel(name = "颜色中文名", width = 15)
+    @Excel(name = "颜色中文名")
     private String yaswm;
-    @Excel(name = "色号", width = 15)
+    @Excel(name = "色号")
     private String sh;
-    @Excel(name = "色样规格", width = 15)
+    @Excel(name = "色样规格")
     private String sygg;
-    @Excel(name = "色样数量", width = 15)
+    @Excel(name = "色样数量")
     private String sysl;
-    @Excel(name = "技术参数", width = 15)
+    @Excel(name = "技术参数")
     private String jscs;
-    @Excel(name = "配方", width = 15)
+    @Excel(name = "配方")
     private String pf;
-    @Excel(name = "温度", width = 15)
+    @Excel(name = "温度")
     private String wd;
-    @Excel(name = "时间", width = 15)
+    @Excel(name = "时间")
     private String sj;
-    @Excel(name = "样品完成检查意见", width = 15)
+    @Excel(name = "样品完成检查意见")
     private String ypwcjcyj;
-    @Excel(name = "技术员染色意见", width = 15)
+    @Excel(name = "技术员染色意见")
     private String jsylsyj;
-    @Excel(name = "样品质检员意见", width = 15)
+    @Excel(name = "样品质检员意见")
     private String ypzjyyj;
-    @Excel(name = "跟单员意见", width = 15)
+    @Excel(name = "跟单员意见")
     private String gdyyj;
-    @Excel(name = "业务员意见", width = 15)
+    @Excel(name = "业务员意见")
     private String ywyyj;
-    @Excel(name = "综合意见", width = 15)
+    @Excel(name = "综合意见")
     private String zhyj;
     private String customSampleUrl;
-    @Excel(name = "图片", width = 15)
+    @Excel(name = "图片")
     private String customSample;
-    @Excel(name = "款号", width = 15)
+    @Excel(name = "款号")
     private String sampleNo;
-    @Excel(name = "版次", width = 15)
+    @Excel(name = "版次")
     private String version;
-    @Excel(name = "成分", width = 15)
+    @Excel(name = "成分")
     private String chengf;
-    @Excel(name = "克重", width = 15)
+    @Excel(name = "克重")
     private String weight;
-    @Excel(name = "订单号", width = 15)
+    @Excel(name = "订单号")
     private String orderNum;
-    @Excel(name = "备注", width = 15)
+    @Excel(name = "备注")
     private String remark;
-    @Excel(name = "用途", width = 15)
+    @Excel(name = "用途")
     private String purpose;
     private String businesserName;
     private String tracerName;
-    @Excel(name = "业务部门", width = 15)
+    @Excel(name = "业务部门")
     private String businesseDeptName;
     private String businesseDeptId;
-    @Excel(name = "客户代码", width = 15)
+    @Excel(name = "客户代码")
     private String cusNum;
-    @Excel(name = "客户名称", width = 15)
+    @Excel(name = "客户名称")
     private String cusName;
-    @Excel(name = "款式大类", width = 15)
+    @Excel(name = "款式大类")
     private String proType;
-    @Excel(name = "款式大类", width = 15)
+    @Excel(name = "款式大类")
     private String proTypeName;
-    @Excel(name = "打样需求单号", width = 15)
+    @Excel(name = "打样需求单号")
     private String xqdh;
-    @Excel(name = "生产跟单员", width = 15)
+    @Excel(name = "生产跟单员")
     private String developer;
     private String developerName;
-    @Excel(name = "色样需求单日期", width = 15)
+    @Excel(name = "色样需求单日期")
     private String syxqdrq;
 
     @Id

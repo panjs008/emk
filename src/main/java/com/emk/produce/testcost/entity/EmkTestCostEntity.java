@@ -135,16 +135,16 @@ public class EmkTestCostEntity implements java.io.Serializable {
 	/**测试内容*/
 	@Excel(name="测试内容",width=15)
 	private String testContentUrl;
-	@Excel(name = "审核意见", width = 15)
+	@Excel(name = "审核意见")
 	private String leadAdvice;
-	@Excel(name = "处理意见", width = 15)
+	@Excel(name = "处理意见")
 	private String financeAdvice;
 	private String isPass;
 	private String leadUserId;
-	@Excel(name = "审核人", width = 15)
+	@Excel(name = "审核人")
 	private String leader;
 	private String financeUserId;
-	@Excel(name = "财务处理人", width = 15)
+	@Excel(name = "财务处理人")
 	private String financer;
 	private String state;
 

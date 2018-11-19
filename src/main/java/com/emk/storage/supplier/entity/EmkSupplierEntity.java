@@ -20,35 +20,35 @@ public class EmkSupplierEntity
     private String createBy;
     private Date createDate;
     private String sysOrgCode;
-    @Excel(name = "企业全称", width = 15)
+    @Excel(name = "企业全称")
     private String supplier;
-    @Excel(name = "供应商代码", width = 15)
+    @Excel(name = "供应商代码")
     private String supplierCode;
-    @Excel(name = "供应商类型", width = 15)
+    @Excel(name = "供应商类型")
     private String supplierType;
-    @Excel(name = "营业执照号", width = 15)
+    @Excel(name = "营业执照号")
     private String licence;
-    @Excel(name = "有效期", width = 15)
+    @Excel(name = "有效期")
     private String limitDate;
-    @Excel(name = "地址", width = 15)
+    @Excel(name = "地址")
     private String address;
-    @Excel(name = "产品类型", width = 15)
+    @Excel(name = "产品类型")
     private String productType;
-    @Excel(name = "纳税人识别号", width = 15)
+    @Excel(name = "纳税人识别号")
     private String taxpayerNum;
-    @Excel(name = "开户行", width = 15)
+    @Excel(name = "开户行")
     private String bankName;
-    @Excel(name = "开户账号 ", width = 15)
+    @Excel(name = "开户账号 ")
     private String bankAccount;
-    @Excel(name = "电话", width = 15)
+    @Excel(name = "电话")
     private String telphone;
-    @Excel(name = "法定代表人", width = 15)
+    @Excel(name = "法定代表人")
     private String legaler;
-    @Excel(name = "联系人", width = 15)
+    @Excel(name = "联系人")
     private String contacter;
-    @Excel(name = "财务联系人", width = 15)
+    @Excel(name = "财务联系人")
     private String cwContacter;
-    @Excel(name = "营业执照URL", width = 15)
+    @Excel(name = "营业执照URL")
     private String licenceUrl;
 
     @Id

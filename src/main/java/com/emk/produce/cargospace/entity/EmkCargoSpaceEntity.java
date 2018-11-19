@@ -15,106 +15,106 @@ import org.jeecgframework.poi.excel.annotation.Excel;
 @Table(name = "emk_cargo_space", schema = "")
 public class EmkCargoSpaceEntity
         implements Serializable {
-    @Excel(name = "业务员", width = 15)
+    @Excel(name = "业务员")
     private String businesser;
     private String businesserName;
-    @Excel(name = "业务跟单员", width = 15)
+    @Excel(name = "业务跟单员")
     private String tracer;
     private String tracerName;
-    @Excel(name = "业务部门", width = 15)
+    @Excel(name = "业务部门")
     private String businesseDeptName;
     private String businesseDeptId;
-    @Excel(name = "生产跟单员", width = 15)
+    @Excel(name = "生产跟单员")
     private String developer;
     private String developerName;
-    @Excel(name = "工艺种类", width = 15)
+    @Excel(name = "工艺种类")
     private String gyzl;
-    @Excel(name = "款式大类", width = 15)
+    @Excel(name = "款式大类")
     private String proType;
-    @Excel(name = "款式大类", width = 15)
+    @Excel(name = "款式大类")
     private String proTypeName;
-    @Excel(name = "款号", width = 15)
+    @Excel(name = "款号")
     private String sampleNo;
-    @Excel(name = "描述", width = 15)
+    @Excel(name = "描述")
     private String sampleNoDesc;
-    @Excel(name = "数量", width = 15)
+    @Excel(name = "数量")
     private Integer total;
-    @Excel(name = "总金额", width = 15)
+    @Excel(name = "总金额")
     private Double sumMoney;
-    @Excel(name = "尺码", width = 15)
+    @Excel(name = "尺码")
     private String size;
-    @Excel(name = "单价", width = 15)
+    @Excel(name = "单价")
     private Double price;
-    @Excel(name = "币种", width = 15)
+    @Excel(name = "币种")
     private String bz;
-    @Excel(name = "总箱数", width = 15)
+    @Excel(name = "总箱数")
     private Integer sumBoxTotal;
-    @Excel(name = "总体积", width = 15)
+    @Excel(name = "总体积")
     private Double sumBoxVolume;
-    @Excel(name = "总净重", width = 15)
+    @Excel(name = "总净重")
     private Double sumBoxJz;
-    @Excel(name = "总毛重", width = 15)
+    @Excel(name = "总毛重")
     private Double sumBoxMao;
     private String id;
     private String createName;
     private String createBy;
     private Date createDate;
     private String sysOrgCode;
-    @Excel(name = "订舱通知单号", width = 15)
+    @Excel(name = "订舱通知单号")
     private String cargoNo;
-    @Excel(name = "提交日期", width = 15)
+    @Excel(name = "提交日期")
     private String kdDate;
-    @Excel(name = "出货通知单号", width = 15)
+    @Excel(name = "出货通知单号")
     private String outForumNo;
-    @Excel(name = "离厂放行条号", width = 15)
+    @Excel(name = "离厂放行条号")
     private String levealFactoryNo;
-    @Excel(name = "供应商", width = 15)
+    @Excel(name = "供应商")
     private String gys;
-    @Excel(name = "供应商", width = 15)
+    @Excel(name = "供应商")
     private String gysCode;
-    @Excel(name = "船务员", width = 15)
+    @Excel(name = "船务员")
     private String cwyer;
-    @Excel(name = "货代名称", width = 15)
+    @Excel(name = "货代名称")
     private String hdName;
-    @Excel(name = "目的国", width = 15)
+    @Excel(name = "目的国")
     private String destination;
-    @Excel(name = "货好时间", width = 15)
+    @Excel(name = "货好时间")
     private String haoDate;
-    @Excel(name = "开船时间", width = 15)
+    @Excel(name = "开船时间")
     private String goDate;
-    @Excel(name = "发票号", width = 15)
+    @Excel(name = "发票号")
     private String fpNum;
-    @Excel(name = "到港时间", width = 15)
+    @Excel(name = "到港时间")
     private String arrvieDate;
-    @Excel(name = "收货人", width = 15)
+    @Excel(name = "收货人")
     private String shrer;
-    @Excel(name = "电话", width = 15)
+    @Excel(name = "电话")
     private String telphone;
-    @Excel(name = "订单号", width = 15)
+    @Excel(name = "订单号")
     private String orderNo;
-    @Excel(name = "生产合同号", width = 15)
+    @Excel(name = "生产合同号")
     private String produceNum;
-    @Excel(name = "长度", width = 15)
+    @Excel(name = "长度")
     private String chang;
-    @Excel(name = "宽度", width = 15)
+    @Excel(name = "宽度")
     private String kuan;
-    @Excel(name = "高度", width = 15)
+    @Excel(name = "高度")
     private String gao;
-    @Excel(name = "单箱毛重", width = 15)
+    @Excel(name = "单箱毛重")
     private String oneMz;
-    @Excel(name = "单箱净重", width = 15)
+    @Excel(name = "单箱净重")
     private String oneJz;
-    @Excel(name = "单箱体积", width = 15)
+    @Excel(name = "单箱体积")
     private String oneVolume;
-    @Excel(name = "金额", width = 15)
+    @Excel(name = "金额")
     private String money;
-    @Excel(name = "订舱状态", width = 15)
+    @Excel(name = "订舱状态")
     private String cargoState;
-    @Excel(name = "出厂状态", width = 15)
+    @Excel(name = "出厂状态")
     private String outFactoryState;
-    @Excel(name = "客户代码", width = 15)
+    @Excel(name = "客户代码")
     private String cusNum;
-    @Excel(name = "客户名称", width = 15)
+    @Excel(name = "客户名称")
     private String cusName;
 
     @Column(name = "BUSINESSER", nullable = true, length = 32)

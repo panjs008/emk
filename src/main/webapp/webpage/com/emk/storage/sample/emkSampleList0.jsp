@@ -3,7 +3,7 @@
 <t:base type="jquery,easyui,tools,DatePicker"></t:base>
 <div id="main_list" class="easyui-layout" fit="true">
   <div region="center" style="padding:0px;border:0px">
-  <t:datagrid name="emkSampleList" checkbox="false" pagination="true" fitColumns="false" title="" actionUrl="emkSampleController.do?datagrid&flag=${param.flag}" idField="id" fit="true" btnCls="bootstrap"  queryMode="group">
+  <t:datagrid name="emkSampleList" checkbox="false" pagination="true" fitColumns="false" title="" actionUrl="emkYptzdController.do?datagrid&flag=${param.flag}" idField="id" fit="true" btnCls="bootstrap"  queryMode="group">
    <t:dgCol title="主键"  field="id"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="创建人名称"  field="createName"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="创建人登录名称"  field="createBy"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
@@ -23,10 +23,10 @@
       <t:dgCol title="布面成分"  field="chengf"  queryMode="single"  width="80"></t:dgCol>
       <t:dgFunOpt funname="queryDetail1(id,proName)" title="尺寸规格" urlclass="ace_button" urlfont="fa-list-alt"></t:dgFunOpt>
       <t:dgFunOpt funname="queryDetail2(id,proName)" title="主辅料清单" urlclass="ace_button" urlfont="fa-list-alt"></t:dgFunOpt>
-      <t:dgToolBar title="录入" icon="fa fa-plus" url="emkSampleController.do?goAdd&flag=${param.flag}" funname="add" height="550" width="1000"></t:dgToolBar>
-       <t:dgToolBar title="编辑" icon="fa fa-edit" url="emkSampleController.do?goUpdate" funname="update" height="550" width="1000"></t:dgToolBar>
-       <t:dgToolBar title="删除"  icon="fa fa-remove" url="emkSampleController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
-      <t:dgToolBar title="导出" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
+      <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkYptzdController.do?goAdd&flag=${param.flag}" funname="add" height="550" width="1000"></t:dgToolBar>
+       <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkYptzdController.do?goUpdate" funname="update" height="550" width="1000"></t:dgToolBar>
+       <t:dgToolBar title="删除" operationCode="delete"  icon="fa fa-remove" url="emkYptzdController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
+      <t:dgToolBar title="导出" operationCode="exp" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
 
   </t:datagrid>
   </div>
@@ -73,17 +73,17 @@
  
 //导入
 function ImportXls() {
-	openuploadwin('Excel导入', 'emkSampleController.do?upload', "emkSampleList");
+	openuploadwin('Excel导入', 'emkYptzdController.do?upload', "emkSampleList");
 }
 
 //导出
 function ExportXls() {
-	JeecgExcelExport("emkSampleController.do?exportXls","emkSampleList");
+	JeecgExcelExport("emkYptzdController.do?exportXls","emkSampleList");
 }
 
 //模板下载
 function ExportXlsByT() {
-	JeecgExcelExport("emkSampleController.do?exportXlsByT","emkSampleList");
+	JeecgExcelExport("emkYptzdController.do?exportXlsByT","emkSampleList");
 }
 
  </script>

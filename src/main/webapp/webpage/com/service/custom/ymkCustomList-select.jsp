@@ -15,12 +15,12 @@
       <t:dgCol title="贸易国别"  field="guoJia" dictionary="trade"    queryMode="single"  width="70"></t:dgCol>
       <t:dgCol title="业务部门"  field="businesseDeptName"   queryMode="single"  width="90"></t:dgCol>
       <t:dgCol title="业务部门ID"  field="businesseDeptId" hidden="true"  queryMode="single"  width="190"></t:dgCol>
-      <t:dgCol title="业务员"  field="businesser"   queryMode="single"  width="70"></t:dgCol>
-      <t:dgCol title="业务员ID"  hidden="true" field="businesserName"   queryMode="single"  width="190"></t:dgCol>
-      <t:dgCol title="业务跟单员"  field="tracer"   queryMode="single"  width="80"></t:dgCol>
-      <t:dgCol title="业务跟单员ID" hidden="true"  field="tracerName"   queryMode="single"  width="190"></t:dgCol>
-      <t:dgCol title="生产跟单员"  field="developer"   queryMode="single"  width="80"></t:dgCol>
-      <t:dgCol title="业务跟单员ID" hidden="true" field="developerName"   queryMode="single"  width="190"></t:dgCol>
+      <t:dgCol title="业务员" hidden="true"  field="businesser"   queryMode="single"  width="70"></t:dgCol>
+      <t:dgCol title="业务员"  field="businesserName"   queryMode="single"  width="70"></t:dgCol>
+      <t:dgCol title="业务跟单员" hidden="true"  field="tracer"   queryMode="single"  width="80"></t:dgCol>
+      <t:dgCol title="业务跟单员" field="tracerName"   queryMode="single"  width="80"></t:dgCol>
+      <t:dgCol title="生产跟单员" hidden="true"  field="developer"   queryMode="single"  width="80"></t:dgCol>
+      <t:dgCol title="业务跟单员" field="developerName"   queryMode="single"  width="80"></t:dgCol>
       <t:dgCol title="币种"  field="bz"  queryMode="single"  width="60"></t:dgCol>
       <t:dgCol title="城市"  field="chengShi" dictionary="t_s_category,code,name"    queryMode="single"  width="60"></t:dgCol>
       <t:dgCol title="片区"  field="pianQu" dictionary="t_s_category,code,name"   queryMode="single"  width="60"></t:dgCol>

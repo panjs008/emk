@@ -21,13 +21,13 @@
    <t:dgCol title="出库数量"  field="outTotal"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="剩余数量"  field="leavelTotal"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="操作" field="opt" width="100"></t:dgCol>
-   <t:dgDelOpt title="删除" url="emkMaterialContractDetailController.do?doDel&id={id}" urlclass="ace_button"  urlfont="fa-trash-o"/>
-       <t:dgToolBar title="录入" icon="fa fa-plus" url="emkMaterialContractDetailController.do?goAdd" funname="add"></t:dgToolBar>
-       <t:dgToolBar title="编辑" icon="fa fa-edit" url="emkMaterialContractDetailController.do?goUpdate" funname="update"></t:dgToolBar>
-       <t:dgToolBar title="批量删除"  icon="fa fa-remove" url="emkMaterialContractDetailController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
+   <t:dgDelOpt title="删除" operationCode="delete" url="emkMaterialContractDetailController.do?doDel&id={id}" urlclass="ace_button"  urlfont="fa-trash-o"/>
+       <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkMaterialContractDetailController.do?goAdd" funname="add"></t:dgToolBar>
+       <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkMaterialContractDetailController.do?goUpdate" funname="update"></t:dgToolBar>
+       <t:dgToolBar title="删除" operationCode="delete" operationCode="delete"  icon="fa fa-remove" url="emkMaterialContractDetailController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
        <t:dgToolBar title="查看" icon="fa fa-search" url="emkMaterialContractDetailController.do?goUpdate" funname="detail"></t:dgToolBar>
        <t:dgToolBar title="导入" icon="fa fa-arrow-circle-left" funname="ImportXls"></t:dgToolBar>
-       <t:dgToolBar title="导出" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
+       <t:dgToolBar title="导出" operationCode="exp" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
        <t:dgToolBar title="模板下载" icon="fa fa-arrow-circle-o-down" funname="ExportXlsByT"></t:dgToolBar>
   </t:datagrid>
   </div>

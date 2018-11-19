@@ -42,7 +42,7 @@
 				</label>
 			</td>
 			<td class="value" style="width: 32%">
-				<input id="workNo" name="workNo" datatype="*" value="${emkProOrderPage.workNo}"   type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="workNo" name="workNo" datatype="*" value="${emkProOrderPage.workNo}"   type="text" style="width: 150px" class="inputxt"  />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">工单号</label>
 			</td>
@@ -224,7 +224,7 @@
 			</td>
 			<td class="value" rowspan="5">
 				<input id="customSample" name="customSample" value="${emkProOrderPage.customSample }" type="hidden" />
-				<img id="uploadimg0" src="${emkProOrderPage.customSampleUrl eq null ? 'images/bjlogo.png':emkProOrderPage.customSampleUrl}" width="150" height="150">
+				<img id="uploadimg0" src="${emkProOrderPage.customSampleUrl eq '' ? 'images/bjlogo.png':emkProOrderPage.customSampleUrl}" width="150" height="150">
 				<t:upload name="instruction0" id="instruction0" dialog="false" extend="*.jpg;*.png;*.gif;*.ico;*.dwg" buttonText="添加文件" queueID="instructionfile" view="false" auto="true" uploader="systemController.do?saveFiles"  onUploadSuccess="uploadSuccess0" >
 				</t:upload>[<a href="javascript:findDetail('${emkProOrderPage.customSampleUrl }')">${emkProOrderPage.customSample }</a>]
 				<span id="customSampleId"></span>
@@ -348,7 +348,7 @@
 			</td>
 			<td class="value" rowspan="5">
 				<input id="boxImage" name="boxImage" type="hidden" value="${emkProOrderPage.boxImage }" />
-				<img id="uploadimg1" src="${emkProOrderPage.boxImageUrl eq null ? 'images/bjlogo.png':emkProOrderPage.boxImageUrl}" width="150" height="150">
+				<img id="uploadimg1" src="${emkProOrderPage.boxImageUrl eq '' ? 'images/bjlogo.png':emkProOrderPage.boxImageUrl}" width="150" height="150">
 				<t:upload name="instruction1" id="instruction1" dialog="false" extend="*.jpg;*.png;*.gif;*.ico;*.dwg" buttonText="添加文件" queueID="instructionfile1" view="false" auto="true" uploader="systemController.do?saveFiles"  onUploadSuccess="uploadSuccess1" >
 				</t:upload>[<a href="javascript:findDetail('${emkProOrderPage.boxImageUrl }')">${emkProOrderPage.boxImage }</a>]
 				<span id="boxImageId"></span>

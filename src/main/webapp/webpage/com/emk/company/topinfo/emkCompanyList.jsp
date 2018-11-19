@@ -19,12 +19,12 @@
    <t:dgCol title="海关认证10代码"  field="hCode"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="备注"  field="remark"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="默认"  field="isChecked"  queryMode="single"  width="60"></t:dgCol>
-   <t:dgToolBar title="录入" icon="fa fa-plus" url="emkCompanyController.do?goAdd" funname="add" width="800" height="450"></t:dgToolBar>
-   <t:dgToolBar title="编辑" icon="fa fa-edit" url="emkCompanyController.do?goUpdate" funname="update" width="800" height="450"></t:dgToolBar>
-   <t:dgToolBar title="删除"  icon="fa fa-remove" url="emkCompanyController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
+   <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkCompanyController.do?goAdd" funname="add" width="800" height="450"></t:dgToolBar>
+   <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkCompanyController.do?goUpdate" funname="update" width="800" height="450"></t:dgToolBar>
+   <t:dgToolBar title="删除" operationCode="delete"  icon="fa fa-remove" url="emkCompanyController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
    <t:dgToolBar title="查看" icon="fa fa-search" url="emkCompanyController.do?goUpdate" funname="detail" width="800" height="450"></t:dgToolBar>
    <%--<t:dgToolBar title="导入" icon="fa fa-arrow-circle-left" funname="ImportXls"></t:dgToolBar>
-   <t:dgToolBar title="导出" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>--%>
+   <t:dgToolBar title="导出" operationCode="exp" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>--%>
   </t:datagrid>
   </div>
  </div>

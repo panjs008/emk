@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.GenericGenerator;
 import org.jeecgframework.poi.excel.annotation.Excel;
 
@@ -19,150 +20,174 @@ public class EmkPriceEntity implements Serializable {
     private String createBy;
     private Date createDate;
     private String sysOrgCode;
-    @Excel(name = "报价单号", width = 15)
+    @Excel(name = "报价单号")
     private String pirceNo;
-    @Excel(name = "报价日期", width = 15)
+    @Excel(name = "报价日期")
     private String kdDate;
-    @Excel(name = "业务员", width = 15)
+    @Excel(name = "业务员")
     private String businesser;
-    @Excel(name = "业务员ID", width = 15)
+    @Excel(name = "业务员ID")
     private String businesserName;
-    @Excel(name = "客户代码", width = 15)
+    @Excel(name = "客户代码")
     private String cusNum;
-    @Excel(name = "客户名称", width = 15)
+    @Excel(name = "客户名称")
     private String cusName;
-    @Excel(name = "工艺种类", width = 15)
+    @Excel(name = "工艺种类")
     private String gyzl;
-    @Excel(name = "款式大类", width = 15)
+    @Excel(name = "款式大类")
     private String proType;
-    @Excel(name = "款式大类", width = 15)
+    @Excel(name = "款式大类")
     private String proTypeName;
     private String customSampleUrl;
-    @Excel(name = "图片", width = 15)
+    @Excel(name = "图片")
     private String customSample;
-    @Excel(name = "款号", width = 15)
+    @Excel(name = "款号")
     private String sampleNo;
-    @Excel(name = "描述", width = 15)
+    @Excel(name = "描述")
     private String sampleNoDesc;
-    @Excel(name = "是否打过初样", width = 15)
+    @Excel(name = "是否打过初样")
     private String isPrintSample;
-    @Excel(name = "是否收取打样费", width = 15)
+    @Excel(name = "是否收取打样费")
     private String isGetSample;
-    @Excel(name = "是否有原样", width = 15)
+    @Excel(name = "是否有原样")
     private String isHaveOld;
     private String oldImageUrl;
-    @Excel(name = "原样", width = 15)
+    @Excel(name = "原样")
     private String oldImage;
-    @Excel(name = "是否有设计稿", width = 15)
+    @Excel(name = "是否有设计稿")
     private String isHaveDgr;
     private String dgrImageUrl;
-    @Excel(name = "设计稿", width = 15)
+    @Excel(name = "设计稿")
     private String dgrImage;
-    @Excel(name = "是否有尺寸表", width = 15)
+    @Excel(name = "是否有尺寸表")
     private String isHaveSize;
     private String sizeImageUrl;
-    @Excel(name = "尺寸表", width = 15)
+    @Excel(name = "尺寸表")
     private String sizeImage;
-    @Excel(name = "业务跟单员", width = 15)
+    @Excel(name = "业务跟单员")
     private String tracer;
     private String tracerName;
-    @Excel(name = "布面克重", width = 15)
+    @Excel(name = "布面克重")
     private String weight;
-    @Excel(name = "布面成分", width = 15)
+    @Excel(name = "布面成分")
     private String chengf;
-    @Excel(name = "业务部门", width = 15)
+    @Excel(name = "业务部门")
     private String businesseDeptName;
-    @Excel(name = "业务部门ID", width = 15)
+    @Excel(name = "业务部门ID")
     private String businesseDeptId;
-    @Excel(name = "状态", width = 15)
+    @Excel(name = "状态")
     private String state;
-    @Excel(name = "备注", width = 15)
+    @Excel(name = "备注")
     private String remark;
-    @Excel(name = "下机克重", width = 15)
+    @Excel(name = "下机克重")
     private Double xjkz;
-    @Excel(name = "单件所需时间", width = 15)
+    @Excel(name = "单件所需时间")
     private String djsxTime;
-    @Excel(name = "单位", width = 15)
+    @Excel(name = "单位")
     private String unit;
-    @Excel(name = "机台日产量", width = 15)
+    @Excel(name = "机台日产量")
     private Integer jtrcl;
-    @Excel(name = "前道损耗率", width = 15)
+    @Excel(name = "前道损耗率")
     private Double qdshl;
-    @Excel(name = "后道损耗率", width = 15)
+    @Excel(name = "后道损耗率")
     private Double hdshl;
-    @Excel(name = "报价类型", width = 15)
+    @Excel(name = "报价类型")
     private String bjlx;
-    @Excel(name = "报价有效期", width = 15)
+    @Excel(name = "报价有效期")
     private String limitDate;
-    @Excel(name = "目的国 ", width = 15)
+    @Excel(name = "目的国 ")
     private String guoJia;
-    @Excel(name = "报价币种", width = 15)
+    @Excel(name = "报价币种")
     private String bz;
-    @Excel(name = "目标价位", width = 15)
+    @Excel(name = "目标价位")
     private Double targetPrice;
-    @Excel(name = "预计数量", width = 15)
+    @Excel(name = "预计数量")
     private Integer evlateTotal;
-    @Excel(name = "尺码范围", width = 15)
+    @Excel(name = "尺码范围")
     private String sizeFawei;
-    @Excel(name = "管理费", width = 15)
+    @Excel(name = "管理费")
     private Double glMoney;
-    @Excel(name = "测试费", width = 15)
+    @Excel(name = "测试费")
     private Double testMoney;
-    @Excel(name = "利润", width = 15)
+    @Excel(name = "利润")
     private Double profit;
-    @Excel(name = "不可预见成本", width = 15)
+    @Excel(name = "不可预见成本")
     private Double unableMoney;
-    @Excel(name = "税收成本", width = 15)
+    @Excel(name = "税收成本")
     private Double tax;
-    @Excel(name = "是否测试", width = 15)
+    @Excel(name = "是否测试")
     private String isTest;
-    @Excel(name = "是否验厂", width = 15)
+    @Excel(name = "是否验厂")
     private String isChfactory;
-    @Excel(name = "是否验货", width = 15)
+    @Excel(name = "是否验货")
     private String isChkhuo;
-    @Excel(name = "面料小计", width = 15)
+    @Excel(name = "面料小计")
     private Double sumYl;
-    @Excel(name = "缝制小计", width = 15)
+    @Excel(name = "缝制小计")
     private Double sumFeng;
-    @Excel(name = "包装小计", width = 15)
+    @Excel(name = "包装小计")
     private Double sumBao;
-    @Excel(name = "人工小计", width = 15)
+    @Excel(name = "人工小计")
     private Double sumRg;
-    @Excel(name = "染色小计", width = 15)
+    @Excel(name = "染色小计")
     private Double sumRan;
-    @Excel(name = "印花小计", width = 15)
+    @Excel(name = "印花小计")
     private Double sumYin;
-    @Excel(name = "总计", width = 15)
+    @Excel(name = "总计")
     private Double sumMoney;
-    @Excel(name = "外币价", width = 15)
+    @Excel(name = "外币价")
     private Double sumWb;
-    @Excel(name = "汇率", width = 15)
+    @Excel(name = "汇率")
     private Double huilv;
-    @Excel(name = "汇率日期", width = 15)
+    @Excel(name = "汇率日期")
     private String huilvDate;
-    @Excel(name = "双方同意价", width = 15)
+    @Excel(name = "双方同意价")
     private Double argeePrice;
-    @Excel(name = "毛利润率", width = 15)
+    @Excel(name = "毛利润率")
     private Double maoRate;
-    @Excel(name = "供应商同意价", width = 15)
+    @Excel(name = "供应商同意价")
     private Double gysArgeePrice;
-    @Excel(name = "客户同意价", width = 15)
+    @Excel(name = "客户同意价")
     private Double cusArgeePrice;
-    @Excel(name = "币种", width = 15)
+    @Excel(name = "币种")
     private String bizhong;
 
-    @Excel(name = "询盘单号", width = 15)
+    @Excel(name = "询盘单号")
     private String xpNo;
-    @Excel(name = "打样通知单号", width = 15)
+    @Excel(name = "打样通知单号")
     private String dyNo;
 
-    @Excel(name="审核意见", width=15.0D)
+    @Excel(name="审核意见")
     private String leadAdvice;
-    @Excel(name="是否通过", width=15.0D)
+    @Excel(name="是否通过")
     private String isPass;
     private String leadUserId;
-    @Excel(name="审核人", width=15.0D)
+    @Excel(name="审核人")
     private String leader;
+
+    @Excel(name="技术审核意见")
+    private String jsAdvice;
+    private String jsUserId;
+    @Excel(name="技术审核人")
+    private String jser;
+
+    @Excel(name="采购审核意见")
+    private String cgAdvice;
+    private String cgUserId;
+    @Excel(name="采购审核人")
+    private String cger;
+
+    @Excel(name="财务审核意见")
+    private String cwAdvice;
+    private String cwUserId;
+    @Excel(name="财务审核人")
+    private String cwer;
+
+    @Excel(name="价格处理意见")
+    private String jgAdvice;
+    private String jgUserId;
+    @Excel(name="价格审核人")
+    private String jger;
 
     @Id
     @GeneratedValue(generator = "paymentableGenerator")
@@ -176,6 +201,7 @@ public class EmkPriceEntity implements Serializable {
         this.id = id;
     }
 
+    @Formula("(select p.NAME_ from act_ru_task p where p.ASSIGNEE_ = id)")
     @Column(name = "CREATE_NAME", nullable = true, length = 50)
     public String getCreateName() {
         return this.createName;
@@ -884,5 +910,113 @@ public class EmkPriceEntity implements Serializable {
     public void setLeader(String leader)
     {
         this.leader = leader;
+    }
+
+    @Column(name="js_advice", nullable=true, length=32)
+    public String getJsAdvice() {
+        return jsAdvice;
+    }
+
+    public void setJsAdvice(String jsAdvice) {
+        this.jsAdvice = jsAdvice;
+    }
+
+    @Column(name="js_user_id", nullable=true, length=32)
+    public String getJsUserId() {
+        return jsUserId;
+    }
+
+    public void setJsUserId(String jsUserId) {
+        this.jsUserId = jsUserId;
+    }
+
+    @Column(name="jser", nullable=true, length=32)
+    public String getJser() {
+        return jser;
+    }
+
+    public void setJser(String jser) {
+        this.jser = jser;
+    }
+
+    @Column(name="cg_advice", nullable=true, length=32)
+    public String getCgAdvice() {
+        return cgAdvice;
+    }
+
+    public void setCgAdvice(String cgAdvice) {
+        this.cgAdvice = cgAdvice;
+    }
+
+    @Column(name="cg_user_id", nullable=true, length=32)
+    public String getCgUserId() {
+        return cgUserId;
+    }
+
+    public void setCgUserId(String cgUserId) {
+        this.cgUserId = cgUserId;
+    }
+
+    @Column(name="cger", nullable=true, length=32)
+    public String getCger() {
+        return cger;
+    }
+
+    public void setCger(String cger) {
+        this.cger = cger;
+    }
+
+    @Column(name="cw_advice", nullable=true, length=32)
+    public String getCwAdvice() {
+        return cwAdvice;
+    }
+
+    public void setCwAdvice(String cwAdvice) {
+        this.cwAdvice = cwAdvice;
+    }
+
+    @Column(name="cw_user_id", nullable=true, length=32)
+    public String getCwUserId() {
+        return cwUserId;
+    }
+
+    public void setCwUserId(String cwUserId) {
+        this.cwUserId = cwUserId;
+    }
+
+    @Column(name="cwer", nullable=true, length=32)
+    public String getCwer() {
+        return cwer;
+    }
+
+    public void setCwer(String cwer) {
+        this.cwer = cwer;
+    }
+
+    @Column(name="jg_advice", nullable=true, length=32)
+    public String getJgAdvice() {
+        return jgAdvice;
+    }
+
+    public void setJgAdvice(String jgAdvice) {
+        this.jgAdvice = jgAdvice;
+    }
+
+    @Column(name="jg_user_id", nullable=true, length=32)
+    public String getJgUserId() {
+        return jgUserId;
+    }
+
+    public void setJgUserId(String jgUserId) {
+        this.jgUserId = jgUserId;
+    }
+
+    @Column(name="jger", nullable=true, length=32)
+    public String getJger() {
+        return jger;
+    }
+
+    public void setJger(String jger) {
+        this.jger = jger;
     }
 }

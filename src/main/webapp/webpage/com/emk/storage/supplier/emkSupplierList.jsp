@@ -19,11 +19,11 @@
    <t:dgCol title="纳税人识别号"  field="taxpayerNum"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="开户行"  field="bankName"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="开户账号 "  field="bankAccount"  queryMode="single"  width="150"></t:dgCol>
-       <t:dgToolBar title="录入" icon="fa fa-plus" url="emkSupplierController.do?goAdd" funname="add" height="500" width="900"></t:dgToolBar>
-       <t:dgToolBar title="编辑" icon="fa fa-edit" url="emkSupplierController.do?goUpdate" funname="update" height="500" width="900"></t:dgToolBar>
-       <t:dgToolBar title="删除"  icon="fa fa-remove" url="emkSupplierController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
+       <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkSupplierController.do?goAdd" funname="add" height="500" width="900"></t:dgToolBar>
+       <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkSupplierController.do?goUpdate" funname="update" height="500" width="900"></t:dgToolBar>
+       <t:dgToolBar title="删除" operationCode="delete"  icon="fa fa-remove" url="emkSupplierController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
        <t:dgToolBar title="导入" icon="fa fa-arrow-circle-left" funname="ImportXls"></t:dgToolBar>
-       <t:dgToolBar title="导出" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
+       <t:dgToolBar title="导出" operationCode="exp" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
 
   </t:datagrid>
   </div>

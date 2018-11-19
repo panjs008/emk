@@ -10,10 +10,10 @@
 
         $("#businesserId").change(function(){
             var itemarr = $("#businesserId").val().split(","); //字符分割
-            $("#businesser").val(itemarr[0]);
-            $("#businesserName").val(itemarr[1]);
+            $("#businesser").val(itemarr[1]);
+            $("#businesserName").val(itemarr[0]);
 
-            returnToDept($("#businesserName").val());
+            returnToDept($("#businesser").val());
         });
     });
 
@@ -59,7 +59,7 @@
             control.empty();//清空下拉框
             control.append("<option value=''>请选择</option>");
             $.each(data.obj, function (i, item) {
-                control.append("<option value='" + item.userName + ","+item.realName +"'>&nbsp;" + item.realName + "</option>");
+                control.append("<option value='" + item.realName + ","+item.userName +"'>&nbsp;" + item.realName + "</option>");
             });
             if(type ==1){
                 $("#"+ctrlName).select2('val',categoryId);

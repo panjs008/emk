@@ -20,100 +20,100 @@ public class EmkProOrderEntity implements Serializable {
     private Date createDate;
     private String sysOrgCode;
     private String state;
-    @Excel(name = "订单号", width = 15)
+    @Excel(name = "订单号")
     private String orderNo;
-    @Excel(name = "开单时间", width = 15)
+    @Excel(name = "开单时间")
     private String orderTime;
-    @Excel(name = "客户编号", width = 15)
+    @Excel(name = "客户编号")
     private String cusNum;
-    @Excel(name = "客户名称", width = 15)
+    @Excel(name = "客户名称")
     private String cusName;
-    @Excel(name = "备注", width = 15)
+    @Excel(name = "备注")
     private String remark;
-    @Excel(name = "交货时间", width = 15)
+    @Excel(name = "交货时间")
     private String supplyTime;
-    @Excel(name = "业务员", width = 15)
+    @Excel(name = "业务员")
     private String businesser;
-    @Excel(name = "业务员ID", width = 15)
+    @Excel(name = "业务员ID")
     private String businesserName;
-    @Excel(name = "业务跟单员", width = 15)
+    @Excel(name = "业务跟单员")
     private String tracer;
-    @Excel(name = "业务跟单员ID", width = 15)
+    @Excel(name = "业务跟单员ID")
     private String tracerName;
-    @Excel(name = "业务部门", width = 15)
+    @Excel(name = "业务部门")
     private String businesseDeptName;
-    @Excel(name = "业务部门ID", width = 15)
+    @Excel(name = "业务部门ID")
     private String businesseDeptId;
-    @Excel(name = "生产跟单员", width = 15)
+    @Excel(name = "生产跟单员")
     private String developer;
-    @Excel(name = "生产跟单员ID", width = 15)
+    @Excel(name = "生产跟单员ID")
     private String developerName;
-    @Excel(name = "工艺种类", width = 15)
+    @Excel(name = "工艺种类")
     private String gyzl;
-    @Excel(name = "款式大类", width = 15)
+    @Excel(name = "款式大类")
     private String proType;
-    @Excel(name = "款式大类", width = 15)
+    @Excel(name = "款式大类")
     private String proTypeName;
-    @Excel(name = "款号", width = 15)
+    @Excel(name = "款号")
     private String sampleNo;
-    @Excel(name = "描述", width = 15)
+    @Excel(name = "描述")
     private String sampleNoDesc;
-    @Excel(name = "图片", width = 15)
+    @Excel(name = "图片")
     private String customSampleUrl;
-    @Excel(name = "图片", width = 15)
+    @Excel(name = "图片")
     private String customSample;
-    @Excel(name = "总数量", width = 15)
+    @Excel(name = "总数量")
     private Integer sumTotal;
-    @Excel(name = "总金额", width = 15)
+    @Excel(name = "总金额")
     private Double sumMoney;
-    @Excel(name = "尺码范围", width = 15)
+    @Excel(name = "尺码范围")
     private String sizeFw;
-    @Excel(name = "单价", width = 15)
+    @Excel(name = "单价")
     private Double price;
-    @Excel(name = "币种", width = 15)
+    @Excel(name = "币种")
     private String bz;
-    @Excel(name = "交期", width = 15)
+    @Excel(name = "交期")
     private String recevieDate;
-    @Excel(name = "单件", width = 15)
+    @Excel(name = "单件")
     private String one;
-    @Excel(name = "胶袋", width = 15)
+    @Excel(name = "胶袋")
     private String polybag;
-    @Excel(name = "总箱数", width = 15)
+    @Excel(name = "总箱数")
     private Integer sumBoxTotal;
-    @Excel(name = "总体积", width = 15)
+    @Excel(name = "总体积")
     private Double sumBoxVolume;
-    @Excel(name = "总净重", width = 15)
+    @Excel(name = "总净重")
     private Double sumBoxJz;
-    @Excel(name = "总毛重", width = 15)
+    @Excel(name = "总毛重")
     private Double sumBoxMao;
-    @Excel(name = "装箱", width = 15)
+    @Excel(name = "装箱")
     private String boxup;
-    @Excel(name = "包装效果图", width = 15)
+    @Excel(name = "包装效果图")
     private String boxImageUrl;
-    @Excel(name = "包装效果图", width = 15)
+    @Excel(name = "包装效果图")
     private String boxImage;
-    @Excel(name = "中期验货日期", width = 15)
+    @Excel(name = "中期验货日期")
     private String zqyhDate;
-    @Excel(name = "尾期验货日期", width = 15)
+    @Excel(name = "尾期验货日期")
     private String wqyhDate;
-    @Excel(name = "船样状态", width = 15)
+    @Excel(name = "船样状态")
     private String cystate;
-    @Excel(name = "出厂日期", width = 15)
+    @Excel(name = "出厂日期")
     private String outDate;
-    @Excel(name = "距交期剩余天数", width = 15)
+    @Excel(name = "距交期剩余天数")
     private Integer levelDays;
-    @Excel(name = "包装方式", width = 15)
+    @Excel(name = "包装方式")
     private String bzfs;
-    @Excel(name = "供应商", width = 15)
+    @Excel(name = "供应商")
     private String gys;
-    @Excel(name = "供应商Code", width = 15)
+    @Excel(name = "供应商Code")
     private String gysCode;
-    @Excel(name="审核意见", width=15.0D)
+    @Excel(name="审核意见")
     private String leadAdvice;
-    @Excel(name="是否通过", width=15.0D)
+    @Excel(name="是否通过")
     private String isPass;
     private String leadUserId;
-    @Excel(name="审核人", width=15.0D)
+    @Excel(name="审核人")
     private String leader;
     private String orderType;
     private String workNo;

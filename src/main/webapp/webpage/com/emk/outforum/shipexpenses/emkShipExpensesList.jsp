@@ -14,13 +14,13 @@
       <t:dgCol title="离厂放行条号"  field="levealFactoryNo"  query="true" queryMode="single"  width="80"></t:dgCol>
       <t:dgCol title="订单号"  field="orderNo"   queryMode="single"  width="70"></t:dgCol>
       <t:dgCol title="业务部门"  field="businesseDeptName"  queryMode="single"  width="70"></t:dgCol>
-      <t:dgCol title="业务员"  field="businesser"  queryMode="single"  width="50"></t:dgCol>
+      <t:dgCol title="业务员"  field="businesserName"  queryMode="single"  width="50"></t:dgCol>
       <t:dgCol title="客户代码"  field="cusNum"  queryMode="single"  width="60"></t:dgCol>
       <t:dgCol title="客户名称"  field="cusName"  queryMode="single"  width="145"></t:dgCol>
-      <t:dgToolBar title="录入" icon="fa fa-plus" url="emkShipExpensesController.do?goAdd&winTitle=录入运费费" funname="add" height="600" width="1000"></t:dgToolBar>
-      <t:dgToolBar title="编辑" icon="fa fa-edit" url="emkShipExpensesController.do?goUpdate&winTitle=编辑运费费" funname="update" height="600" width="1000"></t:dgToolBar>
-      <t:dgToolBar title="删除"  icon="fa fa-remove" url="emkShipExpensesController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
-      <t:dgToolBar title="导出" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
+      <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkShipExpensesController.do?goAdd&winTitle=录入运费费" funname="add" height="600" width="1000"></t:dgToolBar>
+      <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkShipExpensesController.do?goUpdate&winTitle=编辑运费费" funname="update" height="600" width="1000"></t:dgToolBar>
+      <t:dgToolBar title="删除" operationCode="delete"  icon="fa fa-remove" url="emkShipExpensesController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
+      <t:dgToolBar title="导出" operationCode="exp" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
 
   </t:datagrid>
   </div>

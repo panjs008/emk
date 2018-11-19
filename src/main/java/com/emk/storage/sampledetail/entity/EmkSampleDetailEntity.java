@@ -19,55 +19,55 @@ public class EmkSampleDetailEntity implements Serializable {
     private String createBy;
     private Date createDate;
     private String sysOrgCode;
-    @Excel(name = "品名", width = 15)
+    @Excel(name = "品名")
     private String proZnName;
-    @Excel(name = "物料ID", width = 15)
+    @Excel(name = "物料ID")
     private String proId;
-    @Excel(name = "物料编号", width = 15)
+    @Excel(name = "物料编号")
     private String proNum;
-    @Excel(name = "规格", width = 15)
+    @Excel(name = "规格")
     private String brand;
-    @Excel(name = "数量", width = 15)
+    @Excel(name = "数量")
     private String signTotal;
-    @Excel(name = "单位", width = 15)
+    @Excel(name = "单位")
     private String unit;
-    @Excel(name = "单价", width = 15)
+    @Excel(name = "单价")
     private String signPrice;
-    @Excel(name = "备注", width = 15)
+    @Excel(name = "备注")
     private String remark;
-    @Excel(name = "款号", width = 15)
+    @Excel(name = "款号")
     private String hsCode;
-    @Excel(name = "款号名称", width = 15)
+    @Excel(name = "款号名称")
     private String hsName;
-    @Excel(name = "样品ID", width = 15)
+    @Excel(name = "样品ID")
     private String sampleId;
-    @Excel(name = "物料类型", width = 15)
+    @Excel(name = "物料类型")
     private String type;
-    @Excel(name = "比例", width = 15)
+    @Excel(name = "比例")
     private String precent;
-    @Excel(name = "单件用量", width = 15)
+    @Excel(name = "单件用量")
     private Double yongliang;
-    @Excel(name = "损耗率", width = 15)
+    @Excel(name = "损耗率")
     private Double sunhaoPrecent;
-    @Excel(name = "成本", width = 15)
+    @Excel(name = "成本")
     private Double chengben;
-    @Excel(name = "捻向", width = 15)
+    @Excel(name = "捻向")
     private String direction;
-    @Excel(name = "批号", width = 15)
+    @Excel(name = "批号")
     private String betchNum;
-    @Excel(name = "幅宽", width = 15)
+    @Excel(name = "幅宽")
     private String width;
-    @Excel(name = "颜色", width = 15)
+    @Excel(name = "颜色")
     private String color;
-    @Excel(name = "克重", width = 15)
+    @Excel(name = "克重")
     private String weight;
-    @Excel(name = "位置", width = 15)
+    @Excel(name = "位置")
     private String position;
-    @Excel(name = "供应商", width = 15)
+    @Excel(name = "供应商")
     private String gys;
-    @Excel(name = "供应商Code", width = 15)
+    @Excel(name = "供应商Code")
     private String gysCode;
-    @Excel(name = "入库状态", width = 15)
+    @Excel(name = "入库状态")
     private String rkState;
 
     @Id
