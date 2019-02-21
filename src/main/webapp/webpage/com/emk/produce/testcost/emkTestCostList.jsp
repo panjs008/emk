@@ -17,7 +17,7 @@
             <t:dgCol title="费用付款单号"  field="costNo"  query="true" queryMode="single"  width="100"></t:dgCol>
             <t:dgCol title="费用付款申请单号"  field="testNo"   queryMode="single"  width="90"></t:dgCol>
             <t:dgCol title="提交日期" field="kdDate" queryMode="single" width="60"></t:dgCol>
-            <t:dgCol title="生产合同号" field="produceNum" query="true" queryMode="single" width="80"></t:dgCol>
+            <t:dgCol title="生产合同号" field="produceNum" query="true" queryMode="single" width="90"></t:dgCol>
             <t:dgCol title="订单号" field="orderNo" query="true" queryMode="single" width="80"></t:dgCol>
             <t:dgCol title="业务部门" field="businesseDeptName" queryMode="single" width="80"></t:dgCol>
             <t:dgCol title="业务员" field="businesserName" queryMode="single" width="60"></t:dgCol>
@@ -26,7 +26,8 @@
             <t:dgCol title="款号" field="sampleNo" queryMode="single" width="80"></t:dgCol>
             <t:dgCol title="状态"  field="state" formatterjs="formatColor"  queryMode="single"  width="60"></t:dgCol>
 
-            <t:dgFunOpt funname="goToProcess(id)" title="流程进度" operationCode="process" urlclass="ace_button"  urlStyle="background-color:#ec4758;" urlfont="fa-tasks"></t:dgFunOpt>
+            <t:dgFunOpt funname="goToProcess(id,createBy)" title="流程进度" operationCode="process" urlclass="ace_button"  urlStyle="background-color:#ec4758;" urlfont="fa-tasks"></t:dgFunOpt>
+            <t:dgToolBar title="查看" icon="fa fa-search" operationCode="look" url="emkTestCostController.do?goUpdate&winTitle=查看测试费用付款申请" funname="detail" height="580" width="1000"></t:dgToolBar>
             <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkTestCostController.do?goAdd&winTitle=录入测试费用付款申请"
                          funname="add" height="600" width="1000"></t:dgToolBar>
             <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkTestCostController.do?goUpdate&winTitle=编辑测试费用付款申请"
@@ -84,7 +85,7 @@
         });
     }
 
-    function goToProcess(id) {
+    function goToProcess(id,createBy) {
         var height = window.top.document.body.offsetHeight * 0.85;
 
         $.ajax({
@@ -96,12 +97,21 @@
                 var d = $.parseJSON(data);
                 if (d.success) {
                     var msg = d.msg;
-                    if (msg == "完成") {
+                    if(createBy == "${CUR_USER.userName}"){
                         createdetailwindow('流程进度--当前环节：' + msg, 'flowController.do?goProcess&processUrl=com/emk/produce/testcost/emkTestCost-process&id=' + id, 1200, height);
-                    } else {
-                        createwindow("流程进度--当前环节：" + msg, "flowController.do?goProcess&processUrl=com/emk/produce/testcost/emkTestCost-process&id=" + id, 1200, height);
+                    }else{
+                        if (msg == "完成") {
+                            createdetailwindow('流程进度--当前环节：' + msg, 'flowController.do?goProcess&processUrl=com/emk/produce/testcost/emkTestCost-process&id=' + id, 1200, height);
+                        } else {
+                            if(msg == "领导审核" && "${ROLE.rolecode}" == "scjl") {
+                                createwindow("流程进度--当前环节：" + msg, "flowController.do?goProcess&processUrl=com/emk/produce/testcost/emkTestCost-process&id=" + id, 1200, height);
+                            }else if(msg == "财务" && "${ROLE.rolecode}" == "cwjl") {
+                                createwindow("流程进度--当前环节：" + msg, "flowController.do?goProcess&processUrl=com/emk/produce/testcost/emkTestCost-process&id=" + id, 1200, height);
+                            }else{
+                                createdetailwindow('流程进度--当前环节：' + msg, 'flowController.do?goProcess&processUrl=com/emk/produce/testcost/emkTestCost-process&id=' + id, 1200, height);
+                            }
+                        }
                     }
-
                 }
             }
         });

@@ -36,6 +36,7 @@ public class EmkEnquiryDetailEntity
     private Integer colorTotal;
     @Excel(name = "单价")
     private Double price;
+    private String sortDesc;
 
     @Id
     @GeneratedValue(generator = "paymentableGenerator")
@@ -155,5 +156,14 @@ public class EmkEnquiryDetailEntity
 
     public void setPrice(Double price) {
         this.price = price;
+    }
+
+    @Column(name = "sort_desc", nullable = true, scale = 2, length = 32)
+    public String getSortDesc() {
+        return sortDesc;
+    }
+
+    public void setSortDesc(String sortDesc) {
+        this.sortDesc = sortDesc;
     }
 }

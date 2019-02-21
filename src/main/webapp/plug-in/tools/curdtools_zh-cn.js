@@ -201,6 +201,30 @@ function deleteALLSelect(title,url,gname) {
 function createdetailwindow(title, addurl,width,height) {
 	width = width?width:700;
 	height = height?height:400;
+	if(addurl.indexOf('emkQualityCheckController.do?goAdd')>=0 || addurl.indexOf('emkQualityCheckController.do?goUpdate')>=0 || addurl.indexOf('flowController.do?goProcess&processUrl=com/emk/check/qualitycheck/emkQualityCheck-process')>=0){
+		width =  window.top.document.body.offsetWidth;
+		height =window.top.document.body.offsetHeight-100;
+	}
+	if(addurl.indexOf('emkSizeCheckController.do?goAdd')>=0 || addurl.indexOf('emkSizeCheckController.do?goUpdate')>=0){
+		width =  window.top.document.body.offsetWidth;
+		height =window.top.document.body.offsetHeight-100;
+	}
+	if(addurl.indexOf('emkPriceController.do?goAdd')>=0 || addurl.indexOf('emkPriceController.do?goUpdate')>=0){
+		width =  window.top.document.body.offsetWidth;
+		height =window.top.document.body.offsetHeight-100;
+	}
+	if(addurl.indexOf('emkSampleRequiredController.do?goAdd')>=0 || addurl.indexOf('emkSampleRequiredController.do?goUpdate')>=0){
+		width =  window.top.document.body.offsetWidth;
+		height =window.top.document.body.offsetHeight-100;
+	}
+	if(addurl.indexOf('emkProduceController.do?goAdd')>=0 || addurl.indexOf('emkProduceController.do?goUpdate')>=0){
+		width =  window.top.document.body.offsetWidth;
+		height =window.top.document.body.offsetHeight-100;
+	}
+	if(addurl.indexOf('emkProduceScheduleController.do?goAdd')>=0 || addurl.indexOf('emkProduceScheduleController.do?goUpdate')>=0|| addurl.indexOf('flowController.do?goProcess&processUrl=com/emk/produce/produceschedule/emkProduceSchedule-process')>=0){
+		width =  window.top.document.body.offsetWidth;
+		height =window.top.document.body.offsetHeight-100;
+	}
 	if(width=="100%" || height=="100%"){
 		width = window.top.document.body.offsetWidth;
 		height =window.top.document.body.offsetHeight-100;
@@ -416,7 +440,7 @@ function createwindow(title, addurl,width,height) {
 		width = window.top.document.body.offsetWidth;
 		height =window.top.document.body.offsetHeight-100;
 	}
-    if(addurl.indexOf('emkQualityCheckController.do?goAdd')>=0 || addurl.indexOf('emkQualityCheckController.do?goUpdate')>=0){
+    if(addurl.indexOf('emkQualityCheckController.do?goAdd')>=0 || addurl.indexOf('emkQualityCheckController.do?goUpdate')>=0 || addurl.indexOf('flowController.do?goProcess&processUrl=com/emk/check/qualitycheck/emkQualityCheck-process')>=0){
         width =  window.top.document.body.offsetWidth;
         height =window.top.document.body.offsetHeight-100;
     }
@@ -426,7 +450,7 @@ function createwindow(title, addurl,width,height) {
 	}
 	if(addurl.indexOf('emkPriceController.do?goAdd')>=0 || addurl.indexOf('emkPriceController.do?goUpdate')>=0){
 		width =  window.top.document.body.offsetWidth;
-		height =window.top.document.body.offsetHeight-100;
+		height =window.top.document.body.offsetHeight-50;
 	}
 	if(addurl.indexOf('emkSampleRequiredController.do?goAdd')>=0 || addurl.indexOf('emkSampleRequiredController.do?goUpdate')>=0){
 		width =  window.top.document.body.offsetWidth;
@@ -441,7 +465,8 @@ function createwindow(title, addurl,width,height) {
 		height =window.top.document.body.offsetHeight-100;
 	}
     //--author：JueYue---------date：20140427---------for：弹出bug修改,设置了zindex()函数
-	if(typeof(windowapi) == 'undefined'){
+	if(addurl.indexOf('emkPriceController.do?goAdd')>=0 || addurl.indexOf('emkPriceController.do?goUpdate')>=0){
+		addurl = addurl + "&wVal="+window.top.document.body.offsetWidth*0.97+ "px&hVal="+window.top.document.body.offsetHeight*0.85+"px";
 		$.dialog({
 			content: 'url:'+addurl,
 			lock : true,
@@ -450,37 +475,51 @@ function createwindow(title, addurl,width,height) {
 			height:height,
 			title:title,
 			opacity : 0.3,
-			cache:false,
-		    ok: function(){
-		    	iframe = this.iframe.contentWindow;
-				saveObj();
-				return false;
-		    },
-		    cancelVal: '关闭',
-		    cancel: true /*为true等价于function(){}*/
+			cache:false
 		});
 	}else{
+		if(typeof(windowapi) == 'undefined'){
+			$.dialog({
+				content: 'url:'+addurl,
+				lock : true,
+				zIndex: getzIndex(),
+				width:width,
+				height:height,
+				title:title,
+				opacity : 0.3,
+				cache:false,
+				ok: function(){
+					iframe = this.iframe.contentWindow;
+					saveObj();
+					return false;
+				},
+				cancelVal: '关闭',
+				cancel: true /*为true等价于function(){}*/
+			});
+		}else{
 
-		/*W.*/$.dialog({//使用W，即为使用顶级页面作为openner，造成打开的次级窗口获取不到关联的主窗口
-			content: 'url:'+addurl,
-			lock : true,
-			width:width,
-			zIndex:getzIndex(),
-			height:height,
-			parent:windowapi,
-			title:title,
-			opacity : 0.3,
-			cache:false,
-		    ok: function(){
-		    	iframe = this.iframe.contentWindow;
-				saveObj();
-				return false;
-		    },
-		    cancelVal: '关闭',
-		    cancel: true /*为true等价于function(){}*/
-		});
+			/*W.*/$.dialog({//使用W，即为使用顶级页面作为openner，造成打开的次级窗口获取不到关联的主窗口
+				content: 'url:'+addurl,
+				lock : true,
+				width:width,
+				zIndex:getzIndex(),
+				height:height,
+				parent:windowapi,
+				title:title,
+				opacity : 0.3,
+				cache:false,
+				ok: function(){
+					iframe = this.iframe.contentWindow;
+					saveObj();
+					return false;
+				},
+				cancelVal: '关闭',
+				cancel: true /*为true等价于function(){}*/
+			});
 
+		}
 	}
+
     //--author：JueYue---------date：20140427---------for：弹出bug修改,设置了zindex()函数
 	
 }

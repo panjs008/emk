@@ -3,7 +3,7 @@
 <t:base type="jquery,easyui,tools,DatePicker"></t:base>
 <div class="easyui-layout" fit="true">
   <div region="center" style="padding:0px;border:0px">
-  <t:datagrid name="emkFinanceReceivableList" checkbox="false" pagination="true" fitColumns="true" title="" actionUrl="emkFinanceReceivableController.do?datagrid&type=${param.type}" idField="id" fit="true" btnCls="bootstrap"  queryMode="group">
+  <t:datagrid name="emkFinanceReceivableList" checkbox="false" pagination="true" fitColumns="true" title="" actionUrl="emkFinanceReceivableController.do?datagrid&type=0" idField="id" fit="true" btnCls="bootstrap"  queryMode="group">
    <t:dgCol title="主键"  hidden="true" field="id"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="创建人名称"  hidden="true" field="createName"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="创建人登录名称"  hidden="true" field="createBy"  queryMode="single"  width="120"></t:dgCol>
@@ -28,7 +28,7 @@
       <t:dgFunOpt funname="goToProcess(id)" title="流程进度" operationCode="process" urlclass="ace_button"  urlStyle="background-color:#ec4758;" urlfont="fa-tasks"></t:dgFunOpt>
       <%--<t:dgFunOpt funname="queryDetail2(id,materialNo)" title="原料面料" urlclass="ace_button" urlfont="fa-list-alt"></t:dgFunOpt>--%>
       <%--<t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkContractController.do?goAdd&type=0&winTitle=录入购销合同同单" funname="add" height="600" width="1100"></t:dgToolBar>--%>
-      <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkFinanceReceivableController.do?goAdd&winTitle=录入应收通知单" funname="add" height="600" width="1000"></t:dgToolBar>
+      <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkFinanceReceivableController.do?goAdd&type=0&winTitle=录入应收通知单" funname="add" height="600" width="1000"></t:dgToolBar>
       <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkFinanceReceivableController.do?goUpdate&type=0&winTitle=编辑应收通知单" funname="update" height="600" width="1100"></t:dgToolBar>
       <t:dgToolBar title="提交" operationCode="submit" icon="fa fa-arrow-circle-up" funname="doSubmitV"></t:dgToolBar>
       <t:dgToolBar title="删除" operationCode="delete"  icon="fa fa-remove" url="emkFinanceReceivableController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>

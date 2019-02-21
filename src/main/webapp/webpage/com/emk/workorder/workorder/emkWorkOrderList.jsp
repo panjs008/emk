@@ -87,11 +87,7 @@
                 var d = $.parseJSON(data);
                 if (d.success) {
                     var msg = d.msg;
-                    if (msg == "完成") {
-                        createdetailwindow('工单'+workNo+'--当前环节：' + msg, 'flowController.do?goProcess&processUrl=com/emk/workorder/workorder/emkWorkOrder-process&id=' + id, 1200, height);
-                    } else {
-                        createwindow("工单"+workNo+"--当前环节：" + msg, "flowController.do?goProcess&processUrl=com/emk/workorder/workorder/emkWorkOrder-process&id=" + id, 1200, height);
-                    }
+                    createdetailwindow('工单'+workNo+'--当前环节：' + msg, 'flowController.do?goProcess&processUrl=com/emk/workorder/workorder/emkWorkOrder-process&id=' + id, 1200, height);
 
                 }
             }

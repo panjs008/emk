@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.GenericGenerator;
 import org.jeecgframework.poi.excel.annotation.Excel;
 
@@ -113,6 +114,27 @@ public class EmkMaterialPactEntity implements Serializable {
     private String cghtbh;
     private String flag;
 
+    @Excel(name="预采购合同意见")
+    private String yhtAdvice;
+    private String yhtUserId;
+    @Excel(name="处理人")
+    private String yhter;
+
+    @Excel(name="审核意见")
+    private String leadAdvice;
+    @Excel(name="是否通过")
+    private String isPass;
+    private String leadUserId;
+    @Excel(name="审核人")
+    private String leader;
+
+    @Excel(name="正式采购合同意见")
+    private String htAdvice;
+    private String htUserId;
+    @Excel(name="处理人")
+    private String hter;
+    @Excel(name = "状态")
+    private String state;
 
     @Column(name = "GYS", nullable = true, length = 32)
     public String getGys() {
@@ -143,7 +165,7 @@ public class EmkMaterialPactEntity implements Serializable {
     public void setId(String id) {
         this.id = id;
     }
-
+    @Formula("(select p.NAME_ from act_ru_task p where p.ASSIGNEE_ = id)")
     @Column(name = "CREATE_NAME", nullable = true, length = 50)
     public String getCreateName() {
         return this.createName;
@@ -583,5 +605,112 @@ public class EmkMaterialPactEntity implements Serializable {
 
     public void setCghtbh(String cghtbh) {
         this.cghtbh = cghtbh;
+    }
+
+    @Column(name="LEAD_ADVICE", nullable=true, length=256)
+    public String getLeadAdvice()
+    {
+        return this.leadAdvice;
+    }
+
+    public void setLeadAdvice(String leadAdvice)
+    {
+        this.leadAdvice = leadAdvice;
+    }
+
+    @Column(name="IS_PASS", nullable=true, length=32)
+    public String getIsPass()
+    {
+        return this.isPass;
+    }
+
+    public void setIsPass(String isPass)
+    {
+        this.isPass = isPass;
+    }
+
+    @Column(name="LEAD_USER_ID", nullable=true, length=32)
+    public String getLeadUserId()
+    {
+        return this.leadUserId;
+    }
+
+    public void setLeadUserId(String leadUserId)
+    {
+        this.leadUserId = leadUserId;
+    }
+
+    @Column(name="LEADER", nullable=true, length=32)
+    public String getLeader()
+    {
+        return this.leader;
+    }
+
+    public void setLeader(String leader)
+    {
+        this.leader = leader;
+    }
+
+    @Column(name = "STATE", nullable = true, length = 32)
+    public String getState() {
+        return this.state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    @Column(name="yht_advice", nullable=true, length=32)
+    public String getYhtAdvice() {
+        return yhtAdvice;
+    }
+
+    public void setYhtAdvice(String yhtAdvice) {
+        this.yhtAdvice = yhtAdvice;
+    }
+
+    @Column(name="yht_user_id", nullable=true, length=32)
+    public String getYhtUserId() {
+        return yhtUserId;
+    }
+
+    public void setYhtUserId(String yhtUserId) {
+        this.yhtUserId = yhtUserId;
+    }
+
+    @Column(name="yhter", nullable=true, length=32)
+    public String getYhter() {
+        return yhter;
+    }
+
+    public void setYhter(String yhter) {
+        this.yhter = yhter;
+    }
+
+    @Column(name="ht_advice", nullable=true, length=32)
+    public String getHtAdvice() {
+        return htAdvice;
+    }
+
+    public void setHtAdvice(String htAdvice) {
+        this.htAdvice = htAdvice;
+    }
+
+    @Column(name="ht_user_id", nullable=true, length=32)
+    public String getHtUserId() {
+        return htUserId;
+    }
+
+    public void setHtUserId(String htUserId) {
+        this.htUserId = htUserId;
+    }
+
+    @Column(name="hter", nullable=true, length=32)
+    public String getHter() {
+        return hter;
+    }
+
+    public void setHter(String hter) {
+        this.hter = hter;
     }
 }

@@ -92,11 +92,11 @@ public class EmkOutForumController extends BaseController {
 
     @RequestMapping(params = "orderMxList")
     public ModelAndView orderMxList(HttpServletRequest request) {
-        List<Map<String, Object>> codeList = this.systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", "A03");
+        List<Map<String, Object>> codeList = systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", "A03");
         request.setAttribute("categoryEntityList", codeList);
         Map map = ParameterUtil.getParamMaps(request.getParameterMap());
         if ((map.get("proOrderId") != null) && (!map.get("proOrderId").equals(""))) {
-            List<EmkEnquiryDetailEntity> emkProOrderDetailEntities = this.systemService.findHql("from EmkEnquiryDetailEntity where enquiryId=?", map.get("proOrderId"));
+            List<EmkEnquiryDetailEntity> emkProOrderDetailEntities = systemService.findHql("from EmkEnquiryDetailEntity where enquiryId=?", map.get("proOrderId"));
             request.setAttribute("emkProOrderDetailEntities", emkProOrderDetailEntities);
         }
         return new ModelAndView("com/emk/produce/outforum/orderMxList");
@@ -105,12 +105,18 @@ public class EmkOutForumController extends BaseController {
     @RequestMapping(params = "datagrid")
     public void datagrid(EmkOutForumEntity emkOutForum, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid) {
         CriteriaQuery cq = new CriteriaQuery(EmkOutForumEntity.class, dataGrid);
-
+        TSUser user = (TSUser) request.getSession().getAttribute(ResourceUtil.LOCAL_CLINET_USER);
+        Map roleMap = (Map) request.getSession().getAttribute("ROLE");
+        if(roleMap != null){
+            if(roleMap.get("rolecode").toString().contains("ywy") || roleMap.get("rolecode").toString().contains("ywgdy")|| roleMap.get("rolecode").toString().contains("scgdy")){
+                cq.eq("createBy",user.getUserName());
+            }
+        }
         HqlGenerateUtil.installHql(cq, emkOutForum, request.getParameterMap());
 
 
         cq.add();
-        this.emkOutForumService.getDataGridReturn(cq, true);
+        emkOutForumService.getDataGridReturn(cq, true);
         TagUtil.datagrid(response, dataGrid);
     }
 
@@ -119,11 +125,11 @@ public class EmkOutForumController extends BaseController {
     public AjaxJson doDel(EmkOutForumEntity emkOutForum, HttpServletRequest request) {
         String message = null;
         AjaxJson j = new AjaxJson();
-        emkOutForum = (EmkOutForumEntity) this.systemService.getEntity(EmkOutForumEntity.class, emkOutForum.getId());
+        emkOutForum = systemService.getEntity(EmkOutForumEntity.class, emkOutForum.getId());
         message = "出货通知单删除成功";
         try {
-            this.emkOutForumService.delete(emkOutForum);
-            this.systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
+            emkOutForumService.delete(emkOutForum);
+            systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
         } catch (Exception e) {
             e.printStackTrace();
             message = "出货通知单删除失败";
@@ -141,11 +147,9 @@ public class EmkOutForumController extends BaseController {
         message = "出货通知单删除成功";
         try {
             for (String id : ids.split(",")) {
-                EmkOutForumEntity emkOutForum = (EmkOutForumEntity) this.systemService.getEntity(EmkOutForumEntity.class, id);
-
-
-                this.emkOutForumService.delete(emkOutForum);
-                this.systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
+                EmkOutForumEntity emkOutForum = systemService.getEntity(EmkOutForumEntity.class, id);
+                emkOutForumService.delete(emkOutForum);
+                systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -166,25 +170,26 @@ public class EmkOutForumController extends BaseController {
             emkOutForum.setState("0");
             TSUser user = (TSUser) request.getSession().getAttribute("LOCAL_CLINET_USER");
             Map<String, String> map = ParameterUtil.getParamMaps(request.getParameterMap());
-            Map orderNum = this.systemService.findOneForJdbc("select count(0)+1 orderNum from emk_out_forum where sys_org_code=?", new Object[]{user.getCurrentDepart().getOrgCode()});
-            emkOutForum.setOutForumNo("CH" + DateUtils.format(new Date(), "yyMMdd") + String.format("%03d", new Object[]{Integer.valueOf(Integer.parseInt(orderNum.get("orderNum").toString()))}));
-            this.emkOutForumService.save(emkOutForum);
-            String dataRows = (String) map.get("dataRowsVal");
+            Map orderNum = systemService.findOneForJdbc("select CAST(ifnull(max(right(OUT_FORUM_NO, 3)),0)+1 AS signed) orderNum from emk_out_forum");
+            //Map orderNum = systemService.findOneForJdbc("select count(0)+1 orderNum from emk_out_forum where sys_org_code=?", new Object[]{user.getCurrentDepart().getOrgCode()});
+            emkOutForum.setOutForumNo("CH" + DateUtils.format(new Date(), "yyMMdd") + String.format("%03d", Integer.parseInt(orderNum.get("orderNum").toString())));
+            emkOutForumService.save(emkOutForum);
+            String dataRows = map.get("dataRowsVal");
             if ((dataRows != null) && (!dataRows.isEmpty())) {
                 int rows = Integer.parseInt(dataRows);
                 for (int i = 0; i < rows; i++) {
                     EmkEnquiryDetailEntity orderMxEntity = new EmkEnquiryDetailEntity();
-                    if ((map.get("orderMxList[" + i + "].color") != null) && (!((String) map.get("orderMxList[" + i + "].color")).equals(""))) {
+                    if ((map.get("orderMxList[" + i + "].color") != null) && (!(map.get("orderMxList[" + i + "].color")).equals(""))) {
                         orderMxEntity.setEnquiryId(emkOutForum.getId());
-                        orderMxEntity.setColor((String) map.get("orderMxList[" + i + "].color"));
-                        orderMxEntity.setSize((String) map.get("orderMxList[" + i + "].size"));
-                        orderMxEntity.setTotal(Integer.valueOf(Integer.parseInt((String) map.get("orderMxList[" + i + "].signTotal"))));
-                        orderMxEntity.setPrice(Double.valueOf(Double.parseDouble((String) map.get("orderMxList[" + i + "].signPrice"))));
-                        this.systemService.save(orderMxEntity);
+                        orderMxEntity.setColor(map.get("orderMxList[" + i + "].color"));
+                        orderMxEntity.setSize(map.get("orderMxList[" + i + "].size"));
+                        orderMxEntity.setTotal(Integer.parseInt(map.get("orderMxList[" + i + "].signTotal")));
+                        orderMxEntity.setPrice(Double.parseDouble(map.get("orderMxList[" + i + "].signPrice")));
+                        systemService.save(orderMxEntity);
                     }
                 }
             }
-            this.systemService.addLog(message, Globals.Log_Type_INSERT, Globals.Log_Leavel_INFO);
+            systemService.addLog(message, Globals.Log_Type_INSERT, Globals.Log_Leavel_INFO);
         } catch (Exception e) {
             e.printStackTrace();
             message = "出货通知单添加失败";
@@ -200,29 +205,29 @@ public class EmkOutForumController extends BaseController {
         String message = null;
         AjaxJson j = new AjaxJson();
         message = "出货通知单更新成功";
-        EmkOutForumEntity t = (EmkOutForumEntity) this.emkOutForumService.get(EmkOutForumEntity.class, emkOutForum.getId());
+        EmkOutForumEntity t = emkOutForumService.get(EmkOutForumEntity.class, emkOutForum.getId());
         try {
             MyBeanUtils.copyBeanNotNull2Bean(emkOutForum, t);
-            this.emkOutForumService.saveOrUpdate(t);
+            emkOutForumService.saveOrUpdate(t);
 
             Map<String, String> map = ParameterUtil.getParamMaps(request.getParameterMap());
-            this.systemService.executeSql("delete from emk_enquiry_detail where ENQUIRY_ID=?", new Object[]{t.getId()});
-            String dataRows = (String) map.get("dataRowsVal");
+            systemService.executeSql("delete from emk_enquiry_detail where ENQUIRY_ID=?", new Object[]{t.getId()});
+            String dataRows = map.get("dataRowsVal");
             if ((dataRows != null) && (!dataRows.isEmpty())) {
                 int rows = Integer.parseInt(dataRows);
                 for (int i = 0; i < rows; i++) {
                     EmkEnquiryDetailEntity orderMxEntity = new EmkEnquiryDetailEntity();
-                    if ((map.get("orderMxList[" + i + "].color") != null) && (!((String) map.get("orderMxList[" + i + "].color")).equals(""))) {
+                    if ((map.get("orderMxList[" + i + "].color") != null) && (!(map.get("orderMxList[" + i + "].color")).equals(""))) {
                         orderMxEntity.setEnquiryId(t.getId());
-                        orderMxEntity.setColor((String) map.get("orderMxList[" + i + "].color"));
-                        orderMxEntity.setSize((String) map.get("orderMxList[" + i + "].size"));
-                        orderMxEntity.setTotal(Integer.valueOf(Integer.parseInt((String) map.get("orderMxList[" + i + "].signTotal"))));
-                        orderMxEntity.setPrice(Double.valueOf(Double.parseDouble((String) map.get("orderMxList[" + i + "].signPrice"))));
-                        this.systemService.save(orderMxEntity);
+                        orderMxEntity.setColor(map.get("orderMxList[" + i + "].color"));
+                        orderMxEntity.setSize(map.get("orderMxList[" + i + "].size"));
+                        orderMxEntity.setTotal(Integer.parseInt(map.get("orderMxList[" + i + "].signTotal")));
+                        orderMxEntity.setPrice(Double.parseDouble(map.get("orderMxList[" + i + "].signPrice")));
+                        systemService.save(orderMxEntity);
                     }
                 }
             }
-            this.systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
+            systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
         } catch (Exception e) {
             e.printStackTrace();
             message = "出货通知单更新失败";
@@ -235,10 +240,10 @@ public class EmkOutForumController extends BaseController {
     @RequestMapping(params = "goAdd")
     public ModelAndView goAdd(EmkOutForumEntity emkOutForum, HttpServletRequest req) {
         req.setAttribute("kdDate", DateUtils.format(new Date(), "yyyy-MM-dd"));
-        List<Map<String, Object>> codeList = this.systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", "A03");
+        List<Map<String, Object>> codeList = systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", "A03");
         req.setAttribute("categoryEntityList", codeList);
         if (StringUtil.isNotEmpty(emkOutForum.getId())) {
-            emkOutForum = (EmkOutForumEntity) this.emkOutForumService.getEntity(EmkOutForumEntity.class, emkOutForum.getId());
+            emkOutForum = emkOutForumService.getEntity(EmkOutForumEntity.class, emkOutForum.getId());
             req.setAttribute("emkOutForumPage", emkOutForum);
         }
         return new ModelAndView("com/emk/produce/outforum/emkOutForum-add");
@@ -246,10 +251,10 @@ public class EmkOutForumController extends BaseController {
 
     @RequestMapping(params = "goUpdate")
     public ModelAndView goUpdate(EmkOutForumEntity emkOutForum, HttpServletRequest req) {
-        List<Map<String, Object>> codeList = this.systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", "A03");
+        List<Map<String, Object>> codeList = systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", "A03");
         req.setAttribute("categoryEntityList", codeList);
         if (StringUtil.isNotEmpty(emkOutForum.getId())) {
-            emkOutForum = (EmkOutForumEntity) this.emkOutForumService.getEntity(EmkOutForumEntity.class, emkOutForum.getId());
+            emkOutForum = emkOutForumService.getEntity(EmkOutForumEntity.class, emkOutForum.getId());
             req.setAttribute("emkOutForumPage", emkOutForum);
         }
         return new ModelAndView("com/emk/produce/outforum/emkOutForum-update");
@@ -265,7 +270,7 @@ public class EmkOutForumController extends BaseController {
     public String exportXls(EmkOutForumEntity emkOutForum, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid, ModelMap modelMap) {
         CriteriaQuery cq = new CriteriaQuery(EmkOutForumEntity.class, dataGrid);
         HqlGenerateUtil.installHql(cq, emkOutForum, request.getParameterMap());
-        List<EmkOutForumEntity> emkOutForums = this.emkOutForumService.getListByCriteriaQuery(cq, Boolean.valueOf(false));
+        List<EmkOutForumEntity> emkOutForums = emkOutForumService.getListByCriteriaQuery(cq, Boolean.valueOf(false));
         modelMap.put("fileName", "出货通知单");
         modelMap.put("entity", EmkOutForumEntity.class);
         modelMap.put("params", new ExportParams("出货通知单列表", "导出人:" + ResourceUtil.getSessionUser().getRealName(), "导出信息"));
@@ -288,7 +293,7 @@ public class EmkOutForumController extends BaseController {
     @ResponseBody
     @ApiOperation(value = "出货通知单列表信息", produces = "application/json", httpMethod = "GET")
     public ResponseMessage<List<EmkOutForumEntity>> list() {
-        List<EmkOutForumEntity> listEmkOutForums = this.emkOutForumService.getList(EmkOutForumEntity.class);
+        List<EmkOutForumEntity> listEmkOutForums = emkOutForumService.getList(EmkOutForumEntity.class);
         return Result.success(listEmkOutForums);
     }
 
@@ -296,7 +301,7 @@ public class EmkOutForumController extends BaseController {
     @ResponseBody
     @ApiOperation(value = "根据ID获取出货通知单信息", notes = "根据ID获取出货通知单信息", httpMethod = "GET", produces = "application/json")
     public ResponseMessage<?> get(@ApiParam(required = true, name = "id", value = "ID") @PathVariable("id") String id) {
-        EmkOutForumEntity task = (EmkOutForumEntity) this.emkOutForumService.get(EmkOutForumEntity.class, id);
+        EmkOutForumEntity task = emkOutForumService.get(EmkOutForumEntity.class, id);
         if (task == null) {
             return Result.error("根据ID获取出货通知单信息为空");
         }
@@ -307,12 +312,12 @@ public class EmkOutForumController extends BaseController {
     @ResponseBody
     @ApiOperation("创建出货通知单")
     public ResponseMessage<?> create(@ApiParam(name = "出货通知单对象") @RequestBody EmkOutForumEntity emkOutForum, UriComponentsBuilder uriBuilder) {
-        Set<ConstraintViolation<EmkOutForumEntity>> failures = this.validator.validate(emkOutForum, new Class[0]);
+        Set<ConstraintViolation<EmkOutForumEntity>> failures = validator.validate(emkOutForum, new Class[0]);
         if (!failures.isEmpty()) {
             return Result.error(JSONArray.toJSONString(BeanValidators.extractPropertyAndMessage(failures)));
         }
         try {
-            this.emkOutForumService.save(emkOutForum);
+            emkOutForumService.save(emkOutForum);
         } catch (Exception e) {
             e.printStackTrace();
             return Result.error("出货通知单信息保存失败");
@@ -324,12 +329,12 @@ public class EmkOutForumController extends BaseController {
     @ResponseBody
     @ApiOperation(value = "更新出货通知单", notes = "更新出货通知单")
     public ResponseMessage<?> update(@ApiParam(name = "出货通知单对象") @RequestBody EmkOutForumEntity emkOutForum) {
-        Set<ConstraintViolation<EmkOutForumEntity>> failures = this.validator.validate(emkOutForum, new Class[0]);
+        Set<ConstraintViolation<EmkOutForumEntity>> failures = validator.validate(emkOutForum, new Class[0]);
         if (!failures.isEmpty()) {
             return Result.error(JSONArray.toJSONString(BeanValidators.extractPropertyAndMessage(failures)));
         }
         try {
-            this.emkOutForumService.saveOrUpdate(emkOutForum);
+            emkOutForumService.saveOrUpdate(emkOutForum);
         } catch (Exception e) {
             e.printStackTrace();
             return Result.error("更新出货通知单信息失败");
@@ -346,7 +351,7 @@ public class EmkOutForumController extends BaseController {
             return Result.error("ID不能为空");
         }
         try {
-            this.emkOutForumService.deleteEntityById(EmkOutForumEntity.class, id);
+            emkOutForumService.deleteEntityById(EmkOutForumEntity.class, id);
         } catch (Exception e) {
             e.printStackTrace();
             return Result.error("出货通知单删除失败");
@@ -465,9 +470,9 @@ public class EmkOutForumController extends BaseController {
         systemService.listAllByJdbc(dataGrid, sql, countsql);
         req.setAttribute("taskList", dataGrid.getResults());
         if (dataGrid.getResults().size() > 0) {
-            req.setAttribute("stepProcess", Integer.valueOf(dataGrid.getResults().size() - 1));
+            req.setAttribute("stepProcess", dataGrid.getResults().size() - 1);
         } else {
-            req.setAttribute("stepProcess", Integer.valueOf(0));
+            req.setAttribute("stepProcess", 0);
         }
         emkOutForum = emkOutForumService.getEntity(EmkOutForumEntity.class, emkOutForum.getId());
         req.setAttribute("emkOutForum", emkOutForum);

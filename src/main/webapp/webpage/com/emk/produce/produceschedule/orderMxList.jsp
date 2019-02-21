@@ -12,8 +12,12 @@
         iconCls: 'icon-remove'
     });
     $('#addBtn').bind('click', function(){
+        flag++;
         var tr =  $("#add_jeecgOrderProduct_table_template tr").clone();
         $("#add_jeecgOrderProduct_table").append(tr);
+
+        $("#add_jeecgOrderProduct_table").find("[id='signTotal00']").attr("datatype","n");
+        $("#add_jeecgOrderProduct_table").find("[id='signTotal00']").attr("id","signTotal"+flag);
         resetTrNum('add_jeecgOrderProduct_table');
         $("#orderMxListID").val($("#mxtb").find("tr").length-1);
     });

@@ -7,13 +7,8 @@
 	<t:base type="jquery,easyui,tools,DatePicker"></t:base>
 	<%@include file="/context/header2.jsp"%>
 	<script src="${webRoot}/context/gys.js"></script>
-	<script type="text/javascript">
-		$(function() {
-
-		});
 
 
-	</script>
 </head>
 <body>
 <t:formvalid formid="formobj" dialog="true" usePlugin="password" layout="table" action="emkReceptionController.do?doAdd" tiptype="1">
@@ -45,13 +40,13 @@
 
 			<td align="right" style="width: 18%">
 				<label class="Validform_label">
-					客户编号:
+					客户代码:
 				</label>
 			</td>
 			<td class="value" style="width: 32%">
 				<input id="cusNum" name="cusNum" readonly type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">客户编号</label>
+				<label class="Validform_label" style="display: none;">客户代码</label>
 			</td>
 			<td align="right" style="width: 18%">
 				<label class="Validform_label">
@@ -132,14 +127,17 @@
 					供应商:
 				</label>
 			</td>
+
 			<td class="value">
 				<select class="form-control select2" id="gysId"  datatype="*"  >
 					<option value=''>请选择</option>
 				</select>
+
 				<input id="gysCode" name="gysCode" type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<input id="gys" name="gys" type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">供应商</label>
+
 			</td>
 			<td align="right">
 				<label class="Validform_label">

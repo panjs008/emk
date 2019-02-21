@@ -60,8 +60,12 @@ public class ChooseTag extends TagSupport {
 		String methodname = UUIDGenerator.generate().replaceAll("-", "");
 		StringBuffer sb = new StringBuffer();
 
-		if (this.url.contains("emkProductController.do?proSelect")) {
+		if (this.url.equals("emkProductController.do?proSelect&selectType=0")) {
 			sb.append("<a href=\"#\" id=\"chkInfoForPro\" class=\"easyui-linkbutton\" plain=\"true\" icon=\"" + this.icon + "\" onClick=\"choose_" + methodname + StringUtil.replace("()\">{0}</a>", "{0}", MutiLangUtil.getMutiLangInstance().getLang("common.select", this.langArg)));
+		}else if (this.url.equals("emkProductController.do?proSelect2&selectType=1")) {
+			sb.append("<a href=\"#\" id=\"chkInfoForPro2\" class=\"easyui-linkbutton\" plain=\"true\" icon=\"" + this.icon + "\" onClick=\"choose_" + methodname + StringUtil.replace("()\">{0}</a>", "{0}", MutiLangUtil.getMutiLangInstance().getLang("common.select", this.langArg)));
+		}else if (this.url.equals("emkProductController.do?proSelect3&selectType=2")) {
+			sb.append("<a href=\"#\" id=\"chkInfoForPro3\" class=\"easyui-linkbutton\" plain=\"true\" icon=\"" + this.icon + "\" onClick=\"choose_" + methodname + StringUtil.replace("()\">{0}</a>", "{0}", MutiLangUtil.getMutiLangInstance().getLang("common.select", this.langArg)));
 		} else if (this.url.contains("userController.do?userSelect")) {
 			sb.append("<a href=\"#\" id=\"chkInfoForUser\" class=\"easyui-linkbutton\" plain=\"true\" icon=\"" + this.icon + "\" onClick=\"choose_" + methodname + StringUtil.replace("()\">{0}</a>", "{0}", MutiLangUtil.getMutiLangInstance().getLang("common.select", this.langArg)));
 		} else {
@@ -86,7 +90,7 @@ public class ChooseTag extends TagSupport {
 		sb.append("var url = ").append("'").append(url).append("';");
 		if(isInit){
 			sb.append("var initValue = ").append("$(\'#" + hiddenName + "\').val();");
-			sb.append("url += ").append("'&ids='+initValue;"); 
+			sb.append("url += ").append("'&ids='+initValue;");
 		}
 		sb.append("if(typeof(windowapi) == 'undefined'){");
 			sb.append("$.dialog({");
@@ -252,7 +256,16 @@ public class ChooseTag extends TagSupport {
 		{
 		sb.append(""+fun+"();");//执行自定义函数
 		}
-		if (this.url.contains("emkProductController.do?proSelect")) {
+		if (this.url.equals("emkProductController.do?proSelect&selectType=0")) {
+			sb.append("returnToVal();");
+		}
+		if (this.url.equals("emkProductController.do?proSelect2&selectType=1")) {
+			sb.append("returnToVal2();");
+		}
+		if (this.url.equals("emkProductController.do?proSelect3&selectType=2")) {
+			sb.append("returnToVal3();");
+		}
+		if (this.url.contains("emkPriceController.do?proSelect")) {
 			sb.append("returnToVal();");
 		}
 		if (this.url.equals("emkProductInfoController.do?proSelect")) {
@@ -266,7 +279,7 @@ public class ChooseTag extends TagSupport {
 		}
 		sb.append("}");
 	}
-	
+
 
 	public void setHiddenName(String hiddenName) {
 		this.hiddenName = hiddenName;
@@ -334,7 +347,7 @@ public class ChooseTag extends TagSupport {
 	public void setLangArg(String langArg) {
 		this.langArg = langArg;
 	}
-	
+
 	public void setIsInit(Boolean isInit) {
 		this.isInit = isInit;
 	}

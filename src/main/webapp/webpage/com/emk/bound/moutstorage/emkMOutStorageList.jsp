@@ -27,7 +27,7 @@
       <t:dgFunOpt funname="goToProcess(id,createBy,createName)" title="流程进度" operationCode="process" urlclass="ace_button"  urlStyle="background-color:#ec4758;" urlfont="fa-tasks"></t:dgFunOpt>
       <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkMOutStorageController.do?goAdd&type=0&winTitle=添加原料布料出库申请单" funname="add" height="600" width="1100"></t:dgToolBar>
       <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkMOutStorageController.do?goUpdate&winTitle=编辑原料布料出库申请单" funname="update" height="600" width="1100"></t:dgToolBar>
-      <t:dgToolBar title="查看" icon="fa fa-search" operationCode="look" url="emkMOutStorageController.do?goUpdate&goUpdate&winTitle=查看原料布料出库申请单" funname="detail" height="600" width="1100"></t:dgToolBar>
+      <t:dgToolBar title="查看" icon="fa fa-search" operationCode="look" url="emkMOutStorageController.do?goUpdate&winTitle=查看原料布料出库申请单" funname="detail" height="600" width="1100"></t:dgToolBar>
 
       <t:dgToolBar title="提交" operationCode="submit" icon="fa fa-arrow-circle-up" funname="doSubmitV"></t:dgToolBar>
       <t:dgToolBar title="删除" operationCode="delete"  icon="fa fa-remove" url="emkMOutStorageController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>

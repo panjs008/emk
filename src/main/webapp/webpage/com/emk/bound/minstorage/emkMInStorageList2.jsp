@@ -28,7 +28,7 @@
 
        <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkMInStorageController.do?goAdd&type=1&winTitle=添加缝制辅料入库申请单" funname="add" height="600" width="1100"></t:dgToolBar>
        <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkMInStorageController.do?goUpdate&winTitle=编辑缝制辅料入库申请单" funname="update" height="600" width="1100"></t:dgToolBar>
-      <t:dgToolBar title="查看" icon="fa fa-search" operationCode="look" url="emkMInStorageController.do?goUpdate&goUpdate&winTitle=查看缝制辅料入库申请单" funname="detail" height="600" width="1100"></t:dgToolBar>
+      <t:dgToolBar title="查看" icon="fa fa-search" operationCode="look" url="emkMInStorageController.do?goUpdate&winTitle=查看缝制辅料入库申请单" funname="detail" height="600" width="1100"></t:dgToolBar>
 
       <t:dgToolBar title="提交" operationCode="submit" icon="fa fa-arrow-circle-up" funname="doSubmitV"></t:dgToolBar>
       <t:dgToolBar title="删除" operationCode="delete"  icon="fa fa-remove" url="emkMInStorageController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>

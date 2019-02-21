@@ -69,13 +69,13 @@
 			</td>
 			<td align="right" >
 				<label class="Validform_label">
-					客户编号:
+					客户代码:
 				</label>
 			</td>
 			<td class="value" >
 				<input id="cusNum" name="cusNum" value="${emkPricePage.cusNum }" readonly type="text" style="width: 140px" class="inputxt"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">客户编号</label>
+				<label class="Validform_label" style="display: none;">客户代码</label>
 			</td>
 			<td align="right" >
 				<label class="Validform_label">

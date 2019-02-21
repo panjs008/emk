@@ -94,7 +94,13 @@ public class EmkCargoSpaceController extends BaseController {
     @RequestMapping(params = {"datagrid"})
     public void datagrid(EmkCargoSpaceEntity emkCargoSpace, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid) {
         CriteriaQuery cq = new CriteriaQuery(EmkCargoSpaceEntity.class, dataGrid);
-
+        TSUser user = (TSUser) request.getSession().getAttribute(ResourceUtil.LOCAL_CLINET_USER);
+        Map roleMap = (Map) request.getSession().getAttribute("ROLE");
+        if(roleMap != null){
+            if(roleMap.get("rolecode").toString().contains("ywy") || roleMap.get("rolecode").toString().contains("ywgdy")|| roleMap.get("rolecode").toString().contains("scgdy")){
+                cq.eq("createBy",user.getUserName());
+            }
+        }
         HqlGenerateUtil.installHql(cq, emkCargoSpace, request.getParameterMap());
 
 
@@ -154,8 +160,9 @@ public class EmkCargoSpaceController extends BaseController {
         try {
             TSUser user = (TSUser) request.getSession().getAttribute("LOCAL_CLINET_USER");
             Map<String, String> map = ParameterUtil.getParamMaps(request.getParameterMap());
-            Map orderNum = this.systemService.findOneForJdbc("select count(0)+1 orderNum from emk_cargo_space where sys_org_code=?", new Object[]{user.getCurrentDepart().getOrgCode()});
-            emkCargoSpace.setCargoNo("DC" + DateUtils.format(new Date(), "yyMMdd") + String.format("%03d", new Object[]{Integer.valueOf(Integer.parseInt(orderNum.get("orderNum").toString()))}));
+            Map orderNum = this.systemService.findOneForJdbc("select CAST(ifnull(max(right(CARGO_NO, 3)),0)+1 AS signed) orderNum from emk_cargo_space");
+            //Map orderNum = this.systemService.findOneForJdbc("select count(0)+1 orderNum from emk_cargo_space where sys_org_code=?", new Object[]{user.getCurrentDepart().getOrgCode()});
+            emkCargoSpace.setCargoNo("DC" + DateUtils.format(new Date(), "yyMMdd") + String.format("%03d", Integer.parseInt(orderNum.get("orderNum").toString())));
             this.emkCargoSpaceService.save(emkCargoSpace);
             String dataRows = (String) map.get("dataRowsVal");
             if ((dataRows != null) && (!dataRows.isEmpty())) {

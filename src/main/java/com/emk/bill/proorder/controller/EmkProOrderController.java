@@ -120,7 +120,7 @@ public class EmkProOrderController extends BaseController {
     public ModelAndView orderMxList(HttpServletRequest request) {
         Map map = ParameterUtil.getParamMaps(request.getParameterMap());
         if ((map.get("proOrderId") != null) && (!map.get("proOrderId").equals(""))) {
-            List<EmkProOrderDetailEntity> emkProOrderDetailEntities = this.systemService.findHql("from EmkProOrderDetailEntity where proOrderId=?", new Object[]{map.get("proOrderId")});
+            List<EmkProOrderDetailEntity> emkProOrderDetailEntities = this.systemService.findHql("from EmkProOrderDetailEntity where proOrderId=?", map.get("proOrderId"));
             request.setAttribute("emkProOrderDetailEntities", emkProOrderDetailEntities);
         }
         return new ModelAndView("com/emk/bill/proorder/orderMxList");
@@ -158,7 +158,7 @@ public class EmkProOrderController extends BaseController {
                 j.setSuccess(false);
                 return j;
             }
-            this.systemService.executeSql("delete from emk_pro_order_detail where PRO_ORDER_ID=?", new Object[]{emkProOrder.getId()});
+            this.systemService.executeSql("delete from emk_pro_order_detail where PRO_ORDER_ID=?", emkProOrder.getId());
             this.emkProOrderService.delete(emkProOrder);
             this.systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
         } catch (Exception e) {
@@ -212,7 +212,7 @@ public class EmkProOrderController extends BaseController {
         message = "生产订单添加成功";
         try {
             Map orderNum = this.systemService.findOneForJdbc("select CAST(ifnull(max(right(ORDER_NO, 6)),0)+1 AS signed) orderNum from emk_pro_order");
-//            Map orderNum = this.systemService.findOneForJdbc("select count(0)+1 orderNum from emk_pro_order where sys_org_code=?", new Object[]{user.getCurrentDepart().getOrgCode()});
+//            Map orderNum = this.systemService.findOneForJdbc("select count(0)+1 orderNum from emk_pro_order where sys_org_code=?", user.getCurrentDepart().getOrgCode()});
             emkProOrder.setOrderNo("D" + DateUtils.format(new Date(), "yyMMdd") + String.format("%06d", Integer.parseInt(orderNum.get("orderNum").toString())));
             emkProOrder.setState("0");
             this.emkProOrderService.save(emkProOrder);
@@ -512,7 +512,7 @@ public class EmkProOrderController extends BaseController {
                                 if (emkContractEntity != null) {
                                     MyBeanUtils.copyBeanNotNull2Bean(contractEntity, emkContractEntity);
                                     this.systemService.saveOrUpdate(emkContractEntity);
-                                    this.systemService.executeSql("delete from emk_enquiry_detail where ENQUIRY_ID=?", new Object[]{emkContractEntity.getId()});
+                                    this.systemService.executeSql("delete from emk_enquiry_detail where ENQUIRY_ID=?", emkContractEntity.getId()});
                                     contractId = emkContractEntity.getId();
                                 } else {
                                     this.systemService.save(contractEntity);
@@ -589,7 +589,7 @@ public class EmkProOrderController extends BaseController {
                                 //生成采购需求单、预采购合同、采购合同
                                 String materialRequiredId;
                                 for (int i = 0; i < 3; i++) {
-                                    sampleDetailEntityList = this.systemService.findHql("from EmkSampleDetailEntity where sampleId=? and type=?", new Object[]{t.getId(), String.valueOf(i)});
+                                    sampleDetailEntityList = this.systemService.findHql("from EmkSampleDetailEntity where sampleId=? and type=?", t.getId(), String.valueOf(i));
                                     if ((sampleDetailEntityList != null) && (sampleDetailEntityList.size() > 0)) {
                                         materialRequiredEntity = new EmkMaterialRequiredEntity();
                                         materialPactEntity = new EmkMaterialPactEntity();
@@ -605,6 +605,7 @@ public class EmkProOrderController extends BaseController {
                                         materialPactEntity.setId(null);
                                         materialPactEntity.setHtNum(contractEntity.getHtNum());
                                         materialPactEntity.setOrderNum(t.getOrderNo());
+                                        materialPactEntity.setState("0");
                                         materialPactEntity.setPartyA(user.getCurrentDepart().getDepartname());
                                         materialPactEntity.setPartyAId(user.getCurrentDepart().getOrgCode());
                                         materialPactEntity.setPartyB(t.getGys());
@@ -623,7 +624,7 @@ public class EmkProOrderController extends BaseController {
                                         pactEntity.setZscghtbh(materialPactEntity.getMaterialNo().replace("CGHT","ZSCGHT"));
                                         pactEntity.setCgxqdh(materialRequiredEntity.getMaterialNo());
 
-                                        /*List<EmkMaterialPactEntity> emkMaterialPactEntityList = this.systemService.findHql("from EmkMaterialPactEntity where materialNo=? and type=?", new Object[]{materialPactEntity.getMaterialNo(), String.valueOf(i)});
+                                        /*List<EmkMaterialPactEntity> emkMaterialPactEntityList = this.systemService.findHql("from EmkMaterialPactEntity where materialNo=? and type=?", materialPactEntity.getMaterialNo(), String.valueOf(i)});
                                         String materialPactId = "";
                                         if ((emkMaterialPactEntityList != null) && (emkMaterialPactEntityList.size() > 0)) {
                                             EmkMaterialPactEntity t2 = (EmkMaterialPactEntity) emkMaterialPactEntityList.get(0);
@@ -666,13 +667,13 @@ public class EmkProOrderController extends BaseController {
                                         materialRequiredEntity.setLeaveDhjqDays(t.getLevelDays());
                                         materialRequiredEntity.setType(String.valueOf(i));
 
-                                       /* List<EmkMaterialRequiredEntity> emkMaterialRequiredEntityList = this.systemService.findHql("from EmkMaterialRequiredEntity where materialNo=? and type=?", new Object[]{materialRequiredEntity.getMaterialNo(), String.valueOf(i)});
+                                       /* List<EmkMaterialRequiredEntity> emkMaterialRequiredEntityList = this.systemService.findHql("from EmkMaterialRequiredEntity where materialNo=? and type=?", materialRequiredEntity.getMaterialNo(), String.valueOf(i)});
                                         materialRequiredId = "";
                                         if ((emkMaterialRequiredEntityList != null) && (emkMaterialRequiredEntityList.size() > 0)) {
                                             EmkMaterialRequiredEntity t2 = (EmkMaterialRequiredEntity) emkMaterialRequiredEntityList.get(0);
                                             MyBeanUtils.copyBeanNotNull2Bean(materialRequiredEntity, t2);
                                             this.systemService.saveOrUpdate(t2);
-                                            this.systemService.executeSql("delete from emk_sample_detail where sample_id=?", new Object[]{t2.getId()});
+                                            this.systemService.executeSql("delete from emk_sample_detail where sample_id=?", t2.getId()});
                                             materialRequiredId = t2.getId();
                                         } else {
                                             this.systemService.save(materialRequiredEntity);
@@ -693,6 +694,11 @@ public class EmkProOrderController extends BaseController {
                                 }
                                 EmkWorkOrderEntity workOrderEntity = systemService.findUniqueByProperty(EmkWorkOrderEntity.class,"workNo",t.getWorkNo());
                                 workOrderEntity.setOrderNo(t.getOrderNo());
+                                workOrderEntity.setOrderUser(user.getRealName());
+                                workOrderEntity.setOrderUserId(user.getUserName());
+                                workOrderEntity.setOrderAdvice(emkProOrderEntity.getLeadAdvice());
+                                workOrderEntity.setOrderDate(DateUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
+
                                 workOrderEntity.setOrderType("0");
                                 systemService.saveOrUpdate(workOrderEntity);
                                 taskService.complete(task1.getId(), variables);

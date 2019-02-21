@@ -8,6 +8,8 @@
       <t:dgCol title="创建人名称"  hidden="true" field="createName"  queryMode="single"  width="120"></t:dgCol>
       <t:dgCol title="创建人登录名称"  hidden="true" field="createBy"  queryMode="single"  width="120"></t:dgCol>
       <t:dgCol title="创建日期"  hidden="true" field="createDate"  queryMode="single"  width="120"></t:dgCol>
+      <t:dgCol title="操作" field="opt" frozenColumn="true"  width="100"></t:dgCol>
+
       <t:dgCol title="所属部门"  hidden="true" field="sysOrgCode"  queryMode="single"  width="120"></t:dgCol>
       <t:dgCol title="验货申请单号"  field="checkNum" query="true"  queryMode="single"  width="80"></t:dgCol>
       <t:dgCol title="订单号"  field="orderNo"  query="true" queryMode="single"  width="80"></t:dgCol>
@@ -33,7 +35,7 @@
   </t:datagrid>
   </div>
  </div>
- <script src = "webpage/com/emk/check/check/emkCheckList.js"></script>		
+ <script src = "webpage/com/emk/check/check/emkCheckList.js"></script>
  <script type="text/javascript">
  $(document).ready(function(){
  });
@@ -105,7 +107,7 @@
                      if (msg == "完成") {
                          createdetailwindow('流程进度--当前环节：' + msg, 'flowController.do?goProcess&processUrl=com/emk/check/check/emkCheck-process&id=' + id, 1200, height);
                      } else {
-                         if("${ROLE.rolecode}" == "ycjl") {
+                         if("${ROLE.rolecode}" == "zjjl") {
                              createwindow("流程进度--当前环节：" + msg, "flowController.do?goProcess&processUrl=com/emk/check/check/emkCheck-process&id=" + id, 1200, height);
                          }else{
                              createdetailwindow('流程进度--当前环节：' + msg, 'flowController.do?goProcess&processUrl=com/emk/check/check/emkCheck-process&id=' + id, 1200, height);
@@ -116,8 +118,8 @@
          }
      });
  }
-   
- 
+
+
 //导入
 function ImportXls() {
 	openuploadwin('Excel导入', 'emkCheckController.do?upload', "emkCheckList");

@@ -28,7 +28,7 @@
             <t:dgFunOpt funname="goToProcess(id,createBy,createName)" title="流程进度" operationCode="process" urlclass="ace_button"  urlStyle="background-color:#ec4758;" urlfont="fa-tasks"></t:dgFunOpt>
             <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkMaterialContractController.do?goAdd&&type=1&winTitle=录入原料采购单" funname="add" height="600" width="1100"></t:dgToolBar>
             <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkMaterialContractController.do?goUpdate&winTitle=编辑原料采购单" funname="update" height="600" width="1100"></t:dgToolBar>
-            <t:dgToolBar title="查看" icon="fa fa-search" operationCode="look" url="emkMaterialContractController.do?goUpdate&goUpdate&winTitle=查看原料采购单" funname="detail" height="600" width="1100"></t:dgToolBar>
+            <t:dgToolBar title="查看" icon="fa fa-search" operationCode="look" url="emkMaterialContractController.do?goUpdate&winTitle=查看原料采购单" funname="detail" height="600" width="1100"></t:dgToolBar>
 
             <t:dgToolBar title="提交" operationCode="submit" icon="fa fa-arrow-circle-right" funname="doSubmitV"></t:dgToolBar>
             <t:dgToolBar title="导出" operationCode="exp" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>

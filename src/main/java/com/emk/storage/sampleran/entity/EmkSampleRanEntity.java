@@ -32,7 +32,7 @@ public class EmkSampleRanEntity
     private Double chengben;
     @Excel(name = "样品ID")
     private String sampleId;
-
+    private String type;                        // 0 染色 1 助剂
     @Id
     @GeneratedValue(generator = "paymentableGenerator")
     @GenericGenerator(name = "paymentableGenerator", strategy = "uuid")
@@ -133,5 +133,14 @@ public class EmkSampleRanEntity
 
     public void setSampleId(String sampleId) {
         this.sampleId = sampleId;
+    }
+
+    @Column(name = "type", nullable = true, length = 32)
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

@@ -254,17 +254,34 @@
                 <button class="tab-btn btn-right"><i class="icon-font">&#xe629;</i></button>
 			</div>
 			<div class="layout-main-body" style="margin:0;overflow-y: hidden;">
-				<c:choose>
+				<%--<c:choose>
 					<c:when test="${ROLE.rolecode eq 'cgjl' || ROLE.rolecode eq 'cgy' }">
 						<iframe class="body-iframe" name="iframe0" width="100%" height="100%"
 								src="emkMaterialContractController.do?list" frameborder="0" data-id="home.html" seamless></iframe>
 					</c:when>
+					<c:when test="${ROLE.rolecode eq 'jsjl' || ROLE.rolecode eq 'jsy' }">
+						<iframe class="body-iframe" name="iframe0" width="100%" height="100%"
+								src="emkMaterialController.do?list" frameborder="0" data-id="home.html" seamless></iframe>
+					</c:when>
+					<c:when test="${ROLE.rolecode eq 'cwjl' || ROLE.rolecode eq 'cw' }">
+						<iframe class="body-iframe" name="iframe0" width="100%" height="100%"
+								src="emkContractController.do?list" frameborder="0" data-id="home.html" seamless></iframe>
+					</c:when>
+					<c:when test="${ROLE.rolecode eq 'zjjl' }">
+						<iframe class="body-iframe" name="iframe0" width="100%" height="100%"
+								src="emkCheckController.do?list" frameborder="0" data-id="home.html" seamless></iframe>
+					</c:when>
+					<c:when test="${ROLE.rolecode eq 'zjy' }">
+						<iframe class="body-iframe" name="iframe0" width="100%" height="100%"
+								src="emkQualityCheckController.do?list" frameborder="0" data-id="home.html" seamless></iframe>
+					</c:when>
 					<c:otherwise>
 						<iframe class="body-iframe" name="iframe0" width="100%" height="100%"
-								src="emkProOrderController.do?list" frameborder="0" data-id="home.html" seamless></iframe>
+								src="emkWorkOrderController.do?list" frameborder="0" data-id="home.html" seamless></iframe>
 					</c:otherwise>
-				</c:choose>
-
+				</c:choose>--%>
+				<iframe class="body-iframe" name="iframe0" width="100%" height="100%"
+						src="emkWorkOrderController.do?list" frameborder="0" data-id="home.html" seamless></iframe>
 			</div>
 		</section>
 		

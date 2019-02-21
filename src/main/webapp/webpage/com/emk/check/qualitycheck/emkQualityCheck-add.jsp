@@ -52,13 +52,13 @@
 				</td>
 				<td align="right" >
 					<label class="Validform_label">
-						客户编号:
+						客户代码:
 					</label>
 				</td>
 				<td class="value" >
 					<input id="cusNum" name="cusNum" readonly type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
 					<span class="Validform_checktip"></span>
-					<label class="Validform_label" style="display: none;">客户编号</label>
+					<label class="Validform_label" style="display: none;">客户代码</label>
 				</td>
 				<td align="right" >
 					<label class="Validform_label">
@@ -132,6 +132,29 @@
 			<tr>
 				<td align="right">
 					<label class="Validform_label">
+						查验结果:
+					</label>
+				</td>
+				<td class="value">
+					<input name="cyjg" type="radio" datatype="*"  <c:if test="${emkQualityCheckPage.cyjg eq '0'}">checked="true"</c:if> value="0">
+					通过
+					<input name="cyjg" type="radio" datatype="*"  <c:if test="${emkQualityCheckPage.cyjg eq '1'}">checked="true"</c:if> value="1">
+					不通过
+					<span class="Validform_checktip"></span>
+					<label class="Validform_label" style="display: none;">查验结果</label>
+				</td>
+				<td align="right">
+					<label class="Validform_label">
+						工单号:
+					</label>
+				</td>
+				<td class="value">
+					<input id="workNo" name="workNo" datatype="*" value="${emkQualityCheckPage.workNo}"  type="text" style="width: 150px" class="inputxt" />
+					<span class="Validform_checktip"></span>
+					<label class="Validform_label" style="display: none;">工单号</label>
+				</td>
+				<td align="right">
+					<label class="Validform_label">
 						报告日期:
 					</label>
 				</td>
@@ -150,19 +173,7 @@
 					<span class="Validform_checktip"></span>
 					<label class="Validform_label" style="display: none;">检查日期</label>
 				</td>
-				<td align="right">
-					<label class="Validform_label">
-						查验结果:
-					</label>
-				</td>
-				<td class="value" colspan="3">
-					<input name="cyjg" type="radio" datatype="*"  <c:if test="${emkQualityCheckPage.cyjg eq '0'}">checked="true"</c:if> value="0">
-					通过
-					<input name="cyjg" type="radio" datatype="*"  <c:if test="${emkQualityCheckPage.cyjg eq '1'}">checked="true"</c:if> value="1">
-					不通过
-					<span class="Validform_checktip"></span>
-					<label class="Validform_label" style="display: none;">查验结果</label>
-				</td>
+
 			</tr>
 			<tr>
 				<td align="right">

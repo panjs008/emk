@@ -71,8 +71,11 @@ public class FlowController {
             StringBuilder sql = new StringBuilder();
             StringBuilder countsql = new StringBuilder();
 
-            sql.append(" SELECT DATE_FORMAT(t1.START_TIME_,'%Y-%m-%d %H:%i:%s') startTime,DATE_FORMAT(t1.END_TIME_,'%Y-%m-%d %H:%i:%s') endTime,t1.*,CASE \n");
-            sql.append( " WHEN t1.TASK_DEF_KEY_='orderTask' THEN t2.create_name \n");
+            sql.append("select DATE_FORMAT(t1.START_TIME_,'%Y-%m-%d %H:%i:%s') startTime,DATE_FORMAT(t1.END_TIME_,'%Y-%m-%d %H:%i:%s') endTime,t1.*,b.* from emk_approval a \n" +
+                    " left join emk_approval_detail b on b.approval_id = a.id \n" +
+                    " left join act_hi_taskinst t1 on t1.assignee_= a.form_id and t1.task_def_key_=b.bpm_node ");
+            //sql.append(" SELECT DATE_FORMAT(t1.START_TIME_,'%Y-%m-%d %H:%i:%s') startTime,DATE_FORMAT(t1.END_TIME_,'%Y-%m-%d %H:%i:%s') endTime,t1.*,CASE \n");
+            /*sql.append( " WHEN t1.TASK_DEF_KEY_='orderTask' THEN t2.create_name \n");
             sql.append( " WHEN t1.TASK_DEF_KEY_='htTask' THEN t2.create_name \n");
             sql.append( " WHEN t1.TASK_DEF_KEY_='testTask' THEN t2.create_name \n");
             sql.append( " WHEN t1.TASK_DEF_KEY_='testcostTask' THEN t2.create_name \n");
@@ -93,14 +96,6 @@ public class FlowController {
             sql.append( " WHEN t1.TASK_DEF_KEY_='checkfactoryTask' THEN t2.create_name \n");
 
 
-            //ERP工单流程
-            /*" WHEN t1.TASK_DEF_KEY_='khxpTask' THEN t2.ask_work_user \n" +
-                    " WHEN t1.TASK_DEF_KEY_='sampleTask' THEN t2.sample_user \n" +
-                    " WHEN t1.TASK_DEF_KEY_='sampleCheckTask' THEN t2.sample_check_user \n" +
-                    " WHEN t1.TASK_DEF_KEY_='billTask' THEN t2.order_user \n" +
-                    " WHEN t1.TASK_DEF_KEY_='htTask' THEN t2.ht_user \n" +
-                    " WHEN t1.TASK_DEF_KEY_='produceTask' THEN t2.produce_user \n" +
-                    " WHEN t1.TASK_DEF_KEY_='outTask' THEN t2.out_user \n" +*/
             if(map.get("sqlType").equals("emk")){
                 sql.append( " WHEN t1.TASK_DEF_KEY_='khxpTask' THEN t2.ask_work_user \n");
                 sql.append( " WHEN t1.TASK_DEF_KEY_='sampleTask' THEN t2.sample_user \n");
@@ -147,8 +142,12 @@ public class FlowController {
                 sql.append( " WHEN t1.TASK_DEF_KEY_='rkTask' THEN t2.rk_user_name \n");
                 sql.append( " WHEN t1.TASK_DEF_KEY_='ckTask' THEN t2.ck_user_name \n");
             }
+            //预采购合同、采购合同单流程
+            if(map.get("sqlType").equals("pact")){
+                sql.append( " WHEN t1.TASK_DEF_KEY_='zshtTask' THEN t2.hter \n");
+            }
             //验厂流程
-            if(map.get("sqlType").equals("checkfactory")){
+            if(map.get("sqlType").equals("checkfactory") || map.get("sqlType").equals("check")){
                 sql.append( " WHEN t1.TASK_DEF_KEY_='cyTask' THEN t2.cyer \n");
                 sql.append( " WHEN t1.TASK_DEF_KEY_='bgTask' THEN t2.bger \n");
             }
@@ -213,11 +212,17 @@ public class FlowController {
                     sql.append("left join emk_quality_check t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='"+map.get("id")+"'");break;
                 case "sizecheck":
                     sql.append("left join emk_size_check t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='"+map.get("id")+"'");break;
-            }
+                case "pact":
+                    sql.append("left join emk_material_pact t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='"+map.get("id")+"'");break;
+            }*/
 
-            countsql.append("SELECT COUNT(1) FROM act_hi_taskinst t1 where ASSIGNEE_='"+map.get("id")+"' ");
+            //countsql.append("SELECT COUNT(1) FROM act_hi_taskinst t1 where ASSIGNEE_='"+map.get("id")+"' ");
+            sql.append(" where ASSIGNEE_='"+map.get("id")+"' ");
             sql.append(" order by t1.START_TIME_ asc ");
 
+            //countsql.append(" select COUNT(1) from emk_approval a left join emk_approval_detail b on b.approval_id = a.id where ASSIGNEE_='"+map.get("id")+"' ");
+            countsql.append(" select COUNT(1) from emk_approval a left join emk_approval_detail b on b.approval_id = a.id " +
+                    " left join act_hi_taskinst t1 on t1.assignee_= a.form_id and t1.task_def_key_=b.bpm_node where ASSIGNEE_='"+map.get("id")+"'");
             if(dataGrid.getPage()==1){
                 sql.append(" limit 0, "+dataGrid.getRows());
             }else{
@@ -305,11 +310,12 @@ public class FlowController {
 
             List<String> highLightedActivitis = new ArrayList();
 
-            List<String> highLightedFlows = ParameterUtil.getHighLightedFlows(definitionEntity, highLightedActivitList);
+            List<String> highLightedFlows = ParameterUtil.getHighLightedFlows2(definitionEntity, highLightedActivitList,id,historyService);
             for (HistoricActivityInstance tempActivity : highLightedActivitList) {
                 String activityId = tempActivity.getActivityId();
                 highLightedActivitis.add(activityId);
             }
+
             InputStream imageStream = diagramGenerator.generateDiagram(bpmnModel, "png", highLightedActivitis, highLightedFlows, "宋体", "宋体", null, 1.0D);
 
             byte[] b = new byte[1024];
@@ -330,12 +336,12 @@ public class FlowController {
         RepositoryService repositoryService = processEngine.getRepositoryService();
 
         //获取在classpath下的流程文件
-        InputStream in = this.getClass().getClassLoader().getResourceAsStream("/process/order.zip");
+        InputStream in = this.getClass().getClassLoader().getResourceAsStream("/process/enquiry2.zip");
         ZipInputStream zipInputStream = new ZipInputStream(in);
         //使用deploy方法发布流程
         repositoryService.createDeployment()
                 .addZipInputStream(zipInputStream)
-                .name("order")
+                .name("enquiry2")
                 .deploy();
       /*  Map<String, Object> variables = new HashMap<String,Object>();
         variables.put("inputUser", "panjs");//表示惟一用户

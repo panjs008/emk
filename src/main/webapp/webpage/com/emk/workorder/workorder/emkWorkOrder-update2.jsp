@@ -267,7 +267,7 @@
 							</label>
 						</td>
 						<td class="value" colspan="5">
-							<textarea  id="orderAdvice" style="width:95%;height:50px" class="inputxt" rows="3" name="orderAdvice"></textarea>
+							<textarea  id="orderAdvice" style="width:95%;height:50px" class="inputxt" rows="3" name="orderAdvice">${emkWorkOrderPage.orderAdvice}</textarea>
 							<span class="Validform_checktip"></span>
 							<label class="Validform_label" style="display: none;">入单处理内容</label>
 						</td>
@@ -314,7 +314,7 @@
 							</label>
 						</td>
 						<td class="value" colspan="5">
-							<textarea  id="htAdvice" style="width:95%;height:50px" class="inputxt" rows="3" name="htAdvice"></textarea>
+							<textarea  id="htAdvice" style="width:95%;height:50px" class="inputxt" rows="3" name="htAdvice">${emkWorkOrderPage.htAdvice}</textarea>
 							<span class="Validform_checktip"></span>
 							<label class="Validform_label" style="display: none;">合同处理内容</label>
 						</td>
@@ -360,7 +360,7 @@
 							</label>
 						</td>
 						<td class="value" colspan="5">
-							<textarea  id="produceAdvice" style="width:95%;height:50px" class="inputxt" rows="3" name="produceAdvice"></textarea>
+							<textarea  id="produceAdvice" style="width:95%;height:50px" class="inputxt" rows="3" name="produceAdvice">${emkWorkOrderPage.produceAdvice}</textarea>
 							<span class="Validform_checktip"></span>
 							<label class="Validform_label" style="display: none;">合同处理内容</label>
 						</td>
@@ -422,7 +422,7 @@
 							</label>
 						</td>
 						<td class="value" colspan="5">
-							<textarea  id="checkAdvice" style="width:95%;height:50px" class="inputxt" rows="3" name="checkAdvice"></textarea>
+							<textarea  id="checkAdvice" style="width:95%;height:50px" class="inputxt" rows="3" name="checkAdvice">${emkWorkOrderPage.checkAdvice}</textarea>
 							<span class="Validform_checktip"></span>
 							<label class="Validform_label" style="display: none;">质检处理意见</label>
 						</td>
@@ -469,7 +469,7 @@
 							</label>
 						</td>
 						<td class="value" colspan="5">
-							<textarea  id="outAdvice" style="width:95%;height:50px" class="inputxt" rows="3" name="outAdvice"></textarea>
+							<textarea  id="outAdvice" style="width:95%;height:50px" class="inputxt" rows="3" name="outAdvice">${emkWorkOrderPage.outAdvice}</textarea>
 							<span class="Validform_checktip"></span>
 							<label class="Validform_label" style="display: none;">出货处理意见</label>
 						</td>
@@ -505,7 +505,7 @@
 							</label>
 						</td>
 						<td class="value" colspan="5">
-							<textarea  id="caiwuAdvice" style="width:95%;height:50px" class="inputxt" rows="3" name="caiwuAdvice"></textarea>
+							<textarea  id="caiwuAdvice" style="width:95%;height:50px" class="inputxt" rows="3" name="caiwuAdvice">${emkWorkOrderPage.caiwuAdvice}</textarea>
 							<span class="Validform_checktip"></span>
 							<label class="Validform_label" style="display: none;">财务处理意见</label>
 						</td>

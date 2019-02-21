@@ -79,13 +79,13 @@
 		<tr>
 			<td align="right" >
 				<label class="Validform_label">
-					客户编号:
+					客户代码:
 				</label>
 			</td>
 			<td class="value" >
 				<input id="cusNum" name="cusNum" readonly type="text" value="${emkMaterialContractPage.cusNum }" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">客户编号</label>
+				<label class="Validform_label" style="display: none;">客户代码</label>
 			</td>
 			<td align="right" >
 				<label class="Validform_label">
@@ -313,9 +313,9 @@
 									style="width: 95%;"></td>
 			<td align="left"><input nullmsg="请输入入库数量！" id="inTotal00" errormsg="请输入入库数量" name="rkglMxList[#index#].inTotal" maxlength="100" type="text" value=""
 									style="width: 95%;"></td>
-			<td align="left"><input nullmsg="请输入出库数量！" id="outTotal00" errormsg="请输入出库数量" name="rkglMxList[#index#].outTotal" maxlength="100" type="text" value=""
+			<td align="left"><input nullmsg="请输入出库数量！" ignore="ignore"  id="outTotal00" errormsg="请输入出库数量" name="rkglMxList[#index#].outTotal" maxlength="100" type="text" value=""
 									style="width: 95%;"></td>
-			<td align="left"><input nullmsg="请输入剩余数量！" id="leavelTotal00" errormsg="请输入剩余数量" name="rkglMxList[#index#].leavelTotal" maxlength="100" type="text" value=""
+			<td align="left"><input nullmsg="请输入剩余数量！" ignore="ignore"  id="leavelTotal00" errormsg="请输入剩余数量" name="rkglMxList[#index#].leavelTotal" maxlength="100" type="text" value=""
 									style="width: 95%;"></td>
 		</tr>
 		</tbody>

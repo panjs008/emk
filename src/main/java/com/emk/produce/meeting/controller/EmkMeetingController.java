@@ -81,7 +81,13 @@ public class EmkMeetingController extends BaseController {
     @RequestMapping(params = {"datagrid"})
     public void datagrid(EmkMeetingEntity emkMeeting, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid) {
         CriteriaQuery cq = new CriteriaQuery(EmkMeetingEntity.class, dataGrid);
-
+        TSUser user = (TSUser) request.getSession().getAttribute(ResourceUtil.LOCAL_CLINET_USER);
+        Map roleMap = (Map) request.getSession().getAttribute("ROLE");
+        if(roleMap != null){
+            if(roleMap.get("rolecode").toString().contains("ywy") || roleMap.get("rolecode").toString().contains("ywgdy")|| roleMap.get("rolecode").toString().contains("scgdy")){
+                cq.eq("createBy",user.getUserName());
+            }
+        }
         HqlGenerateUtil.installHql(cq, emkMeeting, request.getParameterMap());
 
 
@@ -182,8 +188,9 @@ public class EmkMeetingController extends BaseController {
 
         TSUser user = (TSUser) req.getSession().getAttribute("LOCAL_CLINET_USER");
         Map map = ParameterUtil.getParamMaps(req.getParameterMap());
-        Map orderNum = this.systemService.findOneForJdbc("select count(0)+1 orderNum from emk_test where sys_org_code=?", new Object[]{user.getCurrentDepart().getOrgCode()});
-        req.setAttribute("meetingNo", "HY" + DateUtils.format(new Date(), "yyMMdd") + String.format("%03d", new Object[]{Integer.valueOf(Integer.parseInt(orderNum.get("orderNum").toString()))}));
+        Map orderNum = this.systemService.findOneForJdbc("select CAST(ifnull(max(right(MEETING_NO, 3)),0)+1 AS signed) orderNum from emk_meeting");
+        //Map orderNum = this.systemService.findOneForJdbc("select count(0)+1 orderNum from emk_test where sys_org_code=?", new Object[]{user.getCurrentDepart().getOrgCode()});
+        req.setAttribute("meetingNo", "HY" + DateUtils.format(new Date(), "yyMMdd") + String.format("%03d", Integer.parseInt(orderNum.get("orderNum").toString())));
         if (StringUtil.isNotEmpty(emkMeeting.getId())) {
             emkMeeting = (EmkMeetingEntity) this.emkMeetingService.getEntity(EmkMeetingEntity.class, emkMeeting.getId());
             req.setAttribute("emkMeetingPage", emkMeeting);

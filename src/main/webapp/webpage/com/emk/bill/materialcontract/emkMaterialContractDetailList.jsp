@@ -30,9 +30,15 @@
          $("#add_jeecgOrderProduct_table").find("[id='signTotal00']").attr("datatype","*");
          $("#add_jeecgOrderProduct_table").find("[id='signPrice00']").attr("datatype","*");*/
 
+        $("#add_jeecgOrderProduct_table").find("[id='proName00']").attr("datatype","*");
+        $("#add_jeecgOrderProduct_table").find("[id='proNum00']").attr("datatype","*");
+        $("#add_jeecgOrderProduct_table").find("[id='signTotal00']").attr("datatype","n");
+        $("#add_jeecgOrderProduct_table").find("[id='signPrice00']").attr("datatype","d");
+
         $("#add_jeecgOrderProduct_table").find("[id='proName00']").attr("id","proName"+flag);
         $("#add_jeecgOrderProduct_table").find("[id='brand00']").attr("id","brand"+flag);
         $("#add_jeecgOrderProduct_table").find("[id='proNum00']").attr("id","proNum"+flag);
+
 
 
 

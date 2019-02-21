@@ -22,6 +22,7 @@
       <t:dgCol title="数量"  field="total"  queryMode="single"  width="70"></t:dgCol>
       <t:dgCol title="中期验货状态"  field="zqyhSate"  queryMode="single"  width="80"></t:dgCol>
       <t:dgCol title="尾期验货状态"  field="wqyhState"  queryMode="single"  width="80"></t:dgCol>
+      <t:dgToolBar title="查看" icon="fa fa-search" operationCode="look" url="emkYjyhTimeController.do?goUpdate&winTitle=查看预计验货时间" funname="detail" height="600" width="1000"></t:dgToolBar>
 
       <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkYjyhTimeController.do?goAdd&winTitle=录入预计验货时间" funname="add" height="600" width="1000"></t:dgToolBar>
       <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkYjyhTimeController.do?goUpdate&winTitle=编辑预计验货时间" funname="update" height="600" width="1000"></t:dgToolBar>

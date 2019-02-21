@@ -9,6 +9,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
+import java.text.DecimalFormat;
 import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -47,9 +48,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.UriComponentsBuilder;
 
-@Api(value = "EmkSampleRequired", description = "样品需求单", tags = {"emkSampleRequiredController"})
+@Api(value = "EmkSampleRequired", description = "样品需求单", tags = "emkSampleRequiredController")
 @Controller
-@RequestMapping({"/emkSampleRequiredController"})
+@RequestMapping("/emkSampleRequiredController")
 public class EmkSampleRequiredController
         extends BaseController {
     private static final Logger logger = Logger.getLogger(EmkSampleRequiredController.class);
@@ -60,12 +61,12 @@ public class EmkSampleRequiredController
     @Autowired
     private Validator validator;
 
-    @RequestMapping(params = {"list"})
+    @RequestMapping(params = "list")
     public ModelAndView list(HttpServletRequest request) {
         return new ModelAndView("com/emk/storage/samplerequired/emkSampleRequiredList");
     }
 
-    @RequestMapping(params = {"datagrid"})
+    @RequestMapping(params = "datagrid")
     public void datagrid(EmkSampleRequiredEntity emkSampleRequired, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid) {
         CriteriaQuery cq = new CriteriaQuery(EmkSampleRequiredEntity.class, dataGrid);
         TSUser user = (TSUser) request.getSession().getAttribute(ResourceUtil.LOCAL_CLINET_USER);
@@ -83,12 +84,12 @@ public class EmkSampleRequiredController
         TagUtil.datagrid(response, dataGrid);
     }
 
-    @RequestMapping(params = {"doDel"})
+    @RequestMapping(params = "doDel")
     @ResponseBody
     public AjaxJson doDel(EmkSampleRequiredEntity emkSampleRequired, HttpServletRequest request) {
         String message = null;
         AjaxJson j = new AjaxJson();
-        emkSampleRequired = (EmkSampleRequiredEntity) this.systemService.getEntity(EmkSampleRequiredEntity.class, emkSampleRequired.getId());
+        emkSampleRequired = systemService.getEntity(EmkSampleRequiredEntity.class, emkSampleRequired.getId());
         message = "样品需求单删除成功";
         try {
             this.emkSampleRequiredService.delete(emkSampleRequired);
@@ -102,7 +103,7 @@ public class EmkSampleRequiredController
         return j;
     }
 
-    @RequestMapping(params = {"doBatchDel"})
+    @RequestMapping(params = "doBatchDel")
     @ResponseBody
     public AjaxJson doBatchDel(String ids, HttpServletRequest request) {
         String message = null;
@@ -110,7 +111,7 @@ public class EmkSampleRequiredController
         message = "样品需求单删除成功";
         try {
             for (String id : ids.split(",")) {
-                EmkSampleRequiredEntity emkSampleRequired = (EmkSampleRequiredEntity) this.systemService.getEntity(EmkSampleRequiredEntity.class, id);
+                EmkSampleRequiredEntity emkSampleRequired = systemService.getEntity(EmkSampleRequiredEntity.class, id);
 
 
                 this.emkSampleRequiredService.delete(emkSampleRequired);
@@ -125,7 +126,7 @@ public class EmkSampleRequiredController
         return j;
     }
 
-    @RequestMapping(params = {"doAdd"})
+    @RequestMapping(params = "doAdd")
     @ResponseBody
     public AjaxJson doAdd(EmkSampleRequiredEntity emkSampleRequired, HttpServletRequest request) {
         String message = null;
@@ -156,13 +157,13 @@ public class EmkSampleRequiredController
         return j;
     }
 
-    @RequestMapping(params = {"doUpdate"})
+    @RequestMapping(params = "doUpdate")
     @ResponseBody
     public AjaxJson doUpdate(EmkSampleRequiredEntity emkSampleRequired, HttpServletRequest request) {
         String message = null;
         AjaxJson j = new AjaxJson();
         message = "样品需求单更新成功";
-        EmkSampleRequiredEntity t = (EmkSampleRequiredEntity) this.emkSampleRequiredService.get(EmkSampleRequiredEntity.class, emkSampleRequired.getId());
+        EmkSampleRequiredEntity t = emkSampleRequiredService.get(EmkSampleRequiredEntity.class, emkSampleRequired.getId());
         try {
             Map map = ParameterUtil.getParamMaps(request.getParameterMap());
 
@@ -188,21 +189,32 @@ public class EmkSampleRequiredController
         return j;
     }
 
-    @RequestMapping(params = {"goAdd"})
+    @RequestMapping(params = "goAdd")
     public ModelAndView goAdd(EmkSampleRequiredEntity emkSampleRequired, HttpServletRequest req) {
         req.setAttribute("kdDate", DateUtils.format(new Date(), "yyyy-MM-dd"));
         if (StringUtil.isNotEmpty(emkSampleRequired.getId())) {
-            emkSampleRequired = (EmkSampleRequiredEntity) this.emkSampleRequiredService.getEntity(EmkSampleRequiredEntity.class, emkSampleRequired.getId());
+            emkSampleRequired = emkSampleRequiredService.getEntity(EmkSampleRequiredEntity.class, emkSampleRequired.getId());
             req.setAttribute("emkSampleRequiredPage", emkSampleRequired);
         }
         return new ModelAndView("com/emk/storage/samplerequired/emkSampleRequired-add");
     }
 
-    @RequestMapping(params = {"goUpdate"})
+    @RequestMapping(params = "goUpdate")
     public ModelAndView goUpdate(EmkSampleRequiredEntity emkSampleRequired, HttpServletRequest req) {
         if (StringUtil.isNotEmpty(emkSampleRequired.getId())) {
-            emkSampleRequired = (EmkSampleRequiredEntity) this.emkSampleRequiredService.getEntity(EmkSampleRequiredEntity.class, emkSampleRequired.getId());
+            emkSampleRequired = emkSampleRequiredService.getEntity(EmkSampleRequiredEntity.class, emkSampleRequired.getId());
             req.setAttribute("emkSampleRequiredPage", emkSampleRequired);
+            try {
+                Map countMap = MyBeanUtils.culBeanCounts(emkSampleRequired);
+                req.setAttribute("countMap", countMap);
+                double a=0,b=0;
+                a = Double.parseDouble(countMap.get("finishColums").toString());
+                b = Double.parseDouble(countMap.get("Colums").toString());
+                DecimalFormat df = new DecimalFormat("#.00");
+                req.setAttribute("recent", df.format(a*100/b));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             Calendar cal1 = Calendar.getInstance();
             cal1.setTime(org.jeecgframework.core.util.DateUtils.str2Date(emkSampleRequired.getYsDate(), org.jeecgframework.core.util.DateUtils.date_sdf));
             Calendar cal2 = Calendar.getInstance();
@@ -214,13 +226,13 @@ public class EmkSampleRequiredController
         return new ModelAndView("com/emk/storage/samplerequired/emkSampleRequired-update");
     }
 
-    @RequestMapping(params = {"upload"})
+    @RequestMapping(params = "upload")
     public ModelAndView upload(HttpServletRequest req) {
         req.setAttribute("controller_name", "emkSampleRequiredController");
         return new ModelAndView("common/upload/pub_excel_upload");
     }
 
-    @RequestMapping(params = {"exportXls"})
+    @RequestMapping(params = "exportXls")
     public String exportXls(EmkSampleRequiredEntity emkSampleRequired, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid, ModelMap modelMap) {
         CriteriaQuery cq = new CriteriaQuery(EmkSampleRequiredEntity.class, dataGrid);
         HqlGenerateUtil.installHql(cq, emkSampleRequired, request.getParameterMap());
@@ -233,7 +245,7 @@ public class EmkSampleRequiredController
         return "jeecgExcelView";
     }
 
-    @RequestMapping(params = {"exportXlsByT"})
+    @RequestMapping(params = "exportXlsByT")
     public String exportXlsByT(EmkSampleRequiredEntity emkSampleRequired, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid, ModelMap modelMap) {
         modelMap.put("fileName", "样品需求单");
         modelMap.put("entity", EmkSampleRequiredEntity.class);
@@ -252,18 +264,18 @@ public class EmkSampleRequiredController
         return Result.success(listEmkSampleRequireds);
     }
 
-    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.GET})
+    @RequestMapping(value = "/{id}", method = {org.springframework.web.bind.annotation.RequestMethod.GET})
     @ResponseBody
     @ApiOperation(value = "根据ID获取样品需求单信息", notes = "根据ID获取样品需求单信息", httpMethod = "GET", produces = "application/json")
     public ResponseMessage<?> get(@ApiParam(required = true, name = "id", value = "ID") @PathVariable("id") String id) {
-        EmkSampleRequiredEntity task = (EmkSampleRequiredEntity) this.emkSampleRequiredService.get(EmkSampleRequiredEntity.class, id);
+        EmkSampleRequiredEntity task = emkSampleRequiredService.get(EmkSampleRequiredEntity.class, id);
         if (task == null) {
             return Result.error("根据ID获取样品需求单信息为空");
         }
         return Result.success(task);
     }
 
-    @RequestMapping(method = {org.springframework.web.bind.annotation.RequestMethod.POST}, consumes = {"application/json"})
+    @RequestMapping(method = {org.springframework.web.bind.annotation.RequestMethod.POST}, consumes = "application/json")
     @ResponseBody
     @ApiOperation("创建样品需求单")
     public ResponseMessage<?> create(@ApiParam(name = "样品需求单对象") @RequestBody EmkSampleRequiredEntity emkSampleRequired, UriComponentsBuilder uriBuilder) {
@@ -280,7 +292,7 @@ public class EmkSampleRequiredController
         return Result.success(emkSampleRequired);
     }
 
-    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.PUT}, consumes = {"application/json"})
+    @RequestMapping(value = "/{id}", method = {org.springframework.web.bind.annotation.RequestMethod.PUT}, consumes = "application/json")
     @ResponseBody
     @ApiOperation(value = "更新样品需求单", notes = "更新样品需求单")
     public ResponseMessage<?> update(@ApiParam(name = "样品需求单对象") @RequestBody EmkSampleRequiredEntity emkSampleRequired) {
@@ -297,7 +309,7 @@ public class EmkSampleRequiredController
         return Result.success("更新样品需求单信息成功");
     }
 
-    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.DELETE})
+    @RequestMapping(value = "/{id}", method = {org.springframework.web.bind.annotation.RequestMethod.DELETE})
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ApiOperation("删除样品需求单")
     public ResponseMessage<?> delete(@ApiParam(name = "id", value = "ID", required = true) @PathVariable("id") String id) {

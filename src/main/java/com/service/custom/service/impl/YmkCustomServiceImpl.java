@@ -69,8 +69,6 @@ public class YmkCustomServiceImpl
         map.put("cus_from", t.getCusFrom());
         map.put("address", t.getAddress());
         map.put("telphone", t.getTelphone());
-        map.put("fax", t.getFax());
-        map.put("company_net", t.getCompanyNet());
         map.put("remark", t.getRemark());
         return map;
     }
@@ -87,8 +85,6 @@ public class YmkCustomServiceImpl
         sql = sql.replace("#{cus_from}", String.valueOf(t.getCusFrom()));
         sql = sql.replace("#{address}", String.valueOf(t.getAddress()));
         sql = sql.replace("#{telphone}", String.valueOf(t.getTelphone()));
-        sql = sql.replace("#{fax}", String.valueOf(t.getFax()));
-        sql = sql.replace("#{company_net}", String.valueOf(t.getCompanyNet()));
         sql = sql.replace("#{remark}", String.valueOf(t.getRemark()));
         sql = sql.replace("#{UUID}", UUID.randomUUID().toString());
         return sql;

@@ -441,7 +441,7 @@ public class EmkProduceScheduleEntity implements java.io.Serializable {
 	 *方法: 取得java.lang.String
 	 *@return: java.lang.String  创建人名称
 	 */
-	@Formula("(select p.NAME_ from act_ru_task p where p.ASSIGNEE_ = id)")
+	//@Formula("(select p.NAME_ from act_ru_task p where p.ASSIGNEE_ = id)")
 	@Column(name ="CREATE_NAME",nullable=true,length=50)
 	public java.lang.String getCreateName(){
 		return this.createName;

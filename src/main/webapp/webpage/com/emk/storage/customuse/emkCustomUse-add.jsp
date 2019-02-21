@@ -64,117 +64,137 @@
 	</script>
 </head>
 <body>
-<t:formvalid formid="formobj" dialog="true" usePlugin="password" layout="table" action="emkCustomUseController.do?doAdd" tiptype="1">
+<t:formvalid formid="formobj" dialog="true" usePlugin="password" layout="table" action="emkCustomUseController.do?doUpdate" tiptype="1">
 	<input id="id" name="id" type="hidden" value="${emkCustomUsePage.id }"/>
 	<table style="width: 100%;" cellpadding="0" cellspacing="1" class="formtable">
 
 		<tr>
-
-			<td align="right" style="width: 18%">
+			<td align="right" >
 				<label class="Validform_label">
-					客户编号:
+					母客户名称:
 				</label>
 			</td>
-			<td class="value" style="width: 32%">
-				<input id="cusNum" name="cusNum" readonly type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">客户编号</label>
-			</td>
-			<td align="right" style="width: 18%">
-				<label class="Validform_label">
-					客户名称:
-				</label>
-			</td>
-			<td class="value" style="width: 32%">
-				<input id="cusName" name="cusName" readonly type="text" style="width: 150px" class="inputxt"  datatype="*"/>
+			<td class="value">
+				<input id="cusName" name="cusName" readonly value="${emkCustomUsePage.cusName }" type="text" style="width: 150px" class="inputxt"  datatype="*"/>
 				<t:choose  hiddenName="cusNum"  hiddenid="cusNum" url="ymkCustomController.do?select" name="ymkCustomList" width="700px" height="500px"
 						   icon="icon-search" title="选择客户" textname="cusName,businesseDeptName,businesseDeptId,businesser,businesserName,tracer,tracerName,developer,developerName,bz" isclear="true" isInit="true"></t:choose>
 				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">客户名称</label>
+				<label class="Validform_label" style="display: none;">母客户名称</label>
 			</td>
-		</tr>
-		<tr>
-			<td align="right" style="width: 18%">
+			<td align="right" >
 				<label class="Validform_label">
-					业务部门:
+					子客户名称:
 				</label>
 			</td>
-			<td class="value" style="width: 32%">
-				<input id="businesseDeptName" name="businesseDeptName" readonly type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<input id="businesseDeptId" name="businesseDeptId"  type="hidden"  />
+			<td class="value">
+				<input id="subCusName" name="subCusName" value="${emkCustomUsePage.subCusName }" type="text" style="width: 150px" class="inputxt"  datatype="*"/>
 				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">业务部门</label>
+				<label class="Validform_label" style="display: none;">子客户名称</label>
 			</td>
-			<td align="right" style="width: 18%">
+			<td align="right" >
 				<label class="Validform_label">
 					业务员:
 				</label>
 			</td>
-			<td class="value" style="width: 32%">
-				<select class="form-control select2" id="businesserId" datatype="*" >
+			<td class="value" >
+				<select class="form-control select2" id="businesserId" datatype="*" style="width: 120px">
 					<option value=''>请选择</option>
 				</select>
-				<input id="businesser" name="businesser" readonly type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<input id="businesserName" name="businesserName"  type="hidden"  />
+				<input id="businesser" name="businesser" value="${emkCustomUsePage.businesser }" readonly type="hidden"  class="inputxt"  ignore="ignore" />
+				<input id="businesserName" name="businesserName" value="${emkCustomUsePage.businesserName }"  type="hidden"  />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">业务员</label>
 			</td>
+
 		</tr>
-
-
 		<tr>
-			<td align="right" style="width: 18%">
+			<td align="right" >
+				<label class="Validform_label">
+					母客户代码:
+				</label>
+			</td>
+			<td class="value" >
+				<input id="cusNum" name="cusNum" readonly type="text" value="${emkCustomUsePage.cusNum }" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">母客户代码</label>
+			</td>
+			<td align="right" >
 				<label class="Validform_label">
 					业务跟单员:
 				</label>
 			</td>
-			<td class="value" style="width: 32%">
-				<select class="form-control select2" id="tracerId"  >
+			<td class="value" >
+				<select class="form-control select2" id="tracerId"  style="width: 120px">
 					<option value=''>请选择</option>
 				</select>
-				<input id="tracer" name="tracer" readonly type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<input id="tracerName" name="tracerName"  type="hidden"  />
+				<input id="tracer" name="tracer" readonly value="${emkCustomUsePage.tracer }" type="hidden"  class="inputxt"  ignore="ignore" />
+				<input id="tracerName" name="tracerName" value="${emkCustomUsePage.tracerName }" type="hidden"  />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">业务员</label>
 			</td>
-			<td align="right" style="width: 18%">
+			<td align="right">
 				<label class="Validform_label">
-					验厂员:
+					生产跟单员:
 				</label>
 			</td>
-			<td class="value" style="width: 32%">
-				<input id="checkUser" name="checkUser"  type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<label class="Validform_label" style="display: none;">验厂员</label>
+			<td class="value">
+				<select class="form-control select2" id="developerId"  style="width: 120px">
+					<option value=''>请选择</option>
+				</select>
+				<input id="developer" name="developer" value="${emkCustomUsePage.developer }" readonly type="hidden"  class="inputxt"  ignore="ignore" />
+				<input id="developerName" name="developerName" value="${emkCustomUsePage.developerName }"  type="hidden"  />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">生产跟单员</label>
 			</td>
 		</tr>
+			<%--<tr>
+                <td align="right" >
+                    <label class="Validform_label">
+                        业务部门:
+                    </label>
+                </td>
+                <td class="value" >
+                    <input id="businesseDeptName" name="businesseDeptName" readonly type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+                    <input id="businesseDeptId" name="businesseDeptId"  type="hidden"  />
+                    <span class="Validform_checktip"></span>
+                    <label class="Validform_label" style="display: none;">业务部门</label>
+                </td>
+
+            </tr>--%>
 
 		<tr>
-		<td align="right">
-			<label class="Validform_label">
-				是否有人权验厂手册:
-			</label>
-		</td>
-		<td class="value">
-			<input name="isPeopleAdvice" type="radio" datatype="*" <c:if test="${emkCustomUsePage.isPeopleAdvice eq '0'}">checked="true"</c:if> value="0">
-			是
-			&nbsp;&nbsp;<input name="isPeopleAdvice" type="radio" datatype="*"  <c:if test="${emkCustomUsePage.isPeopleAdvice eq '1'}">checked="true"</c:if> value="1">
-			否
-			<span class="Validform_checktip"></span>
-			<label class="Validform_label" style="display: none;">是否有人权验厂手册</label>
-		</td>
-		<td align="right">
-			<label class="Validform_label">
-				人权验厂手册:
-			</label>
-		</td>
-		<td class="value">
-			<input id="peopleFile" name="peopleFile" type="hidden" />
-			<input id="peopleFileUrl" name="peopleFileUrl" type="hidden" />
-			<t:upload name="instruction0" id="instruction0" dialog="false" extend="*.jpg;*.png;*.doc;*.txt;*.xls" buttonText="添加文件" queueID="instructionfile" view="false" auto="true" uploader="systemController.do?saveFiles"  onUploadSuccess="uploadSuccess0" >
-			</t:upload><span id="peopleFileId"></span>
-		</td>
-	</tr>
-
+			<td align="left" colspan="6" class="value">
+				<label class="Validform_label">
+					人权验厂
+				</label>
+			</td>
+		</tr>
+		<tr>
+			<td align="right">
+				<label class="Validform_label">
+					是否有验厂手册:
+				</label>
+			</td>
+			<td class="value">
+				<input name="isPeopleAdvice" type="radio" datatype="*" <c:if test="${emkCustomUsePage.isPeopleAdvice eq '0'}">checked="true"</c:if> value="0">
+				是
+				&nbsp;&nbsp;<input name="isPeopleAdvice" type="radio" datatype="*"  <c:if test="${emkCustomUsePage.isPeopleAdvice eq '1'}">checked="true"</c:if> value="1">
+				否
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">是否有人权验厂手册</label>
+			</td>
+			<td align="right">
+				<label class="Validform_label">
+					验厂手册:
+				</label>
+			</td>
+			<td class="value" colspan="3">
+				<input id="peopleFile" name="peopleFile" value="${emkCustomUsePage.peopleFile }" type="hidden" />
+				<input id="peopleFileUrl" name="peopleFileUrl"  value="${emkCustomUsePage.peopleFileUrl }" type="hidden" />
+				<t:upload name="instruction0" id="instruction0" dialog="false" extend="*.jpg;*.png;*.doc;*.txt;*.xls" buttonText="添加文件" queueID="instructionfile" view="false" auto="true" uploader="systemController.do?saveFiles"  onUploadSuccess="uploadSuccess0" >
+				</t:upload><span id="peopleFileId"></span>
+			</td>
+		</tr>
 
 		<tr>
 			<td align="right">
@@ -182,17 +202,24 @@
 					人权验厂说明:
 				</label>
 			</td>
-			<td class="value" colspan="3">
-				<textarea  id="peopleAdvice" style="width:95%;height:70px" class="inputxt" rows="5" name="peopleAdvice"></textarea>
+			<td class="value" colspan="5">
+				<textarea  id="peopleAdvice" style="width:95%;height:70px" class="inputxt" rows="5" name="peopleAdvice">${emkCustomUsePage.peopleAdvice }</textarea>
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">人权验厂说明</label>
 			</td>
 		</tr>
 
 		<tr>
+			<td align="left" colspan="6" class="value">
+				<label class="Validform_label">
+					质量验厂
+				</label>
+			</td>
+		</tr>
+		<tr>
 			<td align="right">
 				<label class="Validform_label">
-					是否有质量验厂手册:
+					是否有验厂手册:
 				</label>
 			</td>
 			<td class="value">
@@ -205,12 +232,12 @@
 			</td>
 			<td align="right">
 				<label class="Validform_label">
-					质量验厂手册:
+					验厂手册:
 				</label>
 			</td>
-			<td class="value">
-				<input id="zlFile" name="zlFile" type="hidden" />
-				<input id="zlFileUrl" name="zlFileUrl" type="hidden" />
+			<td class="value" colspan="3">
+				<input id="zlFile" name="zlFile" type="hidden" value="${emkCustomUsePage.zlFile }" />
+				<input id="zlFileUrl" name="zlFileUrl" type="hidden" value="${emkCustomUsePage.zlFileUrl }" />
 				<t:upload name="instruction1" id="instruction1" dialog="false" extend="*.jpg;*.png;*.doc;*.txt;*.xls" buttonText="添加文件" queueID="instructionfile" view="false" auto="true" uploader="systemController.do?saveFiles"  onUploadSuccess="uploadSuccess1" >
 				</t:upload><span id="zlFileId"></span>
 			</td>
@@ -223,13 +250,19 @@
 					质量验厂说明:
 				</label>
 			</td>
-			<td class="value" colspan="3">
-				<textarea  id="zlAdvice" style="width:95%;height:70px" class="inputxt" rows="5" name="zlAdvice"></textarea>
+			<td class="value" colspan="5">
+				<textarea  id="zlAdvice" style="width:95%;height:70px" class="inputxt" rows="5" name="zlAdvice">${emkCustomUsePage.zlAdvice }</textarea>
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">质量验厂说明</label>
 			</td>
 		</tr>
-
+		<tr>
+			<td align="left" colspan="6" class="value">
+				<label class="Validform_label">
+					反恐验厂
+				</label>
+			</td>
+		</tr>
 		<tr>
 			<td align="right">
 				<label class="Validform_label">
@@ -249,9 +282,9 @@
 					反恐验厂手册:
 				</label>
 			</td>
-			<td class="value">
-				<input id="fkFile" name="fkFile" type="hidden" />
-				<input id="fkFileUrl" name="fkFileUrl" type="hidden" />
+			<td class="value" colspan="3">
+				<input id="fkFile" name="fkFile" type="hidden" value="${emkCustomUsePage.fkFile }" />
+				<input id="fkFileUrl" name="fkFileUrl" type="hidden" value="${emkCustomUsePage.fkFileUrl }" />
 				<t:upload name="instruction2" id="instruction2" dialog="false" extend="*.jpg;*.png;*.doc;*.txt;*.xls" buttonText="添加文件" queueID="instructionfile" view="false" auto="true" uploader="systemController.do?saveFiles"  onUploadSuccess="uploadSuccess2" >
 				</t:upload><span id="fkFileId"></span>
 			</td>
@@ -264,13 +297,19 @@
 					反恐验厂说明:
 				</label>
 			</td>
-			<td class="value" colspan="3">
-				<textarea  id="fkAdvice" style="width:95%;height:70px" class="inputxt" rows="5" name="fkAdvice"></textarea>
+			<td class="value" colspan="5">
+				<textarea  id="fkAdvice" style="width:95%;height:70px" class="inputxt" rows="5" name="fkAdvice">${emkCustomUsePage.fkAdvice }</textarea>
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">反恐验厂说明反恐验厂说明</label>
 			</td>
 		</tr>
-
+		<tr>
+			<td align="left" colspan="6" class="value">
+				<label class="Validform_label">
+					验货
+				</label>
+			</td>
+		</tr>
 		<tr>
 			<td align="right">
 				<label class="Validform_label">
@@ -290,9 +329,9 @@
 					验货手册:
 				</label>
 			</td>
-			<td class="value">
-				<input id="checkHuoFile" name="checkHuoFile" type="hidden" />
-				<input id="checkHuoFileUrl" name="checkHuoFileUrl" type="hidden" />
+			<td class="value" colspan="3">
+				<input id="checkHuoFile" name="checkHuoFile" type="hidden" value="${emkCustomUsePage.checkHuoFile }" />
+				<input id="checkHuoFileUrl" name="checkHuoFileUrl" type="hidden" value="${emkCustomUsePage.checkHuoFileUrl }" />
 				<t:upload name="instruction3" id="instruction3" dialog="false" extend="*.jpg;*.png;*.doc;*.txt;*.xls" buttonText="添加文件" queueID="instructionfile" view="false" auto="true" uploader="systemController.do?saveFiles"  onUploadSuccess="uploadSuccess3" >
 				</t:upload><span id="checkHuoFileId"></span>
 			</td>
@@ -302,16 +341,22 @@
 		<tr>
 			<td align="right">
 				<label class="Validform_label">
-					验货手册说明:
+					验货说明:
 				</label>
 			</td>
-			<td class="value" colspan="3">
-				<textarea  id="checkHuo" style="width:95%;height:70px" class="inputxt" rows="5" name="checkHuo"></textarea>
+			<td class="value" colspan="5">
+				<textarea  id="checkHuo" style="width:95%;height:70px" class="inputxt" rows="5" name="checkHuo">${emkCustomUsePage.checkHuo }</textarea>
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">验货手册说明</label>
 			</td>
 		</tr>
-
+		<tr>
+			<td align="left" colspan="6" class="value">
+				<label class="Validform_label">
+					测试
+				</label>
+			</td>
+		</tr>
 		<tr>
 			<td align="right">
 				<label class="Validform_label">
@@ -331,9 +376,9 @@
 					测试手册:
 				</label>
 			</td>
-			<td class="value">
-				<input id="testFile" name="testFile" type="hidden" />
-				<input id="testFileUrl" name="testFileUrl" type="hidden" />
+			<td class="value" colspan="3">
+				<input id="testFile" name="testFile" type="hidden" value="${emkCustomUsePage.testFile }" />
+				<input id="testFileUrl" name="testFileUrl" type="hidden" value="${emkCustomUsePage.testFileUrl }" />
 				<t:upload name="instruction4" id="instruction4" dialog="false" extend="*.jpg;*.png;*.doc;*.txt;*.xls" buttonText="添加文件" queueID="instructionfile" view="false" auto="true" uploader="systemController.do?saveFiles"  onUploadSuccess="uploadSuccess4" >
 				</t:upload><span id="testFileId"></span>
 			</td>
@@ -343,16 +388,22 @@
 		<tr>
 			<td align="right">
 				<label class="Validform_label">
-					测试手册说明:
+					测试说明:
 				</label>
 			</td>
-			<td class="value" colspan="3">
-				<textarea  id="test" style="width:95%;height:70px" class="inputxt" rows="5" name="test"></textarea>
+			<td class="value" colspan="5">
+				<textarea  id="test" style="width:95%;height:70px" class="inputxt" rows="5" name="test">${emkCustomUsePage.test }</textarea>
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">测试手册说明</label>
 			</td>
 		</tr>
-
+		<tr>
+			<td align="left" colspan="6" class="value">
+				<label class="Validform_label">
+					包装
+				</label>
+			</td>
+		</tr>
 		<tr>
 			<td align="right">
 				<label class="Validform_label">
@@ -360,9 +411,9 @@
 				</label>
 			</td>
 			<td class="value">
-				<input name="isCheckHuo" type="radio" datatype="*" <c:if test="${emkCustomUsePage.isCheckHuo eq '0'}">checked="true"</c:if> value="0">
+				<input name="isPact" type="radio" datatype="*" <c:if test="${emkCustomUsePage.isCheckHuo eq '0'}">checked="true"</c:if> value="0">
 				是
-				&nbsp;&nbsp;<input name="isCheckHuo" type="radio" datatype="*"  <c:if test="${emkCustomUsePage.isCheckHuo eq '1'}">checked="true"</c:if> value="1">
+				&nbsp;&nbsp;<input name="isPact" type="radio" datatype="*"  <c:if test="${emkCustomUsePage.isCheckHuo eq '1'}">checked="true"</c:if> value="1">
 				否
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">是否有包装手册</label>
@@ -372,9 +423,9 @@
 					包装手册:
 				</label>
 			</td>
-			<td class="value">
-				<input id="pactFile" name="pactFile" type="hidden" />
-				<input id="pactFileUrl" name="pactFileUrl" type="hidden" />
+			<td class="value" colspan="3">
+				<input id="pactFile" name="pactFile" type="hidden" value="${emkCustomUsePage.pactFile }" />
+				<input id="pactFileUrl" name="pactFileUrl" type="hidden" value="${emkCustomUsePage.pactFileUrl }" />
 				<t:upload name="instruction5" id="instruction5" dialog="false" extend="*.jpg;*.png;*.doc;*.txt;*.xls" buttonText="添加文件" queueID="instructionfile" view="false" auto="true" uploader="systemController.do?saveFiles"  onUploadSuccess="uploadSuccess5" >
 				</t:upload><span id="pactFileId"></span>
 			</td>
@@ -384,16 +435,22 @@
 		<tr>
 			<td align="right">
 				<label class="Validform_label">
-					包装手册说明:
+					包装说明:
 				</label>
 			</td>
-			<td class="value" colspan="3">
-				<textarea  id="pact" style="width:95%;height:70px" class="inputxt" rows="5" name="pact"></textarea>
+			<td class="value" colspan="5">
+				<textarea  id="pact" style="width:95%;height:70px" class="inputxt" rows="5" name="pact">${emkCustomUsePage.pact }</textarea>
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">包装手册说明</label>
 			</td>
 		</tr>
-
+		<tr>
+			<td align="left" colspan="6" class="value">
+				<label class="Validform_label">
+					样品
+				</label>
+			</td>
+		</tr>
 		<tr>
 			<td align="right">
 				<label class="Validform_label">
@@ -401,9 +458,9 @@
 				</label>
 			</td>
 			<td class="value">
-				<input name="isCheckHuo" type="radio" datatype="*" <c:if test="${emkCustomUsePage.isCheckHuo eq '0'}">checked="true"</c:if> value="0">
+				<input name="isSample" type="radio" datatype="*" <c:if test="${emkCustomUsePage.isSample eq '0'}">checked="true"</c:if> value="0">
 				是
-				&nbsp;&nbsp;<input name="isCheckHuo" type="radio" datatype="*"  <c:if test="${emkCustomUsePage.isCheckHuo eq '1'}">checked="true"</c:if> value="1">
+				&nbsp;&nbsp;<input name="isSample" type="radio" datatype="*"  <c:if test="${emkCustomUsePage.isSample eq '1'}">checked="true"</c:if> value="1">
 				否
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">是否有样品手册</label>
@@ -413,9 +470,9 @@
 					样品手册:
 				</label>
 			</td>
-			<td class="value">
-				<input id="sampleFile" name="sampleFile" type="hidden" />
-				<input id="sampleFileUrl" name="sampleFileUrl" type="hidden" />
+			<td class="value" colspan="3">
+				<input id="sampleFile" name="sampleFile" type="hidden" value="${emkCustomUsePage.sampleFile }" />
+				<input id="sampleFileUrl" name="sampleFileUrl" type="hidden" value="${emkCustomUsePage.sampleFileUrl }" />
 				<t:upload name="instruction6" id="instruction6" dialog="false" extend="*.jpg;*.png;*.doc;*.txt;*.xls" buttonText="添加文件" queueID="instructionfile" view="false" auto="true" uploader="systemController.do?saveFiles"  onUploadSuccess="uploadSuccess6" >
 				</t:upload><span id="sampleFileId"></span>
 			</td>
@@ -425,20 +482,26 @@
 		<tr>
 			<td align="right">
 				<label class="Validform_label">
-					样品手册说明:
+					样品说明:
 				</label>
 			</td>
-			<td class="value" colspan="3">
-				<textarea  id="sample" style="width:95%;height:70px" class="inputxt" rows="5" name="sample"></textarea>
+			<td class="value" colspan="5">
+				<textarea  id="sample" style="width:95%;height:70px" class="inputxt" rows="5" name="sample">${emkCustomUsePage.sample }</textarea>
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">样品手册说明</label>
 			</td>
 		</tr>
-
+		<tr>
+			<td align="left" colspan="6" class="value">
+				<label class="Validform_label">
+					发货
+				</label>
+			</td>
+		</tr>
 		<tr>
 			<td align="right">
 				<label class="Validform_label">
-					是否有发货要求手册:
+					是否有发货手册:
 				</label>
 			</td>
 			<td class="value">
@@ -451,12 +514,12 @@
 			</td>
 			<td align="right">
 				<label class="Validform_label">
-					发货要求手册:
+					发货手册:
 				</label>
 			</td>
-			<td class="value">
-				<input id="sendHuoFile" name="sendHuoFile" type="hidden" />
-				<input id="sendHuoFileUrl" name="sendHuoFileUrl" type="hidden" />
+			<td class="value" colspan="3">
+				<input id="sendHuoFile" name="sendHuoFile" type="hidden" value="${emkCustomUsePage.sendHuoFile }" />
+				<input id="sendHuoFileUrl" name="sendHuoFileUrl" type="hidden" value="${emkCustomUsePage.sendHuoFileUrl }" />
 				<t:upload name="instruction7" id="instruction7" dialog="false" extend="*.jpg;*.png;*.doc;*.txt;*.xls" buttonText="添加文件" queueID="instructionfile" view="false" auto="true" uploader="systemController.do?saveFiles"  onUploadSuccess="uploadSuccess7" >
 				</t:upload><span id="sendHuoFileId"></span>
 			</td>
@@ -466,53 +529,54 @@
 		<tr>
 			<td align="right">
 				<label class="Validform_label">
-					发货要求手册说明:
+					发货说明:
 				</label>
 			</td>
-			<td class="value" colspan="3">
-				<textarea  id="sendHuo" style="width:95%;height:70px" class="inputxt" rows="5" name="sendHuo"></textarea>
+			<td class="value" colspan="5">
+				<textarea  id="sendHuo" style="width:95%;height:70px" class="inputxt" rows="5" name="sendHuo">${emkCustomUsePage.sendHuo }</textarea>
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">发货要求手册说明</label>
 			</td>
 		</tr>
+
 		<tr>
-			<td align="right" style="width: 18%">
+			<td align="right" >
+				<label class="Validform_label">
+					其他:
+				</label>
+			</td>
+			<td class="value" >
+				<input id="other" name="other"  type="text" style="width: 150px" value="${emkCustomUsePage.other }"  class="inputxt"  ignore="ignore" />
+				<label class="Validform_label" style="display: none;">电话</label>
+			</td>
+			<td align="right" >
 				<label class="Validform_label">
 					指定货代名称:
 				</label>
 			</td>
-			<td class="value" style="width: 32%">
-				<input id="zdhdmc" name="zdhdmc"  type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+			<td class="value" >
+				<input id="zdhdmc" name="zdhdmc"  type="text" style="width: 150px" value="${emkCustomUsePage.zdhdmc }"  class="inputxt"  ignore="ignore" />
 				<label class="Validform_label" style="display: none;">指定货代名称</label>
 			</td>
-			<td align="right" style="width: 18%">
+			<td align="right" >
 				<label class="Validform_label">
 					联系人:
 				</label>
 			</td>
-			<td class="value" style="width: 32%">
-				<input id="relation" name="relation"  type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+			<td class="value" >
+				<input id="relation" name="relation"  type="text" style="width: 150px" value="${emkCustomUsePage.relation }"  class="inputxt"  ignore="ignore" />
 				<label class="Validform_label" style="display: none;">联系人</label>
 			</td>
 		</tr>
 		<tr>
-			<td align="right" style="width: 18%">
+			<td align="right" >
 				<label class="Validform_label">
-					电话:
+					备注:
 				</label>
 			</td>
-			<td class="value" style="width: 32%">
-				<input id="telphone" name="telphone"  type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<label class="Validform_label" style="display: none;">电话</label>
-			</td>
-			<td align="right" style="width: 18%">
-				<label class="Validform_label">
-					起运港:
-				</label>
-			</td>
-			<td class="value" style="width: 32%">
-				<input id="lyg" name="lyg"  type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<label class="Validform_label" style="display: none;">起运港</label>
+			<td class="value" colspan="5">
+				<input id="remark" name="remark"  type="text" style="width: 150px" value="${emkCustomUsePage.remark }"  class="inputxt"  ignore="ignore" />
+				<label class="Validform_label" style="display: none;">备注</label>
 			</td>
 		</tr>
 	</table>

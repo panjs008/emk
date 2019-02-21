@@ -81,7 +81,13 @@ public class EmkLeaveFactoryController extends BaseController {
     @RequestMapping(params = {"datagrid"})
     public void datagrid(EmkLeaveFactoryEntity emkLeaveFactory, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid) {
         CriteriaQuery cq = new CriteriaQuery(EmkLeaveFactoryEntity.class, dataGrid);
-
+        TSUser user = (TSUser) request.getSession().getAttribute(ResourceUtil.LOCAL_CLINET_USER);
+        Map roleMap = (Map) request.getSession().getAttribute("ROLE");
+        if(roleMap != null){
+            if(roleMap.get("rolecode").toString().contains("ywy") || roleMap.get("rolecode").toString().contains("ywgdy")|| roleMap.get("rolecode").toString().contains("scgdy")){
+                cq.eq("createBy",user.getUserName());
+            }
+        }
         HqlGenerateUtil.installHql(cq, emkLeaveFactory, request.getParameterMap());
 
 
@@ -141,8 +147,9 @@ public class EmkLeaveFactoryController extends BaseController {
         try {
             TSUser user = (TSUser) request.getSession().getAttribute("LOCAL_CLINET_USER");
             Map<String, String> map = ParameterUtil.getParamMaps(request.getParameterMap());
-            Map orderNum = this.systemService.findOneForJdbc("select count(0)+1 orderNum from emk_leave_factory where sys_org_code=?", new Object[]{user.getCurrentDepart().getOrgCode()});
-            emkLeaveFactory.setLeaveFactoryNo("L" + DateUtils.format(new Date(), "yyMMdd") + String.format("%03d", new Object[]{Integer.valueOf(Integer.parseInt(orderNum.get("orderNum").toString()))}));
+            Map orderNum = this.systemService.findOneForJdbc("select CAST(ifnull(max(right(LEAVE_FACTORY_NO, 3)),0)+1 AS signed) orderNum from emk_leave_factory");
+            //Map orderNum = this.systemService.findOneForJdbc("select count(0)+1 orderNum from emk_leave_factory where sys_org_code=?", new Object[]{user.getCurrentDepart().getOrgCode()});
+            emkLeaveFactory.setLeaveFactoryNo("L" + DateUtils.format(new Date(), "yyMMdd") + String.format("%03d", Integer.parseInt(orderNum.get("orderNum").toString())));
             this.emkLeaveFactoryService.save(emkLeaveFactory);
             this.systemService.addLog(message, Globals.Log_Type_INSERT, Globals.Log_Leavel_INFO);
         } catch (Exception e) {

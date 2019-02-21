@@ -12,7 +12,7 @@
       <t:dgCol title="操作" field="opt" width="245" frozenColumn="true"></t:dgCol>
       <t:dgCol title="样品通知单号" query="true"  field="sampleNum"  queryMode="single"  width="115"></t:dgCol>
       <t:dgCol title="通知单日期"  field="kdTime"  queryMode="single"  width="80"></t:dgCol>
-      <t:dgCol title="客户编号" query="true"  field="cusNum"  queryMode="single"  width="70"></t:dgCol>
+      <t:dgCol title="客户代码" query="true"  field="cusNum"  queryMode="single"  width="70"></t:dgCol>
       <t:dgCol title="客户名称"  field="cusName"  queryMode="single"  width="130"></t:dgCol>
       <t:dgCol title="客户原样"  image="true"  imageSize="30,30" field="customSampleUrl"  queryMode="single"  width="70"></t:dgCol>
       <t:dgCol title="尺码表" image="true"  imageSize="30,30"  field="sampleSizeUrl"   queryMode="single"  width="60"></t:dgCol>
@@ -36,7 +36,7 @@
       <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkYptzdController.do?goAdd&flag=${param.flag}&winTitle=录入样品通知单" funname="add" height="550" width="1000"></t:dgToolBar>
        <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkYptzdController.do?goUpdate&winTitle=编辑样品通知单" funname="update" height="550" width="1000"></t:dgToolBar>
       <t:dgToolBar title="提交" operationCode="submit" icon="fa fa-arrow-circle-up" funname="doSubmitV"></t:dgToolBar>
-      <t:dgToolBar title="查看" icon="fa fa-search" operationCode="look" url="emkYptzdController.do?goUpdate&goUpdate&winTitle=查看样品通知单" funname="detail" height="600" width="1210"></t:dgToolBar>
+      <t:dgToolBar title="查看" icon="fa fa-search" operationCode="look" url="emkYptzdController.do?goUpdate&winTitle=查看样品通知单" funname="detail" height="600" width="1210"></t:dgToolBar>
       <t:dgToolBar title="流程进度" operationCode="process" icon="fa fa-plus" funname="goToProcess"></t:dgToolBar>
       <t:dgToolBar title="删除" operationCode="delete"  icon="fa fa-remove" url="emkYptzdController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
       <t:dgToolBar title="导出" operationCode="exp" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>

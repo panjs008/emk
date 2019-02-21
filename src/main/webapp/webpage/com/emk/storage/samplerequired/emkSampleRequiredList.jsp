@@ -29,7 +29,7 @@
       <t:dgFunOpt funname="queryDetail3(id,sampleNo)" title="工序" urlclass="ace_button" urlfont="fa-cog"></t:dgFunOpt>
        <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkSampleRequiredController.do?goAdd&winTitle=录入样品需求单" funname="add" height="600" width="1260"></t:dgToolBar>
        <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit"  url="emkSampleRequiredController.do?goUpdate&winTitle=编辑样品需求单" funname="update" height="600" width="1260"></t:dgToolBar>
-      <t:dgToolBar title="查看" icon="fa fa-search" operationCode="look" url="emkSampleRequiredController.do?goUpdate&goUpdate&winTitle=查看样品需求单" funname="detail" height="600" width="1260"></t:dgToolBar>
+      <t:dgToolBar title="查看" icon="fa fa-search" operationCode="look" url="emkSampleRequiredController.do?goUpdate&winTitle=查看样品需求单" funname="detail" height="600" width="1260"></t:dgToolBar>
       <t:dgToolBar title="删除" operationCode="delete"  icon="fa fa-remove" url="emkSampleRequiredController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
       <t:dgToolBar title="导出" operationCode="exp" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
 

@@ -10,7 +10,7 @@
       <t:dgCol title="创建日期"  field="createDate"  formatter="yyyy-MM-dd"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
       <t:dgCol title="所属部门"  field="sysOrgCode"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
       <t:dgCol title="操作" field="opt" frozenColumn="true"  width="180"></t:dgCol>
-      <t:dgCol title="需求单号"  field="materialNo" queryMode="single" query="true"  width="90"></t:dgCol>
+      <t:dgCol title="原料需求开发单号"  field="materialNo" queryMode="single" query="true"  width="120"></t:dgCol>
       <t:dgCol title="提交日期"  field="kdDate"  queryMode="single"  width="80"></t:dgCol>
       <t:dgCol title="交货日期"  field="dhjqDate"  queryMode="single"  width="80"></t:dgCol>
       <t:dgCol title="图片"  field="customSampleUrl" imageSize="30,30"  image="true"  queryMode="single"  width="50"></t:dgCol>

@@ -2,7 +2,7 @@
 <%@include file="/context/mytags.jsp"%>
 
 <div id="orderDiv" title="流程图" style="width:100%;height:350px;overflow:hidden;overflow-x: hidden;overflow-y: hidden" >
-    <iframe scrolling="no" id="processFrm" frameborder="0" style=""  src="flowController.do?showProcess&id=${param.id}&tableName=emk_produce_schedule" width="100%" height="100%"></iframe>
+    <iframe scrolling="no" id="processFrm" frameborder="0" style=""  src="flowController.do?showProcess&id=${param.id}&tableName=emk_produce" width="100%" height="100%"></iframe>
 </div>
 <%--<t:datagrid name="uRepairList" height="150px" checkbox="false" pagination="true" fitColumns="true" title="" actionUrl="flowController.do?hisProcessDatagrid&id=${param.id}" idField="id" fit="true" btnCls="bootstrap"  queryMode="group">
     <t:dgCol title="流程节点"  field="NAME_"  queryMode="single"  width="120"></t:dgCol>

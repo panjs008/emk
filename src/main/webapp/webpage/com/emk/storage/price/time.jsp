@@ -41,7 +41,7 @@
 						<div class="point"><b></b></div>
 						<div class="liright">
 							<div class="histt"><a style="font-size: 14px;">${task.NAME_}</a></div>
-							<div class="histt"><a style="font-size: 12px;"><c:if test="${task.TASK_DEF_KEY_ eq 'instorageTask'}">【${task.workname}】发起报价单，询盘单号：${emkPrice.xpNo}</c:if>
+							<div class="histt"><a style="font-size: 12px;"><c:if test="${task.TASK_DEF_KEY_ eq 'instorageTask'}">【${task.workname}】发起报价单，报价单号：${emkPrice.pirceNo}</c:if>
 								<c:if test="${task.TASK_DEF_KEY_ eq 'checkTask'}">审核人【${emkPrice.leader}】，处理意见：${emkPrice.leadAdvice}</c:if>
 								<c:if test="${task.TASK_DEF_KEY_ eq 'jsTask'}">审核人【${emkPrice.jser}】,指派给【${emkPrice.cger}】，处理意见：${emkPrice.jsAdvice}</c:if>
 								<c:if test="${task.TASK_DEF_KEY_ eq 'cgTask'}">审核人【${emkPrice.cger}】,指派给【${emkPrice.cwer}】，处理意见：${emkPrice.cgAdvice}</c:if>

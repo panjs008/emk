@@ -1,6 +1,8 @@
 package com.emk.storage.customuse.controller;
 import com.emk.storage.customuse.entity.EmkCustomUseEntity;
 import com.emk.storage.customuse.service.EmkCustomUseServiceI;
+
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.text.SimpleDateFormat;
@@ -270,6 +272,17 @@ public class EmkCustomUseController extends BaseController {
 		if (StringUtil.isNotEmpty(emkCustomUse.getId())) {
 			emkCustomUse = emkCustomUseService.getEntity(EmkCustomUseEntity.class, emkCustomUse.getId());
 			req.setAttribute("emkCustomUsePage", emkCustomUse);
+			try {
+				Map countMap = MyBeanUtils.culBeanCounts(emkCustomUse);
+				req.setAttribute("countMap", countMap);
+				double a=0,b=0;
+				a = Double.parseDouble(countMap.get("finishColums").toString());
+				b = Double.parseDouble(countMap.get("Colums").toString());
+				DecimalFormat df = new DecimalFormat("#.00");
+				req.setAttribute("recent", df.format(a*100/b));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 		return new ModelAndView("com/emk/storage/customuse/emkCustomUse-update");
 	}

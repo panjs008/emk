@@ -55,7 +55,7 @@ import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @Controller
-@RequestMapping({"/emkProductController"})
+@RequestMapping("/emkProductController")
 public class EmkProductController
         extends BaseController {
     private static final Logger logger = Logger.getLogger(EmkProductController.class);
@@ -66,27 +66,33 @@ public class EmkProductController
     @Autowired
     private Validator validator;
 
-    @RequestMapping(params = {"list"})
+    @RequestMapping(params = "list")
     public ModelAndView list(HttpServletRequest request) {
         return new ModelAndView("com/emk/product/product/emkProductList");
     }
 
-    @RequestMapping(params = {"list1"})
+    @RequestMapping(params = "list1")
     public ModelAndView list1(HttpServletRequest request) {
         return new ModelAndView("com/emk/product/product/emkProductList1");
     }
 
-    @RequestMapping(params = {"list2"})
+    @RequestMapping(params = "list2")
     public ModelAndView list2(HttpServletRequest request) {
         return new ModelAndView("com/emk/product/product/emkProductList2");
     }
 
-    @RequestMapping(params = {"proSelect"})
+    @RequestMapping(params = "proSelect")
     public ModelAndView proSelect(HttpServletRequest request) {
         return new ModelAndView("com/emk/product/product/emkProductList-select");
     }
-
-    @RequestMapping(params = {"datagrid"})
+    @RequestMapping(params = "proSelect2")
+    public ModelAndView proSelect2(HttpServletRequest request) {
+        return new ModelAndView("com/emk/product/product/emkProductList-select2");
+    }@RequestMapping(params = "proSelect3")
+    public ModelAndView proSelect3(HttpServletRequest request) {
+        return new ModelAndView("com/emk/product/product/emkProductList-select3");
+    }
+    @RequestMapping(params = "datagrid")
     public void datagrid(EmkProductEntity emkProduct, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid) {
         CriteriaQuery cq = new CriteriaQuery(EmkProductEntity.class, dataGrid);
 
@@ -94,20 +100,20 @@ public class EmkProductController
 
 
         cq.add();
-        this.emkProductService.getDataGridReturn(cq, true);
+        emkProductService.getDataGridReturn(cq, true);
         TagUtil.datagrid(response, dataGrid);
     }
 
-    @RequestMapping(params = {"doDel"})
+    @RequestMapping(params = "doDel")
     @ResponseBody
     public AjaxJson doDel(EmkProductEntity emkProduct, HttpServletRequest request) {
         String message = null;
         AjaxJson j = new AjaxJson();
-        emkProduct = (EmkProductEntity) this.systemService.getEntity(EmkProductEntity.class, emkProduct.getId());
+        emkProduct = (EmkProductEntity) systemService.getEntity(EmkProductEntity.class, emkProduct.getId());
         message = "删除成功";
         try {
-            this.emkProductService.delete(emkProduct);
-            this.systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
+            emkProductService.delete(emkProduct);
+            systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
         } catch (Exception e) {
             e.printStackTrace();
             message = "删除失败";
@@ -117,7 +123,7 @@ public class EmkProductController
         return j;
     }
 
-    @RequestMapping(params = {"doBatchDel"})
+    @RequestMapping(params = "doBatchDel")
     @ResponseBody
     public AjaxJson doBatchDel(String ids, HttpServletRequest request) {
         String message = null;
@@ -125,11 +131,11 @@ public class EmkProductController
         message = "删除成功";
         try {
             for (String id : ids.split(",")) {
-                EmkProductEntity emkProduct = (EmkProductEntity) this.systemService.getEntity(EmkProductEntity.class, id);
+                EmkProductEntity emkProduct = (EmkProductEntity) systemService.getEntity(EmkProductEntity.class, id);
 
 
-                this.emkProductService.delete(emkProduct);
-                this.systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
+                emkProductService.delete(emkProduct);
+                systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -140,15 +146,15 @@ public class EmkProductController
         return j;
     }
 
-    @RequestMapping(params = {"doAdd"})
+    @RequestMapping(params = "doAdd")
     @ResponseBody
     public AjaxJson doAdd(EmkProductEntity emkProduct, HttpServletRequest request) {
         String message = null;
         AjaxJson j = new AjaxJson();
         message = "添加成功";
         try {
-            this.emkProductService.save(emkProduct);
-            this.systemService.addLog(message, Globals.Log_Type_INSERT, Globals.Log_Leavel_INFO);
+            emkProductService.save(emkProduct);
+            systemService.addLog(message, Globals.Log_Type_INSERT, Globals.Log_Leavel_INFO);
         } catch (Exception e) {
             e.printStackTrace();
             message = "添加失败";
@@ -158,18 +164,18 @@ public class EmkProductController
         return j;
     }
 
-    @RequestMapping(params = {"doUpdate"})
+    @RequestMapping(params = "doUpdate")
     @ResponseBody
     public AjaxJson doUpdate(EmkProductEntity emkProduct, HttpServletRequest request) {
         String message = null;
         AjaxJson j = new AjaxJson();
         message = "更新成功";
         Map param = request.getParameterMap();
-        EmkProductEntity t = (EmkProductEntity) this.emkProductService.get(EmkProductEntity.class, emkProduct.getId());
+        EmkProductEntity t = (EmkProductEntity) emkProductService.get(EmkProductEntity.class, emkProduct.getId());
         try {
             MyBeanUtils.copyBeanNotNull2Bean(emkProduct, t);
-            this.emkProductService.saveOrUpdate(t);
-            this.systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
+            emkProductService.saveOrUpdate(t);
+            systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
         } catch (Exception e) {
             e.printStackTrace();
             message = "更新失败";
@@ -179,26 +185,26 @@ public class EmkProductController
         return j;
     }
 
-    @RequestMapping(params = {"goAdd"})
+    @RequestMapping(params = "goAdd")
     public ModelAndView goAdd(EmkProductEntity emkProduct, HttpServletRequest req) {
         if (StringUtil.isNotEmpty(emkProduct.getId())) {
-            emkProduct = (EmkProductEntity) this.emkProductService.getEntity(EmkProductEntity.class, emkProduct.getId());
+            emkProduct = (EmkProductEntity) emkProductService.getEntity(EmkProductEntity.class, emkProduct.getId());
             req.setAttribute("emkProductPage", emkProduct);
         }
         return new ModelAndView("com/emk/product/product/emkProduct-add");
     }
 
-    @RequestMapping(params = {"goUpdate"})
+    @RequestMapping(params = "goUpdate")
     public ModelAndView goUpdate(EmkProductEntity emkProduct, HttpServletRequest req) {
         if (StringUtil.isNotEmpty(emkProduct.getId())) {
-            emkProduct = (EmkProductEntity) this.emkProductService.getEntity(EmkProductEntity.class, emkProduct.getId());
+            emkProduct = (EmkProductEntity) emkProductService.getEntity(EmkProductEntity.class, emkProduct.getId());
             req.setAttribute("emkProductPage", emkProduct);
 
-            Map protype = this.systemService.findOneForJdbc("select * from emk_product_type where id=?", emkProduct.getProType());
+            Map protype = systemService.findOneForJdbc("select * from emk_product_type where id=?", emkProduct.getProType());
             if(protype != null){
                 req.setAttribute("proTypeName", protype.get("content"));
                 if (emkProduct.getHsId() != null) {
-                    EmkProductHsEntity productHsEntity = (EmkProductHsEntity) this.systemService.getEntity(EmkProductHsEntity.class, emkProduct.getHsId());
+                    EmkProductHsEntity productHsEntity = (EmkProductHsEntity) systemService.getEntity(EmkProductHsEntity.class, emkProduct.getHsId());
                     req.setAttribute("productHsEntity", productHsEntity);
                 }
             }
@@ -206,17 +212,17 @@ public class EmkProductController
         return new ModelAndView("com/emk/product/product/emkProduct-update");
     }
 
-    @RequestMapping(params = {"upload"})
+    @RequestMapping(params = "upload")
     public ModelAndView upload(HttpServletRequest req) {
         req.setAttribute("controller_name", "emkProductController");
         return new ModelAndView("common/upload/pub_excel_upload");
     }
 
-    @RequestMapping(params = {"exportXls"})
+    @RequestMapping(params = "exportXls")
     public String exportXls(EmkProductEntity emkProduct, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid, ModelMap modelMap) {
         CriteriaQuery cq = new CriteriaQuery(EmkProductEntity.class, dataGrid);
         HqlGenerateUtil.installHql(cq, emkProduct, request.getParameterMap());
-        List<EmkProductEntity> emkProducts = this.emkProductService.getListByCriteriaQuery(cq, Boolean.valueOf(false));
+        List<EmkProductEntity> emkProducts = emkProductService.getListByCriteriaQuery(cq, Boolean.valueOf(false));
         modelMap.put("fileName", "");
         modelMap.put("entity", EmkProductEntity.class);
         modelMap.put("params", new ExportParams("列表", "导出人:" + ResourceUtil.getSessionUser().getRealName(), "导出信息"));
@@ -225,7 +231,7 @@ public class EmkProductController
         return "jeecgExcelView";
     }
 
-    @RequestMapping(params = {"exportXlsByT"})
+    @RequestMapping(params = "exportXlsByT")
     public String exportXlsByT(EmkProductEntity emkProduct, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid, ModelMap modelMap) {
         modelMap.put("fileName", "");
         modelMap.put("entity", EmkProductEntity.class);
@@ -239,29 +245,29 @@ public class EmkProductController
     @RequestMapping(method = {org.springframework.web.bind.annotation.RequestMethod.GET})
     @ResponseBody
     public List<EmkProductEntity> list() {
-        List<EmkProductEntity> listEmkProducts = this.emkProductService.getList(EmkProductEntity.class);
+        List<EmkProductEntity> listEmkProducts = emkProductService.getList(EmkProductEntity.class);
         return listEmkProducts;
     }
 
-    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.GET})
+    @RequestMapping(value = "/{id}", method = {org.springframework.web.bind.annotation.RequestMethod.GET})
     @ResponseBody
     public ResponseEntity<?> get(@PathVariable("id") String id) {
-        EmkProductEntity task = (EmkProductEntity) this.emkProductService.get(EmkProductEntity.class, id);
+        EmkProductEntity task = (EmkProductEntity) emkProductService.get(EmkProductEntity.class, id);
         if (task == null) {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity(task, HttpStatus.OK);
     }
 
-    @RequestMapping(method = {org.springframework.web.bind.annotation.RequestMethod.POST}, consumes = {"application/json"})
+    @RequestMapping(method = {org.springframework.web.bind.annotation.RequestMethod.POST}, consumes = "application/json")
     @ResponseBody
     public ResponseEntity<?> create(@RequestBody EmkProductEntity emkProduct, UriComponentsBuilder uriBuilder) {
-        Set<ConstraintViolation<EmkProductEntity>> failures = this.validator.validate(emkProduct, new Class[0]);
+        Set<ConstraintViolation<EmkProductEntity>> failures = validator.validate(emkProduct, new Class[0]);
         if (!failures.isEmpty()) {
             return new ResponseEntity(BeanValidators.extractPropertyAndMessage(failures), HttpStatus.BAD_REQUEST);
         }
         try {
-            this.emkProductService.save(emkProduct);
+            emkProductService.save(emkProduct);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity(HttpStatus.NO_CONTENT);
@@ -274,14 +280,14 @@ public class EmkProductController
         return new ResponseEntity(headers, HttpStatus.CREATED);
     }
 
-    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.PUT}, consumes = {"application/json"})
+    @RequestMapping(value = "/{id}", method = {org.springframework.web.bind.annotation.RequestMethod.PUT}, consumes = "application/json")
     public ResponseEntity<?> update(@RequestBody EmkProductEntity emkProduct) {
-        Set<ConstraintViolation<EmkProductEntity>> failures = this.validator.validate(emkProduct, new Class[0]);
+        Set<ConstraintViolation<EmkProductEntity>> failures = validator.validate(emkProduct, new Class[0]);
         if (!failures.isEmpty()) {
             return new ResponseEntity(BeanValidators.extractPropertyAndMessage(failures), HttpStatus.BAD_REQUEST);
         }
         try {
-            this.emkProductService.saveOrUpdate(emkProduct);
+            emkProductService.saveOrUpdate(emkProduct);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity(HttpStatus.NO_CONTENT);
@@ -289,9 +295,9 @@ public class EmkProductController
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
-    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.DELETE})
+    @RequestMapping(value = "/{id}", method = {org.springframework.web.bind.annotation.RequestMethod.DELETE})
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable("id") String id) {
-        this.emkProductService.deleteEntityById(EmkProductEntity.class, id);
+        emkProductService.deleteEntityById(EmkProductEntity.class, id);
     }
 }

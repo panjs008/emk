@@ -70,11 +70,9 @@ public class EmkCustomUseEntity implements java.io.Serializable {
 	private String tracer;
 	/**业务跟单员ID*/
 	private String tracerName;
-	/**验厂员*/
-	private String checkUserId;
-	/**验厂员*/
-	@Excel(name="验厂员",width=15)
-	private String checkUser;
+	@Excel(name = "生产跟单员")
+	private String developer;
+	private String developerName;
 	/**人权验厂*/
 	@Excel(name="人权验厂",width=15)
 	private String peopleAdvice;
@@ -129,12 +127,6 @@ public class EmkCustomUseEntity implements java.io.Serializable {
 	/**联系人*/
 	@Excel(name="联系人",width=15)
 	private String relation;
-	/**电话*/
-	@Excel(name="电话",width=15)
-	private String telphone;
-	/**起运港*/
-	@Excel(name="起运港",width=15)
-	private String lyg;
 	/**人权验厂*/
 	@Excel(name="人权验厂",width=15)
 	private String peopleFileUrl;
@@ -183,7 +175,10 @@ public class EmkCustomUseEntity implements java.io.Serializable {
 	/**发货要求手册*/
 	@Excel(name="发货要求手册",width=15)
 	private String sendHuoFile;
-	
+	@Excel(name="其他",width=15)
+	private String other;
+	@Excel(name="备注",width=15)
+	private String remark;
 	/**
 	 *方法: 取得java.lang.String
 	 *@return: java.lang.String  主键
@@ -459,40 +454,7 @@ public class EmkCustomUseEntity implements java.io.Serializable {
 	public void setTracerName(String tracerName){
 		this.tracerName = tracerName;
 	}
-	/**
-	 *方法: 取得java.lang.String
-	 *@return: java.lang.String  验厂员
-	 */
 
-	@Column(name ="CHECK_USER_ID",nullable=true,length=32)
-	public String getCheckUserId(){
-		return this.checkUserId;
-	}
-
-	/**
-	 *方法: 设置java.lang.String
-	 *@param: java.lang.String  验厂员
-	 */
-	public void setCheckUserId(String checkUserId){
-		this.checkUserId = checkUserId;
-	}
-	/**
-	 *方法: 取得java.lang.String
-	 *@return: java.lang.String  验厂员
-	 */
-
-	@Column(name ="CHECK_USER",nullable=true,length=32)
-	public String getCheckUser(){
-		return this.checkUser;
-	}
-
-	/**
-	 *方法: 设置java.lang.String
-	 *@param: java.lang.String  验厂员
-	 */
-	public void setCheckUser(String checkUser){
-		this.checkUser = checkUser;
-	}
 	/**
 	 *方法: 取得java.lang.String
 	 *@return: java.lang.String  人权验厂
@@ -801,40 +763,6 @@ public class EmkCustomUseEntity implements java.io.Serializable {
 	}
 	/**
 	 *方法: 取得java.lang.String
-	 *@return: java.lang.String  电话
-	 */
-
-	@Column(name ="TELPHONE",nullable=true,length=32)
-	public String getTelphone(){
-		return this.telphone;
-	}
-
-	/**
-	 *方法: 设置java.lang.String
-	 *@param: java.lang.String  电话
-	 */
-	public void setTelphone(String telphone){
-		this.telphone = telphone;
-	}
-	/**
-	 *方法: 取得java.lang.String
-	 *@return: java.lang.String  起运港
-	 */
-
-	@Column(name ="LYG",nullable=true,length=56)
-	public String getLyg(){
-		return this.lyg;
-	}
-
-	/**
-	 *方法: 设置java.lang.String
-	 *@param: java.lang.String  起运港
-	 */
-	public void setLyg(String lyg){
-		this.lyg = lyg;
-	}
-	/**
-	 *方法: 取得java.lang.String
 	 *@return: java.lang.String  人权验厂
 	 */
 
@@ -1104,5 +1032,40 @@ public class EmkCustomUseEntity implements java.io.Serializable {
 	 */
 	public void setSendHuoFile(String sendHuoFile){
 		this.sendHuoFile = sendHuoFile;
+	}
+
+	@Column(name ="other",nullable=true,length=32)
+	public String getOther() {
+		return other;
+	}
+
+	public void setOther(String other) {
+		this.other = other;
+	}
+
+	@Column(name ="remark",nullable=true,length=32)
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
+	@Column(name = "DEVELOPER", nullable = true, length = 32)
+	public String getDeveloper() {
+		return this.developer;
+	}
+
+	public void setDeveloper(String developer) {
+		this.developer = developer;
+	}
+
+	@Column(name = "DEVELOPER_NAME", nullable = true, length = 32)
+	public String getDeveloperName() {
+		return this.developerName;
+	}
+
+	public void setDeveloperName(String developerName) {
+		this.developerName = developerName;
 	}
 }

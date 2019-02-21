@@ -84,22 +84,9 @@ public class EmkCheckFactoryEntity2 implements java.io.Serializable {
 	/**验厂申请编号*/
 	@Excel(name="验厂申请编号",width=15)
 	private String ycsqbh;
-
-	@Excel(name = "审核意见")
-	private String leadAdvice;
-	private String isPass;
-	private String leadUserId;
-	@Excel(name = "审核人")
-	private String leader;
+	@Excel(name="申请事由",width=15)
+	private String applyReason;
 	private String state;
-
-	private String cyUserId;
-	private String cyer;
-	private String cyAdvice;
-	private String bgUserId;
-	private String bger;
-	private String bgAdvice;
-	private String isHg;
 
 	/**
 	 *方法: 取得java.lang.String
@@ -504,124 +491,25 @@ public class EmkCheckFactoryEntity2 implements java.io.Serializable {
 		return this.ycsqbh;
 	}
 
-	/**
-	 *方法: 设置java.lang.String
-	 *@param: java.lang.String  验厂申请编号
-	 */
-	public void setYcsqbh(String ycsqbh){
+	public void setYcsqbh(String ycsqbh) {
 		this.ycsqbh = ycsqbh;
 	}
 
-	@Column(name = "LEAD_ADVICE", nullable = true, length = 256)
-	public String getLeadAdvice() {
-		return this.leadAdvice;
+	@Column(name ="apply_reason",nullable=true,length=32)
+	public String getApplyReason() {
+		return applyReason;
 	}
 
-	public void setLeadAdvice(String leadAdvice) {
-		this.leadAdvice = leadAdvice;
+	public void setApplyReason(String applyReason) {
+		this.applyReason = applyReason;
 	}
 
-	@Column(name = "IS_PASS", nullable = true, length = 32)
-	public String getIsPass() {
-		return this.isPass;
+	@Column(name ="state",nullable=true,length=32)
+	public String getState() {
+		return state;
 	}
 
-	public void setIsPass(String isPass) {
-		this.isPass = isPass;
-	}
-
-	@Column(name = "LEAD_USER_ID", nullable = true, length = 32)
-	public String getLeadUserId() {
-		return this.leadUserId;
-	}
-
-	public void setLeadUserId(String leadUserId) {
-		this.leadUserId = leadUserId;
-	}
-
-	@Column(name = "LEADER", nullable = true, length = 32)
-	public String getLeader() {
-		return this.leader;
-	}
-
-	public void setLeader(String leader) {
-		this.leader = leader;
-	}
-
-	@Column(name ="STATE",nullable=true,length=32)
-	public String getState(){
-		return this.state;
-	}
-
-	/**
-	 *方法: 设置java.lang.String
-	 *@param: java.lang.String  工单状态
-	 */
-	public void setState(String state){
+	public void setState(String state) {
 		this.state = state;
-	}
-
-	@Column(name ="cy_user_id",nullable=true,length=32)
-	public String getCyUserId() {
-		return cyUserId;
-	}
-
-	public void setCyUserId(String cyUserId) {
-		this.cyUserId = cyUserId;
-	}
-
-	@Column(name ="cyer",nullable=true,length=32)
-	public String getCyer() {
-		return cyer;
-	}
-
-	public void setCyer(String cyer) {
-		this.cyer = cyer;
-	}
-
-	@Column(name ="cy_advice",nullable=true,length=32)
-	public String getCyAdvice() {
-		return cyAdvice;
-	}
-
-	public void setCyAdvice(String cyAdvice) {
-		this.cyAdvice = cyAdvice;
-	}
-
-	@Column(name ="bg_user_id",nullable=true,length=32)
-
-	public String getBgUserId() {
-		return bgUserId;
-	}
-
-	public void setBgUserId(String bgUserId) {
-		this.bgUserId = bgUserId;
-	}
-
-	@Column(name ="bger",nullable=true,length=32)
-	public String getBger() {
-		return bger;
-	}
-
-	public void setBger(String bger) {
-		this.bger = bger;
-	}
-
-	@Column(name ="bg_advice",nullable=true,length=32)
-	public String getBgAdvice() {
-		return bgAdvice;
-	}
-
-	public void setBgAdvice(String bgAdvice) {
-		this.bgAdvice = bgAdvice;
-	}
-
-	@Column(name ="is_hg",nullable=true,length=32)
-	public String getIsHg() {
-		return isHg;
-	}
-
-	public void setIsHg(String isHg) {
-		this.isHg = isHg;
 	}
 }

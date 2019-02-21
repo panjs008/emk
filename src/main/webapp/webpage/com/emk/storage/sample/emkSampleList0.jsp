@@ -10,7 +10,7 @@
    <t:dgCol title="创建日期"  field="createDate"  formatter="yyyy-MM-dd"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="所属部门"  field="sysOrgCode"  hidden="true"  queryMode="single"  width="140"></t:dgCol>
       <t:dgCol title="操作" field="opt" width="190" frozenColumn="true"></t:dgCol>
-      <t:dgCol title="客户编号"  field="cusNum"  queryMode="single"  width="90"></t:dgCol>
+      <t:dgCol title="客户代码"  field="cusNum"  queryMode="single"  width="90"></t:dgCol>
       <t:dgCol title="客户名称"  field="cusName"  queryMode="single"  width="150"></t:dgCol>
       <t:dgCol title="客户原样"  image="true"  imageSize="30,30" field="customSampleUrl"  queryMode="single"  width="70"></t:dgCol>
       <t:dgCol title="尺码表" image="true"  imageSize="30,30"  field="sampleSizeUrl"   queryMode="single"  width="60"></t:dgCol>

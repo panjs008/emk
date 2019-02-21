@@ -93,20 +93,12 @@ public class EmkPriceServiceImpl
         map.put("businesse_dept_name", t.getBusinesseDeptName());
         map.put("businesse_dept_id", t.getBusinesseDeptId());
         map.put("state", t.getState());
-        map.put("remark", t.getRemark());
-        map.put("xjkz", t.getXjkz());
-        map.put("djsx_time", t.getDjsxTime());
-        map.put("unit", t.getUnit());
-        map.put("jtrcl", t.getJtrcl());
-        map.put("qdshl", t.getQdshl());
-        map.put("hdshl", t.getHdshl());
         map.put("bjlx", t.getBjlx());
         map.put("limit_date", t.getLimitDate());
         map.put("bz", t.getBz());
         map.put("target_price", t.getTargetPrice());
         map.put("evlate_total", t.getEvlateTotal());
         map.put("size_fawei", t.getSizeFawei());
-        map.put("gl_money", t.getGlMoney());
         map.put("test_money", t.getTestMoney());
         map.put("profit", t.getProfit());
         map.put("unable_money", t.getUnableMoney());
@@ -169,20 +161,12 @@ public class EmkPriceServiceImpl
 
         sql = sql.replace("#{state}", String.valueOf(t.getState()));
 
-        sql = sql.replace("#{remark}", String.valueOf(t.getRemark()));
-        sql = sql.replace("#{xjkz}", String.valueOf(t.getXjkz()));
-        sql = sql.replace("#{djsx_time}", String.valueOf(t.getDjsxTime()));
-        sql = sql.replace("#{unit}", String.valueOf(t.getUnit()));
-        sql = sql.replace("#{jtrcl}", String.valueOf(t.getJtrcl()));
-        sql = sql.replace("#{qdshl}", String.valueOf(t.getQdshl()));
-        sql = sql.replace("#{hdshl}", String.valueOf(t.getHdshl()));
         sql = sql.replace("#{bjlx}", String.valueOf(t.getBjlx()));
         sql = sql.replace("#{limit_date}", String.valueOf(t.getLimitDate()));
         sql = sql.replace("#{bz}", String.valueOf(t.getBz()));
         sql = sql.replace("#{target_price}", String.valueOf(t.getTargetPrice()));
         sql = sql.replace("#{evlate_total}", String.valueOf(t.getEvlateTotal()));
         sql = sql.replace("#{size_fawei}", String.valueOf(t.getSizeFawei()));
-        sql = sql.replace("#{gl_money}", String.valueOf(t.getGlMoney()));
         sql = sql.replace("#{test_money}", String.valueOf(t.getTestMoney()));
         sql = sql.replace("#{profit}", String.valueOf(t.getProfit()));
         sql = sql.replace("#{unable_money}", String.valueOf(t.getUnableMoney()));

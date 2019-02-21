@@ -1,33 +1,37 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@include file="/context/mytags.jsp"%>
 <t:base type="jquery,easyui,tools,DatePicker"></t:base>
-<t:datagrid name="ymkCustomList" checkbox="true"  pagination="true" sortName="cusNum" sortOrder="asc"  pageSize="15" fitColumns="false" title="" btnCls="bootstrap" actionUrl="ymkCustomController.do?datagrid" idField="id" fit="true" queryMode="group">
+<t:datagrid name="ymkCustomList" checkbox="true"  pagination="true" singleSelect="true" sortName="cusNum" sortOrder="asc"  pageSize="20" fitColumns="false" title="" btnCls="bootstrap" actionUrl="ymkCustomController.do?datagrid" idField="id" fit="true" queryMode="group">
     <t:dgCol title="主键"  field="id"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
     <%--<t:dgCol title="操作" field="opt" width="135" frozenColumn="true"></t:dgCol>--%>
     <t:dgCol title="创建人名称"  field="createName"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
     <t:dgCol title="创建人登录名称"  field="createBy"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
     <t:dgCol title="创建日期"  field="createDate"  formatter="yyyy-MM-dd"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
     <t:dgCol title="所属部门"  field="sysOrgCode"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
-    <t:dgCol title="档案号"  field="daanNum"  queryMode="single"  width="90"></t:dgCol>
-    <t:dgCol title="客户编码"  field="cusNum" query="true" queryMode="single"  width="70"></t:dgCol>
+    <t:dgCol title="档案号"  field="daanNum"  queryMode="single"  width="100"></t:dgCol>
+    <t:dgCol title="客户编码"  field="cusNum" query="true" queryMode="single"  width="80"></t:dgCol>
     <t:dgCol title="客户名称"  field="cusName"  query="true" queryMode="single"  width="200"></t:dgCol>
-    <t:dgCol title="联系人"  field="zlxr"  queryMode="single"  width="80"></t:dgCol>
-    <t:dgCol title="电话"  field="telphone"  queryMode="single"  width="90"></t:dgCol>
+    <%--<t:dgCol title="联系人"  field="zlxr"  queryMode="single"  width="80"></t:dgCol>
+    <t:dgCol title="电话"  field="telphone"  queryMode="single"  width="90"></t:dgCol>--%>
+    <t:dgCol title="区域"  field="shengFen"  dictionary="t_s_category,code,name"   queryMode="single"  width="100"></t:dgCol>
+    <t:dgCol title="国家"  field="guoJia"  query="true" dictionary="trade" queryMode="single"  width="100"></t:dgCol>
     <t:dgCol title="业务部门"  field="businesseDeptName"  queryMode="single"  width="100"></t:dgCol>
-    <t:dgCol title="业务员"  field="businesserName"  queryMode="single"  width="80"></t:dgCol>
-    <t:dgCol title="贸易国别"  field="guoJia" query="true" dictionary="trade" queryMode="single"  width="80"></t:dgCol>
-    <t:dgCol title="城市"  field="chengShi" dictionary="t_s_category,code,name"    queryMode="single"  width="70"></t:dgCol>
-    <t:dgCol title="片区"  field="pianQu" dictionary="t_s_category,code,name"   queryMode="single"  width="70"></t:dgCol>
-    <t:dgCol title="客户类型"  field="cusType" query="true" dictionary="custom" queryMode="single"  width="80"></t:dgCol>
-    <t:dgCol title="办公地址"  field="address"  queryMode="single"  width="220"></t:dgCol>
+    <t:dgCol title="业务员"  field="businesserName"  queryMode="single"  width="90"></t:dgCol>
+    <t:dgCol title="业务跟单员"  field="tracerName"  queryMode="single"  width="90"></t:dgCol>
+    <t:dgCol title="生产跟单员"  field="developerName"  queryMode="single"  width="90"></t:dgCol>
+    <t:dgCol title="客户状态"  field="status" query="true" replace="激活_0,暂停_1,禁止_2" queryMode="single"  width="70"></t:dgCol>
 
+    <%--<t:dgCol title="片区"  field="pianQu" dictionary="t_s_category,code,name"   queryMode="single"  width="70"></t:dgCol>--%>
+    <%--<t:dgCol title="客户类型"  field="cusType" query="true" dictionary="custom" queryMode="single"  width="80"></t:dgCol>--%>
     <t:dgToolBar title="录入" icon="fa fa-plus" url="ymkCustomController.do?goAdd&winTitle=录入客户档案" width="1100" height="560" funname="add"></t:dgToolBar>
     <t:dgToolBar title="编辑" icon="fa fa-edit" url="ymkCustomController.do?goUpdate&winTitle=编辑客户档案" width="1100" height="560" funname="update"></t:dgToolBar>
-    <%--<t:dgToolBar title="查看" icon="fa fa-search"   url="ymkCustomController.do?goUpdate&goUpdate&winTitle=查看客户档案" funname="detail" height="560" width="1100"></t:dgToolBar>--%>
+    <t:dgToolBar title="更改状态" icon="fa fa-edit" url="ymkCustomController.do?goUpdateState&winTitle=更改状态" width="400" height="100" funname="update"></t:dgToolBar>
     <t:dgToolBar title="删除"  icon="fa fa-remove"  url="ymkCustomController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
     <%--<t:dgToolBar title="查看" icon="fa fa-search" url="ymkCustomController.do?goUpdate" funname="detail" width="1100" height="560"></t:dgToolBar>--%>
     <%--<t:dgToolBar title="导入" icon="fa fa-arrow-circle-left" funname="ImportXls"></t:dgToolBar>--%>
     <t:dgToolBar title="导出" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
+    <t:dgToolBar title="导出PDF" icon="fa fa-arrow-circle-right"  funname="doPrintPDF"></t:dgToolBar>
+
     <%--<t:dgToolBar title="模板下载" icon="fa fa-arrow-circle-o-down" funname="ExportXlsByT"></t:dgToolBar>--%>
 </t:datagrid>
 
@@ -147,7 +151,22 @@
      $('#proDetialListpanel').panel("refresh", "ymkCustomBankController.do?list&customId=" + id);
 
  }
-
+ function doPrintPDF() {
+     var rowsData = $('#ymkCustomList').datagrid('getSelections');
+     var ids = [];
+     if (!rowsData || rowsData.length == 0) {
+         tip('请选择需要导出PDF的客户档案');
+         return;
+     }
+     for ( var i = 0; i < rowsData.length; i++) {
+         ids.push(rowsData[i].id);
+     }
+     $.dialog.confirm('您是否确定导出PDF的客户档案?', function(r) {
+         if (r) {
+             window.location.href = "ymkCustomController.do?doPrintPDF&ids="+ids;
+         }
+     });
+ }
 //导入
 function ImportXls() {
 	openuploadwin('Excel导入', 'ymkCustomController.do?upload', "ymkCustomList");

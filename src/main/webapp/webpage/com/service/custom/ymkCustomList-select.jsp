@@ -21,9 +21,9 @@
       <t:dgCol title="业务跟单员" field="tracerName"   queryMode="single"  width="80"></t:dgCol>
       <t:dgCol title="生产跟单员" hidden="true"  field="developer"   queryMode="single"  width="80"></t:dgCol>
       <t:dgCol title="业务跟单员" field="developerName"   queryMode="single"  width="80"></t:dgCol>
-      <t:dgCol title="币种"  field="bz"  queryMode="single"  width="60"></t:dgCol>
+     <%-- <t:dgCol title="币种"  field="bz"  queryMode="single"  width="60"></t:dgCol>
       <t:dgCol title="城市"  field="chengShi" dictionary="t_s_category,code,name"    queryMode="single"  width="60"></t:dgCol>
-      <t:dgCol title="片区"  field="pianQu" dictionary="t_s_category,code,name"   queryMode="single"  width="60"></t:dgCol>
+      <t:dgCol title="片区"  field="pianQu" dictionary="t_s_category,code,name"   queryMode="single"  width="60"></t:dgCol>--%>
       <%--<t:dgCol title="客户简称"  field="cusCode"  queryMode="single"  width="95"></t:dgCol>--%>
    <%--<t:dgCol title="联系人电话"  field="telphone"  queryMode="single"  width="90"></t:dgCol>--%>
   </t:datagrid>

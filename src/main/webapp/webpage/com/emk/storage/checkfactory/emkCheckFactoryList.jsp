@@ -89,7 +89,6 @@
              var d = $.parseJSON(data);
              if (d.success) {
                  var msg = d.msg;
-                 console.log("${ROLE.rolecode}");
                  if(processName == "" && createBy == "${CUR_USER.userName}"){
                      createdetailwindow('流程进度--当前环节：' + msg, 'flowController.do?goProcess&processUrl=com/emk/storage/checkfactory/emkCheckFactory-process&id=' + id, 1200, height);
                  }else{

@@ -6,7 +6,9 @@
   <t:datagrid name="emkQualityCheckList" checkbox="false" pagination="true" fitColumns="true" title="" actionUrl="emkQualityCheckController.do?datagrid" idField="id" fit="true" btnCls="bootstrap"  queryMode="group">
    <t:dgCol title="主键"  hidden="true" field="id"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="创建人名称"  hidden="true" field="createName"  queryMode="single"  width="120"></t:dgCol>
-   <t:dgCol title="创建人登录名称"  hidden="true" field="createBy"  queryMode="single"  width="120"></t:dgCol>
+      <t:dgCol title="操作" field="opt" frozenColumn="true"  width="100"></t:dgCol>
+
+      <t:dgCol title="创建人登录名称"  hidden="true" field="createBy"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="创建日期"  hidden="true" field="createDate"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="所属部门"  hidden="true" field="sysOrgCode"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="质量检查编号"  field="qualityCheckNum" query="true"  queryMode="single"  width="80"></t:dgCol>
@@ -20,6 +22,7 @@
    <t:dgCol title="客户名称"  field="cusName"  queryMode="single"  width="145"></t:dgCol>
    <t:dgCol title="款号"  field="sampleNo"  queryMode="single"  width="80"></t:dgCol>
       <t:dgCol title="状态"  field="state" formatterjs="formatColor"  queryMode="single"  width="70"></t:dgCol>
+      <t:dgFunOpt funname="goToProcess(id,createBy)" title="流程进度" operationCode="process" urlclass="ace_button"  urlStyle="background-color:#ec4758;" urlfont="fa-tasks"></t:dgFunOpt>
 
       <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkQualityCheckController.do?goAdd&winTitle=录入质量检查表" funname="add" height="600" width="1250"></t:dgToolBar>
    <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkQualityCheckController.do?goUpdate&winTitle=编辑质量检查表" funname="update" height="600" width="1250"></t:dgToolBar>
@@ -79,7 +82,6 @@
 
  function goToProcess(id, createBy) {
      var height = window.top.document.body.offsetHeight * 0.85;
-
      $.ajax({
          url: "flowController.do?getCurrentProcess&tableName=emk_quality_check&title=质量检查单&id=" + id,
          type: 'post',
@@ -95,7 +97,7 @@
                      if (msg == "完成") {
                          createdetailwindow('流程进度--当前环节：' + msg, 'flowController.do?goProcess&processUrl=com/emk/check/qualitycheck/emkQualityCheck-process&id=' + id, 1200, height);
                      } else {
-                         if ("${ROLE.rolecode}" == "ycjl") {
+                         if ("${ROLE.rolecode}" == "zjjl") {
                              createwindow("流程进度--当前环节：" + msg, "flowController.do?goProcess&processUrl=com/emk/check/qualitycheck/emkQualityCheck-process&id=" + id, 1200, height);
                          } else {
                              createdetailwindow('流程进度--当前环节：' + msg, 'flowController.do?goProcess&processUrl=com/emk/check/qualitycheck/emkQualityCheck-process&id=' + id, 1200, height);

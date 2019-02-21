@@ -43,6 +43,8 @@
 							<div class="histt"><a style="font-size: 14px;">${task.NAME_}</a></div>
 							<div class="histt"><a style="font-size: 12px;"><c:if test="${task.TASK_DEF_KEY_ eq 'checkfactoryTask'}">【${task.workname}】发起验厂申请，验厂申请单号：${emkCheckFactory.ycsqbh}</c:if>
 								<c:if test="${task.TASK_DEF_KEY_ eq 'checkTask'}">审核人【${emkCheckFactory.leader}】,处理意见：${emkCheckFactory.leadAdvice}</c:if>
+								<c:if test="${task.TASK_DEF_KEY_ eq 'cyTask'}">审核人【${emkCheckFactory.cyer}】,处理意见：${emkCheckFactory.cyAdvice}</c:if>
+								<c:if test="${task.TASK_DEF_KEY_ eq 'bgTask'}">审核人【${emkCheckFactory.bger}】,处理意见：${emkCheckFactory.bgAdvice}</c:if>
 							</a></div>
 						</div>
 					</div>

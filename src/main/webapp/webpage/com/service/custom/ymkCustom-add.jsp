@@ -8,7 +8,6 @@
 	<link type="text/css" rel="stylesheet" href="plug-in/select2/css/select2.min.css"/>
 	<script type="text/javascript" src="plug-in/select2/js/select2.js"></script>
 	<script type="text/javascript" src="plug-in/select2/js/pinyin.js"></script>
-
 	<script type="text/javascript">
 		//编写自定义JS代码
 		$(function(){
@@ -41,158 +40,8 @@
 							}
 						}
 						$("#shengFen").append(option1);
-						if(${ymkCustomPage.chengShi ne '' && ymkCustomPage.chengShi ne null}){
-							$.ajax({
-								url : "ymkCustomController.do?getCity&code=${ymkCustomPage.shengFen}",
-								type : 'post',
-								cache : false,
-								data: null,
-								success : function(data) {
-									var d = $.parseJSON(data);
-									if (d.success) {
-										var msg = d.msg;
-										var dataItems = new Array(); //定义一数组
-										dataItems = d.obj.split(";"); //字符分割
-										//W.document.location.reload(true);
-										$('#chengShi').empty();
-										var option1='';
-										for (i=0;i<dataItems.length ;i++ ) {
-											var dataitem = new Array(); //定义一数组
-											dataitem = dataItems[i].split(","); //字符分割
-											if(dataitem[0] == '${ymkCustomPage.chengShi}'){
-												option1 += '<option value='+dataitem[0]+' selected>'+dataitem[1]+'</option>';
-											}else{
-												option1 += '<option value='+dataitem[0]+'>'+dataitem[1]+'</option>';
-											}
-										}
-										$("#chengShi").append(option1);
-
-										$.ajax({
-											url : "ymkCustomController.do?getCity&code=${ymkCustomPage.chengShi}",
-											type : 'post',
-											cache : false,
-											data: null,
-											success : function(data) {
-												var d = $.parseJSON(data);
-												if (d.success) {
-													var msg = d.msg;
-													var dataItems = new Array(); //定义一数组
-													dataItems = d.obj.split(";"); //字符分割
-													//W.document.location.reload(true);
-													$('#pianQu').empty();
-													var option1='';
-													for (i=0;i<dataItems.length ;i++ ) {
-														var dataitem = new Array(); //定义一数组
-														dataitem = dataItems[i].split(","); //字符分割
-														if(dataitem[0] == '${ymkCustomPage.pianQu}'){
-															option1 += '<option value='+dataitem[0]+' selected>'+dataitem[1]+'</option>';
-														}else{
-															option1 += '<option value='+dataitem[0]+'>'+dataitem[1]+'</option>';
-														}
-													}
-													$("#pianQu").append(option1);
-												}
-											}
-										});
-									}
-								}
-							});
-						}
-
 					}
 				}
-			});
-
-
-			$("#shengFen").change(function(){
-				$.ajax({
-					url : "ymkCustomController.do?getCity&code="+$("#shengFen").val(),
-					type : 'post',
-					cache : false,
-					data: null,
-					success : function(data) {
-						var d = $.parseJSON(data);
-						if (d.success) {
-							var msg = d.msg;
-							var dataItems = new Array(); //定义一数组
-							dataItems = d.obj.split(";"); //字符分割
-							//W.document.location.reload(true);
-							$('#chengShi').empty();
-							$('#pianQu').empty();
-
-							var option3='';
-							var firstJgmc;
-
-							for (i=0;i<dataItems.length ;i++ ) {
-								var dataitem = new Array(); //定义一数组
-								dataitem = dataItems[i].split(","); //字符分割
-								if(i == 0){
-									firstJgmc = dataitem[0];
-								}
-								if(dataitem[0]!="") {
-									option3 += '<option value='+dataitem[0]+'>'+dataitem[1]+'</option>';
-								}
-							}
-							$("#chengShi").append(option3);
-
-							$.ajax({
-								url : "ymkCustomController.do?getCity&code="+firstJgmc,
-								type : 'post',
-								cache : false,
-								data: null,
-								success : function(data) {
-									var d = $.parseJSON(data);
-									if (d.success) {
-										var msg = d.msg;
-										var dataItems = new Array(); //定义一数组
-										dataItems = d.obj.split(";"); //字符分割
-										//W.document.location.reload(true);
-										$('#pianQu').empty();
-										var option1='';
-										for (i=0;i<dataItems.length ;i++ ) {
-											var dataitem = new Array(); //定义一数组
-											dataitem = dataItems[i].split(","); //字符分割
-											if(dataitem[0]!="") {
-												option1 += '<option value='+dataitem[0]+'>'+dataitem[1]+'</option>';
-											}
-										}
-										$("#pianQu").append(option1);
-									}
-								}
-							});
-						}
-					}
-				});
-			});
-
-			$("#chengShi").change(function(){
-				$.ajax({
-					url : "ymkCustomController.do?getCity&code="+$("#chengShi").val(),
-					type : 'post',
-					cache : false,
-					data: null,
-					success : function(data) {
-						var d = $.parseJSON(data);
-						if (d.success) {
-							var msg = d.msg;
-							var dataItems = new Array(); //定义一数组
-							dataItems = d.obj.split(";"); //字符分割
-							//W.document.location.reload(true);
-							$('#pianQu').empty();
-							var option3='';
-
-							for (i=0;i<dataItems.length ;i++ ) {
-								var dataitem = new Array(); //定义一数组
-								dataitem = dataItems[i].split(","); //字符分割
-								if(dataitem[0]!="") {
-									option3 += '<option value='+dataitem[0]+'>'+dataitem[1]+'</option>';
-								}
-							}
-							$("#pianQu").append(option3);
-						}
-					}
-				});
-
 			});
 
 			BindSelect("businesserId","ymkCustomController.do?findUserList&userKey=业务员",0,"");
@@ -200,7 +49,45 @@
 				var itemarr = $("#businesserId").val().split(","); //字符分割
 				$("#businesser").val(itemarr[0]);
 				$("#businesserName").val(itemarr[1]);
+
+				returnToDept($("#businesser").val());
+
 			});
+			$("#cusType").change(function(){
+				$.ajax({
+					url : "ymkCustomController.do?getCustomTypeName&groupCode="+$("#cusType").val(),
+					type : 'post',
+					cache : false,
+					data: null,
+					success : function(data) {
+						var d = $.parseJSON(data);
+						if (d.success) {
+							$('#cusTypeName').empty();
+							var option1 = '<option value="">请选择</option>';
+							$.each(d.obj, function (i, item) {
+								option1 += '<option value='+item.typecode+'>'+item.typename+'</option>';
+							});
+							$("#cusTypeName").append(option1);
+						}
+					}
+				});
+			});
+
+
+			function returnToDept(userName){
+				$.ajax({
+					url: "ymkCustomController.do?getDeptInfoByUser&userName="+userName,
+					type: 'post',
+					cache: false,
+					data: null,
+					success: function (data) {
+						var dept = $.parseJSON(data);
+
+						$("#businesseDeptName").val(dept.departname);
+						$("#businesseDeptId").val(dept.orgCode);
+					}
+				});
+			}
 
 			BindSelect("tracerId","ymkCustomController.do?findUserList&userKey=业务跟单员",0,"");
 			$("#tracerId").change(function(){
@@ -253,6 +140,7 @@
 	</script>
 </head>
 <body>
+<%--<iframe scrolling="no" id="processFrm" frameborder="0" style="overflow-x: hidden;overflow-y: hidden"  src="${webRoot}/context/progress.jsp" width="100%" height="20px"></iframe>--%>
 <t:formvalid formid="formobj" dialog="true" usePlugin="password" layout="table" action="ymkCustomController.do?doAdd" tiptype="1">
 	<input id="id" name="id" type="hidden" value="${ymkCustomPage.id }"/>
 	<input id="businesser" name="businesser" type="hidden" value="${ymkCustomPage.businesser }"/>
@@ -263,7 +151,7 @@
 	<input id="developerName" name="developerName" type="hidden" value="${ymkCustomPage.developerName }"/>
 	<table style="width:100%;" cellpadding="0" cellspacing="1" class="formtable">
 		<tr>
-			<td align="right">
+			<td class="value" align="right" colspan="3">
 				<label class="Validform_label">
 					档案编号:
 				</label>
@@ -273,140 +161,41 @@
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">档案编号</label>
 			</td>
-			<td align="right">
+			</tr>
+		<tr>
+			<td align="right" style="width: 18%">
 				<label class="Validform_label">
-					客户类型:
+					客户名称:
 				</label>
 			</td>
-			<td class="value">
-				<t:dictSelect id="cusType" field="cusType" typeGroupCode="custom" datatype="*" defaultVal="default" hasLabel="false" title="客户类型"></t:dictSelect>
+			<td class="value" style="width: 32%">
+				<input id="cusName" name="cusName" type="text" value="${ymkCustomPage.cusName }" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">客户类型</label>
+				<label class="Validform_label" style="display: none;">客户名称</label>
 			</td>
+			<td align="right" style="width: 18%">
+				<label class="Validform_label">
+					业务部门:
+				</label>
+			</td>
+			<td class="value" style="width: 32%">
+				<input id="businesseDeptName" name="businesseDeptName" value="${ymkCustomPage.businesseDeptName }" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="businesseDeptId" name="businesseDeptId" value="${ymkCustomPage.businesseDeptId }" type="hidden"  />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">业务部门</label>
+			</td>
+		</tr>
+		<tr>
 			<td align="right">
 				<label class="Validform_label">
-					客户编码:
+					客户代码:
 				</label>
 			</td>
 			<td class="value">
 				<input id="cusNum" name="cusNum" type="text" value="${cusNum}" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">客户编码</label>
+				<label class="Validform_label" style="display: none;">客户代码</label>
 			</td>
-		</tr>
-		<tr>
-
-			<td align="right">
-				<label class="Validform_label">
-					客户名称:
-				</label>
-			</td>
-			<td class="value">
-				<input id="cusName" name="cusName" type="text" value="${ymkCustomPage.cusName }" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">客户名称</label>
-			</td>
-			<td align="right">
-				<label class="Validform_label">
-					主联系人:
-				</label>
-			</td>
-			<td class="value">
-				<input id="zlxr" name="zlxr" type="text" datatype="*" value="${ymkCustomPage.zlxr }" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">主联系人</label>
-			</td>
-			<td align="right">
-				<label class="Validform_label">
-					电话:
-				</label>
-			</td>
-			<td class="value">
-				<input id="telphone" name="telphone" type="text" value="${ymkCustomPage.telphone }" datatype="m" style="width: 150px" class="inputxt"  />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">电话</label>
-			</td>
-		</tr>
-
-		<tr>
-			<td align="right">
-				<label class="Validform_label">
-					办公电话:
-				</label>
-			</td>
-
-			<td class="value">
-				<input id="workphone" name="workphone" value="${ymkCustomPage.workphone }" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">办公电话</label>
-			</td>
-
-			<td align="right">
-				<label class="Validform_label">
-					办公传真:
-				</label>
-			</td>
-			<td class="value">
-				<input id="fax" name="fax" type="text" value="${ymkCustomPage.fax }" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">办公传真</label>
-			</td>
-
-			<td align="right">
-				<label class="Validform_label">
-					邮箱:
-				</label>
-			</td>
-			<td class="value">
-				<input id="email" name="email" type="text" value="${ymkCustomPage.email }" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">邮箱</label>
-			</td>
-		</tr>
-
-		<tr>
-			<td align="right">
-				<label class="Validform_label">
-					贸易国别:
-				</label>
-			</td>
-			<td class="value">
-				<t:dictSelect id="guoJia" field="guoJia" typeGroupCode="trade" datatype="*" defaultVal="default" hasLabel="false" title="客户类型"></t:dictSelect>
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">贸易国别</label>
-			</td>
-			<td align="right">
-				<label class="Validform_label">
-					所属区域:
-				</label>
-			</td>
-			<td class="value" colspan="3">
-				<select id="shengFen" name="shengFen"  style="width:130px;">
-					<option>--省份--</option>
-				</select>
-				<select id="chengShi" name="chengShi" style="width:150px;">
-					<option>--城市--</option>
-				</select>
-				<select id="pianQu" name="pianQu" style="width:150px;">
-					<option>--片区--</option>
-				</select>
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">所属区域</label>
-			</td>
-		</tr>
-		<tr>
-			<td align="right">
-				<label class="Validform_label">
-					客户地址:
-				</label>
-			</td>
-			<td class="value" colspan="5">
-				<textarea id="address" style="width:90%;height:50px" class="inputxt" rows="3" name="address">${ymkCustomPage.address }</textarea>
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">客户地址</label>
-			</td>
-		</tr>
-		<tr>
 			<td align="right">
 				<label class="Validform_label">
 					业务员:
@@ -419,7 +208,18 @@
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">业务员</label>
 			</td>
-
+		</tr>
+		<tr>
+			<td align="right">
+				<label class="Validform_label">
+					客户地址:
+				</label>
+			</td>
+			<td class="value">
+				<input id="address" name="address"  type="text" style="width: 150px"  value="${ymkCustomPage.address }" class="inputxt"  ignore="ignore" />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">客户地址</label>
+			</td>
 			<td align="right">
 				<label class="Validform_label">
 					业务跟单员:
@@ -427,11 +227,22 @@
 			</td>
 			<td class="value">
 				<select class="form-control select2" id="tracerId"  >
-					<%--<option value="">请选择客户</option>--%>
-						<option value=''>请选择</option>
+					<option value=''>请选择</option>
 				</select>
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">业务跟单员</label>
+			</td>
+		</tr>
+		<tr>
+			<td align="right">
+				<label class="Validform_label">
+					电话:
+				</label>
+			</td>
+			<td class="value">
+				<input id="telphone" name="telphone" type="text" value="${ymkCustomPage.telphone }" datatype="m" style="width: 150px" class="inputxt"  />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">电话</label>
 			</td>
 
 			<td align="right">
@@ -441,24 +252,50 @@
 			</td>
 			<td class="value">
 				<select class="form-control select2" id="developerId"  >
-						<%--<option value="">请选择客户</option>--%>
-							<option value=''>请选择</option>
+					<option value=''>请选择</option>
 				</select>
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">生产跟单员</label>
 			</td>
 		</tr>
-
 		<tr>
 			<td align="right">
 				<label class="Validform_label">
-					主营业务:
+					主营产品:
 				</label>
 			</td>
-			<td class="value" colspan="5">
+			<td class="value" colspan="3">
 				<textarea id="mainContent" style="width:90%;height:50px" class="inputxt" rows="3" name="mainContent">${ymkCustomPage.mainContent }</textarea>
 				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">备注</label>
+				<label class="Validform_label" style="display: none;">主营产品</label>
+			</td>
+		</tr>
+		<tr>
+			<td align="right">
+				<label class="Validform_label">
+					客户类型:
+				</label>
+			</td>
+			<td class="value">
+				<t:dictSelect id="cusType" field="cusType" typeGroupCode="custom" datatype="*" defaultVal="default" hasLabel="false" title="客户类型"></t:dictSelect>
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">客户类型</label>
+			</td>
+			<td align="right">
+				<label class="Validform_label">
+					名称:
+				</label>
+			</td>
+			<td class="value">
+				<select id="cusTypeName" name="cusTypeName" >
+					<option value=''>请选择</option>
+					<c:forEach var="type" items="${typeList}">
+						<option value="${type.typecode}">${type.typename}</option>
+					</c:forEach>
+				</select>
+				<%--<input id="cusTypeName" name="cusTypeName" type="text" style="width: 150px" class="inputxt"  />--%>
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">名称</label>
 			</td>
 		</tr>
 		<tr>
@@ -467,7 +304,7 @@
 					业务类型:
 				</label>
 			</td>
-			<td class="value">
+			<td class="value" colspan="3">
 				<select id="businessType" name="businessType">
 					<option name="0">直接</option>
 					<option name="1">中间</option>
@@ -475,6 +312,259 @@
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">业务类型</label>
 			</td>
+		</tr>
+		<tr>
+			<td align="right">
+				<label class="Validform_label">
+					潜在业务量/年:
+				</label>
+			</td>
+			<td class="value" colspan="3">
+				<input id="qzywl" name="qzywl" type="text" datatype="*" value="${ymkCustomPage.qzywl }" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">潜在业务量/年</label>
+			</td>
+		</tr>
+		<tr>
+			<td align="right">
+				<label class="Validform_label">
+					建立商业关系时间:
+				</label>
+			</td>
+			<td class="value" colspan="3">
+				<input id="relationDate" name="relationDate" type="text" onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})" value="${createDate}" style="width: 150px" class="Wdate"  ignore="ignore" />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">建立商业关系时间</label>
+			</td>
+		</tr>
+		<tr>
+			<td align="right">
+				<label class="Validform_label">
+					区域:
+				</label>
+			</td>
+			<td class="value" colspan="3">
+				<select id="shengFen" name="shengFen"  style="width:155px;">
+					<option>--区域--</option>
+				</select>
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">区域</label>
+			</td>
+		</tr>
+		<tr>
+			<td align="right">
+				<label class="Validform_label">
+					国家:
+				</label>
+			</td>
+			<td class="value" colspan="3">
+				<t:dictSelect id="guoJia" field="guoJia" typeGroupCode="trade" datatype="*" defaultVal="default" hasLabel="false" title="国家"></t:dictSelect>
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">国家</label>
+			</td>
+		</tr>
+		<tr>
+			<td align="right" >
+				<label class="Validform_label">
+					联系人
+				</label>
+			</td>
+			<td class="value" colspan="3">
+				<table style="width:890px;" cellpadding="0" cellspacing="1" class="formtable">
+					<tr >
+						<td width="50" height="32" align="center"></td>
+						<td width="120" >&nbsp;&nbsp;业务联系人一</td>
+						<td width="120" >&nbsp;&nbsp;包装联系人</td>
+						<td width="120" >&nbsp;&nbsp;测试联系人</td>
+						<td width="120" >&nbsp;&nbsp;质量联系人</td>
+						<td width="120" >&nbsp;&nbsp;验厂联系人</td>
+						<td width="120" >&nbsp;&nbsp;船务联系人</td>
+						<td width="120" >&nbsp;&nbsp;法律联系人</td>
+					</tr>
+					<tr>
+						<td width="50" height="32" align="center">姓名</td>
+						<td class="value" height="32">
+							<input id="zlxr" name="zlxr" type="text" datatype="*" value="${ymkCustomPage.zlxr }" style="width: 90px" class="inputxt"  ignore="ignore" />
+							<span class="Validform_checktip"></span>
+							<label class="Validform_label" style="display: none;">主联系人</label>
+						</td>
+
+						<td class="value" height="32">
+							<input id="bzlxr" name="bzlxr" type="text" datatype="*" value="${ymkCustomPage.bzlxr }" style="width: 90px" class="inputxt"  ignore="ignore" />
+							<span class="Validform_checktip"></span>
+							<label class="Validform_label" style="display: none;">包装联系人</label>
+						</td>
+
+						<td class="value" height="32">
+							<input id="cslxr" name="cslxr" type="text" datatype="*" value="${ymkCustomPage.cslxr }" style="width: 90px" class="inputxt"  ignore="ignore" />
+							<span class="Validform_checktip"></span>
+							<label class="Validform_label" style="display: none;">测试联系人</label>
+						</td>
+
+						<td class="value" height="32">
+							<input id="zllxr" name="zllxr" type="text" datatype="*" value="${ymkCustomPage.zllxr }" style="width: 90px" class="inputxt"  ignore="ignore" />
+							<span class="Validform_checktip"></span>
+							<label class="Validform_label" style="display: none;">质量联系人</label>
+						</td>
+
+						<td class="value" height="32">
+							<input id="yclxr" name="yclxr" type="text" datatype="*" value="${ymkCustomPage.yclxr }" style="width: 90px" class="inputxt"  ignore="ignore" />
+							<span class="Validform_checktip"></span>
+							<label class="Validform_label" style="display: none;">验厂联系人</label>
+						</td>
+
+						<td class="value" height="32">
+							<input id="cwlxr" name="cwlxr" type="text" datatype="*" value="${ymkCustomPage.cwlxr }" style="width: 90px" class="inputxt"  ignore="ignore" />
+							<span class="Validform_checktip"></span>
+							<label class="Validform_label" style="display: none;">船务联系人</label>
+						</td>
+
+						<td class="value" height="32">
+							<input id="fllxr" name="fllxr" type="text" datatype="*" value="${ymkCustomPage.fllxr }" style="width: 90px" class="inputxt"  ignore="ignore" />
+							<span class="Validform_checktip"></span>
+							<label class="Validform_label" style="display: none;">法律联系人</label>
+						</td>
+					</tr>
+					<tr>
+						<td align="center">邮箱</td>
+						<td class="value">
+							<input id="email" name="email" type="text" value="${ymkCustomPage.email }" style="width: 90px" class="inputxt"  ignore="ignore" />
+							<span class="Validform_checktip"></span>
+							<label class="Validform_label" style="display: none;">邮箱</label>
+						</td>
+						<td class="value">
+							<input id="bzlxrEmail" name="bzlxrEmail" type="text" value="${ymkCustomPage.bzlxrEmail }" style="width: 90px" class="inputxt"  ignore="ignore" />
+							<span class="Validform_checktip"></span>
+							<label class="Validform_label" style="display: none;">邮箱</label>
+						</td>
+						<td class="value">
+							<input id="cslxrEmail" name="cslxrEmail" type="text" value="${ymkCustomPage.cslxrEmail }" style="width: 90px" class="inputxt"  ignore="ignore" />
+							<span class="Validform_checktip"></span>
+							<label class="Validform_label" style="display: none;">邮箱</label>
+						</td>
+						<td class="value">
+							<input id="zllxrEmail" name="zllxrEmail" type="text" value="${ymkCustomPage.zllxrEmail }" style="width: 90px" class="inputxt"  ignore="ignore" />
+							<span class="Validform_checktip"></span>
+							<label class="Validform_label" style="display: none;">邮箱</label>
+						</td>
+						<td class="value">
+							<input id="yclxrEmail" name="yclxrEmail" type="text" value="${ymkCustomPage.yclxrEmail }" style="width: 90px" class="inputxt"  ignore="ignore" />
+							<span class="Validform_checktip"></span>
+							<label class="Validform_label" style="display: none;">邮箱</label>
+						</td>
+						<td class="value">
+							<input id="cwlxrEmail" name="cwlxrEmail" type="text" value="${ymkCustomPage.cwlxrEmail }" style="width: 90px" class="inputxt"  ignore="ignore" />
+							<span class="Validform_checktip"></span>
+							<label class="Validform_label" style="display: none;">邮箱</label>
+						</td>
+						<td class="value">
+							<input id="fllxrEmail" name="fllxrEmail" type="text" value="${ymkCustomPage.fllxrEmail }" style="width: 90px" class="inputxt"  ignore="ignore" />
+							<span class="Validform_checktip"></span>
+							<label class="Validform_label" style="display: none;">邮箱</label>
+						</td>
+
+					</tr>
+					<tr>
+						<td align="center">电话</td>
+						<td class="value">
+							<input id="workphone" name="workphone" value="${ymkCustomPage.workphone }" type="text" style="width: 90px" class="inputxt"  ignore="ignore" />
+							<span class="Validform_checktip"></span>
+							<label class="Validform_label" style="display: none;">办公电话</label>
+						</td>
+						<td class="value">
+							<input id="bzlxrTelphone" name="bzlxrTelphone" value="${ymkCustomPage.bzlxrTelphone }" type="text" style="width: 90px" class="inputxt"  ignore="ignore" />
+							<span class="Validform_checktip"></span>
+							<label class="Validform_label" style="display: none;">办公电话</label>
+						</td>
+						<td class="value">
+							<input id="cslxrTelphone" name="cslxrTelphone" value="${ymkCustomPage.cslxrTelphone }" type="text" style="width: 90px" class="inputxt"  ignore="ignore" />
+							<span class="Validform_checktip"></span>
+							<label class="Validform_label" style="display: none;">办公电话</label>
+						</td>
+						<td class="value">
+							<input id="zllxrTelphone" name="zllxrTelphone" value="${ymkCustomPage.zllxrTelphone }" type="text" style="width: 90px" class="inputxt"  ignore="ignore" />
+							<span class="Validform_checktip"></span>
+							<label class="Validform_label" style="display: none;">办公电话</label>
+						</td>
+						<td class="value">
+							<input id="yclxrTelphone" name="yclxrTelphone" value="${ymkCustomPage.yclxrTelphone }" type="text" style="width: 90px" class="inputxt"  ignore="ignore" />
+							<span class="Validform_checktip"></span>
+							<label class="Validform_label" style="display: none;">办公电话</label>
+						</td>
+						<td class="value">
+							<input id="cwlxrTelphone" name="cwlxrTelphone" value="${ymkCustomPage.cwlxrTelphone }" type="text" style="width: 90px" class="inputxt"  ignore="ignore" />
+							<span class="Validform_checktip"></span>
+							<label class="Validform_label" style="display: none;">办公电话</label>
+						</td>
+						<td class="value">
+							<input id="fllxrTelphone" name="fllxrTelphone" value="${ymkCustomPage.fllxrTelphone }" type="text" style="width: 90px" class="inputxt"  ignore="ignore" />
+							<span class="Validform_checktip"></span>
+							<label class="Validform_label" style="display: none;">办公电话</label>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td align="right" >
+				<label class="Validform_label">
+					业务联系人
+				</label>
+			</td>
+			<td class="value" colspan="3">
+				<table style="width:890px;" cellpadding="0" cellspacing="1" class="formtable">
+					<tr >
+						<td width="50" height="32" align="center"></td>
+						<td width="120" >&nbsp;&nbsp;联系人二</td>
+						<td width="120">&nbsp;&nbsp;联系人三</td>
+						<td width="120">&nbsp;&nbsp;联系人四</td>
+						<td width="120">&nbsp;&nbsp;联系人五</td>
+						<td width="360" colspan="3">&nbsp;&nbsp;</td>
+					</tr>
+					<tr>
+						<td width="50" height="32" align="center">姓名</td>
+						<td class="value" height="32">
+							<input id="ywlxr2" name="ywlxr2" type="text" value="${ymkCustomPage.ywlxr2 }" style="width: 90px" class="inputxt"  ignore="ignore" />
+							<span class="Validform_checktip"></span>
+							<label class="Validform_label" style="display: none;">联系人二</label>
+						</td>
+						<td class="value" height="32">
+							<input id="ywlxr3" name="ywlxr3" type="text"  value="${ymkCustomPage.ywlxr3 }" style="width: 90px" class="inputxt"  ignore="ignore" />
+							<span class="Validform_checktip"></span>
+							<label class="Validform_label" style="display: none;">联系人三</label>
+						</td>
+						<td class="value" height="32">
+							<input id="ywlxr4" name="ywlxr4" type="text"  value="${ymkCustomPage.ywlxr4 }" style="width: 90px" class="inputxt"  ignore="ignore" />
+							<span class="Validform_checktip"></span>
+							<label class="Validform_label" style="display: none;">联系人四</label>
+						</td>
+						<td class="value" height="32">
+							<input id="ywlxr5" name="ywlxr5" type="text"  value="${ymkCustomPage.ywlxr5 }" style="width: 90px" class="inputxt"  ignore="ignore" />
+							<span class="Validform_checktip"></span>
+							<label class="Validform_label" style="display: none;">联系人五</label>
+						</td>
+						<td class="value" colspan="3" height="32">
+					</tr>
+					</table>
+				</td>
+			</tr>
+
+		<%--<tr>
+			<td align="right">
+				<label class="Validform_label">
+					办公传真:
+				</label>
+			</td>
+			<td class="value">
+				<input id="fax" name="fax" type="text" value="${ymkCustomPage.fax }" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">办公传真</label>
+			</td>
+
+		</tr>--%>
+
+
+		<%--<tr>
 			<td align="right">
 				<label class="Validform_label">
 					实际业务量:
@@ -517,16 +607,7 @@
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">实际业务金额</label>
 			</td>
-			<td align="right">
-				<label class="Validform_label">
-					潜在业务量/年:
-				</label>
-			</td>
-			<td class="value">
-				<input id="qzywl" name="qzywl" type="text" datatype="*" value="${ymkCustomPage.qzywl }" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">潜在业务量/年</label>
-			</td>
+
 		</tr>
 		<tr>
 			<td align="right">
@@ -560,73 +641,7 @@
 				<label class="Validform_label" style="display: none;">币种</label>
 			</td>
 		</tr>
-		<tr>
-			<td align="right">
-				<label class="Validform_label">
-					建立商业关系时间:
-				</label>
-			</td>
-			<td class="value">
-				<input id="relationDate" name="relationDate" type="text" onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})" value="${createDate}" style="width: 150px" class="Wdate"  ignore="ignore" />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">建立商业关系时间</label>
-			</td>
 
-
-
-			<td align="right">
-				<label class="Validform_label">
-					法律联系人:
-				</label>
-			</td>
-			<td class="value">
-				<input id="fllxr" name="fllxr" type="text" datatype="*" value="${ymkCustomPage.fllxr }" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">法律联系人</label>
-			</td>
-			<td align="right">
-				<label class="Validform_label">
-					质量联系人:
-				</label>
-			</td>
-			<td class="value">
-				<input id="zllxr" name="zllxr" type="text" datatype="*" value="${ymkCustomPage.zllxr }" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">质量联系人</label>
-			</td>
-		</tr>
-		<tr>
-			<td align="right">
-				<label class="Validform_label">
-					业务联系人一:
-				</label>
-			</td>
-			<td class="value">
-				<input id="ywlxr1" name="ywlxr1" type="text" datatype="*" value="${ymkCustomPage.ywlxr1 }" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">业务联系人一</label>
-			</td>
-			<td align="right">
-				<label class="Validform_label">
-					业务联系人二:
-				</label>
-			</td>
-			<td class="value">
-				<input id="ywlxr2" name="ywlxr2" type="text" datatype="*" value="${ymkCustomPage.ywlxr2 }" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">业务联系人二</label>
-			</td>
-			<td align="right">
-				<label class="Validform_label">
-					业务联系人三:
-				</label>
-			</td>
-			<td class="value">
-				<input id="ywlxr3" name="ywlxr3" type="text" datatype="*" value="${ymkCustomPage.ywlxr3 }" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">业务联系人三</label>
-			</td>
-		</tr>
 		<tr>
 			<td align="right">
 				<label class="Validform_label">
@@ -638,51 +653,9 @@
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">试身联系人</label>
 			</td>
-			<td align="right">
-				<label class="Validform_label">
-					包装联系人:
-				</label>
-			</td>
-			<td class="value">
-				<input id="bzlxr" name="bzlxr" type="text" datatype="*" value="${ymkCustomPage.bzlxr }" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">包装联系人</label>
-			</td>
-			<td align="right">
-				<label class="Validform_label">
-					测试联系人:
-				</label>
-			</td>
-			<td class="value">
-				<input id="cslxr" name="cslxr" type="text" datatype="*" value="${ymkCustomPage.cslxr }" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">测试联系人</label>
-			</td>
-		</tr>
-		<tr>
 
-			<td align="right">
-				<label class="Validform_label">
-					验厂联系人:
-				</label>
-			</td>
-			<td class="value">
-				<input id="yclxr" name="yclxr" type="text" datatype="*" value="${ymkCustomPage.yclxr }" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">验厂联系人</label>
-			</td>
-			<td align="right">
-				<label class="Validform_label">
-					船务联系人:
-				</label>
-			</td>
-			<td class="value" colspan="3">
-				<input id="cwlxr" name="cwlxr" type="text" datatype="*" value="${ymkCustomPage.cwlxr }" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">船务联系人</label>
-			</td>
-		</tr>
 
+		</tr>
 
 		<tr>
 			<td align="right">
@@ -696,7 +669,7 @@
 				<label class="Validform_label" style="display: none;">备注</label>
 			</td>
 		</tr>
-
+--%>
 
 	</table>
 </t:formvalid>

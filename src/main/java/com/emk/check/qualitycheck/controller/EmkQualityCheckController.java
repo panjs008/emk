@@ -155,6 +155,13 @@ public class EmkQualityCheckController extends BaseController {
 		org.jeecgframework.core.extend.hqlsearch.HqlGenerateUtil.installHql(cq, emkQualityCheck, request.getParameterMap());
 		try{
 		//自定义追加查询条件
+			TSUser user = (TSUser) request.getSession().getAttribute(ResourceUtil.LOCAL_CLINET_USER);
+			Map roleMap = (Map) request.getSession().getAttribute("ROLE");
+			if(roleMap != null){
+				if(roleMap.get("rolecode").toString().contains("zjy")){
+					cq.eq("createBy",user.getUserName());
+				}
+			}
 		}catch (Exception e) {
 			throw new BusinessException(e.getMessage());
 		}
@@ -228,6 +235,13 @@ public class EmkQualityCheckController extends BaseController {
 		AjaxJson j = new AjaxJson();
 		message = "质量检查表添加成功";
 		try{
+			EmkWorkOrderEntity workOrderEntity = systemService.findUniqueByProperty(EmkWorkOrderEntity.class,"workNo",emkQualityCheck.getWorkNo());
+			if(workOrderEntity == null){
+				j.setSuccess(false);
+				j.setMsg("您输入的工单号有误，请核准后在提交");
+				return j;
+			}
+			emkQualityCheck.setState("0");
 			emkQualityCheckService.save(emkQualityCheck);
 			Map<String, String> map = ParameterUtil.getParamMaps(request.getParameterMap());
 			String dataRows = (String) map.get("dataRowsVal");
@@ -244,12 +258,12 @@ public class EmkQualityCheckController extends BaseController {
 					}
 				}
 			}
-			if(emkQualityCheck.getCyjg().equals("0")){
+			/*if(emkQualityCheck.getCyjg().equals("0")){
 				EmkProOrderEntity proOrderEntity = systemService.findUniqueByProperty(EmkProOrderEntity.class,"orderNo",emkQualityCheck.getOrderNo());
 				EmkWorkOrderEntity workOrderEntity = systemService.findUniqueByProperty(EmkWorkOrderEntity.class,"workNo",proOrderEntity.getWorkNo());
 				workOrderEntity.setSampleCheckNo(emkQualityCheck.getQualityCheckNum());
 				systemService.saveOrUpdate(workOrderEntity);
-			}
+			}*/
 
 
 			systemService.addLog(message, Globals.Log_Type_INSERT, Globals.Log_Leavel_INFO);
@@ -276,13 +290,14 @@ public class EmkQualityCheckController extends BaseController {
 		message = "质量检查表更新成功";
 		EmkQualityCheckEntity t = emkQualityCheckService.get(EmkQualityCheckEntity.class, emkQualityCheck.getId());
 		try {
+			emkQualityCheck.setState("0");
 			MyBeanUtils.copyBeanNotNull2Bean(emkQualityCheck, t);
-			if(emkQualityCheck.getCyjg().equals("0")){
+			/*if(emkQualityCheck.getCyjg().equals("0")){
 				EmkProOrderEntity proOrderEntity = systemService.findUniqueByProperty(EmkProOrderEntity.class,"orderNo",emkQualityCheck.getOrderNo());
 				EmkWorkOrderEntity workOrderEntity = systemService.findUniqueByProperty(EmkWorkOrderEntity.class,"workNo",proOrderEntity.getWorkNo());
 				workOrderEntity.setSampleCheckNo(emkQualityCheck.getQualityCheckNum());
 				systemService.saveOrUpdate(workOrderEntity);
-			}
+			}*/
 			emkQualityCheckService.saveOrUpdate(t);
 			Map<String, String> map = ParameterUtil.getParamMaps(request.getParameterMap());
 			this.systemService.executeSql("delete from emk_enquiry_detail where ENQUIRY_ID=?", new Object[]{t.getId()});
@@ -547,7 +562,7 @@ public class EmkQualityCheckController extends BaseController {
 				for (String id : map.get("ids").toString().split(",")) {
 					EmkQualityCheckEntity t = emkQualityCheckService.get(EmkQualityCheckEntity.class, id);
 					t.setState("1");
-					variables.put("optUser", t.getId());
+					variables.put("inputUser", t.getId());
 
 					List<Task> task = taskService.createTaskQuery().taskAssignee(id).list();
 					if (task.size() > 0) {
@@ -555,13 +570,39 @@ public class EmkQualityCheckController extends BaseController {
 						if (task1.getTaskDefinitionKey().equals("qualitycheckTask")) {
 							taskService.complete(task1.getId(), variables);
 						}
-						if (task1.getTaskDefinitionKey().equals("checkTask")) {
+						if (task1.getTaskDefinitionKey().equals("leadTask")) {
 							t.setLeader(user.getRealName());
 							t.setLeadUserId(user.getId());
 							t.setLeadAdvice(emkQualityCheck.getLeadAdvice());
 							if (emkQualityCheck.getIsPass().equals("0")) {
-								variables.put("isPass", emkQualityCheck.getIsPass());
+								variables.put("isPass", "0");
 								taskService.complete(task1.getId(), variables);
+
+								if(t.getCyjg().equals("0")){
+									EmkWorkOrderEntity workOrderEntity = systemService.findUniqueByProperty(EmkWorkOrderEntity.class,"workNo",t.getWorkNo());
+									if(workOrderEntity.getSampleCheckUserId() == null || workOrderEntity.getSampleCheckUserId().isEmpty()){
+										workOrderEntity.setSampleUserId(user.getUserName());
+										workOrderEntity.setSampleCheckUser(user.getRealName());
+										workOrderEntity.setSampleCheckDate(DateUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
+										workOrderEntity.setSampleCheckAdvice(emkQualityCheck.getLeadAdvice());
+
+										systemService.saveOrUpdate(workOrderEntity);
+
+										task = taskService.createTaskQuery().taskAssignee(workOrderEntity.getId()).list();
+										task1 = (Task)task.get(task.size() - 1);
+										variables.put("inputUser", workOrderEntity.getId());
+										taskService.complete(task1.getId(), variables);
+									}
+									/*if(workOrderEntity.getCheckUser() == null || workOrderEntity.getCheckUser().isEmpty()){
+										workOrderEntity.setCheckUserId(user.getUserName());
+										workOrderEntity.setCheckUser(user.getRealName());
+										workOrderEntity.setCaiwuDate(DateUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
+										workOrderEntity.setCheckAdvice(emkQualityCheck.getLeadAdvice());
+									}*/
+
+								}
+								t.setState("2");
+
 							} else {
 								List<HistoricTaskInstance> hisTasks = historyService.createHistoricTaskInstanceQuery().taskAssignee(t.getId()).list();
 

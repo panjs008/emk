@@ -141,6 +141,13 @@ public class EmkTestCostController extends BaseController {
 		org.jeecgframework.core.extend.hqlsearch.HqlGenerateUtil.installHql(cq, emkTestCost, request.getParameterMap());
 		try{
 		//自定义追加查询条件
+			TSUser user = (TSUser) request.getSession().getAttribute(ResourceUtil.LOCAL_CLINET_USER);
+			Map roleMap = (Map) request.getSession().getAttribute("ROLE");
+			if(roleMap != null){
+				if(roleMap.get("rolecode").toString().contains("ywy") || roleMap.get("rolecode").toString().contains("ywgdy")|| roleMap.get("rolecode").toString().contains("scgdy")){
+					cq.eq("createBy",user.getUserName());
+				}
+			}
 		}catch (Exception e) {
 			throw new BusinessException(e.getMessage());
 		}
@@ -496,7 +503,7 @@ public class EmkTestCostController extends BaseController {
 							t.setLeader(user.getRealName());
 							t.setLeadUserId(user.getId());
 							t.setLeadAdvice(emkTestCostEntity.getLeadAdvice());
-							if (t.getIsPass().equals("0")) {
+							if (emkTestCostEntity.getIsPass().equals("0")) {
 								variables.put("isPass", emkTestCostEntity.getIsPass());
 								taskService.complete(task1.getId(), variables);
 							} else {

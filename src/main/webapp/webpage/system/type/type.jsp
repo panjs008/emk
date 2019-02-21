@@ -17,14 +17,14 @@
         <%--// add-end--Author:zhangguoming  Date:20140928 for：添加显示字段--%>
         <div class="form">
             <label class="Validform_label"> <t:mutiLang langKey="dict.name"/>: </label>
-            <input name="typename" class="inputxt" value="${type.typename }" datatype="s1-10">
-            <span class="Validform_checktip">类型范围在1~10位字符</span>
+            <input name="typename" class="inputxt" value="${type.typename }" datatype="s1-56">
+            <span class="Validform_checktip">类型范围在1~56位字符</span>
         </div>
         <div class="form">
             <label class="Validform_label"> <t:mutiLang langKey="dict.code"/>: </label>
             <input name="typecode" class="inputxt" value="${type.typecode }" datatype="*"
                    ajaxurl="systemController.do?checkType&code=${type.typecode }&typeGroupCode=${type.TSTypegroup.typegroupcode}">
-            <span class="Validform_checktip">类型编码在1~10位字符</span>
+            <span class="Validform_checktip">类型编码在1~56位字符</span>
         </div>
     </fieldset>
 </t:formvalid>

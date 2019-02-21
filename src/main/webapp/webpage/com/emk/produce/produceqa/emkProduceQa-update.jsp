@@ -8,11 +8,6 @@
 	<%@include file="/context/header2.jsp"%>
 	<script src="${webRoot}/context/gys.js"></script>
 	<script type="text/javascript">
-		//编写自定义JS代码
-		$(function() {
-
-		});
-
 		function uploadSuccess0(d,file,response){
 			var src = d.attributes.url;
 			$("#scanUrl").val(d.attributes.url);
@@ -77,13 +72,13 @@
 
 			<td align="right" style="width: 18%">
 				<label class="Validform_label">
-					客户编号:
+					客户代码:
 				</label>
 			</td>
 			<td class="value" style="width: 32%">
 				<input id="cusNum" name="cusNum" readonly value="${emkProduceQaPage.cusNum }" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">客户编号</label>
+				<label class="Validform_label" style="display: none;">客户代码</label>
 			</td>
 			<td align="right" style="width: 18%">
 				<label class="Validform_label">
@@ -138,7 +133,7 @@
 					<option value=''>请选择</option>
 				</select>
 				<input id="tracer" name="tracer" value="${emkProduceQaPage.tracer }" readonly type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<input id="tracerName" name="tracerName"  type="hidden"  />
+				<input id="tracerName" name="tracerName" value="${emkProduceQaPage.tracerName }"  type="hidden"  />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">业务员</label>
 			</td>
@@ -152,7 +147,7 @@
 					<option value=''>请选择</option>
 				</select>
 				<input id="developer" name="developer" value="${emkProduceQaPage.developer }" readonly type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<input id="developerName" name="developerName"  type="hidden"  />
+				<input id="developerName" name="developerName"  value="${emkProduceQaPage.developerName }" type="hidden"  />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">业务员</label>
 			</td>
@@ -193,8 +188,8 @@
 				<select class="form-control select2" id="gysId"  datatype="*"  >
 					<option value=''>请选择</option>
 				</select>
-				<input id="gysCode" name="gysCode" type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<input id="gys" name="gys" type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="gysCode" name="gysCode" value="${emkProduceQaPage.gysCode }" type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="gys" name="gys" type="hidden" value="${emkProduceQaPage.gys }" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">供应商</label>
 			</td>

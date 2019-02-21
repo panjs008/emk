@@ -104,7 +104,13 @@ public class EmkProduceScheduleController extends BaseController {
     @RequestMapping(params = "datagrid")
     public void datagrid(EmkProduceScheduleEntity emkProduceSchedule, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid) {
         CriteriaQuery cq = new CriteriaQuery(EmkProduceScheduleEntity.class, dataGrid);
-
+        TSUser user = (TSUser) request.getSession().getAttribute(ResourceUtil.LOCAL_CLINET_USER);
+        Map roleMap = (Map) request.getSession().getAttribute("ROLE");
+        if(roleMap != null){
+            if(roleMap.get("rolecode").toString().contains("ywy") || roleMap.get("rolecode").toString().contains("ywgdy")|| roleMap.get("rolecode").toString().contains("scgdy")){
+                cq.eq("createBy",user.getUserName());
+            }
+        }
         HqlGenerateUtil.installHql(cq, emkProduceSchedule, request.getParameterMap());
 
 
@@ -406,9 +412,20 @@ public class EmkProduceScheduleController extends BaseController {
                             if (emkProduceScheduleEntity.getIsPass().equals("0")) {
                                 variables.put("isPass", emkProduceScheduleEntity.getIsPass());
                                 taskService.complete(task1.getId(), variables);
-                                t.setSsSampleUser(t.getCreateName());
-                                t.setSsSampleUserId(t.getCreateBy());
 
+
+                                EmkProOrderEntity proOrderEntity = systemService.findUniqueByProperty(EmkProOrderEntity.class,"orderNo",t.getOrderNo());
+                                EmkWorkOrderEntity workOrderEntity = systemService.findUniqueByProperty(EmkWorkOrderEntity.class,"workNo",proOrderEntity.getWorkNo());
+
+                                workOrderEntity.setProduceUserId(user.getUserName());
+                                workOrderEntity.setProduceUser(user.getRealName());
+                                workOrderEntity.setProduceDate(DateUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
+                                workOrderEntity.setProduceAdvice(emkProduceScheduleEntity.getLeadAdvice());
+                                systemService.saveOrUpdate(workOrderEntity);
+
+                                task = taskService.createTaskQuery().taskAssignee(workOrderEntity.getId()).list();
+                                task1 = (Task)task.get(task.size() - 1);
+                                taskService.complete(task1.getId(), variables);
                             } else {
                                 List<HistoricTaskInstance> hisTasks = historyService.createHistoricTaskInstanceQuery().taskAssignee(t.getId()).list();
 
@@ -427,104 +444,145 @@ public class EmkProduceScheduleController extends BaseController {
                             }
                         }
                         if (task1.getTaskDefinitionKey().equals("ssyTask")) {
-                            t.setCqSampleUser(map.get("realName").toString());
-                            t.setCqSampleUserId(map.get("userName").toString());
+                            t.setSsSampleUser(user.getRealName());
+                            t.setSsSampleUserId(user.getUserName());
                             t.setSsSampleAdvice(t.getLeadAdvice());
                             taskService.complete(task1.getId(), variables);
                         }
+                        if (task1.getTaskDefinitionKey().equals("cqyTask")) {
+                            t.setCqSampleUser(user.getRealName());
+                            t.setCqSampleUserId(user.getUserName());
+                            t.setCqSampleAdvice(t.getLeadAdvice());
+                            taskService.complete(task1.getId(), variables);
+                        }
                         if (task1.getTaskDefinitionKey().equals("syTask")) {
-                            t.setTestUser(map.get("realName").toString());
-                            t.setTestUserId(map.get("userName").toString());
+                            t.setCqSampleUser(user.getRealName());
+                            t.setCqSampleUserId(user.getUserName());
                             t.setColorAdvice(t.getLeadAdvice());
                             taskService.complete(task1.getId(), variables);
                         }
                         if (task1.getTaskDefinitionKey().equals("testTask")) {
                             t.setTestUserAdvice(t.getLeadAdvice());
-                            t.setCqhyUserName(map.get("realName").toString());
-                            t.setCqhyUserId(map.get("userName").toString());
+                            t.setTestUser(user.getRealName());
+                            t.setTestUserId(user.getUserName());
                             taskService.complete(task1.getId(), variables);
                         }
                         if (task1.getTaskDefinitionKey().equals("meetingTask")) {
                             t.setCqhyAdvice(t.getLeadAdvice());
-                            t.setYlflcgUserName(map.get("realName").toString());
-                            t.setYlflcgUserId(map.get("userName").toString());
+                            t.setCqhyUserName(user.getRealName());
+                            t.setCqhyUserId(user.getUserName());
                             taskService.complete(task1.getId(), variables);
                         }
                         if (task1.getTaskDefinitionKey().equals("ylTask")) {
                             t.setYlflcgAdvice(t.getLeadAdvice());
-                            t.setRanUserName(map.get("realName").toString());
-                            t.setRanUserId(map.get("userName").toString());
+                            t.setYlflcgUserName(user.getRealName());
+                            t.setYlflcgUserId(user.getUserName());
                             taskService.complete(task1.getId(), variables);
                         }
                         if (task1.getTaskDefinitionKey().equals("ranTask")) {
                             t.setRanAdvice(t.getLeadAdvice());
-                            t.setCaiUserName(map.get("realName").toString());
-                            t.setCaiUserId(map.get("userName").toString());
+                            t.setRanUserName(user.getRealName());
+                            t.setRanUserId(user.getUserName());
                             taskService.complete(task1.getId(), variables);
                         }
                         if (task1.getTaskDefinitionKey().equals("caiTask")) {
                             t.setCaiUserAdvice(t.getLeadAdvice());
-                            t.setFengUserName(map.get("realName").toString());
-                            t.setFengUserId(map.get("userName").toString());
+                            t.setCaiUserName(user.getRealName());
+                            t.setCaiUserId(user.getUserName());
                             taskService.complete(task1.getId(), variables);
                         }
                         if (task1.getTaskDefinitionKey().equals("fengTask")) {
                             t.setFengUserAdvice(t.getLeadAdvice());
-                            t.setZqjcUserName(map.get("realName").toString());
-                            t.setZqjcUserId(map.get("userName").toString());
+                            t.setCqSampleUser(user.getRealName());
+                            t.setFengUserName(user.getUserName());
                             taskService.complete(task1.getId(), variables);
                         }
                         if (task1.getTaskDefinitionKey().equals("zqjcTask")) {
                             t.setZqjcAdvice(t.getLeadAdvice());
-                            t.setBiaoUserName(map.get("realName").toString());
-                            t.setBiaoUserId(map.get("userName").toString());
+                            t.setZqjcUserName(user.getRealName());
+                            t.setZqjcUserId(user.getUserName());
                             taskService.complete(task1.getId(), variables);
                         }
                         if (task1.getTaskDefinitionKey().equals("btTask")) {
                             t.setBiaoAdvice(t.getLeadAdvice());
-                            t.setZhengtUserName(map.get("realName").toString());
-                            t.setZhengtUserId(map.get("userName").toString());
+                            t.setCqSampleUser(user.getRealName());
+                            t.setCqSampleUserId(user.getUserName());
                             taskService.complete(task1.getId(), variables);
                         }
                         if (task1.getTaskDefinitionKey().equals("ztTask")) {
                             t.setZhengtAdvice(t.getLeadAdvice());
-                            t.setChuangUserName(map.get("realName").toString());
-                            t.setChuangUserId(map.get("userName").toString());
+                            t.setZhengtUserName(user.getRealName());
+                            t.setZhengtUserId(user.getUserName());
                             taskService.complete(task1.getId(), variables);
                         }
                         if (task1.getTaskDefinitionKey().equals("cyTask")) {
                             t.setChuangAdvice(t.getLeadAdvice());
-                            t.setBoxUserName(map.get("realName").toString());
-                            t.setBoxUserId(map.get("userName").toString());
+                            t.setChuangUserName(user.getRealName());
+                            t.setChuangUserId(user.getUserName());
                             taskService.complete(task1.getId(), variables);
                         }
                         if (task1.getTaskDefinitionKey().equals("bzTask")) {
                             t.setBoxAdvice(t.getLeadAdvice());
-                            t.setOutUserName(map.get("realName").toString());
-                            t.setOutUserId(map.get("userName").toString());
+                            t.setBoxUserName(user.getRealName());
+                            t.setBoxUserId(user.getUserName());
                             taskService.complete(task1.getId(), variables);
                         }
                         if (task1.getTaskDefinitionKey().equals("outTask")) {
                             t.setOutAdvice(t.getLeadAdvice());
-                            t.setWeiUserName(map.get("realName").toString());
-                            t.setWeiUserId(map.get("userName").toString());
+                            t.setOutUserName(user.getRealName());
+                            t.setOutUserId(user.getUserName());
+                            taskService.complete(task1.getId(), variables);
+
+                            EmkProOrderEntity proOrderEntity = systemService.findUniqueByProperty(EmkProOrderEntity.class,"orderNo",t.getOrderNo());
+                            EmkWorkOrderEntity workOrderEntity = systemService.findUniqueByProperty(EmkWorkOrderEntity.class,"workNo",proOrderEntity.getWorkNo());
+
+                            workOrderEntity.setCheckUserId(user.getUserName());
+                            workOrderEntity.setCheckUser(user.getRealName());
+                            workOrderEntity.setIsPassCheck("0");
+                            workOrderEntity.setCaiwuDate(DateUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
+                            workOrderEntity.setCheckAdvice(t.getLeadAdvice());
+
+                            variables.put("isPassCheck","0");
+                            task = taskService.createTaskQuery().taskAssignee(workOrderEntity.getId()).list();
+                            task1 = (Task)task.get(task.size() - 1);
+                            taskService.complete(task1.getId(), variables);
+
+                            workOrderEntity.setOutUserId(user.getUserName());
+                            workOrderEntity.setOutUser(user.getRealName());
+                            workOrderEntity.setOutDate(DateUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
+                            workOrderEntity.setOutAdvice(emkProduceScheduleEntity.getLeadAdvice());
+                            systemService.saveOrUpdate(workOrderEntity);
+
+                            task = taskService.createTaskQuery().taskAssignee(workOrderEntity.getId()).list();
+                            task1 = (Task)task.get(task.size() - 1);
                             taskService.complete(task1.getId(), variables);
                         }
                         if (task1.getTaskDefinitionKey().equals("wqTask")) {
                             t.setWeiAdvice(t.getLeadAdvice());
-                            t.setShouUserName(map.get("realName").toString());
-                            t.setShouUserId(map.get("userName").toString());
+                            t.setWeiUserName(user.getRealName());
+                            t.setWeiUserId(user.getUserName());
                             taskService.complete(task1.getId(), variables);
                         }
                         if (task1.getTaskDefinitionKey().equals("skTask")) {
                             t.setShouAdvice(t.getLeadAdvice());
+                            t.setShouUserName(user.getRealName());
+                            t.setShouUserId(user.getUserName());
                             taskService.complete(task1.getId(), variables);
                             t.setState("2");
 
                             EmkProOrderEntity proOrderEntity = systemService.findUniqueByProperty(EmkProOrderEntity.class,"orderNo",t.getOrderNo());
                             EmkWorkOrderEntity workOrderEntity = systemService.findUniqueByProperty(EmkWorkOrderEntity.class,"workNo",proOrderEntity.getWorkNo());
-                            workOrderEntity.setProduceNo(t.getProduceHtNum());
+
+                            workOrderEntity.setCaiwuUserId(user.getUserName());
+                            workOrderEntity.setCaiwuUser(user.getRealName());
+                            workOrderEntity.setCaiwuDate(DateUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
+                            workOrderEntity.setCaiwuAdvice(emkProduceScheduleEntity.getLeadAdvice());
+                            workOrderEntity.setState("2");
                             systemService.saveOrUpdate(workOrderEntity);
+
+                            task = taskService.createTaskQuery().taskAssignee(workOrderEntity.getId()).list();
+                            task1 = (Task)task.get(task.size() - 1);
+                            taskService.complete(task1.getId(), variables);
                         }
 
                         systemService.saveOrUpdate(t);

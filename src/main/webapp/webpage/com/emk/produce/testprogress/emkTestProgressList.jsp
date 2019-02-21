@@ -9,8 +9,8 @@
    <t:dgCol title="创建人登录名称"  field="createBy"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="创建日期"  field="createDate"  formatter="yyyy-MM-dd"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="所属部门"  field="sysOrgCode"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
-      <t:dgCol title="生产合同号"  field="produceNum"  query="true" queryMode="single"  width="80"></t:dgCol>
-      <t:dgCol title="订单号"  field="orderNo" query="true"  queryMode="single"  width="80"></t:dgCol>
+      <t:dgCol title="生产合同号"  field="produceNum"  query="true" queryMode="single"  width="120"></t:dgCol>
+      <t:dgCol title="订单号"  field="orderNo" query="true"  queryMode="single"  width="120"></t:dgCol>
       <t:dgCol title="业务部门"  field="businesseDeptName"  queryMode="single"  width="80"></t:dgCol>
       <t:dgCol title="业务员"  field="businesserName"  queryMode="single"  width="60"></t:dgCol>
       <t:dgCol title="客户代码" query="true" field="cusNum"  queryMode="single"  width="70"></t:dgCol>

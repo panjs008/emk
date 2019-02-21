@@ -62,9 +62,9 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.UriComponentsBuilder;
 
-@Api(value = "EmkProduceQa", description = "生产问题管理单", tags = {"emkProduceQaController"})
+@Api(value = "EmkProduceQa", description = "生产问题管理单", tags = "emkProduceQaController")
 @Controller
-@RequestMapping({"/emkProduceQaController"})
+@RequestMapping("/emkProduceQaController")
 public class EmkProduceQaController extends BaseController {
     private static final Logger logger = Logger.getLogger(EmkProduceQaController.class);
     @Autowired
@@ -74,15 +74,21 @@ public class EmkProduceQaController extends BaseController {
     @Autowired
     private Validator validator;
 
-    @RequestMapping(params = {"list"})
+    @RequestMapping(params = "list")
     public ModelAndView list(HttpServletRequest request) {
         return new ModelAndView("com/emk/produce/produceqa/emkProduceQaList");
     }
 
-    @RequestMapping(params = {"datagrid"})
+    @RequestMapping(params = "datagrid")
     public void datagrid(EmkProduceQaEntity emkProduceQa, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid) {
         CriteriaQuery cq = new CriteriaQuery(EmkProduceQaEntity.class, dataGrid);
-
+        TSUser user = (TSUser) request.getSession().getAttribute(ResourceUtil.LOCAL_CLINET_USER);
+        Map roleMap = (Map) request.getSession().getAttribute("ROLE");
+        if(roleMap != null){
+            if(roleMap.get("rolecode").toString().contains("ywy") || roleMap.get("rolecode").toString().contains("ywgdy")|| roleMap.get("rolecode").toString().contains("scgdy")){
+                cq.eq("createBy",user.getUserName());
+            }
+        }
         HqlGenerateUtil.installHql(cq, emkProduceQa, request.getParameterMap());
 
 
@@ -91,7 +97,7 @@ public class EmkProduceQaController extends BaseController {
         TagUtil.datagrid(response, dataGrid);
     }
 
-    @RequestMapping(params = {"doDel"})
+    @RequestMapping(params = "doDel")
     @ResponseBody
     public AjaxJson doDel(EmkProduceQaEntity emkProduceQa, HttpServletRequest request) {
         String message = null;
@@ -110,7 +116,7 @@ public class EmkProduceQaController extends BaseController {
         return j;
     }
 
-    @RequestMapping(params = {"doBatchDel"})
+    @RequestMapping(params = "doBatchDel")
     @ResponseBody
     public AjaxJson doBatchDel(String ids, HttpServletRequest request) {
         String message = null;
@@ -133,7 +139,7 @@ public class EmkProduceQaController extends BaseController {
         return j;
     }
 
-    @RequestMapping(params = {"doAdd"})
+    @RequestMapping(params = "doAdd")
     @ResponseBody
     public AjaxJson doAdd(EmkProduceQaEntity emkProduceQa, HttpServletRequest request) {
         String message = null;
@@ -151,7 +157,7 @@ public class EmkProduceQaController extends BaseController {
         return j;
     }
 
-    @RequestMapping(params = {"doUpdate"})
+    @RequestMapping(params = "doUpdate")
     @ResponseBody
     public AjaxJson doUpdate(EmkProduceQaEntity emkProduceQa, HttpServletRequest request) {
         String message = null;
@@ -171,12 +177,13 @@ public class EmkProduceQaController extends BaseController {
         return j;
     }
 
-    @RequestMapping(params = {"goAdd"})
+    @RequestMapping(params = "goAdd")
     public ModelAndView goAdd(EmkProduceQaEntity emkProduceQa, HttpServletRequest req) {
         req.setAttribute("kdDate", DateUtils.format(new Date(), "yyyy-MM-dd"));
         TSUser user = (TSUser) req.getSession().getAttribute("LOCAL_CLINET_USER");
         Map map = ParameterUtil.getParamMaps(req.getParameterMap());
-        Map orderNum = this.systemService.findOneForJdbc("select count(0)+1 orderNum from emk_produce_qa where sys_org_code=?", new Object[]{user.getCurrentDepart().getOrgCode()});
+        Map orderNum = this.systemService.findOneForJdbc("select CAST(ifnull(max(right(QA_NO, 3)),0)+1 AS signed) orderNum from emk_produce_qa");
+        //Map orderNum = this.systemService.findOneForJdbc("select count(0)+1 orderNum from emk_produce_qa where sys_org_code=?", new Object[]{user.getCurrentDepart().getOrgCode()});
         req.setAttribute("qaNo", "QA" + DateUtils.format(new Date(), "yyMMdd") + String.format("%03d", new Object[]{Integer.valueOf(Integer.parseInt(orderNum.get("orderNum").toString()))}));
         if (StringUtil.isNotEmpty(emkProduceQa.getId())) {
             emkProduceQa = (EmkProduceQaEntity) this.emkProduceQaService.getEntity(EmkProduceQaEntity.class, emkProduceQa.getId());
@@ -185,7 +192,7 @@ public class EmkProduceQaController extends BaseController {
         return new ModelAndView("com/emk/produce/produceqa/emkProduceQa-add");
     }
 
-    @RequestMapping(params = {"goUpdate"})
+    @RequestMapping(params = "goUpdate")
     public ModelAndView goUpdate(EmkProduceQaEntity emkProduceQa, HttpServletRequest req) {
         if (StringUtil.isNotEmpty(emkProduceQa.getId())) {
             emkProduceQa = (EmkProduceQaEntity) this.emkProduceQaService.getEntity(EmkProduceQaEntity.class, emkProduceQa.getId());
@@ -194,7 +201,7 @@ public class EmkProduceQaController extends BaseController {
         return new ModelAndView("com/emk/produce/produceqa/emkProduceQa-update");
     }
 
-    @RequestMapping(params = {"dowaLoadFile"})
+    @RequestMapping(params = "dowaLoadFile")
     public ModelAndView dowaLoadFile(EmkProduceQaEntity emkProduceQa, HttpServletRequest request, HttpServletResponse response) {
         String message = null;
         message = "文件下载成功";
@@ -219,13 +226,13 @@ public class EmkProduceQaController extends BaseController {
         return null;
     }
 
-    @RequestMapping(params = {"upload"})
+    @RequestMapping(params = "upload")
     public ModelAndView upload(HttpServletRequest req) {
         req.setAttribute("controller_name", "emkProduceQaController");
         return new ModelAndView("common/upload/pub_excel_upload");
     }
 
-    @RequestMapping(params = {"exportXls"})
+    @RequestMapping(params = "exportXls")
     public String exportXls(EmkProduceQaEntity emkProduceQa, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid, ModelMap modelMap) {
         CriteriaQuery cq = new CriteriaQuery(EmkProduceQaEntity.class, dataGrid);
         HqlGenerateUtil.installHql(cq, emkProduceQa, request.getParameterMap());
@@ -238,7 +245,7 @@ public class EmkProduceQaController extends BaseController {
         return "jeecgExcelView";
     }
 
-    @RequestMapping(params = {"exportXlsByT"})
+    @RequestMapping(params = "exportXlsByT")
     public String exportXlsByT(EmkProduceQaEntity emkProduceQa, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid, ModelMap modelMap) {
         modelMap.put("fileName", "生产问题管理单");
         modelMap.put("entity", EmkProduceQaEntity.class);
@@ -256,7 +263,7 @@ public class EmkProduceQaController extends BaseController {
         return Result.success(listEmkProduceQas);
     }
 
-    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.GET})
+    @RequestMapping(value = "/{id}", method = {org.springframework.web.bind.annotation.RequestMethod.GET})
     @ResponseBody
     @ApiOperation(value = "根据ID获取生产问题管理单信息", notes = "根据ID获取生产问题管理单信息", httpMethod = "GET", produces = "application/json")
     public ResponseMessage<?> get(@ApiParam(required = true, name = "id", value = "ID") @PathVariable("id") String id) {
@@ -267,7 +274,7 @@ public class EmkProduceQaController extends BaseController {
         return Result.success(task);
     }
 
-    @RequestMapping(method = {org.springframework.web.bind.annotation.RequestMethod.POST}, consumes = {"application/json"})
+    @RequestMapping(method = {org.springframework.web.bind.annotation.RequestMethod.POST}, consumes = "application/json")
     @ResponseBody
     @ApiOperation("创建生产问题管理单")
     public ResponseMessage<?> create(@ApiParam(name = "生产问题管理单对象") @RequestBody EmkProduceQaEntity emkProduceQa, UriComponentsBuilder uriBuilder) {
@@ -284,7 +291,7 @@ public class EmkProduceQaController extends BaseController {
         return Result.success(emkProduceQa);
     }
 
-    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.PUT}, consumes = {"application/json"})
+    @RequestMapping(value = "/{id}", method = {org.springframework.web.bind.annotation.RequestMethod.PUT}, consumes = "application/json")
     @ResponseBody
     @ApiOperation(value = "更新生产问题管理单", notes = "更新生产问题管理单")
     public ResponseMessage<?> update(@ApiParam(name = "生产问题管理单对象") @RequestBody EmkProduceQaEntity emkProduceQa) {
@@ -301,7 +308,7 @@ public class EmkProduceQaController extends BaseController {
         return Result.success("更新生产问题管理单信息成功");
     }
 
-    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.DELETE})
+    @RequestMapping(value = "/{id}", method = {org.springframework.web.bind.annotation.RequestMethod.DELETE})
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ApiOperation("删除生产问题管理单")
     public ResponseMessage<?> delete(@ApiParam(name = "id", value = "ID", required = true) @PathVariable("id") String id) {

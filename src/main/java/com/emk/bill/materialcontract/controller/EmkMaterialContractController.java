@@ -215,9 +215,9 @@ public class EmkMaterialContractController extends BaseController {
                         rkglMxEntity.setBrand((String) map.get("rkglMxList[" + i + "].brand"));
                         rkglMxEntity.setTotal(Integer.valueOf(Integer.parseInt((String) map.get("rkglMxList[" + i + "].signTotal"))));
                         rkglMxEntity.setSignPrice(Double.valueOf(Double.parseDouble((String) map.get("rkglMxList[" + i + "].signPrice"))));
-                        rkglMxEntity.setInTotal(Integer.valueOf(Integer.parseInt((map.get("rkglMxList[" + i + "].inTotal") != null) && (!((String) map.get("rkglMxList[" + i + "].inTotal")).isEmpty()) ? (String) map.get("rkglMxList[" + i + "].inTotal") : "0")));
-                        rkglMxEntity.setOutTotal(Integer.valueOf(Integer.parseInt((map.get("rkglMxList[" + i + "].outTotal") != null) && (!((String) map.get("rkglMxList[" + i + "].outTotal")).isEmpty()) ? (String) map.get("rkglMxList[" + i + "].outTotal") : "0")));
-                        rkglMxEntity.setLeavelTotal(Integer.valueOf(Integer.parseInt((map.get("rkglMxList[" + i + "].leavelTotal") != null) && (!((String) map.get("rkglMxList[" + i + "].leavelTotal")).isEmpty()) ? (String) map.get("rkglMxList[" + i + "].leavelTotal") : "0")));
+                        rkglMxEntity.setInTotal(Integer.parseInt((map.get("rkglMxList[" + i + "].inTotal") != null) && (!((String) map.get("rkglMxList[" + i + "].inTotal")).isEmpty()) ? (String) map.get("rkglMxList[" + i + "].inTotal") : "0"));
+                        rkglMxEntity.setOutTotal(Integer.parseInt((map.get("rkglMxList[" + i + "].outTotal") != null) && (!((String) map.get("rkglMxList[" + i + "].outTotal")).isEmpty()) ? (String) map.get("rkglMxList[" + i + "].outTotal") : "0"));
+                        rkglMxEntity.setLeavelTotal(Integer.parseInt((map.get("rkglMxList[" + i + "].leavelTotal") != null) && (!((String) map.get("rkglMxList[" + i + "].leavelTotal")).isEmpty()) ? (String) map.get("rkglMxList[" + i + "].leavelTotal") : "0"));
                         this.systemService.save(rkglMxEntity);
                     }
                 }

@@ -23,9 +23,9 @@
 					</label>
 				</td>
 				<td class="value" colspan="3">
-					<input name="isPass" type="radio" datatype="*" <c:if test="${emkProOrderPage.isPass eq '0'}">checked="true"</c:if> value="0">
+					<input name="isPass" type="radio" datatype="*"  value="0">
 					是
-					<input name="isPass" type="radio" datatype="*"  <c:if test="${emkProOrderPage.isPass eq '1'}">checked="true"</c:if> value="1">
+					<input name="isPass" type="radio" datatype="*"   value="1">
 					否
 					<span class="Validform_checktip"></span>
 					<label class="Validform_label" style="display: none;">是否同意</label>

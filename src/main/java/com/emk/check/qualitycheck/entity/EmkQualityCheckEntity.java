@@ -264,7 +264,9 @@ public class EmkQualityCheckEntity implements java.io.Serializable {
 	@Excel(name="审核人")
 	private String leader;
 	private String state;
-	
+	private String workNo;
+
+
 	/**
 	 *方法: 取得java.lang.String
 	 *@return: java.lang.String  主键
@@ -1646,5 +1648,18 @@ public class EmkQualityCheckEntity implements java.io.Serializable {
 
 	public void setState(String state) {
 		this.state = state;
+	}
+
+	@Column(name ="WORK_NO",nullable=true,length=32)
+	public String getWorkNo(){
+		return this.workNo;
+	}
+
+	/**
+	 *方法: 设置java.lang.String
+	 *@param: java.lang.String  工单编号
+	 */
+	public void setWorkNo(String workNo){
+		this.workNo = workNo;
 	}
 }

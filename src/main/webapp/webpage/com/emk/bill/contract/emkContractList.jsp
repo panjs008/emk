@@ -24,9 +24,11 @@
       <t:dgCol title="款号"  field="sampleNo"  queryMode="single"  width="80"></t:dgCol>
       <t:dgCol title="状态"  field="state" formatterjs="formatColor"  queryMode="single"  width="70"></t:dgCol>
 
-      <t:dgFunOpt funname="goToProcess(id)" title="流程进度" operationCode="process" urlclass="ace_button"  urlStyle="background-color:#ec4758;" urlfont="fa-tasks"></t:dgFunOpt>
+      <t:dgFunOpt funname="goToProcess(id,createBy)" title="流程进度" operationCode="process" urlclass="ace_button"  urlStyle="background-color:#ec4758;" urlfont="fa-tasks"></t:dgFunOpt>
       <%--<t:dgFunOpt funname="queryDetail2(id,materialNo)" title="原料面料" urlclass="ace_button" urlfont="fa-list-alt"></t:dgFunOpt>--%>
       <%--<t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkContractController.do?goAdd&type=0&winTitle=录入购销合同同单" funname="add" height="600" width="1100"></t:dgToolBar>--%>
+      <t:dgToolBar title="查看" icon="fa fa-search" operationCode="look" url="emkContractController.do?goUpdate&winTitle=查看购销合同同单" funname="detail" height="600" width="1100"></t:dgToolBar>
+
       <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkContractController.do?goUpdate&type=0&winTitle=编辑购销合同同单" funname="update" height="600" width="1100"></t:dgToolBar>
       <t:dgToolBar title="提交" operationCode="submit" icon="fa fa-arrow-circle-up" funname="doSubmitV"></t:dgToolBar>
       <t:dgToolBar title="删除" operationCode="delete"  icon="fa fa-remove" url="emkContractController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
@@ -79,9 +81,8 @@
      });
  }
 
- function goToProcess(id){
+ function goToProcess(id,createBy){
      var height =window.top.document.body.offsetHeight*0.85;
-
      $.ajax({
          url: "flowController.do?getCurrentProcess&tableName=emk_contract&title=购销合同申请单&id=" + id,
          type: 'post',
@@ -91,12 +92,19 @@
              var d = $.parseJSON(data);
              if (d.success) {
                  var msg = d.msg;
-                 if (msg == "完成") {
-                     createdetailwindow('流程进度--当前环节：' + msg, 'flowController.do?goProcess&processUrl=com/emk/storage/price/emkPrice-process&id=' + id, 1200, height);
-                 } else {
-                     createwindow("流程进度--当前环节：" + msg, "flowController.do?goProcess&processUrl=com/emk/storage/price/emkPrice-process&id=" + id, 1200, height);
+                 if(createBy == "${CUR_USER.userName}"){
+                     createdetailwindow('流程进度--当前环节：' + msg, 'flowController.do?goProcess&processUrl=com/emk/bill/contract/emkContract-process&id=' + id, 1200, height);
+                 }else{
+                     if (msg == "完成") {
+                         createdetailwindow('流程进度--当前环节：' + msg, 'flowController.do?goProcess&processUrl=com/emk/bill/contract/emkContract-process&id=' + id, 1200, height);
+                     } else {
+                         if("${ROLE.rolecode}" == "cwjl") {
+                             createwindow("流程进度--当前环节：" + msg, "flowController.do?goProcess&processUrl=com/emk/bill/contract/emkContract-process&id=" + id, 1200, height);
+                         }else{
+                             createdetailwindow('流程进度--当前环节：' + msg, 'flowController.do?goProcess&processUrl=com/emk/bill/contract/emkContract-process&id=' + id, 1200, height);
+                         }
+                     }
                  }
-
              }
          }
      });

@@ -25,7 +25,7 @@
    <%--<t:dgCol title="工艺种类"  field="gyzl"  dictionary="gylx" queryMode="single"  width="70"></t:dgCol>--%>
    <t:dgCol title="款式大类"  field="proTypeName"  queryMode="single"  width="60"></t:dgCol>
       <t:dgCol title="状态"  field="state" formatterjs="formatColor"  queryMode="single"  width="50"></t:dgCol>
-      <t:dgFunOpt funname="goToProcess(id)" title="流程进度" operationCode="process" urlclass="ace_button"  urlStyle="background-color:#ec4758;" urlfont="fa-tasks"></t:dgFunOpt>
+      <t:dgFunOpt funname="goToProcess(id,createBy)" title="流程进度" operationCode="process" urlclass="ace_button"  urlStyle="background-color:#ec4758;" urlfont="fa-tasks"></t:dgFunOpt>
       <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkProduceScheduleController.do?goAdd&winTitle=录入订单生产单" funname="add" height="600" width="1150"></t:dgToolBar>
        <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkProduceScheduleController.do?goUpdate&winTitle=编辑订单生产单" funname="update" height="600" width="1150"></t:dgToolBar>
       <t:dgToolBar title="提交" operationCode="submit" icon="fa fa-arrow-circle-up" funname="doSubmitV"></t:dgToolBar>
@@ -36,7 +36,7 @@
   </t:datagrid>
   </div>
  </div>
- <script src = "webpage/com/emk/produce/produceschedule/emkProduceScheduleList.js"></script>		
+ <script src = "webpage/com/emk/produce/produceschedule/emkProduceScheduleList.js"></script>
  <script type="text/javascript">
  $(document).ready(function(){
  });
@@ -79,11 +79,11 @@
      });
  }
 
- function goToProcess(id){
+ function goToProcess(id,createBy){
      var height =window.top.document.body.offsetHeight*0.85;
 
      $.ajax({
-         url: "flowController.do?getCurrentProcess&tableName=emk_produce_schedule&title=订单生产申请单&id=" + id,
+         url: "flowController.do?getCurrentProcess&tableName=emk_produce&title=订单生产申请单&id=" + id,
          type: 'post',
          cache: false,
          data: null,
@@ -91,17 +91,27 @@
              var d = $.parseJSON(data);
              if (d.success) {
                  var msg = d.msg;
-                 if (msg == "完成") {
+                 if(msg == "" && createBy == "${CUR_USER.userName}"){
                      createdetailwindow('流程进度--当前环节：' + msg, 'flowController.do?goProcess&processUrl=com/emk/produce/produceschedule/emkProduceSchedule-process&id=' + id, 1200, height);
-                 } else {
-                     createwindow("流程进度--当前环节：" + msg, "flowController.do?goProcess&processUrl=com/emk/produce/produceschedule/emkProduceSchedule-process&id=" + id, 1200, height);
+                 }else{
+                     if (msg == "完成") {
+                         createdetailwindow('流程进度--当前环节：' + msg, 'flowController.do?goProcess&processUrl=com/emk/produce/produceschedule/emkProduceSchedule-process&id=' + id, 1200, height);
+                     } else {
+                         if(msg == "领导审核" && "${ROLE.rolecode}" == "scjl") {
+                             createwindow("流程进度--当前环节：" + msg, "flowController.do?goProcess&processUrl=com/emk/produce/produceschedule/emkProduceSchedule-process&id=" + id, 1200, height);
+                         }else  if(msg != "订单生产申请" && createBy == "${CUR_USER.userName}") {
+                             createwindow("流程进度--当前环节：" + msg, "flowController.do?goProcess&processUrl=com/emk/produce/produceschedule/emkProduceSchedule-process&id=" + id, 1200, height);
+                         }else{
+                             createdetailwindow('流程进度--当前环节：' + msg, 'flowController.do?goProcess&processUrl=com/emk/produce/produceschedule/emkProduceSchedule-process&id=' + id, 1200, height);
+                         }
+                     }
                  }
 
              }
          }
      });
  }
- 
+
 //导入
 function ImportXls() {
 	openuploadwin('Excel导入', 'emkProduceScheduleController.do?upload', "emkProduceScheduleList");

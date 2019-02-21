@@ -41,7 +41,7 @@
 						<div class="liright">
 							<div class="histt"><a style="font-size: 14px;">${task.NAME_}</a></div>
 							<div class="histt"><a style="font-size: 12px;"><c:if test="${task.TASK_DEF_KEY_ eq 'testcostTask'}">【${task.workname}】发起费用付款申请，费用付款申请单号：${emkTestCost.costNo}</c:if>
-								<c:if test="${task.TASK_DEF_KEY_ eq 'checkTask'}">审核人【${emkTestCost.leader}】，指派给【${emkTestCost.financer}】,处理意见：${emkTestCost.leadAdvice}</c:if>
+								<c:if test="${task.TASK_DEF_KEY_ eq 'checkTask'}">审核人【${emkTestCost.leader}】,处理意见：${emkTestCost.leadAdvice}</c:if>
 								<c:if test="${task.TASK_DEF_KEY_ eq 'cwTask'}">审核人【${emkTestCost.financer}】,处理意见：${emkTestCost.financeAdvice}</c:if>
 							</a></div>
 						</div>

@@ -9,6 +9,7 @@ import org.apache.commons.beanutils.DynaBean;
 import org.apache.commons.beanutils.DynaProperty;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.beanutils.PropertyUtilsBean;
+import org.apache.commons.collections.map.HashedMap;
 
 /**
  * <p>Title: </p>
@@ -132,7 +133,48 @@ public class MyBeanUtils
           }
       }
   }
-  
+
+    /**
+     * 计算表单完成度
+     * 数据对象空值不拷贝到目标对象
+     *
+     * @param dataObject
+     * @throws NoSuchMethodException
+     * copy
+     */
+    public static Map culBeanCounts(Object databean)throws Exception
+    {
+        PropertyDescriptor origDescriptors[] = PropertyUtils.getPropertyDescriptors(databean);
+        int j = 0,z = 0;
+        z = origDescriptors.length;
+        Map countMap = new HashedMap();
+        for (int i = 0; i < origDescriptors.length; i++) {
+            String name = origDescriptors[i].getName();
+//          String type = origDescriptors[i].getPropertyType().toString();
+            if ("class".equals(name)) {
+                z = z -1;
+                continue; // No point in trying to set an object's class
+            }
+            if (PropertyUtils.isReadable(databean, name)) {
+                try {
+                    Object value = PropertyUtils.getSimpleProperty(databean, name);
+                    if(value!=null && !value.equals("") && !name.equals("processName")){
+                        j++;
+                    }
+                }
+                catch (java.lang.IllegalArgumentException ie) {
+                    ; // Should not happen
+                }
+                catch (Exception e) {
+                    ; // Should not happen
+                }
+
+            }
+        }
+        countMap.put("finishColums",j);
+        countMap.put("Colums",z);
+        return  countMap;
+    }
   
   /**
    * 把orig和dest相同属性的value复制到dest中

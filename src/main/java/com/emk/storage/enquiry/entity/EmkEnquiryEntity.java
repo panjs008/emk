@@ -22,10 +22,10 @@ public class EmkEnquiryEntity implements Serializable {
     private String sysOrgCode;
     @Excel(name = "意向订单号")
     private String enquiryNo;
-    @Excel(name="是否先打样",width=15)
-    private String isPrint;
+    /*@Excel(name="是否先打样",width=15)
+    private String isPrint;*/
     @Excel(name="询盘状态",width=15)
-    private String state;
+    private String state;               //0 创建 1 提交 2 审核 3 正在核价 4 已回复客户，待消息 5 买家要求打样，已安排打样和核价 6 价格不合适，意向已取消；7 尚未接到买家回复；8 已接单，备注订单号
     @Excel(name = "提交日期")
     private String kdDate;
     @Excel(name = "业务员")
@@ -47,12 +47,6 @@ public class EmkEnquiryEntity implements Serializable {
     private String sampleNo;
     @Excel(name = "描述")
     private String sampleNoDesc;
-    @Excel(name = "总数量")
-    private Integer sumTotal;
-    @Excel(name = "币种")
-    private String bz;
-    @Excel(name = "总金额")
-    private Double sumMoney;
     @Excel(name = "是否打过初样")
     private String isPrintSample;
     @Excel(name = "是否收取打样费")
@@ -87,20 +81,27 @@ public class EmkEnquiryEntity implements Serializable {
     @Excel(name = "业务部门")
     private String businesseDeptName;
     private String businesseDeptId;
-    @Excel(name = "审核意见")
+    private String processName;
+
+    private String state1;
+    private String state2;
+    private String state3;
+
+
+   /* @Excel(name = "审核意见")
     private String leadAdvice;
     @Excel(name = "处理意见")
     private String financeAdvice;
     @Excel(name = "是否通过")
     private String isPass;
-    @Excel(name = "审核人ID")
     private String leadUserId;
     @Excel(name = "审核人")
-    private String leader;
-    @Excel(name = "财务处理人ID")
-    private String financeUserId;
+    private String leader;*/
+
+
+   /* private String financeUserId;
     @Excel(name = "财务处理人")
-    private String financer;
+    private String financer;*/
 
     @Id
     @GeneratedValue(generator = "paymentableGenerator")
@@ -159,11 +160,6 @@ public class EmkEnquiryEntity implements Serializable {
         this.enquiryNo = enquiryNo;
     }
 
-    @Column(name ="IS_PRINT",nullable=true,length=32)
-    public String getIsPrint(){
-        return this.isPrint;
-    }
-
     @Column(name ="STATE",nullable=true,length=32)
     public String getState(){
         return this.state;
@@ -175,14 +171,6 @@ public class EmkEnquiryEntity implements Serializable {
      */
     public void setState(String state){
         this.state = state;
-    }
-
-    /**
-     *方法: 设置java.lang.String
-     *@param: java.lang.String  是否先打样
-     */
-    public void setIsPrint(String isPrint){
-        this.isPrint = isPrint;
     }
 
     @Column(name = "KD_DATE", nullable = true, length = 32)
@@ -291,33 +279,6 @@ public class EmkEnquiryEntity implements Serializable {
 
     public void setSampleNoDesc(String sampleNoDesc) {
         this.sampleNoDesc = sampleNoDesc;
-    }
-
-    @Column(name = "SUM_TOTAL", nullable = true, length = 32)
-    public Integer getSumTotal() {
-        return this.sumTotal;
-    }
-
-    public void setSumTotal(Integer sumTotal) {
-        this.sumTotal = sumTotal;
-    }
-
-    @Column(name = "BZ", nullable = true, length = 12)
-    public String getBz() {
-        return this.bz;
-    }
-
-    public void setBz(String bz) {
-        this.bz = bz;
-    }
-
-    @Column(name = "SUM_MONEY", nullable = true, scale = 2, length = 32)
-    public Double getSumMoney() {
-        return this.sumMoney;
-    }
-
-    public void setSumMoney(Double sumMoney) {
-        this.sumMoney = sumMoney;
     }
 
     @Column(name = "IS_PRINT_SAMPLE", nullable = true, length = 6)
@@ -500,7 +461,44 @@ public class EmkEnquiryEntity implements Serializable {
         this.businesseDeptId = businesseDeptId;
     }
 
-    @Column(name = "LEAD_ADVICE", nullable = true, length = 256)
+    @Formula("(select CONCAT(p.NAME_,'-',p.TASK_DEF_KEY_) from act_ru_task p where p.ASSIGNEE_ = id limit 0,1)")
+    @Column(name = "process_name", nullable = true, length = 32)
+    public String getProcessName() {
+        return processName;
+    }
+
+    public void setProcessName(String processName) {
+        this.processName = processName;
+    }
+
+    @Column(name = "state1", nullable = true, length = 32)
+    public String getState1() {
+        return state1;
+    }
+
+    public void setState1(String state1) {
+        this.state1 = state1;
+    }
+
+    @Column(name = "state2", nullable = true, length = 32)
+    public String getState2() {
+        return state2;
+    }
+
+    public void setState2(String state2) {
+        this.state2 = state2;
+    }
+
+    @Column(name = "state3", nullable = true, length = 32)
+    public String getState3() {
+        return state3;
+    }
+
+    public void setState3(String state3) {
+        this.state3 = state3;
+    }
+
+    /*@Column(name = "LEAD_ADVICE", nullable = true, length = 256)
     public String getLeadAdvice() {
         return this.leadAdvice;
     }
@@ -543,9 +541,9 @@ public class EmkEnquiryEntity implements Serializable {
 
     public void setLeader(String leader) {
         this.leader = leader;
-    }
+    }*/
 
-    @Column(name = "FINANCE_USER_ID", nullable = true, length = 32)
+    /*@Column(name = "FINANCE_USER_ID", nullable = true, length = 32)
     public String getFinanceUserId() {
         return this.financeUserId;
     }
@@ -561,5 +559,5 @@ public class EmkEnquiryEntity implements Serializable {
 
     public void setFinancer(String financer) {
         this.financer = financer;
-    }
+    }*/
 }

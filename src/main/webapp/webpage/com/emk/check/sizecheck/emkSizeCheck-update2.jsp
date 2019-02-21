@@ -51,7 +51,7 @@
 			</td>
 			<td align="right" >
 				<label class="Validform_label">
-					客户编号:
+					客户代码:
 				</label>
 			</td>
 			<td class="value" >

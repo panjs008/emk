@@ -456,7 +456,7 @@ public class EmkCheckFactoryController extends BaseController {
 
 	@RequestMapping(params="doSubmit")
 	@ResponseBody
-	public AjaxJson doSubmit(EmkCheckFactoryEntity emkCheckFactoryEntity, HttpServletRequest request) {
+	public AjaxJson doSubmit(EmkCheckFactoryEntity2 emkCheckFactoryEntity, HttpServletRequest request) {
 		String message = null;
 		AjaxJson j = new AjaxJson();
 		message = "验厂申请表提交成功";
@@ -491,7 +491,7 @@ public class EmkCheckFactoryController extends BaseController {
 							taskService.complete(task1.getId(), variables);
 						}
 						if (task1.getTaskDefinitionKey().equals("checkTask")) {
-							t.setLeader(user.getRealName());
+							/*t.setLeader(user.getRealName());
 							t.setLeadUserId(user.getId());
 							t.setLeadAdvice(emkCheckFactoryEntity.getLeadAdvice());
 							if (emkCheckFactoryEntity.getIsPass().equals("0")) {
@@ -499,8 +499,6 @@ public class EmkCheckFactoryController extends BaseController {
 								taskService.complete(task1.getId(), variables);
 								t.setCyUserId(t.getCreateBy());
 								t.setCyer(t.getCreateName());
-								/*t.setCyer(map.get("realName").toString());
-								t.setCyUserId(map.get("userName").toString());*/
 
 							} else {
 								List<HistoricTaskInstance> hisTasks = historyService.createHistoricTaskInstanceQuery().taskAssignee(t.getId()).list();
@@ -535,7 +533,6 @@ public class EmkCheckFactoryController extends BaseController {
 								t.setState("2");
 							} else {
 								List<HistoricTaskInstance> hisTasks = historyService.createHistoricTaskInstanceQuery().taskAssignee(t.getId()).list();
-
 								List<Task> taskList = taskService.createTaskQuery().taskAssignee(t.getId()).list();
 								if (taskList.size() > 0) {
 									Task taskH = (Task)taskList.get(taskList.size() - 1);
@@ -547,7 +544,7 @@ public class EmkCheckFactoryController extends BaseController {
 									systemService.executeSql("UPDATE act_hi_taskinst SET  NAME_=CONCAT('【驳回后】','',NAME_) WHERE ASSIGNEE_>=? AND ID_=?",t.getId(), taskIdArr[1]);
 									systemService.executeSql("delete from act_hi_actinst where ID_>=? and ID_<?", activitIdArr[0], activitIdArr[1] );
 								}
-							}
+							}*/
 						}
 
 					}else {

@@ -10,6 +10,7 @@ import com.emk.storage.enquirydetail.entity.EmkEnquiryDetailEntity;
 import com.emk.storage.instorage.entity.EmkInStorageEntity;
 import com.emk.storage.storage.entity.EmkStorageEntity;
 import com.emk.storage.storagelog.entity.EmkStorageLogEntity;
+import com.emk.util.DateUtil;
 import com.emk.util.FlowUtil;
 import com.emk.util.ParameterUtil;
 import com.emk.workorder.workorder.entity.EmkWorkOrderEntity;
@@ -403,10 +404,19 @@ public class EmkContractController extends BaseController {
                                 variables.put("isPass", emkContractEntity.getIsPass());
                                 taskService.complete(task1.getId(), variables);
                                 t.setState("2");
+
                                 EmkProOrderEntity proOrderEntity = systemService.findUniqueByProperty(EmkProOrderEntity.class,"orderNo",t.getOrderNo());
                                 EmkWorkOrderEntity workOrderEntity = systemService.findUniqueByProperty(EmkWorkOrderEntity.class,"workNo",proOrderEntity.getWorkNo());
                                 workOrderEntity.setHtNo(t.getHtNum());
+                                workOrderEntity.setHtUser(user.getRealName());
+                                workOrderEntity.setHtUserId(user.getUserName());
+                                workOrderEntity.setHtAdvice(emkContractEntity.getLeadAdvice());
+                                workOrderEntity.setHtDate(DateUtil.getCurrentTimeString(null));
                                 systemService.saveOrUpdate(workOrderEntity);
+
+                                variables.put("inputUser", workOrderEntity.getId());
+                                task = taskService.createTaskQuery().taskAssignee(workOrderEntity.getId()).list();
+                                task1 = task.get(task.size() - 1);
                                 taskService.complete(task1.getId(), variables);
                             } else {
                                 List<HistoricTaskInstance> hisTasks = historyService.createHistoricTaskInstanceQuery().taskAssignee(t.getId()).list();

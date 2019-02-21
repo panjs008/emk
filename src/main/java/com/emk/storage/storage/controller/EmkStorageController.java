@@ -141,7 +141,7 @@ public class EmkStorageController extends BaseController {
         }
         cq.add();
         this.emkStorageService.getDataGridReturn(cq, true);
-        String sql = "SELECT ifnull(ROUND(SUM(total),2),0) zongji FROM emk_storage WHERE sys_org_code='" + user.getCurrentDepart().getOrgCode().substring(0, 3) + "'";
+        String sql = "SELECT ifnull(ROUND(SUM(total),2),0) zongji FROM emk_storage WHERE 1=1";
 
         if (emkStorage.getStorageName() != null && !emkStorage.getStorageName().isEmpty()) {
             sql += " and storage_name like '%" + emkStorage.getStorageName() + "%'";

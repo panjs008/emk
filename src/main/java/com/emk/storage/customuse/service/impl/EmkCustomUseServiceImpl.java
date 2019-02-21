@@ -91,8 +91,6 @@ public class EmkCustomUseServiceImpl extends CommonServiceImpl implements EmkCus
 		map.put("businesser_name", t.getBusinesserName());
 		map.put("tracer", t.getTracer());
 		map.put("tracer_name", t.getTracerName());
-		map.put("check_user_id", t.getCheckUserId());
-		map.put("check_user", t.getCheckUser());
 		map.put("people_advice", t.getPeopleAdvice());
 		map.put("zl_advice", t.getZlAdvice());
 		map.put("is_people_advice", t.getIsPeopleAdvice());
@@ -111,8 +109,6 @@ public class EmkCustomUseServiceImpl extends CommonServiceImpl implements EmkCus
 		map.put("is_send_huo", t.getIsSendHuo());
 		map.put("zdhdmc", t.getZdhdmc());
 		map.put("relation", t.getRelation());
-		map.put("telphone", t.getTelphone());
-		map.put("lyg", t.getLyg());
 		map.put("people_file_url", t.getPeopleFileUrl());
 		map.put("people_file", t.getPeopleFile());
 		map.put("zl_file_url", t.getZlFileUrl());
@@ -154,8 +150,6 @@ public class EmkCustomUseServiceImpl extends CommonServiceImpl implements EmkCus
  		sql  = sql.replace("#{businesser_name}",String.valueOf(t.getBusinesserName()));
  		sql  = sql.replace("#{tracer}",String.valueOf(t.getTracer()));
  		sql  = sql.replace("#{tracer_name}",String.valueOf(t.getTracerName()));
- 		sql  = sql.replace("#{check_user_id}",String.valueOf(t.getCheckUserId()));
- 		sql  = sql.replace("#{check_user}",String.valueOf(t.getCheckUser()));
  		sql  = sql.replace("#{people_advice}",String.valueOf(t.getPeopleAdvice()));
  		sql  = sql.replace("#{zl_advice}",String.valueOf(t.getZlAdvice()));
  		sql  = sql.replace("#{is_people_advice}",String.valueOf(t.getIsPeopleAdvice()));
@@ -174,8 +168,6 @@ public class EmkCustomUseServiceImpl extends CommonServiceImpl implements EmkCus
  		sql  = sql.replace("#{is_send_huo}",String.valueOf(t.getIsSendHuo()));
  		sql  = sql.replace("#{zdhdmc}",String.valueOf(t.getZdhdmc()));
  		sql  = sql.replace("#{relation}",String.valueOf(t.getRelation()));
- 		sql  = sql.replace("#{telphone}",String.valueOf(t.getTelphone()));
- 		sql  = sql.replace("#{lyg}",String.valueOf(t.getLyg()));
  		sql  = sql.replace("#{people_file_url}",String.valueOf(t.getPeopleFileUrl()));
  		sql  = sql.replace("#{people_file}",String.valueOf(t.getPeopleFile()));
  		sql  = sql.replace("#{zl_file_url}",String.valueOf(t.getZlFileUrl()));

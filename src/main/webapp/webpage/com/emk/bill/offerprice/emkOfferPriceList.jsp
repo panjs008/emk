@@ -9,7 +9,7 @@
    <t:dgCol title="创建人登录名称"  field="createBy"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="创建日期"  field="createDate"  formatter="yyyy-MM-dd"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="所属部门"  field="sysOrgCode"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
-   <t:dgCol title="客户编号"  field="cusNum"  queryMode="single"  width="90"></t:dgCol>
+   <t:dgCol title="客户代码"  field="cusNum"  queryMode="single"  width="90"></t:dgCol>
    <t:dgCol title="客户名称"  field="cusName"  queryMode="single"  width="90"></t:dgCol>
    <t:dgCol title="开单日期"  field="kdTime"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="款号"  field="sampleNo"  queryMode="single"  width="90"></t:dgCol>

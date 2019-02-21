@@ -9,21 +9,13 @@
 	<script src="${webRoot}/context/gys.js"></script>
 	<script type="text/javascript">
 		//编写自定义JS代码
-		$(function() {
-			BindSelect("gysId","ymkCustomController.do?findSupplierList",0,"");
-			$("#gysId").change(function(){
-				var itemarr = $("#gysId").val().split(","); //字符分割
-				$("#gysCode").val(itemarr[0]);
-				$("#gys").val(itemarr[1]);
-			});
-		});
 
 		function uploadSuccess0(d,file,response){
 			var src = d.attributes.url;
+
 			$("#scanUrl").val(d.attributes.url);
 			$("#scanName").val(d.attributes.name);
-
-			$("#scanId").html(d.attributes.name);
+			$("#scanId").html("[<a href=\"javascript:findDetail('"+d.attributes.url+"')\">"+d.attributes.name+"</a>]");
 
 		}
 
@@ -83,13 +75,13 @@
 
 			<td align="right" style="width: 18%">
 				<label class="Validform_label">
-					客户编号:
+					客户代码:
 				</label>
 			</td>
 			<td class="value" style="width: 32%">
 				<input id="cusNum" name="cusNum" readonly type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">客户编号</label>
+				<label class="Validform_label" style="display: none;">客户代码</label>
 			</td>
 			<td align="right" style="width: 18%">
 				<label class="Validform_label">

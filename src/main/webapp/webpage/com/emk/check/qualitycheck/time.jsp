@@ -42,7 +42,7 @@
 						<div class="liright">
 							<div class="histt"><a style="font-size: 14px;">${task.NAME_}</a></div>
 							<div class="histt"><a style="font-size: 12px;"><c:if test="${task.TASK_DEF_KEY_ eq 'qualitycheckTask'}">【${task.workname}】发起质量检查，单号：${emkQualityCheck.qualityCheckNum}</c:if>
-								<c:if test="${task.TASK_DEF_KEY_ eq 'checkTask'}">审核人【${emkQualityCheck.leader}】,处理意见：${emkQualityCheck.leadAdvice}</c:if>
+								<c:if test="${task.TASK_DEF_KEY_ eq 'leadTask'}">审核人【${emkQualityCheck.leader}】,处理意见：${emkQualityCheck.leadAdvice}</c:if>
 							</a></div>
 						</div>
 					</div>

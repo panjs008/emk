@@ -1,17 +1,21 @@
 package com.service.custom.controller;
 
+import com.emk.storage.enquiry.entity.EmkEnquiryEntity;
+import com.emk.storage.enquiry.entity.EmkEnquiryEntityA;
 import com.emk.storage.supplier.entity.EmkSupplierEntity;
-import com.emk.util.ChineseToEnglish;
-import com.emk.util.ParameterUtil;
+import com.emk.util.*;
 import com.service.custom.entity.YmkCustomEntity;
+import com.service.custom.entity.YmkCustomEntityA;
 import com.service.custom.service.YmkCustomServiceI;
 import com.service.customcontact.entity.YmkCustomContactEntity;
 import com.service.customcontact.entity.YmkCustomContactUserEntity;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.net.URI;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -46,8 +50,10 @@ import org.jeecgframework.core.util.oConvertUtils;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.entity.ExportParams;
 import org.jeecgframework.poi.excel.entity.ImportParams;
+import org.jeecgframework.poi.excel.entity.vo.NormalExcelConstants;
 import org.jeecgframework.tag.core.easyui.TagUtil;
 import org.jeecgframework.web.system.pojo.base.TSDepart;
+import org.jeecgframework.web.system.pojo.base.TSType;
 import org.jeecgframework.web.system.pojo.base.TSUser;
 import org.jeecgframework.web.system.pojo.base.TSUserOrg;
 import org.jeecgframework.web.system.service.SystemService;
@@ -119,7 +125,7 @@ public class YmkCustomController
             }*/
             TSUser user = (TSUser) request.getSession().getAttribute(ResourceUtil.LOCAL_CLINET_USER);
             Map roleMap = (Map) request.getSession().getAttribute("ROLE");
-            if(roleMap != null){
+            if(Utils.notEmpty(roleMap)){
                 if(roleMap.get("rolecode").toString().contains("ywy") ){
                     cq.eq("businesser",user.getUserName());
                 }
@@ -131,7 +137,7 @@ public class YmkCustomController
             throw new BusinessException(e.getMessage());
         }
         cq.add();
-        this.ymkCustomService.getDataGridReturn(cq, true);
+        ymkCustomService.getDataGridReturn(cq, true);
         TagUtil.datagrid(response, dataGrid);
     }
 
@@ -140,24 +146,24 @@ public class YmkCustomController
     public AjaxJson doDel(YmkCustomEntity ymkCustom, HttpServletRequest request) {
         String message = null;
         AjaxJson j = new AjaxJson();
-        ymkCustom = (YmkCustomEntity) this.systemService.getEntity(YmkCustomEntity.class, ymkCustom.getId());
+        ymkCustom = (YmkCustomEntity) systemService.getEntity(YmkCustomEntity.class, ymkCustom.getId());
         message = "客户表删除成功";
         try {
-            this.ymkCustomService.delete(ymkCustom);
-            this.systemService.executeSql("delete from ymk_custom_contact where CUSTOM_ID=?", new Object[]{ymkCustom.getId()});
-            this.systemService.executeSql("delete from ymk_custom_alert where CUSTOM_ID=?", new Object[]{ymkCustom.getId()});
-            this.systemService.executeSql("delete from ymk_custom_bank where CUSTOM_ID=?", new Object[]{ymkCustom.getId()});
-            this.systemService.executeSql("delete from ymk_custom_trace where CUS_ID=?", new Object[]{ymkCustom.getId()});
-            this.systemService.executeSql("delete from ymk_custom_from where CUSTOM_ID=?", new Object[]{ymkCustom.getId()});
+            ymkCustomService.delete(ymkCustom);
+            systemService.executeSql("delete from ymk_custom_contact where CUSTOM_ID=?", ymkCustom.getId());
+            systemService.executeSql("delete from ymk_custom_alert where CUSTOM_ID=?", ymkCustom.getId());
+            systemService.executeSql("delete from ymk_custom_bank where CUSTOM_ID=?", ymkCustom.getId());
+            systemService.executeSql("delete from ymk_custom_trace where CUS_ID=?", ymkCustom.getId());
+            systemService.executeSql("delete from ymk_custom_from where CUSTOM_ID=?", ymkCustom.getId());
 
-            YmkCustomContactUserEntity customContactUserEntity = (YmkCustomContactUserEntity) this.systemService.findUniqueByProperty(YmkCustomContactUserEntity.class, "contactId", ymkCustom.getId());
-            this.systemService.executeSql("delete from ymk_custom_contact_user where contact_id=?", new Object[]{ymkCustom.getId()});
-            this.systemService.executeSql("delete from t_s_user_org where user_id=?", new Object[]{customContactUserEntity.getUserId()});
-            this.systemService.executeSql("delete from t_s_role_user where userid=?", new Object[]{customContactUserEntity.getUserId()});
-            this.systemService.executeSql("delete from t_s_base_user where id=?", new Object[]{customContactUserEntity.getUserId()});
-            this.systemService.executeSql("delete from t_s_user where id=?", new Object[]{customContactUserEntity.getUserId()});
+            YmkCustomContactUserEntity customContactUserEntity = (YmkCustomContactUserEntity) systemService.findUniqueByProperty(YmkCustomContactUserEntity.class, "contactId", ymkCustom.getId());
+            systemService.executeSql("delete from ymk_custom_contact_user where contact_id=?", ymkCustom.getId());
+            systemService.executeSql("delete from t_s_user_org where user_id=?", customContactUserEntity.getUserId());
+            systemService.executeSql("delete from t_s_role_user where userid=?", customContactUserEntity.getUserId());
+            systemService.executeSql("delete from t_s_base_user where id=?", customContactUserEntity.getUserId());
+            systemService.executeSql("delete from t_s_user where id=?", customContactUserEntity.getUserId());
 
-            this.systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
+            systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
         } catch (Exception e) {
             e.printStackTrace();
             message = "客户表删除失败";
@@ -172,13 +178,13 @@ public class YmkCustomController
     public AjaxJson check(YmkCustomEntity ymkCustom, HttpServletRequest request) {
         String message = null;
         AjaxJson j = new AjaxJson();
-        YmkCustomEntity t = (YmkCustomEntity) this.systemService.getEntity(YmkCustomEntity.class, ymkCustom.getId());
+        YmkCustomEntity t = (YmkCustomEntity) systemService.getEntity(YmkCustomEntity.class, ymkCustom.getId());
         message = "服务商审核成功";
         try {
             t.setStatus(ymkCustom.getStatus());
-            this.ymkCustomService.saveOrUpdate(t);
+            ymkCustomService.saveOrUpdate(t);
 
-            this.systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
+            systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
         } catch (Exception e) {
             e.printStackTrace();
             message = "服务商审核失败";
@@ -196,19 +202,19 @@ public class YmkCustomController
         message = "客户表删除成功";
         try {
             for (String id : ids.split(",")) {
-                YmkCustomEntity ymkCustom = (YmkCustomEntity) this.systemService.getEntity(YmkCustomEntity.class, id);
+                YmkCustomEntity ymkCustom = (YmkCustomEntity) systemService.getEntity(YmkCustomEntity.class, id);
 
 
-                this.ymkCustomService.delete(ymkCustom);
-                Map customUser = this.systemService.findOneForJdbc("select * from ymk_custom_contact_user where contact_id=?", new Object[]{ymkCustom.getId()});
+                ymkCustomService.delete(ymkCustom);
+                Map customUser = systemService.findOneForJdbc("select * from ymk_custom_contact_user where contact_id=?", ymkCustom.getId());
                 if (customUser != null) {
-                    this.systemService.executeSql("delete from ymk_custom_contact_user where contact_id =?", new Object[]{ymkCustom.getId()});
-                    this.systemService.executeSql("delete from t_s_role_user where userid =?", new Object[]{customUser.get("user_id")});
-                    this.systemService.executeSql("delete from t_s_user_org where user_id =?", new Object[]{customUser.get("user_id")});
-                    this.systemService.executeSql("delete from t_s_user where id =?", new Object[]{customUser.get("user_id")});
-                    this.systemService.executeSql("delete from t_s_base_user where ID =?", new Object[]{customUser.get("user_id")});
+                    systemService.executeSql("delete from ymk_custom_contact_user where contact_id =?", ymkCustom.getId());
+                    systemService.executeSql("delete from t_s_role_user where userid =?", customUser.get("user_id"));
+                    systemService.executeSql("delete from t_s_user_org where user_id =?", customUser.get("user_id"));
+                    systemService.executeSql("delete from t_s_user where id =?", customUser.get("user_id"));
+                    systemService.executeSql("delete from t_s_base_user where ID =?", customUser.get("user_id"));
                 }
-                this.systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
+                systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -237,7 +243,7 @@ public class YmkCustomController
             sb.append(" and LEFT(org_code,1)='A'");
         }
         sb.append(" ORDER BY org_code DESC");
-        List<Map<String, Object>> objMapList = this.systemService.findForJdbc(sb.toString(), 1, 1);
+        List<Map<String, Object>> objMapList = systemService.findForJdbc(sb.toString(), 1, 1);
         String returnCode = null;
         if ((objMapList != null) && (objMapList.size() > 0)) {
             returnCode = (String) ((Map) objMapList.get(0)).get("org_code");
@@ -254,17 +260,15 @@ public class YmkCustomController
         try {
             Map map = ParameterUtil.getParamMaps(request.getParameterMap());
             ymkCustom.setStatus("0");
-
-
             ymkCustom.setCusCode(ChineseToEnglish.getPinYinHeadChar(ymkCustom.getCusName()));
-            TSUser tsUser = (TSUser) this.systemService.findUniqueByProperty(TSUser.class, "userName", ymkCustom.getBusinesserName());
+            TSUser tsUser = (TSUser) systemService.findUniqueByProperty(TSUser.class, "userName", ymkCustom.getBusinesserName());
             if(tsUser != null){
                 TSUserOrg userOrg = (TSUserOrg) tsUser.getUserOrgList().get(0);
                 ymkCustom.setBusinesseDeptName(userOrg.getTsDepart().getDepartname());
                 ymkCustom.setBusinesseDeptId(userOrg.getTsDepart().getId());
             }
 
-            this.ymkCustomService.save(ymkCustom);
+            ymkCustomService.save(ymkCustom);
 
            /* TSUser user = new TSUser();
 
@@ -274,15 +278,15 @@ public class YmkCustomController
             user.setStatus(Globals.User_Normal);
             user.setDeleteFlag(Globals.Delete_Normal);
             user.setDevFlag("0");
-            this.userService.saveOrUpdate(user, "402880e447e99cf10147e9a03b320003".split(","), "ff8080816521731c016521a3ed3d001d".split(","));
+            userService.saveOrUpdate(user, "402880e447e99cf10147e9a03b320003".split(","), "ff8080816521731c016521a3ed3d001d".split(","));
 
             message = "用户账号: " + user.getUserName() + "添加成功";
 
             YmkCustomContactUserEntity customContactUserEntity = new YmkCustomContactUserEntity();
             customContactUserEntity.setContactId(ymkCustom.getId());
             customContactUserEntity.setUserId(user.getId());
-            this.systemService.saveOrUpdate(customContactUserEntity);*/
-            this.systemService.addLog(message, Globals.Log_Type_INSERT, Globals.Log_Leavel_INFO);
+            systemService.saveOrUpdate(customContactUserEntity);*/
+            systemService.addLog(message, Globals.Log_Type_INSERT, Globals.Log_Leavel_INFO);
         } catch (Exception e) {
             e.printStackTrace();
             message = "客户表添加失败";
@@ -310,17 +314,17 @@ public class YmkCustomController
             user.setDevFlag("0");
             user.setUserType(ymkCustom.getCusType());
             if (ymkCustom.getCusType().equals("0")) {
-                this.userService.saveOrUpdate(user, "2c948c3362fb382e0162fb54053d001c".split(","), "4028819062fd3e6e0162fd40bf0f0001".split(","));
+                userService.saveOrUpdate(user, "2c948c3362fb382e0162fb54053d001c".split(","), "4028819062fd3e6e0162fd40bf0f0001".split(","));
             } else {
-                this.userService.saveOrUpdate(user, "2c948c3362fb382e0162fb54053d001c".split(","), "2c948c3362faa6a40162facd67ee000c".split(","));
+                userService.saveOrUpdate(user, "2c948c3362fb382e0162fb54053d001c".split(","), "2c948c3362faa6a40162facd67ee000c".split(","));
             }
             message = "用户账号: " + user.getUserName() + "添加成功";
 
             YmkCustomContactUserEntity customContactUserEntity = new YmkCustomContactUserEntity();
             customContactUserEntity.setContactId(ymkCustom.getId());
             customContactUserEntity.setUserId(user.getId());
-            this.systemService.saveOrUpdate(customContactUserEntity);
-            this.systemService.addLog(message, Globals.Log_Type_INSERT, Globals.Log_Leavel_INFO);
+            systemService.saveOrUpdate(customContactUserEntity);
+            systemService.addLog(message, Globals.Log_Type_INSERT, Globals.Log_Leavel_INFO);
         } catch (Exception e) {
             e.printStackTrace();
             message = "客户表添加失败";
@@ -337,22 +341,22 @@ public class YmkCustomController
         AjaxJson j = new AjaxJson();
         message = "客户表更新成功";
 
-        YmkCustomEntity t = (YmkCustomEntity) this.ymkCustomService.get(YmkCustomEntity.class, ymkCustom.getId());
+        YmkCustomEntity t = (YmkCustomEntity) ymkCustomService.get(YmkCustomEntity.class, ymkCustom.getId());
         try {
-            ymkCustom.setCusCode(ChineseToEnglish.getPinYinHeadChar(ymkCustom.getCusName()));
-            /*TSUser tsUser = (TSUser) this.systemService.findUniqueByProperty(TSUser.class, "userName", ymkCustom.getBusinesserName());
+            /*TSUser tsUser = (TSUser) systemService.findUniqueByProperty(TSUser.class, "userName", ymkCustom.getBusinesserName());
             if(tsUser != null){
                 TSUserOrg userOrg = (TSUserOrg) tsUser.getUserOrgList().get(0);
                 ymkCustom.setBusinesseDeptName(userOrg.getTsDepart().getDepartname());
                 ymkCustom.setBusinesseDeptId(userOrg.getTsDepart().getId());
             }*/
-            t.setChengShi(ymkCustom.getChengShi());
-            t.setPianQu(ymkCustom.getPianQu());
+           /* t.setChengShi(ymkCustom.getChengShi());
+            t.setPianQu(ymkCustom.getPianQu());*/
             MyBeanUtils.copyBeanNotNull2Bean(ymkCustom, t);
+            t.setCusCode(ChineseToEnglish.getPinYinHeadChar(t.getCusName()));
 
-            this.ymkCustomService.saveOrUpdate(t);
+            ymkCustomService.saveOrUpdate(t);
 
-            this.systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
+            systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
         } catch (Exception e) {
             e.printStackTrace();
             message = "客户表更新失败";
@@ -360,6 +364,55 @@ public class YmkCustomController
         }
         j.setMsg(message);
         return j;
+    }
+
+    @RequestMapping(params = "doPrintPDF")
+    public String doPrintPDF(String ids, YmkCustomEntity customEntity, HttpServletRequest request, HttpServletResponse response) {
+        String message = null;
+
+        try {
+            for (String id : ids.split(",")) {
+                String fileName = "d:\\PDF\\"+ DateUtil.format(new Date(),"yyyyMMddHHmmss")+".pdf";
+                File file = new File(fileName);
+                File dir = file.getParentFile();
+                if (!dir.exists()) {
+                    dir.mkdirs();
+                }
+                try {
+                    file.createNewFile();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                YmkCustomEntity t = (YmkCustomEntity) ymkCustomService.get(YmkCustomEntity.class, id);
+                YmkCustomEntityA ymkCustomEntityA = new YmkCustomEntityA();
+                MyBeanUtils.copyBeanNotNull2Bean(t,ymkCustomEntityA);
+                if(Utils.notEmpty(t.getBusinessType())){
+                    ymkCustomEntityA.setBusinessType(t.getBusinessType().equals("0") ? "直接":"中间");
+                }
+                Map type = systemService.findOneForJdbc("select typecode,typename from t_s_type t2 left join t_s_typegroup t1 on t1.ID=t2.typegroupid where typegroupcode='custom' and typecode=?",t.getCusType());
+                if(Utils.notEmpty(type)){
+                    ymkCustomEntityA.setCusType(type.get("typename").toString());
+                }
+                type = systemService.findOneForJdbc("select typecode,typename from t_s_type t2 left join t_s_typegroup t1 on t1.ID=t2.typegroupid where typegroupcode='trade' and typecode=?",t.getGuoJia());
+                if(Utils.notEmpty(type)) {
+                    ymkCustomEntityA.setGuoJia(type.get("typename").toString());
+                }
+
+                new createPdf(file).generateEmkCustomPDF(ymkCustomEntityA);
+                String fFileName = "d:\\PDF\\F"+DateUtil.format(new Date(),"yyyyMMddHHmmss")+".pdf";
+                WaterMark.waterMark(fileName,fFileName, "客户档案");
+                file.delete();
+                WebFileUtils.downLoad(fFileName,response,false);
+                file = new File(fFileName);
+                file.delete();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            message = "客户档案导出PDF失败";
+            throw new BusinessException(e.getMessage());
+        }
+        return NormalExcelConstants.JEECG_EXCEL_VIEW;
     }
 
     @RequestMapping(params = "findCustomList")
@@ -372,7 +425,7 @@ public class YmkCustomController
         if ((map.get("q") != null) && (!map.get("q").toString().isEmpty())) {
             sql = sql + "  and a.cus_code like '%" + map.get("q") + "%' order by id asc ";
 
-            temp = this.systemService.findForJdbc(sql, new Object[0]);
+            temp = systemService.findForJdbc(sql, new Object[0]);
         }
         return temp;
     }
@@ -383,10 +436,8 @@ public class YmkCustomController
         AjaxJson j = new AjaxJson();
         TSUser user = (TSUser) request.getSession().getAttribute("LOCAL_CLINET_USER");
         Map map = ParameterUtil.getParamMaps(request.getParameterMap());
-        List<TSUser> userList = this.systemService.findHql("from TSUser where userKey=?", new Object[]{map.get("userKey")});
+        List<TSUser> userList = systemService.findHql("from TSUser where userKey=?", map.get("userKey"));
         j.setObj(userList);
-
-
         return j;
     }
 
@@ -394,7 +445,7 @@ public class YmkCustomController
     @ResponseBody
     public Object getDeptInfoByUser(String userName, HttpServletRequest request) {
         Map dept = new HashedMap();
-        TSUser tsUser = (TSUser) this.systemService.findUniqueByProperty(TSUser.class, "userName", userName);
+        TSUser tsUser = (TSUser) systemService.findUniqueByProperty(TSUser.class, "userName", userName);
         if(tsUser != null){
             TSUserOrg userOrg = tsUser.getUserOrgList().get(0);
             TSDepart depart = userOrg.getTsDepart();
@@ -412,7 +463,7 @@ public class YmkCustomController
     public AjaxJson findSupplierList(YmkCustomEntity customEntity, HttpServletRequest request) {
         AjaxJson j = new AjaxJson();
         TSUser user = (TSUser) request.getSession().getAttribute("LOCAL_CLINET_USER");
-        List<EmkSupplierEntity> supplierEntities = this.systemService.findHql("from EmkSupplierEntity", null);
+        List<EmkSupplierEntity> supplierEntities = systemService.findHql("from EmkSupplierEntity", null);
         j.setObj(supplierEntities);
         return j;
     }
@@ -423,7 +474,7 @@ public class YmkCustomController
         AjaxJson j = new AjaxJson();
         Map param = ParameterUtil.getParamMaps(request.getParameterMap());
         try {
-            List<Map<String, Object>> codeList = this.systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", new Object[]{param.get("code")});
+            List<Map<String, Object>> codeList = systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", param.get("code"));
             String dataItems = "";
             try {
                 for (Map map : codeList) {
@@ -442,20 +493,34 @@ public class YmkCustomController
         return j;
     }
 
+    @RequestMapping(params = "getCustomTypeName", method = {org.springframework.web.bind.annotation.RequestMethod.POST})
+    @ResponseBody
+    public AjaxJson getCustomTypeName(HttpServletRequest request, HttpServletResponse response) {
+        AjaxJson j = new AjaxJson();
+        Map param = ParameterUtil.getParamMaps(request.getParameterMap());
+        try {
+            List<Map<String, Object>> typeList = systemService.findForJdbc("select typecode,typename from t_s_type t2 left join t_s_typegroup t1 on t1.ID=t2.typegroupid where typegroupcode=?",param.get("groupCode"));
+            j.setObj(typeList);
+        } catch (Exception e) {
+            logger.error(ExceptionUtil.getExceptionMessage(e));
+        }
+        return j;
+    }
+
     @RequestMapping(params = "doCustomData")
     @ResponseBody
     public Object doCustomData(YmkCustomEntity ymkCustom, HttpServletRequest request) {
         String message = null;
-        YmkCustomEntity t = (YmkCustomEntity) this.ymkCustomService.get(YmkCustomEntity.class, ymkCustom.getId());
+        YmkCustomEntity t = (YmkCustomEntity) ymkCustomService.get(YmkCustomEntity.class, ymkCustom.getId());
         return JSONHelper.bean2json(t);
     }
 
     @RequestMapping(params = "regCustom")
     public ModelAndView regCustom(YmkCustomEntity ymkCustom, HttpServletRequest req) {
-        Map orderNum = this.systemService.findOneForJdbc("select count(0)+1 cusNum from ymk_custom", new Object[0]);
-        req.setAttribute("cusNum", DateUtils.format(new Date(), "yyyy") + String.format("%06d", new Object[]{Integer.valueOf(Integer.parseInt(orderNum.get("cusNum").toString()))}));
+        Map orderNum = systemService.findOneForJdbc("select CAST(max(right(cus_num, 4))+1 AS signed) orderNum from ymk_custom ");
+        req.setAttribute("cusNum", DateUtils.format(new Date(), "yyyy") + String.format("%06d", Integer.parseInt(orderNum.get("orderNum").toString())));
         if (StringUtil.isNotEmpty(ymkCustom.getId())) {
-            ymkCustom = (YmkCustomEntity) this.ymkCustomService.getEntity(YmkCustomEntity.class, ymkCustom.getId());
+            ymkCustom = (YmkCustomEntity) ymkCustomService.getEntity(YmkCustomEntity.class, ymkCustom.getId());
             req.setAttribute("ymkCustomPage", ymkCustom);
         }
         return new ModelAndView("com/service/custom/ymkCustom-reg");
@@ -463,32 +528,53 @@ public class YmkCustomController
 
     @RequestMapping(params = "goAdd")
     public ModelAndView goAdd(YmkCustomEntity ymkCustom, HttpServletRequest req) {
-        Map orderNum = this.systemService.findOneForJdbc("select CAST(max(right(cus_num, 4))+1 AS signed) orderNum from ymk_custom ");
-        req.setAttribute("daanNum", "KHDA1" + String.format("%04d", new Object[]{Integer.valueOf(Integer.parseInt(orderNum.get("orderNum").toString()))}));
-        req.setAttribute("cusNum", String.format("%04d", new Object[]{Integer.valueOf(Integer.parseInt(orderNum.get("orderNum").toString()))}));
+        Map orderNum = systemService.findOneForJdbc("select CAST(max(right(cus_num, 4))+1 AS signed) orderNum from ymk_custom ");
+        req.setAttribute("daanNum", "KHDA1" + String.format("%04d", Integer.parseInt(orderNum.get("orderNum").toString())));
+        req.setAttribute("cusNum", String.format("%04d", Integer.parseInt(orderNum.get("orderNum").toString())));
         req.setAttribute("createDate", DateUtils.format(new Date(), "yyyy-MM-dd"));
         if (StringUtil.isNotEmpty(ymkCustom.getId())) {
-            ymkCustom = (YmkCustomEntity) this.ymkCustomService.getEntity(YmkCustomEntity.class, ymkCustom.getId());
+            ymkCustom = (YmkCustomEntity) ymkCustomService.getEntity(YmkCustomEntity.class, ymkCustom.getId());
             req.setAttribute("ymkCustomPage", ymkCustom);
         }
+        List<TSType> typeList = systemService.findHql("from TSType where TSTypegroup.typegroupcode=?","zds");
+        req.setAttribute("typeList", typeList);
         return new ModelAndView("com/service/custom/ymkCustom-add");
     }
 
     @RequestMapping(params = "goUpdate")
     public ModelAndView goUpdate(YmkCustomEntity ymkCustom, HttpServletRequest req) {
         if (StringUtil.isNotEmpty(ymkCustom.getId())) {
-            ymkCustom = (YmkCustomEntity) this.ymkCustomService.getEntity(YmkCustomEntity.class, ymkCustom.getId());
+            try {
+                ymkCustom = ymkCustomService.getEntity(YmkCustomEntity.class, ymkCustom.getId());
+                Map countMap = MyBeanUtils.culBeanCounts(ymkCustom);
+                req.setAttribute("countMap", countMap);
+                double a=0,b=0;
+                a = Double.parseDouble(countMap.get("finishColums").toString());
+                b = Double.parseDouble(countMap.get("Colums").toString());
+                DecimalFormat df = new DecimalFormat("#.00");
+                req.setAttribute("recent", df.format(a*100/b));
+                List<TSType> typeList = systemService.findHql("from TSType where TSTypegroup.typegroupcode=?",ymkCustom.getCusType());
+                req.setAttribute("typeList", typeList);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             req.setAttribute("ymkCustomPage", ymkCustom);
-
-            Map contact = this.systemService.findOneForJdbc("select * from ymk_custom_contact_user where contact_id=?", new Object[]{ymkCustom.getId()});
-            if (contact != null) {
-                TSUser user = (TSUser) this.systemService.get(TSUser.class, contact.get("user_id").toString());
+            Map contact = systemService.findOneForJdbc("select * from ymk_custom_contact_user where contact_id=?", ymkCustom.getId());
+            if (Utils.notEmpty(contact)) {
+                TSUser user = (TSUser) systemService.get(TSUser.class, contact.get("user_id").toString());
                 req.setAttribute("user", user);
             }
         }
         return new ModelAndView("com/service/custom/ymkCustom-update");
     }
-
+    @RequestMapping(params = "goUpdateState")
+    public ModelAndView goUpdateState(YmkCustomEntity ymkCustom, HttpServletRequest req) {
+        if (StringUtil.isNotEmpty(ymkCustom.getId())) {
+            ymkCustom = ymkCustomService.getEntity(YmkCustomEntity.class, ymkCustom.getId());
+            req.setAttribute("ymkCustomPage", ymkCustom);
+        }
+        return new ModelAndView("com/service/custom/ymkCustomState-update");
+    }
     @RequestMapping(params = "jump")
     public Object jump(HttpServletRequest req) {
         Map<String, String> map = ParameterUtil.getParamMaps(req.getParameterMap());
@@ -496,31 +582,28 @@ public class YmkCustomController
         if (map.get("showflag") != null) {
             showflag = (String) map.get("showflag");
         }
-        if (((String) map.get("r")).equals("custom")) {
+        if (map.get("r").equals("custom")) {
             TSUser user = (TSUser) req.getSession().getAttribute("LOCAL_CLINET_USER");
-            YmkCustomEntity ymkCustom = (YmkCustomEntity) this.ymkCustomService.getEntity(YmkCustomEntity.class, (Serializable) map.get("id"));
+            YmkCustomEntity ymkCustom = (YmkCustomEntity) ymkCustomService.getEntity(YmkCustomEntity.class, (Serializable) map.get("id"));
 
 
             req.setAttribute("ymkCustomPage", ymkCustom);
-            List<YmkCustomContactEntity> contactEntities = this.systemService.findHql("from YmkCustomContactEntity where customId=?", new Object[]{ymkCustom.getId()});
+            List<YmkCustomContactEntity> contactEntities = systemService.findHql("from YmkCustomContactEntity where customId=?", ymkCustom.getId());
             req.setAttribute("contactEntities", contactEntities);
-            Map<String, Object> alert = this.systemService.findOneForJdbc("SELECT id,DATE_FORMAT(alert_time, '%Y-%m-%d') create_date1,DATE_FORMAT(alert_time, '%H:%i') create_date2,alert_content,alert_time,create_name,state FROM ymk_custom_alert where custom_id='" + (String) map.get("id") + "'  ORDER BY CREATE_DATE DESC LIMIT 0,1", new Object[0]);
+            Map<String, Object> alert = systemService.findOneForJdbc("SELECT id,DATE_FORMAT(alert_time, '%Y-%m-%d') create_date1,DATE_FORMAT(alert_time, '%H:%i') create_date2,alert_content,alert_time,create_name,state FROM ymk_custom_alert where custom_id='" + (String) map.get("id") + "'  ORDER BY CREATE_DATE DESC LIMIT 0,1", new Object[0]);
             req.setAttribute("alert", alert);
 
-            List<Map<String, Object>> alertList = this.systemService.findForJdbc("SELECT id,DATE_FORMAT(alert_time, '%Y-%m-%d') create_date1,DATE_FORMAT(alert_time, '%H:%i') create_date2,alert_content,alert_time,create_name,state FROM ymk_custom_alert where custom_id='" + (String) map.get("id") + "' ORDER BY CREATE_DATE DESC ", new Object[0]);
+            List<Map<String, Object>> alertList = systemService.findForJdbc("SELECT id,DATE_FORMAT(alert_time, '%Y-%m-%d') create_date1,DATE_FORMAT(alert_time, '%H:%i') create_date2,alert_content,alert_time,create_name,state FROM ymk_custom_alert where custom_id='" + (String) map.get("id") + "' ORDER BY CREATE_DATE DESC ", new Object[0]);
             req.setAttribute("alertList", alertList);
 
-            List<Map<String, Object>> traceList = this.systemService.findForJdbc("SELECT id,DATE_FORMAT(trace_time, '%Y-%m-%d') create_date1,DATE_FORMAT(trace_time, '%H:%i') create_date2,trace_content,trace_time,create_name FROM ymk_custom_trace where cus_id='" + (String) map.get("id") + "' ORDER BY CREATE_DATE DESC ", new Object[0]);
+            List<Map<String, Object>> traceList = systemService.findForJdbc("SELECT id,DATE_FORMAT(trace_time, '%Y-%m-%d') create_date1,DATE_FORMAT(trace_time, '%H:%i') create_date2,trace_content,trace_time,create_name FROM ymk_custom_trace where cus_id='" + (String) map.get("id") + "' ORDER BY CREATE_DATE DESC ", new Object[0]);
             req.setAttribute("traceList", traceList);
             return "forward:/metro/custom.jsp";
         }
-        if (((String) map.get("r")).equals("common")) {
+        if (map.get("r").equals("common")) {
             req.setAttribute("url", "ymkCustomController.do?jump&r=custom&id=" + (String) map.get("id") + "&showflag=" + showflag);
         }
-        if ((!((String) map.get("r")).equals("order")) ||
-
-
-                (map.get("type") != null)) {
+        if ((!map.get("r").equals("order")) || (map.get("type") != null)) {
         }
         return "forward:/context/" + (String) map.get("r") + ".jsp";
     }
@@ -535,7 +618,7 @@ public class YmkCustomController
     public String exportXls(YmkCustomEntity ymkCustom, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid, ModelMap modelMap) {
         CriteriaQuery cq = new CriteriaQuery(YmkCustomEntity.class, dataGrid);
         HqlGenerateUtil.installHql(cq, ymkCustom, request.getParameterMap());
-        List<YmkCustomEntity> ymkCustoms = this.ymkCustomService.getListByCriteriaQuery(cq, Boolean.valueOf(false));
+        List<YmkCustomEntity> ymkCustoms = ymkCustomService.getListByCriteriaQuery(cq, Boolean.valueOf(false));
         modelMap.put("fileName", "客户表");
         modelMap.put("entity", YmkCustomEntity.class);
         modelMap.put("params", new ExportParams("客户表列表", "导出人:" + ResourceUtil.getSessionUser().getRealName(), "导出信息"));
@@ -557,14 +640,14 @@ public class YmkCustomController
     @RequestMapping(method = {org.springframework.web.bind.annotation.RequestMethod.GET})
     @ResponseBody
     public List<YmkCustomEntity> list() {
-        List<YmkCustomEntity> listYmkCustoms = this.ymkCustomService.getList(YmkCustomEntity.class);
+        List<YmkCustomEntity> listYmkCustoms = ymkCustomService.getList(YmkCustomEntity.class);
         return listYmkCustoms;
     }
 
     @RequestMapping(value = "/{id}", method = {org.springframework.web.bind.annotation.RequestMethod.GET})
     @ResponseBody
     public ResponseEntity<?> get(@PathVariable("id") String id) {
-        YmkCustomEntity task = (YmkCustomEntity) this.ymkCustomService.get(YmkCustomEntity.class, id);
+        YmkCustomEntity task = (YmkCustomEntity) ymkCustomService.get(YmkCustomEntity.class, id);
         if (task == null) {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
@@ -574,12 +657,12 @@ public class YmkCustomController
     @RequestMapping(method = {org.springframework.web.bind.annotation.RequestMethod.POST}, consumes = "application/json")
     @ResponseBody
     public ResponseEntity<?> create(@RequestBody YmkCustomEntity ymkCustom, UriComponentsBuilder uriBuilder) {
-        Set<ConstraintViolation<YmkCustomEntity>> failures = this.validator.validate(ymkCustom, new Class[0]);
+        Set<ConstraintViolation<YmkCustomEntity>> failures = validator.validate(ymkCustom, new Class[0]);
         if (!failures.isEmpty()) {
             return new ResponseEntity(BeanValidators.extractPropertyAndMessage(failures), HttpStatus.BAD_REQUEST);
         }
         try {
-            this.ymkCustomService.save(ymkCustom);
+            ymkCustomService.save(ymkCustom);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity(HttpStatus.NO_CONTENT);
@@ -594,12 +677,12 @@ public class YmkCustomController
 
     @RequestMapping(value = "/{id}", method = {org.springframework.web.bind.annotation.RequestMethod.PUT}, consumes = "application/json")
     public ResponseEntity<?> update(@RequestBody YmkCustomEntity ymkCustom) {
-        Set<ConstraintViolation<YmkCustomEntity>> failures = this.validator.validate(ymkCustom, new Class[0]);
+        Set<ConstraintViolation<YmkCustomEntity>> failures = validator.validate(ymkCustom, new Class[0]);
         if (!failures.isEmpty()) {
             return new ResponseEntity(BeanValidators.extractPropertyAndMessage(failures), HttpStatus.BAD_REQUEST);
         }
         try {
-            this.ymkCustomService.saveOrUpdate(ymkCustom);
+            ymkCustomService.saveOrUpdate(ymkCustom);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity(HttpStatus.NO_CONTENT);
@@ -610,6 +693,6 @@ public class YmkCustomController
     @RequestMapping(value = "/{id}", method = {org.springframework.web.bind.annotation.RequestMethod.DELETE})
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable("id") String id) {
-        this.ymkCustomService.deleteEntityById(YmkCustomEntity.class, id);
+        ymkCustomService.deleteEntityById(YmkCustomEntity.class, id);
     }
 }

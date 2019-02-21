@@ -10,24 +10,6 @@
 	<script type="text/javascript">
 		//编写自定义JS代码
 
-		function resetTrNum(tableId) {
-			$tbody = $("#"+tableId+"");
-			$tbody.find('>tr').each(function(i){
-				$(':input, select', this).each(function(){
-					var $this = $(this), name = $this.attr('name'), val = $this.val();
-					if(name!=null){
-						if (name.indexOf("#index#") >= 0){
-							$this.attr("name",name.replace('#index#',i));
-						}else{
-							var s = name.indexOf("[");
-							var e = name.indexOf("]");
-							var new_name = name.substring(s+1,e);
-							$this.attr("name",name.replace(new_name,i));
-						}
-					}
-				});
-			});
-		}
 		$(document).ready(function(){
 			$("#detailId").load("emkCargoSpaceController.do?orderMxList&proOrderId=${emkCargoSpacePage.id }");
 		});
@@ -76,13 +58,13 @@
 		<tr>
 			<td align="right" >
 				<label class="Validform_label">
-					客户编号:
+					客户代码:
 				</label>
 			</td>
 			<td class="value" >
 				<input id="cusNum" name="cusNum" readonly type="text" value="${emkCargoSpacePage.cusNum }" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">客户编号</label>
+				<label class="Validform_label" style="display: none;">客户代码</label>
 			</td>
 			<td align="right" >
 				<label class="Validform_label">
@@ -317,8 +299,8 @@
 				<select class="form-control select2" id="gysId"  datatype="*"  >
 					<option value=''>请选择</option>
 				</select>
-				<input id="gysCode" name="gysCode" type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<input id="gys" name="gys" type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="gysCode" name="gysCode" value="${emkCargoSpacePage.gysCode }" type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="gys" name="gys" value="${emkCargoSpacePage.gys }" type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">供应商</label>
 			</td>

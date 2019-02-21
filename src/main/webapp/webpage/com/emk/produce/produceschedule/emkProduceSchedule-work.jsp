@@ -601,7 +601,7 @@
 				</td>
 			</tr>
 		</c:if>
-		<tr id="chooseUser">
+		<%--<tr id="chooseUser">
 			<td align="right" width="150px" valign="middle">
 				<label class="Validform_label">
 					指定下一步操作人:
@@ -613,7 +613,7 @@
 				<t:choose  hiddenName="userName"  hiddenid="userName" url="userController.do?userSelectCw" name="userList1" width="700px" height="500px"
 						   icon="icon-search" title="选择处理人" textname="realName" isclear="true" isInit="true"></t:choose>
 			</td>
-		</tr>
+		</tr>--%>
 
 		<tr>
 			<td align="right" width="150px" valign="middle">

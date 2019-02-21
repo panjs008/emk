@@ -12,19 +12,27 @@
         iconCls: 'icon-remove'
     });
     $('#addBtn').bind('click', function(){
+        flag++;
         var tr =  $("#add_jeecgOrderProduct_table_template tr").clone();
         $("#add_jeecgOrderProduct_table").append(tr);
+
+        $("#add_jeecgOrderProduct_table").find("[id='signTotal00']").attr("datatype","n");
+        $("#add_jeecgOrderProduct_table").find("[id='signTotal00']").attr("id","signTotal"+flag);
+        $("#add_jeecgOrderProduct_table").find("[id='signPrice00']").attr("datatype","d");
+        $("#add_jeecgOrderProduct_table").find("[id='signPrice00']").attr("id","signPrice"+flag);
         resetTrNum('add_jeecgOrderProduct_table');
         $("#orderMxListID").val($("#mxtb").find("tr").length-1);
     });
     $('#delBtn').bind('click', function(){
         var chk_value =[];
+
         $('input[name="ck"]:checked').each(function(){
             chk_value.push($(this).val());
         });
         $("#add_jeecgOrderProduct_table").find("input:checked").parent().parent().remove();
         resetTrNum('add_jeecgOrderProduct_table');
         $("#orderMxListID").val($("#mxtb").find("tr").length-1);
+
 
         if(chk_value.length>0){
            /* $.ajax({

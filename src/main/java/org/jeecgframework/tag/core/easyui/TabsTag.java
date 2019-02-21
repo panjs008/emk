@@ -168,11 +168,19 @@ public class TabsTag extends JeecgTag {
 		}
 		if (tabs) {
 				//增加width属性，fit属性之前写死，改为由页面设定，不填默认true
-			sb.append("<div id=\"" + id + "\" tabPosition=\"" + tabPosition + "\" border=flase style=\"margin:0px;padding:0px;overflow-x:hidden;width:"+oConvertUtils.getString(width, "auto")+";\" class=\"easyui-tabs\" fit=\""+fit+"\">");
+			if(id.equals("priceDetail")) {
+				sb.append("<div id=\"" + id + "\" tabPosition=\"" + tabPosition + "\" border=flase style=\"margin:0px;padding:0px;overflow: hidden;overflow-x:hidden;overflow-y:hidden;width:"+oConvertUtils.getString(width, "auto")+";\" class=\"easyui-tabs\" fit=\""+fit+"\">");
+			}else{
+				sb.append("<div id=\"" + id + "\" tabPosition=\"" + tabPosition + "\" border=flase style=\"margin:0px;padding:0px;overflow-x:hidden;width:"+oConvertUtils.getString(width, "auto")+";\" class=\"easyui-tabs\" fit=\""+fit+"\">");
+			}
 			if (!iframe) {
 				for (Tab tab : tabList) {
 					if (tab.getHref() != null) {
-						sb.append("<div title=\"" + tab.getTitle() + "\" " + (tab.getIcon() != null ? ("iconCls=\"" + tab.getIcon() + "\" ") : "") + " href=\"" + tab.getHref() + "\" style=\"margin:0px;padding:0px;overflow-x:hidden;overflow-y:auto;width=auto;\"></div>");
+						if(id.equals("priceDetail")) {
+							sb.append("<div title=\"" + tab.getTitle() + "\" " + (tab.getIcon() != null ? ("iconCls=\"" + tab.getIcon() + "\" ") : "") + " href=\"" + tab.getHref() + "\" style=\"margin:5px;padding:0px;overflow-x:hidden;overflow-y:auto;width=auto;\"></div>");
+						}else{
+							sb.append("<div title=\"" + tab.getTitle() + "\" " + (tab.getIcon() != null ? ("iconCls=\"" + tab.getIcon() + "\" ") : "") + " href=\"" + tab.getHref() + "\" style=\"margin:0px;padding:0px;overflow-x:hidden;overflow-y:auto;width=auto;\"></div>");
+						}
 					} else {
 						sb.append("<div " + (tab.getIcon() != null ? ("iconCls=\"" + tab.getIcon() + "\" ") : "") + " title=\"" + tab.getTitle() + "\"  style=\"margin:0px;padding:0px;overflow-x:hidden;overflow-y:auto;width=auto;\">");
 

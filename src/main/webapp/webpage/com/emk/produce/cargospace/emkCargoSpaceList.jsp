@@ -9,15 +9,15 @@
    <t:dgCol title="创建人登录名称"  hidden="true" field="createBy"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="创建日期"  hidden="true" field="createDate"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="所属部门"  hidden="true" field="sysOrgCode"  queryMode="single"  width="120"></t:dgCol>
-   <t:dgCol title="订舱通知单号"  field="cargoNo" query="true"  queryMode="single"  width="80"></t:dgCol>
-   <t:dgCol title="生产合同号"  field="produceNum" query="true"  queryMode="single"  width="80"></t:dgCol>
-   <t:dgCol title="出货通知单号"  field="outForumNo"  queryMode="single"  width="80"></t:dgCol>
-   <t:dgCol title="离厂放行条号"  field="levealFactoryNo"  queryMode="single"  width="80"></t:dgCol>
-   <t:dgCol title="订单号"  field="orderNo"  query="true" queryMode="single"  width="80"></t:dgCol>
+   <t:dgCol title="订舱通知单号"  field="cargoNo" query="true"  queryMode="single"  width="110"></t:dgCol>
+   <t:dgCol title="生产合同号"  field="produceNum" query="true"  queryMode="single"  width="110"></t:dgCol>
+   <t:dgCol title="出货通知单号"  field="outForumNo"  queryMode="single"  width="110"></t:dgCol>
+   <t:dgCol title="离厂放行条号"  field="levealFactoryNo"  queryMode="single"  width="110"></t:dgCol>
+   <t:dgCol title="订单号"  field="orderNo"  query="true" queryMode="single"  width="110"></t:dgCol>
    <t:dgCol title="提交日期"  field="kdDate"  query="true" queryMode="single"  width="80"></t:dgCol>
 
-   <t:dgCol title="客户代码"  field="cusNum"  queryMode="single"  width="60"></t:dgCol>
-   <t:dgCol title="客户名称"  field="cusName"  queryMode="single"  width="145"></t:dgCol>
+   <t:dgCol title="客户代码"  field="cusNum"  queryMode="single"  width="70"></t:dgCol>
+   <t:dgCol title="客户名称"  field="cusName"  queryMode="single"  width="140"></t:dgCol>
    <t:dgCol title="款号"  field="sampleNo"  queryMode="single"  width="80"></t:dgCol>
    <t:dgCol title="总数量"  field="total"  queryMode="single"  width="80"></t:dgCol>
    <t:dgCol title="总箱数"  field="sumBoxTotal"  queryMode="single"  width="80"></t:dgCol>

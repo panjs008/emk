@@ -153,6 +153,13 @@ public class EmkCheckController extends BaseController {
 		org.jeecgframework.core.extend.hqlsearch.HqlGenerateUtil.installHql(cq, emkCheck, request.getParameterMap());
 		try{
 		//自定义追加查询条件
+			TSUser user = (TSUser) request.getSession().getAttribute(ResourceUtil.LOCAL_CLINET_USER);
+			Map roleMap = (Map) request.getSession().getAttribute("ROLE");
+			if(roleMap != null){
+				if(roleMap.get("rolecode").toString().contains("ywy") || roleMap.get("rolecode").toString().contains("ywgdy") || roleMap.get("rolecode").toString().contains("scgdy") || roleMap.get("rolecode").toString().contains("ywjl")){
+					cq.eq("createBy",user.getUserName());
+				}
+			}
 		}catch (Exception e) {
 			throw new BusinessException(e.getMessage());
 		}
@@ -335,7 +342,16 @@ public class EmkCheckController extends BaseController {
 		}
 		return new ModelAndView("com/emk/check/check/emkCheck-update");
 	}
-	
+	@RequestMapping(params = "goUpdate2")
+	public ModelAndView goUpdate2(EmkCheckEntity emkCheck, HttpServletRequest req) {
+		List<Map<String, Object>> codeList = this.systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", new Object[]{"A03"});
+		req.setAttribute("categoryEntityList", codeList);
+		if (StringUtil.isNotEmpty(emkCheck.getId())) {
+			emkCheck = emkCheckService.getEntity(EmkCheckEntity.class, emkCheck.getId());
+			req.setAttribute("emkCheckPage", emkCheck);
+		}
+		return new ModelAndView("com/emk/check/check/emkCheck-update2");
+	}
 	/**
 	 * 导入功能跳转
 	 * 
@@ -530,9 +546,7 @@ public class EmkCheckController extends BaseController {
 					List<Task> task = taskService.createTaskQuery().taskAssignee(id).list();
 					if (task.size() > 0) {
 						Task task1 = (Task)task.get(task.size() - 1);
-						if (task1.getTaskDefinitionKey().equals("htTask")) {
-							taskService.complete(task1.getId(), variables);
-						}
+
 						if (task1.getTaskDefinitionKey().equals("checkTask")) {
 							t.setLeader(user.getRealName());
 							t.setLeadUserId(user.getId());
@@ -557,8 +571,39 @@ public class EmkCheckController extends BaseController {
 								t.setState("0");
 							}
 						}
+
+						if (task1.getTaskDefinitionKey().equals("cyTask")) {
+							t.setCyAdvice(emkCheck.getLeadAdvice());
+							t.setBgUserId(user.getUserName());
+							t.setBger(user.getRealName());
+							taskService.complete(task1.getId(), variables);
+
+						}
+						if (task1.getTaskDefinitionKey().equals("bgTask")) {
+							t.setBgAdvice(emkCheck.getLeadAdvice());
+							if (emkCheck.getIsHg().equals("0")) {
+								variables.put("isHg", emkCheck.getIsHg());
+								taskService.complete(task1.getId(), variables);
+								t.setState("2");
+							} else {
+								List<HistoricTaskInstance> hisTasks = historyService.createHistoricTaskInstanceQuery().taskAssignee(t.getId()).list();
+
+								List<Task> taskList = taskService.createTaskQuery().taskAssignee(t.getId()).list();
+								if (taskList.size() > 0) {
+									Task taskH = (Task)taskList.get(taskList.size() - 1);
+									HistoricTaskInstance historicTaskInstance = hisTasks.get(hisTasks.size() - 2);
+									FlowUtil.turnTransition(taskH.getId(), historicTaskInstance.getTaskDefinitionKey(), variables);
+									Map activityMap = systemService.findOneForJdbc("SELECT GROUP_CONCAT(t0.ID_) ids,GROUP_CONCAT(t0.TASK_ID_) taskids FROM act_hi_actinst t0 WHERE t0.ASSIGNEE_=? AND t0.ACT_ID_=? ORDER BY ID_ ASC", new Object[] { t.getId(), historicTaskInstance.getTaskDefinitionKey() });
+									String[] activitIdArr = activityMap.get("ids").toString().split(",");
+									String[] taskIdArr = activityMap.get("taskids").toString().split(",");
+									systemService.executeSql("UPDATE act_hi_taskinst SET  NAME_=CONCAT('【驳回后】','',NAME_) WHERE ASSIGNEE_>=? AND ID_=?",t.getId(), taskIdArr[1]);
+									systemService.executeSql("delete from act_hi_actinst where ID_>=? and ID_<?", activitIdArr[0], activitIdArr[1] );
+								}
+							}
+						}
+
 					}else {
-						ProcessInstance pi = processEngine.getRuntimeService().startProcessInstanceByKey("ht", "emkContractEntity", variables);
+						ProcessInstance pi = processEngine.getRuntimeService().startProcessInstanceByKey("checkhuo", "emkCheckEntity", variables);
 						task = taskService.createTaskQuery().taskAssignee(id).list();
 						Task task1 = task.get(task.size() - 1);
 						taskService.complete(task1.getId(), variables);
@@ -595,6 +640,9 @@ public class EmkCheckController extends BaseController {
 		sql = "SELECT DATE_FORMAT(t1.START_TIME_, '%Y-%m-%d %H:%i:%s') startTime,t1.*,CASE \n" +
 				" WHEN t1.TASK_DEF_KEY_='checkfactoryTask' THEN t2.create_name \n" +
 				" WHEN t1.TASK_DEF_KEY_='checkTask' THEN t2.leader \n" +
+				" WHEN t1.TASK_DEF_KEY_='cyTask' THEN t2.cyer \n" +
+				" WHEN t1.TASK_DEF_KEY_='bgTask' THEN t2.bger \n" +
+
 				" END workname FROM act_hi_taskinst t1 \n" +
 				" LEFT JOIN emk_check t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='" + map.get("id") + "' ";
 
@@ -611,7 +659,7 @@ public class EmkCheckController extends BaseController {
 		} else {
 			req.setAttribute("stepProcess", Integer.valueOf(0));
 		}
-		emkCheck = emkCheckService.getEntity(EmkQualityCheckEntity.class, emkCheck.getId());
+		emkCheck = emkCheckService.getEntity(EmkCheckEntity.class, emkCheck.getId());
 		req.setAttribute("emkCheck", emkCheck);
 		return new ModelAndView("com/emk/check/check/time");
 

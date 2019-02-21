@@ -153,6 +153,13 @@ public class EmkSizeCheckController extends BaseController {
 		org.jeecgframework.core.extend.hqlsearch.HqlGenerateUtil.installHql(cq, emkSizeCheck, request.getParameterMap());
 		try{
 		//自定义追加查询条件
+			TSUser user = (TSUser) request.getSession().getAttribute(ResourceUtil.LOCAL_CLINET_USER);
+			Map roleMap = (Map) request.getSession().getAttribute("ROLE");
+			if(roleMap != null){
+				if(roleMap.get("rolecode").toString().contains("zjy")){
+					cq.eq("createBy",user.getUserName());
+				}
+			}
 		}catch (Exception e) {
 			throw new BusinessException(e.getMessage());
 		}

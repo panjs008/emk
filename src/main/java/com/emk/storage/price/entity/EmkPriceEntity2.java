@@ -75,18 +75,7 @@ public class EmkPriceEntity2 implements Serializable {
     private String state;
     @Excel(name = "备注")
     private String remark;
-    @Excel(name = "下机克重")
-    private Double xjkz;
-    @Excel(name = "单件所需时间")
-    private String djsxTime;
-    @Excel(name = "单位")
-    private String unit;
-    @Excel(name = "机台日产量")
-    private Integer jtrcl;
-    @Excel(name = "前道损耗率")
-    private Double qdshl;
-    @Excel(name = "后道损耗率")
-    private Double hdshl;
+
     @Excel(name = "报价类型")
     private String bjlx;
     @Excel(name = "报价有效期")
@@ -127,10 +116,16 @@ public class EmkPriceEntity2 implements Serializable {
     private Double sumRg;
     @Excel(name = "染色小计")
     private Double sumRan;
+    @Excel(name = "助剂小计")
+    private Double sumZj;
+    @Excel(name = "管理小计")
+    private Double sumGl;
     @Excel(name = "印花小计")
     private Double sumYin;
     @Excel(name = "总计")
     private Double sumMoney;
+    @Excel(name = "目标价")
+    private Double targetJw;
     @Excel(name = "外币价")
     private Double sumWb;
     @Excel(name = "汇率")
@@ -153,37 +148,28 @@ public class EmkPriceEntity2 implements Serializable {
     @Excel(name = "打样通知单号")
     private String dyNo;
 
-    @Excel(name="审核意见")
-    private String leadAdvice;
-    @Excel(name="是否通过")
-    private String isPass;
-    private String leadUserId;
-    @Excel(name="审核人")
-    private String leader;
+    @Excel(name = "报价说明")
+    private String bjsm;
+    @Excel(name = "测试说明")
+    private String testDesc;
 
-    @Excel(name="技术审核意见")
-    private String jsAdvice;
-    private String jsUserId;
-    @Excel(name="技术审核人")
-    private String jser;
+    @Column(name = "bjsm", nullable = true, length = 20)
+    public String getBjsm() {
+        return bjsm;
+    }
 
-    @Excel(name="采购审核意见")
-    private String cgAdvice;
-    private String cgUserId;
-    @Excel(name="采购审核人")
-    private String cger;
+    public void setBjsm(String bjsm) {
+        this.bjsm = bjsm;
+    }
 
-    @Excel(name="财务审核意见")
-    private String cwAdvice;
-    private String cwUserId;
-    @Excel(name="财务审核人")
-    private String cwer;
+    @Column(name = "test_desc", nullable = true, length = 20)
+    public String getTestDesc() {
+        return testDesc;
+    }
 
-    @Excel(name="价格处理意见")
-    private String jgAdvice;
-    private String jgUserId;
-    @Excel(name="价格审核人")
-    private String jger;
+    public void setTestDesc(String testDesc) {
+        this.testDesc = testDesc;
+    }
 
     @Id
     @GeneratedValue(generator = "paymentableGenerator")
@@ -522,60 +508,6 @@ public class EmkPriceEntity2 implements Serializable {
         this.remark = remark;
     }
 
-    @Column(name = "XJKZ", nullable = true, scale = 2, length = 32)
-    public Double getXjkz() {
-        return this.xjkz;
-    }
-
-    public void setXjkz(Double xjkz) {
-        this.xjkz = xjkz;
-    }
-
-    @Column(name = "DJSX_TIME", nullable = true, length = 32)
-    public String getDjsxTime() {
-        return this.djsxTime;
-    }
-
-    public void setDjsxTime(String djsxTime) {
-        this.djsxTime = djsxTime;
-    }
-
-    @Column(name = "UNIT", nullable = true, length = 32)
-    public String getUnit() {
-        return this.unit;
-    }
-
-    public void setUnit(String unit) {
-        this.unit = unit;
-    }
-
-    @Column(name = "JTRCL", nullable = true, length = 32)
-    public Integer getJtrcl() {
-        return this.jtrcl;
-    }
-
-    public void setJtrcl(Integer jtrcl) {
-        this.jtrcl = jtrcl;
-    }
-
-    @Column(name = "QDSHL", nullable = true, scale = 2, length = 32)
-    public Double getQdshl() {
-        return this.qdshl;
-    }
-
-    public void setQdshl(Double qdshl) {
-        this.qdshl = qdshl;
-    }
-
-    @Column(name = "HDSHL", nullable = true, scale = 2, length = 32)
-    public Double getHdshl() {
-        return this.hdshl;
-    }
-
-    public void setHdshl(Double hdshl) {
-        this.hdshl = hdshl;
-    }
-
     @Column(name = "BJLX", nullable = true, length = 32)
     public String getBjlx() {
         return this.bjlx;
@@ -864,155 +796,30 @@ public class EmkPriceEntity2 implements Serializable {
         this.dyNo = dyNo;
     }
 
-    @Column(name="LEAD_ADVICE", nullable=true, length=256)
-    public String getLeadAdvice()
-    {
-        return this.leadAdvice;
+    @Column(name = "target_jw", nullable = true, length = 32)
+    public Double getTargetJw() {
+        return targetJw;
     }
 
-    public void setLeadAdvice(String leadAdvice)
-    {
-        this.leadAdvice = leadAdvice;
+    public void setTargetJw(Double targetJw) {
+        this.targetJw = targetJw;
     }
 
-    @Column(name="IS_PASS", nullable=true, length=32)
-    public String getIsPass()
-    {
-        return this.isPass;
+    @Column(name = "sum_zj", nullable = true, length = 32)
+    public Double getSumZj() {
+        return sumZj;
     }
 
-    public void setIsPass(String isPass)
-    {
-        this.isPass = isPass;
+    public void setSumZj(Double sumZj) {
+        this.sumZj = sumZj;
     }
 
-    @Column(name="LEAD_USER_ID", nullable=true, length=32)
-    public String getLeadUserId()
-    {
-        return this.leadUserId;
+    @Column(name = "sum_gl", nullable = true, length = 32)
+    public Double getSumGl() {
+        return sumGl;
     }
 
-    public void setLeadUserId(String leadUserId)
-    {
-        this.leadUserId = leadUserId;
-    }
-
-    @Column(name="LEADER", nullable=true, length=32)
-    public String getLeader()
-    {
-        return this.leader;
-    }
-
-    public void setLeader(String leader)
-    {
-        this.leader = leader;
-    }
-
-    @Column(name="js_advice", nullable=true, length=32)
-    public String getJsAdvice() {
-        return jsAdvice;
-    }
-
-    public void setJsAdvice(String jsAdvice) {
-        this.jsAdvice = jsAdvice;
-    }
-
-    @Column(name="js_user_id", nullable=true, length=32)
-    public String getJsUserId() {
-        return jsUserId;
-    }
-
-    public void setJsUserId(String jsUserId) {
-        this.jsUserId = jsUserId;
-    }
-
-    @Column(name="jser", nullable=true, length=32)
-    public String getJser() {
-        return jser;
-    }
-
-    public void setJser(String jser) {
-        this.jser = jser;
-    }
-
-    @Column(name="cg_advice", nullable=true, length=32)
-    public String getCgAdvice() {
-        return cgAdvice;
-    }
-
-    public void setCgAdvice(String cgAdvice) {
-        this.cgAdvice = cgAdvice;
-    }
-
-    @Column(name="cg_user_id", nullable=true, length=32)
-    public String getCgUserId() {
-        return cgUserId;
-    }
-
-    public void setCgUserId(String cgUserId) {
-        this.cgUserId = cgUserId;
-    }
-
-    @Column(name="cger", nullable=true, length=32)
-    public String getCger() {
-        return cger;
-    }
-
-    public void setCger(String cger) {
-        this.cger = cger;
-    }
-
-    @Column(name="cw_advice", nullable=true, length=32)
-    public String getCwAdvice() {
-        return cwAdvice;
-    }
-
-    public void setCwAdvice(String cwAdvice) {
-        this.cwAdvice = cwAdvice;
-    }
-
-    @Column(name="cw_user_id", nullable=true, length=32)
-    public String getCwUserId() {
-        return cwUserId;
-    }
-
-    public void setCwUserId(String cwUserId) {
-        this.cwUserId = cwUserId;
-    }
-
-    @Column(name="cwer", nullable=true, length=32)
-    public String getCwer() {
-        return cwer;
-    }
-
-    public void setCwer(String cwer) {
-        this.cwer = cwer;
-    }
-
-    @Column(name="jg_advice", nullable=true, length=32)
-    public String getJgAdvice() {
-        return jgAdvice;
-    }
-
-    public void setJgAdvice(String jgAdvice) {
-        this.jgAdvice = jgAdvice;
-    }
-
-    @Column(name="jg_user_id", nullable=true, length=32)
-    public String getJgUserId() {
-        return jgUserId;
-    }
-
-    public void setJgUserId(String jgUserId) {
-        this.jgUserId = jgUserId;
-    }
-
-    @Column(name="jger", nullable=true, length=32)
-    public String getJger() {
-        return jger;
-    }
-
-    public void setJger(String jger) {
-        this.jger = jger;
+    public void setSumGl(Double sumGl) {
+        this.sumGl = sumGl;
     }
 }

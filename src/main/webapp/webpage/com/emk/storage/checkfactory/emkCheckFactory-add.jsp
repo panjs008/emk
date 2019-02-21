@@ -18,34 +18,20 @@
 <t:formvalid formid="formobj" dialog="true" usePlugin="password" layout="table" action="emkCheckFactoryController.do?doAdd" tiptype="1">
 	<input id="id" name="id" type="hidden" value="${emkCheckFactoryPage.id }"/>
 	<table style="width: 100%;" cellpadding="0" cellspacing="1" class="formtable">
-
 		<tr>
-
-			<td align="right" style="width: 18%">
+			<td class="value" align="right"  colspan="3">
 				<label class="Validform_label">
-					客户编号:
+					验厂申请编号:
 				</label>
 			</td>
 			<td class="value" style="width: 32%">
-				<input id="cusNum" name="cusNum" readonly type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+			<input id="ycsqbh" name="ycsqbh" value="${emkCheckFactoryPage.ycsqbh }" readonly type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">客户编号</label>
-			</td>
-			<td align="right" style="width: 18%">
-				<label class="Validform_label">
-					客户名称:
-				</label>
-			</td>
-			<td class="value" style="width: 32%">
-				<input id="cusName" name="cusName" readonly type="text" style="width: 150px" class="inputxt"  datatype="*"/>
-				<t:choose  hiddenName="cusNum"  hiddenid="cusNum" url="ymkCustomController.do?select" name="ymkCustomList" width="700px" height="500px"
-						   icon="icon-search" title="选择客户" textname="cusName,businesseDeptName,businesseDeptId,businesser,businesserName,tracer,tracerName,developer,developerName,bz" isclear="true" isInit="true"></t:choose>
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">客户名称</label>
+				<label class="Validform_label" style="display: none;">验厂申请编号</label>
 			</td>
 		</tr>
 		<tr>
-			<td align="right" style="width: 18%">
+			<td class="value" align="right"  colspan="3">
 				<label class="Validform_label">
 					业务部门:
 				</label>
@@ -56,7 +42,9 @@
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">业务部门</label>
 			</td>
-			<td align="right" style="width: 18%">
+		</tr>
+		<tr>
+			<td class="value" align="right"  colspan="3">
 				<label class="Validform_label">
 					业务员:
 				</label>
@@ -72,12 +60,50 @@
 			</td>
 		</tr>
 		<tr>
+			<td align="right" style="width: 18%">
+				<label class="Validform_label">
+					客户名称:
+				</label>
+			</td>
+			<td class="value" style="width: 32%">
+				<input id="cusName" name="cusName" readonly type="text" style="width: 150px" class="inputxt"  datatype="*"/>
+				<t:choose  hiddenName="cusNum"  hiddenid="cusNum" url="ymkCustomController.do?select" name="ymkCustomList" width="700px" height="500px"
+						   icon="icon-search" title="选择客户" textname="cusName,businesseDeptName,businesseDeptId,businesser,businesserName,tracer,tracerName,developer,developerName,bz" isclear="true" isInit="true"></t:choose>
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">客户名称</label>
+			</td>
+
+			<td align="right" style="width: 18%">
+				<label class="Validform_label">
+					客户代码:
+				</label>
+			</td>
+			<td class="value" style="width: 32%">
+				<input id="cusNum" name="cusNum" readonly type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">客户代码</label>
+			</td>
+
+		</tr>
+		<tr>
+			<td align="right">
+				<label class="Validform_label">
+					申请事由:
+				</label>
+			</td>
+			<td class="value" colspan="3">
+				<textarea  id="applyReason" style="width:95%;height:50px" class="inputxt" rows="4" name="applyReason"></textarea>
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">申请事由</label>
+			</td>
+		</tr>
+		<tr>
 			<td align="right">
 				<label class="Validform_label">
 					供应商:
 				</label>
 			</td>
-			<td class="value">
+			<td class="value" colspan="3">
 				<select class="form-control select2" id="gysId"  datatype="*"  >
 					<option value=''>请选择</option>
 				</select>
@@ -86,39 +112,9 @@
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">供应商</label>
 			</td>
-			<td align="right">
-				<label class="Validform_label">
-					供应商类型:
-				</label>
-			</td>
-			<td class="value">
-				<input id="gysType" name="gysType" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">供应商类型</label>
-			</td>
 		</tr>
-		<tr>
-			<td align="right">
-				<label class="Validform_label">
-					申请日期:
-				</label>
-			</td>
-			<td class="value">
-				<input id="kdDate" name="kdDate" value="${kdDate}" readonly onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})"  type="text" style="width: 150px" class="Wdate"  ignore="ignore" />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">申请日期</label>
-			</td>
-			<td align="right">
-				<label class="Validform_label">
-					审核日期:
-				</label>
-			</td>
-			<td class="value">
-				<input id="shDate" name="shDate" readonly  onClick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'kdDate\');}'})" type="text" style="width: 150px" class="Wdate"  ignore="ignore" />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">审核日期</label>
-			</td>
-		</tr>
+
+
 
 		<tr>
 			<td align="right">
@@ -126,18 +122,19 @@
 					工厂名称:
 				</label>
 			</td>
-			<td class="value">
+			<td class="value" colspan="3">
 				<t:dictSelect id="factoryCode" field="factoryCode" typeGroupCode="gongchang" datatype="*" defaultVal="default" hasLabel="false" title="工艺类型"></t:dictSelect>
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">工厂名称</label>
 			</td>
-
+			</tr>
+		<tr>
 			<td align="right">
 				<label class="Validform_label">
 					工厂地址:
 				</label>
 			</td>
-			<td class="value">
+			<td class="value" colspan="3">
 				<input id="factoryAddress" name="factoryAddress" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">工厂地址</label>
@@ -149,32 +146,34 @@
 					联系人:
 				</label>
 			</td>
-			<td class="value">
+			<td class="value" colspan="3">
 				<input id="relationer" name="relationer"  type="text" style="width: 150px"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">联系人</label>
 			</td>
+			</tr>
+		<tr>
 			<td align="right">
 				<label class="Validform_label">
-					审核类型:
+					电话:
 				</label>
 			</td>
-			<td class="value">
-				<input id="checkType" name="checkType"  type="text" style="width: 150px"  ignore="ignore" />
+			<td class="value" colspan="3">
+				<input id="telphone" name="telphone"  type="text" style="width: 150px"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">审核类型</label>
+				<label class="Validform_label" style="display: none;">电话</label>
 			</td>
 		</tr>
 		<tr>
 			<td align="right">
 				<label class="Validform_label">
-					验厂内容:
+					审核类型:
 				</label>
 			</td>
 			<td class="value" colspan="3">
-				<textarea  id="checkContent" style="width:95%;height:70px" class="inputxt" rows="5" name="checkContent"></textarea>
+				<input id="checkType" name="checkType"  type="text" style="width: 150px"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">验厂内容</label>
+				<label class="Validform_label" style="display: none;">审核类型</label>
 			</td>
 		</tr>
 		<tr>
@@ -184,11 +183,36 @@
 				</label>
 			</td>
 			<td class="value" colspan="3">
-				<textarea  id="brand" style="width:95%;height:70px" class="inputxt" rows="5" name="brand"></textarea>
+				<textarea  id="brand" style="width:95%;height:60px" class="inputxt" rows="4" name="brand"></textarea>
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">验厂标准</label>
 			</td>
 		</tr>
+		<%--<tr>
+			<td align="right">
+				<label class="Validform_label">
+					申请日期:
+				</label>
+			</td>
+			<td class="value" colspan="3">
+				<input id="kdDate" name="kdDate" value="${kdDate}" readonly onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})"  type="text" style="width: 150px" class="Wdate"  ignore="ignore" />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">申请日期</label>
+			</td>
+		</tr>--%>
+			<tr>
+                        <td align="right">
+                            <label class="Validform_label">
+								申请审核日期:
+                            </label>
+                        </td>
+                        <td class="value">
+                            <input id="shDate" name="shDate" readonly  onClick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'kdDate\');}'})" type="text" style="width: 150px" class="Wdate"  ignore="ignore" />
+                            <span class="Validform_checktip"></span>
+                            <label class="Validform_label" style="display: none;">申请审核日期</label>
+                        </td>
+                    </tr>
+
 	</table>
 </t:formvalid>
 </body>

@@ -76,9 +76,6 @@ public class EmkEnquiryServiceImpl
         map.put("custom_sample", t.getCustomSample());
         map.put("sample_no", t.getSampleNo());
         map.put("sample_no_desc", t.getSampleNoDesc());
-        map.put("sum_total", t.getSumTotal());
-        map.put("bz", t.getBz());
-        map.put("sum_money", t.getSumMoney());
         map.put("is_print_sample", t.getIsPrintSample());
         map.put("is_get_sample", t.getIsGetSample());
         map.put("is_have_old", t.getIsHaveOld());
@@ -117,9 +114,6 @@ public class EmkEnquiryServiceImpl
         sql = sql.replace("#{custom_sample}", String.valueOf(t.getCustomSample()));
         sql = sql.replace("#{sample_no}", String.valueOf(t.getSampleNo()));
         sql = sql.replace("#{sample_no_desc}", String.valueOf(t.getSampleNoDesc()));
-        sql = sql.replace("#{sum_total}", String.valueOf(t.getSumTotal()));
-        sql = sql.replace("#{bz}", String.valueOf(t.getBz()));
-        sql = sql.replace("#{sum_money}", String.valueOf(t.getSumMoney()));
         sql = sql.replace("#{is_print_sample}", String.valueOf(t.getIsPrintSample()));
         sql = sql.replace("#{is_get_sample}", String.valueOf(t.getIsGetSample()));
         sql = sql.replace("#{is_have_old}", String.valueOf(t.getIsHaveOld()));

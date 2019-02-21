@@ -81,7 +81,13 @@ public class EmkReceptionController extends BaseController {
     @RequestMapping(params = {"datagrid"})
     public void datagrid(EmkReceptionEntity emkReception, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid) {
         CriteriaQuery cq = new CriteriaQuery(EmkReceptionEntity.class, dataGrid);
-
+        TSUser user = (TSUser) request.getSession().getAttribute(ResourceUtil.LOCAL_CLINET_USER);
+        Map roleMap = (Map) request.getSession().getAttribute("ROLE");
+        if(roleMap != null){
+            if(roleMap.get("rolecode").toString().contains("ywy") || roleMap.get("rolecode").toString().contains("ywgdy")|| roleMap.get("rolecode").toString().contains("scgdy")){
+                cq.eq("createBy",user.getUserName());
+            }
+        }
         HqlGenerateUtil.installHql(cq, emkReception, request.getParameterMap());
 
 
@@ -143,8 +149,9 @@ public class EmkReceptionController extends BaseController {
             Map map = ParameterUtil.getParamMaps(req.getParameterMap());
             emkReception.setOutUserIds(map.get("userName").toString());
             emkReception.setOutUserNames(map.get("realName").toString());
-            Map orderNum = this.systemService.findOneForJdbc("select count(0)+1 orderNum from emk_reception where sys_org_code=?", new Object[]{user.getCurrentDepart().getOrgCode()});
-            emkReception.setRecevieNum("JD" + DateUtils.format(new Date(), "yyMMdd") + String.format("%03d", new Object[]{Integer.valueOf(Integer.parseInt(orderNum.get("orderNum").toString()))}));
+            Map orderNum = this.systemService.findOneForJdbc("select CAST(ifnull(max(right(RECEVIE_NUM, 3)),0)+1 AS signed) orderNum from emk_reception");
+            //Map orderNum = this.systemService.findOneForJdbc("select count(0)+1 orderNum from emk_reception where sys_org_code=?", new Object[]{user.getCurrentDepart().getOrgCode()});
+            emkReception.setRecevieNum("JD" + DateUtils.format(new Date(), "yyMMdd") + String.format("%03d", Integer.parseInt(orderNum.get("orderNum").toString())));
             this.emkReceptionService.save(emkReception);
             this.systemService.addLog(message, Globals.Log_Type_INSERT, Globals.Log_Leavel_INFO);
         } catch (Exception e) {

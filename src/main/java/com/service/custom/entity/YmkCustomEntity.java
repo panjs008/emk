@@ -21,10 +21,10 @@ public class YmkCustomEntity implements Serializable {
     private String sysOrgCode;
     @Excel(name = "省")
     private String shengFen;
-    @Excel(name = "城市")
+    /*@Excel(name = "城市")
     private String chengShi;
     @Excel(name = "片区")
-    private String pianQu;
+    private String pianQu;*/
     @Excel(name = "客户编码", width = 15)
     private String cusNum;
     @Excel(name = "客户名称", width = 15)
@@ -33,35 +33,18 @@ public class YmkCustomEntity implements Serializable {
     private String cusCode;
     @Excel(name = "客户类型", width = 15)
     private String cusType;
+    @Excel(name = "客户类型名称", width = 15)
+    private String cusTypeName;
     @Excel(name = "客户来源", width = 15)
     private String cusFrom;
     @Excel(name = "客户地址", width = 15)
     private String address;
     @Excel(name = "联系人电话", width = 15)
     private String telphone;
-    @Excel(name = "办公传真", width = 15)
-    private String fax;
-    @Excel(name = "公司网址", width = 15)
-    private String companyNet;
     @Excel(name = "备注", width = 15)
     private String remark;
-    private String sysCompanyCode;
-    @Excel(name = "经营年限")
-    private String manageYear;
-    @Excel(name = "行业")
-    private String hangye;
-    @Excel(name = "注册地址")
-    private String regAddress;
-    @Excel(name = "员工人数")
-    private String people;
-    @Excel(name = "营业执照")
-    private String manageImage;
-    @Excel(name = "营业执照URL")
-    private String manageImageUrl;
-    @Excel(name = "主营业务")
-    private String mainContent;
     @Excel(name = "状态")
-    private String status;
+    private String status;              //0 激活、1 暂停、2 禁止
     @Excel(name = "办公电话", width = 15)
     private String workphone;
     private String businesseDeptName;
@@ -77,48 +60,76 @@ public class YmkCustomEntity implements Serializable {
     private String developerName;
     @Excel(name = "业务类型", width = 15)
     private String businessType;
-    @Excel(name = "实际业务量", width = 15)
-    private String ywl;
-    @Excel(name = "单位", width = 15)
-    private String unit;
-    @Excel(name = "实际业务金额", width = 15)
-    private String ywMoney;
-    @Excel(name = "币种", width = 15)
-    private String bz;
+    @Excel(name = "主营产品", width = 15)
+    private String mainContent;
     @Excel(name = "潜在业务量/年", width = 15)
     private String qzywl;
-    @Excel(name = "单位", width = 15)
-    private String qzunit;
-    @Excel(name = "潜在业务金额/年", width = 15)
-    private String qzywMoney;
-    @Excel(name = "币种", width = 15)
-    private String qzbz;
     @Excel(name = "建立商业关系时间", width = 15)
     private String relationDate;
     @Excel(name = "国家", width = 15)
     private String guoJia;
     @Excel(name = "主联系人", width = 15)
     private String zlxr;
-    @Excel(name = "业务联系人一", width = 15)
-    private String ywlxr1;
     @Excel(name = "业务联系人二", width = 15)
     private String ywlxr2;
+    @Excel(name = "业务联系人二邮箱", width = 15)
+    private String ywlxr2Email;
+    @Excel(name = "业务联系人二电话", width = 15)
+    private String ywlxr2Telphone;
     @Excel(name = "业务联系人三", width = 15)
     private String ywlxr3;
-    @Excel(name = "试身联系人", width = 15)
-    private String sslxr;
+    @Excel(name = "业务联系人三邮箱", width = 15)
+    private String ywlxr3Email;
+    @Excel(name = "业务联系人三电话", width = 15)
+    private String ywlxr3Telphone;
+    @Excel(name = "业务联系人四", width = 15)
+    private String ywlxr4;
+    @Excel(name = "业务联系人四邮箱", width = 15)
+    private String ywlxr4Email;
+    @Excel(name = "业务联系人四电话", width = 15)
+    private String ywlxr4Telphone;
+    @Excel(name = "业务联系人五", width = 15)
+    private String ywlxr5;
+    @Excel(name = "业务联系人五邮箱", width = 15)
+    private String ywlxr5Email;
+    @Excel(name = "业务联系人五电话", width = 15)
+    private String ywlxr5Telphone;
     @Excel(name = "包装联系人", width = 15)
     private String bzlxr;
+    @Excel(name = "包装联系人邮箱", width = 15)
+    private String bzlxrEmail;
+    @Excel(name = "包装联系人电话", width = 15)
+    private String bzlxrTelphone;
     @Excel(name = "测试联系人", width = 15)
     private String cslxr;
+    @Excel(name = "测试联系人邮箱", width = 15)
+    private String cslxrEmail;
+    @Excel(name = "测试联系人电话", width = 15)
+    private String cslxrTelphone;
     @Excel(name = "质量联系人", width = 15)
     private String zllxr;
+    @Excel(name = "质量联系人邮箱", width = 15)
+    private String zllxrEmail;
+    @Excel(name = "质量联系人电话", width = 15)
+    private String zllxrTelphone;
     @Excel(name = "验厂联系人", width = 15)
     private String yclxr;
+    @Excel(name = "验厂联系人邮箱", width = 15)
+    private String yclxrEmail;
+    @Excel(name = "验厂联系人电话", width = 15)
+    private String yclxrTelphone;
     @Excel(name = "船务联系人", width = 15)
     private String cwlxr;
+    @Excel(name = "船务联系人邮箱", width = 15)
+    private String cwlxrEmail;
+    @Excel(name = "船务联系人电话", width = 15)
+    private String cwlxrTelphone;
     @Excel(name = "法律联系人", width = 15)
     private String fllxr;
+    @Excel(name = "法律联系人邮箱", width = 15)
+    private String fllxrEmail;
+    @Excel(name = "法律联系人电话", width = 15)
+    private String fllxrTelphone;
     @Excel(name = "邮箱", width = 15)
     private String email;
     @Excel(name = "档案编号", width = 15)
@@ -133,7 +144,7 @@ public class YmkCustomEntity implements Serializable {
         this.shengFen = shengFen;
     }
 
-    @Column(name = "cheng_shi", nullable = true, length = 50)
+   /* @Column(name = "cheng_shi", nullable = true, length = 50)
     public String getChengShi() {
         return this.chengShi;
     }
@@ -149,70 +160,9 @@ public class YmkCustomEntity implements Serializable {
 
     public void setPianQu(String pianQu) {
         this.pianQu = pianQu;
-    }
+    }*/
 
-    @Column(name = "manage_year", nullable = true, length = 50)
-    public String getManageYear() {
-        return this.manageYear;
-    }
 
-    public void setManageYear(String manageYear) {
-        this.manageYear = manageYear;
-    }
-
-    @Column(name = "hangye", nullable = true, length = 50)
-    public String getHangye() {
-        return this.hangye;
-    }
-
-    public void setHangye(String hangye) {
-        this.hangye = hangye;
-    }
-
-    @Column(name = "reg_address", nullable = true, length = 50)
-    public String getRegAddress() {
-        return this.regAddress;
-    }
-
-    public void setRegAddress(String regAddress) {
-        this.regAddress = regAddress;
-    }
-
-    @Column(name = "people", nullable = true, length = 50)
-    public String getPeople() {
-        return this.people;
-    }
-
-    public void setPeople(String people) {
-        this.people = people;
-    }
-
-    @Column(name = "manage_image", nullable = true, length = 50)
-    public String getManageImage() {
-        return this.manageImage;
-    }
-
-    public void setManageImage(String manageImage) {
-        this.manageImage = manageImage;
-    }
-
-    @Column(name = "manage_image_url", nullable = true, length = 50)
-    public String getManageImageUrl() {
-        return this.manageImageUrl;
-    }
-
-    public void setManageImageUrl(String manageImageUrl) {
-        this.manageImageUrl = manageImageUrl;
-    }
-
-    @Column(name = "main_content", nullable = true, length = 50)
-    public String getMainContent() {
-        return this.mainContent;
-    }
-
-    public void setMainContent(String mainContent) {
-        this.mainContent = mainContent;
-    }
 
     @Column(name = "status", nullable = true, length = 50)
     public String getStatus() {
@@ -343,24 +293,6 @@ public class YmkCustomEntity implements Serializable {
         this.telphone = telphone;
     }
 
-    @Column(name = "FAX", nullable = true, length = 32)
-    public String getFax() {
-        return this.fax;
-    }
-
-    public void setFax(String fax) {
-        this.fax = fax;
-    }
-
-    @Column(name = "COMPANY_NET", nullable = true, length = 32)
-    public String getCompanyNet() {
-        return this.companyNet;
-    }
-
-    public void setCompanyNet(String companyNet) {
-        this.companyNet = companyNet;
-    }
-
     @Column(name = "REMARK", nullable = true, length = 32)
     public String getRemark() {
         return this.remark;
@@ -368,15 +300,6 @@ public class YmkCustomEntity implements Serializable {
 
     public void setRemark(String remark) {
         this.remark = remark;
-    }
-
-    @Column(name = "SYS_COMPANY_CODE", nullable = true, length = 32)
-    public String getSysCompanyCode() {
-        return this.sysCompanyCode;
-    }
-
-    public void setSysCompanyCode(String sysCompanyCode) {
-        this.sysCompanyCode = sysCompanyCode;
     }
 
     @Column(name = "businesse_dept_name", nullable = true, length = 32)
@@ -460,41 +383,6 @@ public class YmkCustomEntity implements Serializable {
         this.businessType = businessType;
     }
 
-    @Column(name = "ywl", nullable = true, length = 32)
-    public String getYwl() {
-        return this.ywl;
-    }
-
-    public void setYwl(String ywl) {
-        this.ywl = ywl;
-    }
-
-    @Column(name = "unit", nullable = true, length = 32)
-    public String getUnit() {
-        return this.unit;
-    }
-
-    public void setUnit(String unit) {
-        this.unit = unit;
-    }
-
-    @Column(name = "yw_money", nullable = true, length = 32)
-    public String getYwMoney() {
-        return this.ywMoney;
-    }
-
-    public void setYwMoney(String ywMoney) {
-        this.ywMoney = ywMoney;
-    }
-
-    @Column(name = "bz", nullable = true, length = 32)
-    public String getBz() {
-        return this.bz;
-    }
-
-    public void setBz(String bz) {
-        this.bz = bz;
-    }
 
     @Column(name = "qzywl", nullable = true, length = 32)
     public String getQzywl() {
@@ -505,32 +393,6 @@ public class YmkCustomEntity implements Serializable {
         this.qzywl = qzywl;
     }
 
-    @Column(name = "qzunit", nullable = true, length = 32)
-    public String getQzunit() {
-        return this.qzunit;
-    }
-
-    public void setQzunit(String qzunit) {
-        this.qzunit = qzunit;
-    }
-
-    @Column(name = "qzyw_money", nullable = true, length = 32)
-    public String getQzywMoney() {
-        return this.qzywMoney;
-    }
-
-    public void setQzywMoney(String qzywMoney) {
-        this.qzywMoney = qzywMoney;
-    }
-
-    @Column(name = "qzbz", nullable = true, length = 32)
-    public String getQzbz() {
-        return this.qzbz;
-    }
-
-    public void setQzbz(String qzbz) {
-        this.qzbz = qzbz;
-    }
 
     @Column(name = "relation_date", nullable = true, length = 32)
     public String getRelationDate() {
@@ -559,15 +421,6 @@ public class YmkCustomEntity implements Serializable {
         this.zlxr = zlxr;
     }
 
-    @Column(name = "ywlxr1", nullable = true, length = 32)
-    public String getYwlxr1() {
-        return this.ywlxr1;
-    }
-
-    public void setYwlxr1(String ywlxr1) {
-        this.ywlxr1 = ywlxr1;
-    }
-
     @Column(name = "ywlxr2", nullable = true, length = 32)
     public String getYwlxr2() {
         return this.ywlxr2;
@@ -584,15 +437,6 @@ public class YmkCustomEntity implements Serializable {
 
     public void setYwlxr3(String ywlxr3) {
         this.ywlxr3 = ywlxr3;
-    }
-
-    @Column(name = "sslxr", nullable = true, length = 32)
-    public String getSslxr() {
-        return this.sslxr;
-    }
-
-    public void setSslxr(String sslxr) {
-        this.sslxr = sslxr;
     }
 
     @Column(name = "bzlxr", nullable = true, length = 32)
@@ -665,5 +509,221 @@ public class YmkCustomEntity implements Serializable {
 
     public void setDaanNum(String daanNum) {
         this.daanNum = daanNum;
+    }
+
+    @Column(name = "ywlxr4", nullable = true, length = 32)
+    public String getYwlxr4() {
+        return ywlxr4;
+    }
+
+    public void setYwlxr4(String ywlxr4) {
+        this.ywlxr4 = ywlxr4;
+    }
+
+    @Column(name = "ywlxr5", nullable = true, length = 32)
+    public String getYwlxr5() {
+        return ywlxr5;
+    }
+
+    public void setYwlxr5(String ywlxr5) {
+        this.ywlxr5 = ywlxr5;
+    }
+
+    @Column(name = "bzlxr_email", nullable = true, length = 32)
+    public String getBzlxrEmail() {
+        return bzlxrEmail;
+    }
+
+    public void setBzlxrEmail(String bzlxrEmail) {
+        this.bzlxrEmail = bzlxrEmail;
+    }
+
+    @Column(name = "bzlxr_telphone", nullable = true, length = 32)
+    public String getBzlxrTelphone() {
+        return bzlxrTelphone;
+    }
+
+    public void setBzlxrTelphone(String bzlxrTelphone) {
+        this.bzlxrTelphone = bzlxrTelphone;
+    }
+
+    @Column(name = "cslxr_email", nullable = true, length = 32)
+    public String getCslxrEmail() {
+        return cslxrEmail;
+    }
+
+    public void setCslxrEmail(String cslxrEmail) {
+        this.cslxrEmail = cslxrEmail;
+    }
+
+    @Column(name = "cslxr_telphone", nullable = true, length = 32)
+    public String getCslxrTelphone() {
+        return cslxrTelphone;
+    }
+
+    public void setCslxrTelphone(String cslxrTelphone) {
+        this.cslxrTelphone = cslxrTelphone;
+    }
+
+    @Column(name = "zllxr_email", nullable = true, length = 32)
+    public String getZllxrEmail() {
+        return zllxrEmail;
+    }
+
+    public void setZllxrEmail(String zllxrEmail) {
+        this.zllxrEmail = zllxrEmail;
+    }
+
+    @Column(name = "zllxr_telphone", nullable = true, length = 32)
+    public String getZllxrTelphone() {
+        return zllxrTelphone;
+    }
+
+    public void setZllxrTelphone(String zllxrTelphone) {
+        this.zllxrTelphone = zllxrTelphone;
+    }
+
+    @Column(name = "yclxr_email", nullable = true, length = 32)
+    public String getYclxrEmail() {
+        return yclxrEmail;
+    }
+
+    public void setYclxrEmail(String yclxrEmail) {
+        this.yclxrEmail = yclxrEmail;
+    }
+
+    @Column(name = "yclxr_telphone", nullable = true, length = 32)
+    public String getYclxrTelphone() {
+        return yclxrTelphone;
+    }
+
+    public void setYclxrTelphone(String yclxrTelphone) {
+        this.yclxrTelphone = yclxrTelphone;
+    }
+
+    @Column(name = "cwlxr_email", nullable = true, length = 32)
+    public String getCwlxrEmail() {
+        return cwlxrEmail;
+    }
+
+    public void setCwlxrEmail(String cwlxrEmail) {
+        this.cwlxrEmail = cwlxrEmail;
+    }
+
+    @Column(name = "cwlxr_telphone", nullable = true, length = 32)
+    public String getCwlxrTelphone() {
+        return cwlxrTelphone;
+    }
+
+    public void setCwlxrTelphone(String cwlxrTelphone) {
+        this.cwlxrTelphone = cwlxrTelphone;
+    }
+
+    @Column(name = "fllxr_email", nullable = true, length = 32)
+    public String getFllxrEmail() {
+        return fllxrEmail;
+    }
+
+    public void setFllxrEmail(String fllxrEmail) {
+        this.fllxrEmail = fllxrEmail;
+    }
+
+    @Column(name = "fllxr_telphone", nullable = true, length = 32)
+    public String getFllxrTelphone() {
+        return fllxrTelphone;
+    }
+
+    public void setFllxrTelphone(String fllxrTelphone) {
+        this.fllxrTelphone = fllxrTelphone;
+    }
+
+    @Column(name = "cus_type_name", nullable = true, length = 32)
+    public String getCusTypeName() {
+        return cusTypeName;
+    }
+
+    public void setCusTypeName(String cusTypeName) {
+        this.cusTypeName = cusTypeName;
+    }
+
+    @Column(name = "main_content", nullable = true, length = 32)
+    public String getMainContent() {
+        return mainContent;
+    }
+
+    public void setMainContent(String mainContent) {
+        this.mainContent = mainContent;
+    }
+
+    @Column(name = "ywlxr2_email", nullable = true, length = 32)
+    public String getYwlxr2Email() {
+        return ywlxr2Email;
+    }
+
+    public void setYwlxr2Email(String ywlxr2Email) {
+        this.ywlxr2Email = ywlxr2Email;
+    }
+
+    @Column(name = "ywlxr2_telphone", nullable = true, length = 32)
+    public String getYwlxr2Telphone() {
+        return ywlxr2Telphone;
+    }
+
+    public void setYwlxr2Telphone(String ywlxr2Telphone) {
+        this.ywlxr2Telphone = ywlxr2Telphone;
+    }
+
+    @Column(name = "ywlxr3_email", nullable = true, length = 32)
+    public String getYwlxr3Email() {
+        return ywlxr3Email;
+    }
+
+    public void setYwlxr3Email(String ywlxr3Email) {
+        this.ywlxr3Email = ywlxr3Email;
+    }
+
+    @Column(name = "ywlxr3_telphone", nullable = true, length = 32)
+    public String getYwlxr3Telphone() {
+        return ywlxr3Telphone;
+    }
+
+    public void setYwlxr3Telphone(String ywlxr3Telphone) {
+        this.ywlxr3Telphone = ywlxr3Telphone;
+    }
+
+    @Column(name = "ywlxr4_email", nullable = true, length = 32)
+    public String getYwlxr4Email() {
+        return ywlxr4Email;
+    }
+
+    public void setYwlxr4Email(String ywlxr4Email) {
+        this.ywlxr4Email = ywlxr4Email;
+    }
+
+    @Column(name = "ywlxr4_telphone", nullable = true, length = 32)
+    public String getYwlxr4Telphone() {
+        return ywlxr4Telphone;
+    }
+
+    public void setYwlxr4Telphone(String ywlxr4Telphone) {
+        this.ywlxr4Telphone = ywlxr4Telphone;
+    }
+
+    @Column(name = "ywlxr5_email", nullable = true, length = 32)
+    public String getYwlxr5Email() {
+        return ywlxr5Email;
+    }
+
+    public void setYwlxr5Email(String ywlxr5Email) {
+        this.ywlxr5Email = ywlxr5Email;
+    }
+
+    @Column(name = "ywlxr5_telphone", nullable = true, length = 32)
+    public String getYwlxr5Telphone() {
+        return ywlxr5Telphone;
+    }
+
+    public void setYwlxr5Telphone(String ywlxr5Telphone) {
+        this.ywlxr5Telphone = ywlxr5Telphone;
     }
 }

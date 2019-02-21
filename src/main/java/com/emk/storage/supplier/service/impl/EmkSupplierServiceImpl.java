@@ -66,8 +66,6 @@ public class EmkSupplierServiceImpl
         map.put("supplier", t.getSupplier());
         map.put("supplier_code", t.getSupplierCode());
         map.put("supplier_type", t.getSupplierType());
-        map.put("licence", t.getLicence());
-        map.put("limit_date", t.getLimitDate());
         map.put("address", t.getAddress());
         map.put("product_type", t.getProductType());
         map.put("taxpayer_num", t.getTaxpayerNum());
@@ -90,8 +88,6 @@ public class EmkSupplierServiceImpl
         sql = sql.replace("#{supplier}", String.valueOf(t.getSupplier()));
         sql = sql.replace("#{supplier_code}", String.valueOf(t.getSupplierCode()));
         sql = sql.replace("#{supplier_type}", String.valueOf(t.getSupplierType()));
-        sql = sql.replace("#{licence}", String.valueOf(t.getLicence()));
-        sql = sql.replace("#{limit_date}", String.valueOf(t.getLimitDate()));
         sql = sql.replace("#{address}", String.valueOf(t.getAddress()));
         sql = sql.replace("#{product_type}", String.valueOf(t.getProductType()));
         sql = sql.replace("#{taxpayer_num}", String.valueOf(t.getTaxpayerNum()));

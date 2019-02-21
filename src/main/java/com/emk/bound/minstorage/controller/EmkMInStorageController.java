@@ -157,7 +157,7 @@ public class EmkMInStorageController extends BaseController {
 		return new ModelAndView("com/emk/bound/minstorage/emkMInStorageList3");
 	}
 
-	@RequestMapping(params={"emkMInStorageDetailList"})
+	@RequestMapping(params="emkMInStorageDetailList")
 	public ModelAndView rkglMxList(HttpServletRequest request) {
 		Map map = ParameterUtil.getParamMaps(request.getParameterMap());
 		if ((map.get("inStorageId") != null) && (!map.get("inStorageId").equals(""))){
@@ -183,6 +183,13 @@ public class EmkMInStorageController extends BaseController {
 		org.jeecgframework.core.extend.hqlsearch.HqlGenerateUtil.installHql(cq, emkMInStorage, request.getParameterMap());
 		try{
 		//自定义追加查询条件
+			TSUser user = (TSUser) request.getSession().getAttribute(ResourceUtil.LOCAL_CLINET_USER);
+			Map roleMap = (Map) request.getSession().getAttribute("ROLE");
+			if(roleMap != null){
+				if(roleMap.get("rolecode").toString().contains("cgy") || roleMap.get("rolecode").toString().contains("scgdy")){
+					cq.eq("createBy",user.getUserName());
+				}
+			}
 		}catch (Exception e) {
 			throw new BusinessException(e.getMessage());
 		}
@@ -627,6 +634,7 @@ public class EmkMInStorageController extends BaseController {
 						}else if (task1.getTaskDefinitionKey().equals("rkTask")) {
 							t.setRkAdvice(emkMInStorageEntity.getLeadAdvice());
 							EmkStorageLogEntity storageLogEntity = new EmkStorageLogEntity();
+							EmkProductEntity productEntity = null;
 							List<EmkMInStorageDetailEntity> inStorageDetailEntityList = systemService.findHql("from EmkMInStorageDetailEntity where inStorageId=?",t.getId());
 							for(EmkMInStorageDetailEntity inStorageDetailEntity : inStorageDetailEntityList){
 								//Map stroageMap = systemService.findOneForJdbc("select id,IFNULL(total,0) total from emk_storage where pro_id=?",user.getCurrentDepart().getOrgCode(),inStorageDetailEntity.getProId(),inStorageDetailEntity.getStorageSetId(),inStorageDetailEntity.getPositionId());
@@ -637,6 +645,12 @@ public class EmkMInStorageController extends BaseController {
 								storageLogEntity.setRkNo("0");
 								if(storageEntity == null){
 									storageEntity = new EmkStorageEntity();
+									productEntity = systemService.findUniqueByProperty(EmkProductEntity.class,"proNum",inStorageDetailEntity.getProNum());
+									if(productEntity != null){
+										storageEntity.setProType(productEntity.getProType());
+										storageEntity.setProTypeName(productEntity.getProTypeName());
+										storageEntity.setRemark(productEntity.getType());
+									}
 									storageEntity.setProZnName(inStorageDetailEntity.getProZnName());
 									storageEntity.setProNum(inStorageDetailEntity.getProNum());
 									storageEntity.setTotal(inStorageDetailEntity.getActualTotal());

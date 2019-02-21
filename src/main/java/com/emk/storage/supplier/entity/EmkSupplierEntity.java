@@ -26,10 +26,6 @@ public class EmkSupplierEntity
     private String supplierCode;
     @Excel(name = "供应商类型")
     private String supplierType;
-    @Excel(name = "营业执照号")
-    private String licence;
-    @Excel(name = "有效期")
-    private String limitDate;
     @Excel(name = "地址")
     private String address;
     @Excel(name = "产品类型")
@@ -44,12 +40,27 @@ public class EmkSupplierEntity
     private String telphone;
     @Excel(name = "法定代表人")
     private String legaler;
+    @Excel(name = "法定代表人电话")
+    private String legalerTelphone;
+    @Excel(name = "法定代表人邮箱")
+    private String legalerEmail;
     @Excel(name = "联系人")
     private String contacter;
+    @Excel(name = "联系人电话")
+    private String contacterTelphone;
+    @Excel(name = "联系人邮箱")
+    private String contacterEmail;
     @Excel(name = "财务联系人")
     private String cwContacter;
-    @Excel(name = "营业执照URL")
+    @Excel(name = "财务联系人电话")
+    private String cwContacterTelphone;
+    @Excel(name = "财务联系人邮箱")
+    private String cwContacterEmail;
     private String licenceUrl;
+    private String licenceName;
+
+    private String factoryInfoUrl;
+    private String factoryInfoName;
 
     @Id
     @GeneratedValue(generator = "paymentableGenerator")
@@ -124,24 +135,6 @@ public class EmkSupplierEntity
 
     public void setSupplierType(String supplierType) {
         this.supplierType = supplierType;
-    }
-
-    @Column(name = "LICENCE", nullable = true, length = 32)
-    public String getLicence() {
-        return this.licence;
-    }
-
-    public void setLicence(String licence) {
-        this.licence = licence;
-    }
-
-    @Column(name = "LIMIT_DATE", nullable = true, length = 32)
-    public String getLimitDate() {
-        return this.limitDate;
-    }
-
-    public void setLimitDate(String limitDate) {
-        this.limitDate = limitDate;
     }
 
     @Column(name = "ADDRESS", nullable = true, length = 256)
@@ -232,5 +225,88 @@ public class EmkSupplierEntity
 
     public void setLicenceUrl(String licenceUrl) {
         this.licenceUrl = licenceUrl;
+    }
+
+    @Column(name = "legaler_telphone", nullable = true, length = 256)
+    public String getLegalerTelphone() {
+        return legalerTelphone;
+    }
+
+    public void setLegalerTelphone(String legalerTelphone) {
+        this.legalerTelphone = legalerTelphone;
+    }
+
+    @Column(name = "legaler_email", nullable = true, length = 256)
+    public String getLegalerEmail() {
+        return legalerEmail;
+    }
+
+    public void setLegalerEmail(String legalerEmail) {
+        this.legalerEmail = legalerEmail;
+    }
+
+    @Column(name = "contacter_telphone", nullable = true, length = 256)
+    public String getContacterTelphone() {
+        return contacterTelphone;
+    }
+
+    public void setContacterTelphone(String contacterTelphone) {
+        this.contacterTelphone = contacterTelphone;
+    }
+
+    @Column(name = "contacter_email", nullable = true, length = 256)
+    public String getContacterEmail() {
+        return contacterEmail;
+    }
+
+    public void setContacterEmail(String contacterEmail) {
+        this.contacterEmail = contacterEmail;
+    }
+
+    @Column(name = "cw_contacter_telphone", nullable = true, length = 256)
+    public String getCwContacterTelphone() {
+        return cwContacterTelphone;
+    }
+
+    public void setCwContacterTelphone(String cwContacterTelphone) {
+        this.cwContacterTelphone = cwContacterTelphone;
+    }
+
+    @Column(name = "cw_contacter_email", nullable = true, length = 256)
+    public String getCwContacterEmail() {
+        return cwContacterEmail;
+    }
+
+    public void setCwContacterEmail(String cwContacterEmail) {
+        this.cwContacterEmail = cwContacterEmail;
+    }
+
+    @Column(name = "factory_info_url", nullable = true, length = 256)
+    public String getFactoryInfoUrl() {
+        return factoryInfoUrl;
+    }
+
+    public void setFactoryInfoUrl(String factoryInfoUrl) {
+        this.factoryInfoUrl = factoryInfoUrl;
+    }
+
+
+    @Column(name = "licence_name", nullable = true, length = 256)
+    public String getLicenceName() {
+        return licenceName;
+    }
+
+    public void setLicenceName(String licenceName) {
+        this.licenceName = licenceName;
+    }
+
+
+    @Column(name = "factory_info_name", nullable = true, length = 256)
+    public String getFactoryInfoName() {
+        return factoryInfoName;
+    }
+
+    public void setFactoryInfoName(String factoryInfoName) {
+        this.factoryInfoName = factoryInfoName;
     }
 }

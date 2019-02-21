@@ -159,7 +159,7 @@ public class EmkMOutStorageController extends BaseController {
 		return new ModelAndView("com/emk/bound/moutstorage/emkMOutStorageList3");
 	}
 
-	@RequestMapping(params={"emkMOutStorageDetailList"})
+	@RequestMapping(params="emkMOutStorageDetailList")
 	public ModelAndView rkglMxList(HttpServletRequest request) {
 		Map map = ParameterUtil.getParamMaps(request.getParameterMap());
 		if ((map.get("inStorageId") != null) && (!map.get("inStorageId").equals(""))){
@@ -184,6 +184,13 @@ public class EmkMOutStorageController extends BaseController {
 		//查询条件组装器
 		org.jeecgframework.core.extend.hqlsearch.HqlGenerateUtil.installHql(cq, emkMOutStorage, request.getParameterMap());
 		try{
+			TSUser user = (TSUser) request.getSession().getAttribute(ResourceUtil.LOCAL_CLINET_USER);
+			Map roleMap = (Map) request.getSession().getAttribute("ROLE");
+			if(roleMap != null){
+				if(roleMap.get("rolecode").toString().contains("cgy") || roleMap.get("rolecode").toString().contains("scgdy")){
+					cq.eq("createBy",user.getUserName());
+				}
+			}
 		//自定义追加查询条件
 		}catch (Exception e) {
 			throw new BusinessException(e.getMessage());

@@ -3,7 +3,7 @@
 <t:base type="jquery,easyui,tools,DatePicker"></t:base>
 <div id="main_list" class="easyui-layout" fit="true">
   <div region="center" style="padding:0px;border:0px">
-  <t:datagrid name="emkProOrderList" checkbox="false" pagination="true" fitColumns="false" sortName="orderNo" sortOrder="desc" title="" actionUrl="emkProOrderController.do?datagrid" idField="id" fit="true" btnCls="bootstrap"  queryMode="group">
+  <t:datagrid name="emkProOrderList" checkbox="false" singleSelect="true" pagination="true" fitColumns="false" sortName="orderNo" sortOrder="desc" title="" actionUrl="emkProOrderController.do?datagrid" idField="id" fit="true" btnCls="bootstrap"  queryMode="group">
    <t:dgCol title="主键"  field="id"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="创建人名称"  field="createName"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="创建人登录名称"  field="createBy"  hidden="true"  queryMode="single"  width="120"></t:dgCol>

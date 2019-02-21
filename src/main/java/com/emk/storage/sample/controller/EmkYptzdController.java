@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.emk.storage.price.entity.EmkPriceEntity;
 import com.emk.storage.sample.entity.EmkSampleEntity;
 import com.emk.storage.sample.service.EmkSampleServiceI;
+import com.emk.util.DateUtil;
 import com.emk.util.FlowUtil;
 import com.emk.util.ParameterUtil;
 import com.emk.workorder.workorder.entity.EmkWorkOrderEntity;
@@ -11,6 +12,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
+import java.text.DecimalFormat;
 import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -98,7 +100,7 @@ public class EmkYptzdController extends BaseController {
 
 
         cq.add();
-        this.emkSampleService.getDataGridReturn(cq, true);
+        emkSampleService.getDataGridReturn(cq, true);
         TagUtil.datagrid(response, dataGrid);
     }
 
@@ -107,7 +109,7 @@ public class EmkYptzdController extends BaseController {
     public AjaxJson doDel(EmkSampleEntity emkSample, HttpServletRequest request) {
         String message = null;
         AjaxJson j = new AjaxJson();
-        emkSample = (EmkSampleEntity) this.systemService.getEntity(EmkSampleEntity.class, emkSample.getId());
+        emkSample = systemService.getEntity(EmkSampleEntity.class, emkSample.getId());
         message = "样品通知单删除成功";
         try {
             if (!emkSample.getState().equals("0")) {
@@ -116,11 +118,11 @@ public class EmkYptzdController extends BaseController {
                 j.setSuccess(false);
                 return j;
             }
-            this.emkSampleService.delete(emkSample);
-            this.systemService.executeSql("delete from emk_sample_detail where sample_id=?", new Object[]{emkSample.getId()});
-            this.systemService.executeSql("delete from emk_sample_total where sample_id=?", new Object[]{emkSample.getId()});
+            emkSampleService.delete(emkSample);
+            systemService.executeSql("delete from emk_sample_detail where sample_id=?", new Object[]{emkSample.getId()});
+            systemService.executeSql("delete from emk_sample_total where sample_id=?", new Object[]{emkSample.getId()});
 
-            this.systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
+            systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
         } catch (Exception e) {
             e.printStackTrace();
             message = "样品通知单删除失败";
@@ -138,20 +140,20 @@ public class EmkYptzdController extends BaseController {
         message = "样品通知单删除成功";
         try {
             for (String id : ids.split(",")) {
-                EmkSampleEntity emkSample = (EmkSampleEntity) this.systemService.getEntity(EmkSampleEntity.class, id);
+                EmkSampleEntity emkSample = systemService.getEntity(EmkSampleEntity.class, id);
                 if (!emkSample.getState().equals("0")) {
                     message = "样品通知单单已经提交处理，无法删除";
                     j.setMsg(message);
                     j.setSuccess(false);
                     return j;
                 }
-                this.emkSampleService.delete(emkSample);
-                this.systemService.executeSql("delete from emk_sample_detail where sample_id=?", new Object[]{emkSample.getId()});
-                this.systemService.executeSql("delete from emk_sample_gx where sample_id=?", new Object[]{emkSample.getId()});
-                this.systemService.executeSql("delete from emk_sample_ran where sample_id=?", new Object[]{emkSample.getId()});
-                this.systemService.executeSql("delete from emk_sample_yin where sample_id=?", new Object[]{emkSample.getId()});
-                this.systemService.executeSql("delete from emk_sample_total where sample_id=?", new Object[]{emkSample.getId()});
-                this.systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
+                emkSampleService.delete(emkSample);
+                systemService.executeSql("delete from emk_sample_detail where sample_id=?", new Object[]{emkSample.getId()});
+                systemService.executeSql("delete from emk_sample_gx where sample_id=?", new Object[]{emkSample.getId()});
+                systemService.executeSql("delete from emk_sample_ran where sample_id=?", new Object[]{emkSample.getId()});
+                systemService.executeSql("delete from emk_sample_yin where sample_id=?", new Object[]{emkSample.getId()});
+                systemService.executeSql("delete from emk_sample_total where sample_id=?", new Object[]{emkSample.getId()});
+                systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -179,12 +181,12 @@ public class EmkYptzdController extends BaseController {
             }
 
             emkSample.setKdTime(DateUtils.format(new Date(), "yyyy-MM-dd"));
-            Map orderNum = this.systemService.findOneForJdbc("select CAST(ifnull(max(right(SAMPLE_NUM, 2)),0)+1 AS signed) orderNum from emk_sample");
+            Map orderNum = systemService.findOneForJdbc("select CAST(ifnull(max(right(SAMPLE_NUM, 2)),0)+1 AS signed) orderNum from emk_sample");
             emkSample.setSampleNum("YPTZD" + DateUtils.format(new Date(), "yyMMdd") + "A" + String.format("%02d", Integer.parseInt(orderNum.get("orderNum").toString())));
             emkSample.setXqdh("YPXQ" +emkSample.getCusNum()+ DateUtils.format(new Date(), "yyMMdd")+ String.format("%02d", Integer.parseInt(orderNum.get("orderNum").toString())));
-            this.emkSampleService.save(emkSample);
+            emkSampleService.save(emkSample);
 
-            this.systemService.addLog(message, Globals.Log_Type_INSERT, Globals.Log_Leavel_INFO);
+            systemService.addLog(message, Globals.Log_Type_INSERT, Globals.Log_Leavel_INFO);
         } catch (Exception e) {
             e.printStackTrace();
             message = "样品通知单添加失败";
@@ -207,7 +209,7 @@ public class EmkYptzdController extends BaseController {
                 return j;
             }
         }
-        EmkSampleEntity t = (EmkSampleEntity) this.emkSampleService.get(EmkSampleEntity.class, emkSample.getId());
+        EmkSampleEntity t = emkSampleService.get(EmkSampleEntity.class, emkSample.getId());
         try {
             if (!t.getState().equals("0")) {
                 message = "存在已提交的打样单，请重新选择在提交！";
@@ -216,14 +218,14 @@ public class EmkYptzdController extends BaseController {
                 return  j;
             }
             TSUser user = (TSUser) request.getSession().getAttribute("LOCAL_CLINET_USER");
-            Map orderNum = this.systemService.findOneForJdbc("select count(0)+1 orderNum from emk_sample where sys_org_code=?", user.getCurrentDepart().getOrgCode());
+            Map orderNum = systemService.findOneForJdbc("select count(0)+1 orderNum from emk_sample where sys_org_code=?", user.getCurrentDepart().getOrgCode());
             emkSample.setSampleNum("YPTZD" + DateUtils.format(new Date(), "yyMMdd") + "A" + String.format("%02d", Integer.parseInt(orderNum.get("orderNum").toString())));
 
-            orderNum = this.systemService.findOneForJdbc("select count(0)+1 orderNum from emk_sample where sys_org_code=?", user.getCurrentDepart().getOrgCode());
+            orderNum = systemService.findOneForJdbc("select count(0)+1 orderNum from emk_sample where sys_org_code=?", user.getCurrentDepart().getOrgCode());
             emkSample.setXqdh("YPXQ" +emkSample.getCusNum()+ DateUtils.format(new Date(), "yyMMdd") + "A" + String.format("%02d", Integer.parseInt(orderNum.get("orderNum").toString())));
             MyBeanUtils.copyBeanNotNull2Bean(emkSample, t);
-            this.emkSampleService.saveOrUpdate(t);
-            this.systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
+            emkSampleService.saveOrUpdate(t);
+            systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
         } catch (Exception e) {
             e.printStackTrace();
             message = "样品通知单更新失败";
@@ -239,7 +241,7 @@ public class EmkYptzdController extends BaseController {
         TSUser user = (TSUser) req.getSession().getAttribute("LOCAL_CLINET_USER");
 
         if (StringUtil.isNotEmpty(emkSample.getId())) {
-            emkSample = (EmkSampleEntity) this.emkSampleService.getEntity(EmkSampleEntity.class, emkSample.getId());
+            emkSample = emkSampleService.getEntity(EmkSampleEntity.class, emkSample.getId());
             req.setAttribute("emkSamplePage", emkSample);
         }
 
@@ -249,8 +251,19 @@ public class EmkYptzdController extends BaseController {
     @RequestMapping(params = "goUpdate")
     public ModelAndView goUpdate(EmkSampleEntity emkSample, HttpServletRequest req) {
         if (StringUtil.isNotEmpty(emkSample.getId())) {
-            emkSample = (EmkSampleEntity) this.emkSampleService.getEntity(EmkSampleEntity.class, emkSample.getId());
+            emkSample = emkSampleService.getEntity(EmkSampleEntity.class, emkSample.getId());
             req.setAttribute("emkSamplePage", emkSample);
+            try {
+                Map countMap = MyBeanUtils.culBeanCounts(emkSample);
+                req.setAttribute("countMap", countMap);
+                double a=0,b=0;
+                a = Double.parseDouble(countMap.get("finishColums").toString());
+                b = Double.parseDouble(countMap.get("Colums").toString());
+                DecimalFormat df = new DecimalFormat("#.00");
+                req.setAttribute("recent", df.format(a*100/b));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         return new ModelAndView("com/emk/storage/sample/emkSample-update");
     }
@@ -258,7 +271,7 @@ public class EmkYptzdController extends BaseController {
     @RequestMapping(params = "goUpdate2")
     public ModelAndView goUpdate2(EmkSampleEntity emkSample, HttpServletRequest req) {
         if (StringUtil.isNotEmpty(emkSample.getId())) {
-            emkSample = (EmkSampleEntity) this.emkSampleService.getEntity(EmkSampleEntity.class, emkSample.getId());
+            emkSample = emkSampleService.getEntity(EmkSampleEntity.class, emkSample.getId());
             req.setAttribute("emkSamplePage", emkSample);
         }
         return new ModelAndView("com/emk/storage/sample/emkSample-update2");
@@ -274,7 +287,7 @@ public class EmkYptzdController extends BaseController {
     public String exportXls(EmkSampleEntity emkSample, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid, ModelMap modelMap) {
         CriteriaQuery cq = new CriteriaQuery(EmkSampleEntity.class, dataGrid);
         HqlGenerateUtil.installHql(cq, emkSample, request.getParameterMap());
-        List<EmkSampleEntity> emkSamples = this.emkSampleService.getListByCriteriaQuery(cq, Boolean.valueOf(false));
+        List<EmkSampleEntity> emkSamples = emkSampleService.getListByCriteriaQuery(cq, Boolean.valueOf(false));
         modelMap.put("fileName", "样品通知单");
         modelMap.put("entity", EmkSampleEntity.class);
         modelMap.put("params", new ExportParams("样品通知单列表", "导出人:" + ResourceUtil.getSessionUser().getRealName(), "导出信息"));
@@ -297,7 +310,7 @@ public class EmkYptzdController extends BaseController {
     @ResponseBody
     @ApiOperation(value = "样品通知单列表信息", produces = "application/json", httpMethod = "GET")
     public ResponseMessage<List<EmkSampleEntity>> list() {
-        List<EmkSampleEntity> listEmkSamples = this.emkSampleService.getList(EmkSampleEntity.class);
+        List<EmkSampleEntity> listEmkSamples = emkSampleService.getList(EmkSampleEntity.class);
         return Result.success(listEmkSamples);
     }
 
@@ -305,7 +318,7 @@ public class EmkYptzdController extends BaseController {
     @ResponseBody
     @ApiOperation(value = "根据ID获取样品通知单信息", notes = "根据ID获取样品通知单信息", httpMethod = "GET", produces = "application/json")
     public ResponseMessage<?> get(@ApiParam(required = true, name = "id", value = "ID") @PathVariable("id") String id) {
-        EmkSampleEntity task = (EmkSampleEntity) this.emkSampleService.get(EmkSampleEntity.class, id);
+        EmkSampleEntity task = emkSampleService.get(EmkSampleEntity.class, id);
         if (task == null) {
             return Result.error("根据ID获取样品通知单信息为空");
         }
@@ -316,12 +329,12 @@ public class EmkYptzdController extends BaseController {
     @ResponseBody
     @ApiOperation("创建样品通知单")
     public ResponseMessage<?> create(@ApiParam(name = "样品通知单对象") @RequestBody EmkSampleEntity emkSample, UriComponentsBuilder uriBuilder) {
-        Set<ConstraintViolation<EmkSampleEntity>> failures = this.validator.validate(emkSample, new Class[0]);
+        Set<ConstraintViolation<EmkSampleEntity>> failures = validator.validate(emkSample, new Class[0]);
         if (!failures.isEmpty()) {
             return Result.error(JSONArray.toJSONString(BeanValidators.extractPropertyAndMessage(failures)));
         }
         try {
-            this.emkSampleService.save(emkSample);
+            emkSampleService.save(emkSample);
         } catch (Exception e) {
             e.printStackTrace();
             return Result.error("样品通知单信息保存失败");
@@ -333,12 +346,12 @@ public class EmkYptzdController extends BaseController {
     @ResponseBody
     @ApiOperation(value = "更新样品通知单", notes = "更新样品通知单")
     public ResponseMessage<?> update(@ApiParam(name = "样品通知单对象") @RequestBody EmkSampleEntity emkSample) {
-        Set<ConstraintViolation<EmkSampleEntity>> failures = this.validator.validate(emkSample, new Class[0]);
+        Set<ConstraintViolation<EmkSampleEntity>> failures = validator.validate(emkSample, new Class[0]);
         if (!failures.isEmpty()) {
             return Result.error(JSONArray.toJSONString(BeanValidators.extractPropertyAndMessage(failures)));
         }
         try {
-            this.emkSampleService.saveOrUpdate(emkSample);
+            emkSampleService.saveOrUpdate(emkSample);
         } catch (Exception e) {
             e.printStackTrace();
             return Result.error("更新样品通知单信息失败");
@@ -355,7 +368,7 @@ public class EmkYptzdController extends BaseController {
             return Result.error("ID不能为空");
         }
         try {
-            this.emkSampleService.deleteEntityById(EmkSampleEntity.class, id);
+            emkSampleService.deleteEntityById(EmkSampleEntity.class, id);
         } catch (Exception e) {
             e.printStackTrace();
             return Result.error("样品通知单删除失败");
@@ -414,7 +427,7 @@ public class EmkYptzdController extends BaseController {
                                 workOrderEntity.setSampleNum(t.getSampleNum());
                                 workOrderEntity.setSampleUserId(user.getUserName());
                                 workOrderEntity.setSampleUser(user.getRealName());
-                                workOrderEntity.setSampleCheckDate(DateUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
+                                workOrderEntity.setSampleDate(DateUtil.getCurrentTimeString(null));
                                 workOrderEntity.setSampleAdvice(emkSampleEntity.getLeadAdvice());
                                 systemService.saveOrUpdate(workOrderEntity);
 
@@ -423,7 +436,7 @@ public class EmkYptzdController extends BaseController {
                                 task1 = task.get(task.size() - 1);
                                 taskService.complete(task1.getId(), variables);
                                 /*if(t.getType().equals("cy")){
-                                    Map enquiry = this.systemService.findOneForJdbc("SELECT t3.id,t3.enquiry_no FROM emk_sample t1 LEFT JOIN emk_price t2 ON t1.PIRCE_NO=t2.pirce_no LEFT JOIN emk_enquiry t3 ON t3.enquiry_no=t2.xp_no where t1.id=? LIMIT 0,1",id);
+                                    Map enquiry = systemService.findOneForJdbc("SELECT t3.id,t3.enquiry_no FROM emk_sample t1 LEFT JOIN emk_price t2 ON t1.PIRCE_NO=t2.pirce_no LEFT JOIN emk_enquiry t3 ON t3.enquiry_no=t2.xp_no where t1.id=? LIMIT 0,1",id);
                                     if(enquiry != null){
                                         EmkWorkOrderEntity workOrderEntity = systemService.findUniqueByProperty(EmkWorkOrderEntity.class,"askNo",enquiry.get("enquiry_no").toString());
                                         workOrderEntity.setSampleNum(t.getSampleNum());

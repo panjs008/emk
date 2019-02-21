@@ -1,9 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@include file="/context/mytags.jsp"%>
 <t:base type="jquery,easyui,tools,DatePicker"></t:base>
-<div class="easyui-layout" fit="true">
+<div id="main_list" class="easyui-layout" fit="true">
   <div region="center" style="padding:0px;border:0px">
-  <t:datagrid name="emkBzgydList" checkbox="false" pagination="true" fitColumns="true" title="" actionUrl="emkBzgydController.do?datagrid" idField="id" fit="true" btnCls="bootstrap"  queryMode="group">
+  <t:datagrid name="emkBzgydList" checkbox="false" pagination="true" fitColumns="false" title="" actionUrl="emkBzgydController.do?datagrid" idField="id" fit="true" btnCls="bootstrap"  queryMode="group">
    <t:dgCol title="主键"  field="id"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="创建人名称"  field="createName"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="创建人登录名称"  field="createBy"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
@@ -25,6 +25,7 @@
       <t:dgFunOpt funname="queryDetail3(id,orderNo)" title="条码" urlStyle="background-color:#ec4758;" urlclass="ace_button" ></t:dgFunOpt>
       <t:dgFunOpt funname="queryDetail4(id,orderNo)" title="包装" urlStyle="background-color:#18a689;" urlclass="ace_button" ></t:dgFunOpt>
       <t:dgFunOpt funname="queryDetail5(id,orderNo)" title="纸箱" urlStyle="background-color:#ec4758;" urlclass="ace_button" ></t:dgFunOpt>
+      <t:dgToolBar title="查看" icon="fa fa-search" operationCode="look" url="emkBzgydController.do?goUpdate&winTitle=查看包装工艺单" funname="detail" height="600" width="1000"></t:dgToolBar>
       <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkBzgydController.do?goAdd&winTitle=录入包装工艺单" funname="add" height="600" width="1000"></t:dgToolBar>
       <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkBzgydController.do?goUpdate&winTitle=编辑包装工艺单" funname="update" height="600" width="1000"></t:dgToolBar>
       <t:dgToolBar title="提交" operationCode="submit" icon="fa fa-arrow-circle-up" funname="doSubmitV"></t:dgToolBar>
@@ -33,6 +34,20 @@
   </t:datagrid>
   </div>
  </div>
+<div data-options="region:'east',
+	title:'订单明细',
+	collapsed:true,
+	split:true,
+	border:false,
+	onExpand : function(){
+		li_east = 1;
+	},
+	onCollapse : function() {
+	    li_east = 0;
+	}"
+     style="width: 500px; overflow: hidden;" id="eastPanel">
+    <div class="easyui-panel" style="padding:0px;border:0px" fit="true" border="false" id="proDetialListpanel"></div>
+</div>
  <script src = "webpage/com/emk/bill/bzgyd/emkBzgydList.js"></script>		
  <script type="text/javascript">
  $(document).ready(function(){

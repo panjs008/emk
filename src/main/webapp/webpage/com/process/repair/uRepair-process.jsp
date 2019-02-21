@@ -49,7 +49,7 @@
 
 </head>
 <body>
-<t:tabs id="repairTabId" iframe="false" heigth="500px" tabPosition="top" fit="true" >
+<t:tabs id="repairTabId" iframe="false" heigth="600px" tabPosition="top" fit="true" >
     <t:tab title="任务处理" id="orderFrm"  heigth="600px"  width="100%" icon="fa fa-crosshairs" href="uRepairController.do?goUpdate&id=${param.id}"></t:tab>
     <%--<t:tab title="任务处理" id="workFrm"  heigth="480px"  width="100%" icon="" href="uRepairController.do?goWork&id=${param.id}"></t:tab>--%>
     <t:tab title="流程图" id="proFrm"  heigth="560px" width="100%" icon="fa fa-sitemap" iframe="uRepairController.do?process&id=${param.id}"></t:tab>

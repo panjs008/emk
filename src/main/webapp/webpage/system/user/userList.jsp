@@ -15,6 +15,7 @@
 	<t:dgCol title="common.updateby" field="updateBy" hidden="true"></t:dgCol>
 	<t:dgCol title="common.updatetime" field="updateDate" formatter="yyyy-MM-dd" hidden="true"></t:dgCol>
 	<t:dgCol title="手机号码" field="mobilePhone" width="70"></t:dgCol>
+	<t:dgCol title="邮箱" field="email" width="90"></t:dgCol>
 	<t:dgCol title="common.status" sortable="true" field="status" width="50" replace="common.active_1,common.inactive_0,super.admin_-1" ></t:dgCol>
 	
 	<t:dgCol title="common.operation" field="opt" width="40"></t:dgCol>
