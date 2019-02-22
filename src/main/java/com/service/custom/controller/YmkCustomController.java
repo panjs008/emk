@@ -517,7 +517,7 @@ public class YmkCustomController
 
     @RequestMapping(params = "regCustom")
     public ModelAndView regCustom(YmkCustomEntity ymkCustom, HttpServletRequest req) {
-        Map orderNum = systemService.findOneForJdbc("select CAST(max(right(cus_num, 4))+1 AS signed) orderNum from ymk_custom ");
+        Map orderNum = systemService.findOneForJdbc("select CAST(ifnull(max(right(cus_num, 3)),0)+1 AS signed) orderNum from ymk_custom ");
         req.setAttribute("cusNum", DateUtils.format(new Date(), "yyyy") + String.format("%06d", Integer.parseInt(orderNum.get("orderNum").toString())));
         if (StringUtil.isNotEmpty(ymkCustom.getId())) {
             ymkCustom = (YmkCustomEntity) ymkCustomService.getEntity(YmkCustomEntity.class, ymkCustom.getId());
@@ -528,7 +528,7 @@ public class YmkCustomController
 
     @RequestMapping(params = "goAdd")
     public ModelAndView goAdd(YmkCustomEntity ymkCustom, HttpServletRequest req) {
-        Map orderNum = systemService.findOneForJdbc("select CAST(max(right(cus_num, 4))+1 AS signed) orderNum from ymk_custom ");
+        Map orderNum = systemService.findOneForJdbc("select CAST(ifnull(max(right(cus_num, 3)),0)+1 AS signed) orderNum from ymk_custom ");
         req.setAttribute("daanNum", "KHDA1" + String.format("%04d", Integer.parseInt(orderNum.get("orderNum").toString())));
         req.setAttribute("cusNum", String.format("%04d", Integer.parseInt(orderNum.get("orderNum").toString())));
         req.setAttribute("createDate", DateUtils.format(new Date(), "yyyy-MM-dd"));

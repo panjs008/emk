@@ -14,7 +14,7 @@
 		$(function(){
 			//BindSelect("cusFrom","",1,"${ymkCustomPage.cusFrom}");
 			$("#cusType").val("${ymkCustomPage.cusType}");
-			/*$.ajax({
+			$.ajax({
 				url : "ymkCustomController.do?getCity&code=A01",
 				type : 'post',
 				cache : false,
@@ -193,7 +193,7 @@
 					}
 				});
 
-			});*/
+			});
 
 			BindSelect("businesserId","ymkCustomController.do?findUserList&userKey=业务员",0,"");
 			$("#businesserId").change(function(){
