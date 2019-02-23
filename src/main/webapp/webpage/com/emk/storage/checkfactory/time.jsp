@@ -30,7 +30,7 @@
 	<div id="content">
 
 		<ul class="list">
-			<c:forEach items="${taskList}" var="task" varStatus="status">
+			<%--<c:forEach items="${taskList}" var="task" varStatus="status">
 				<li>
 					<div class="liwrap">
 						<div class="lileft">
@@ -49,7 +49,50 @@
 						</div>
 					</div>
 				</li>
-			</c:forEach>
+			</c:forEach>--%>
+				<li>
+					<div class="liwrap">
+						<div class="lileft">
+							<div class="date">
+								<span class="year">${createDate}</span>
+							</div>
+						</div>
+						<div class="point"><b></b></div>
+						<div class="liright">
+							<div class="histt"><a style="font-size: 14px;">验厂申请单</a></div>
+							<div class="histt"><a style="font-size: 12px;">【${approvalEntity.createName}】发起验厂申请单，单号：${approvalEntity.workNum}
+							</a></div>
+						</div>
+					</div>
+				</li>
+				<c:forEach items="${approvalDetailEntityList}" var="task" varStatus="status">
+					<c:if test="${task.bpmName ne '验厂申请单' }">
+						<li>
+							<div class="liwrap">
+								<div class="lileft">
+									<div class="date">
+										<span class="year">${task.approveDate}</span>
+									</div>
+								</div>
+								<div class="point"><b></b></div>
+								<div class="liright">
+									<div class="histt"><a style="font-size: 14px;">${task.bpmName}</a></div>
+									<div class="histt"><a style="font-size: 12px;">
+										<c:choose>
+										<c:when test="${task.bpmNode eq 'ywbCheckTask'}">
+										审核人【${task.createName}】，评估意见：${task.approveAdvice}，包装部意见：${task.approveAdvice2}
+										</c:when>
+										<c:otherwise>
+										审核人【${task.createName}】，处理意见：${task.approveAdvice}
+										</c:otherwise>
+										</c:choose>
+
+									</div>
+								</div>
+							</div>
+						</li>
+					</c:if>
+				</c:forEach>
 		</ul>
 
 	</div>

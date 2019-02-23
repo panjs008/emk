@@ -1,14 +1,19 @@
 package com.emk.storage.checkfactory.controller;
+import com.emk.approval.approval.entity.EmkApprovalEntity;
+import com.emk.approval.approvaldetail.entity.EmkApprovalDetailEntity;
 import com.emk.produce.testcost.entity.EmkTestCostEntity;
 import com.emk.storage.checkfactory.entity.EmkCheckFactoryEntity;
 import com.emk.storage.checkfactory.entity.EmkCheckFactoryEntity2;
 import com.emk.storage.checkfactory.service.EmkCheckFactoryServiceI;
 
+import java.text.DecimalFormat;
 import java.util.*;
 import java.text.SimpleDateFormat;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.emk.storage.customuse.entity.EmkCustomUseEntity;
+import com.emk.util.ApprovalUtil;
 import com.emk.util.FlowUtil;
 import com.emk.util.ParameterUtil;
 import org.activiti.engine.HistoryService;
@@ -216,10 +221,22 @@ public class EmkCheckFactoryController extends BaseController {
 		AjaxJson j = new AjaxJson();
 		message = "验厂申请表添加成功";
 		try{
+			TSUser user = (TSUser)request.getSession().getAttribute("LOCAL_CLINET_USER");
 			emkCheckFactory.setState("0");
+			emkCheckFactory.setKdDate(DateUtils.format(new Date(), "yyyy-MM-dd"));
 			Map orderNum = this.systemService.findOneForJdbc("select CAST(ifnull(max(right(ycsqbh, 2)),0)+1 AS signed) orderNum from emk_check_factory");
 			emkCheckFactory.setYcsqbh("YCSQ" + DateUtils.format(new Date(), "yyMMdd") + emkCheckFactory.getCusNum() + String.format("%02d", Integer.parseInt(orderNum.get("orderNum").toString())));
+			emkCheckFactory.setYcstate("0");
 			emkCheckFactoryService.save(emkCheckFactory);
+
+			//type 工单类型，workNum 单号，formId 对应表单ID，bpmName 节点名称，bpmNode 节点代码，advice 处理意见，user 用户对象
+			EmkApprovalEntity approvalEntity = new EmkApprovalEntity();
+			EmkApprovalDetailEntity approvalDetailEntity = new EmkApprovalDetailEntity();
+			ApprovalUtil.saveApproval(approvalEntity,1,emkCheckFactory.getYcsqbh(),emkCheckFactory.getId(),user);
+			systemService.save(approvalEntity);
+			ApprovalUtil.saveApprovalDetail(approvalDetailEntity,approvalEntity.getId(),"验厂申请单","checkfactoryTask","提交",user);
+			systemService.save(approvalDetailEntity);
+
 			systemService.addLog(message, Globals.Log_Type_INSERT, Globals.Log_Leavel_INFO);
 		}catch(Exception e){
 			e.printStackTrace();
@@ -264,7 +281,6 @@ public class EmkCheckFactoryController extends BaseController {
 	 */
 	@RequestMapping(params = "goAdd")
 	public ModelAndView goAdd(EmkCheckFactoryEntity emkCheckFactory, HttpServletRequest req) {
-		req.setAttribute("kdDate",DateUtils.format(new Date(), "yyyy-MM-dd"));
 		if (StringUtil.isNotEmpty(emkCheckFactory.getId())) {
 			emkCheckFactory = emkCheckFactoryService.getEntity(EmkCheckFactoryEntity.class, emkCheckFactory.getId());
 			req.setAttribute("emkCheckFactoryPage", emkCheckFactory);
@@ -281,6 +297,21 @@ public class EmkCheckFactoryController extends BaseController {
 		if (StringUtil.isNotEmpty(emkCheckFactory.getId())) {
 			emkCheckFactory = emkCheckFactoryService.getEntity(EmkCheckFactoryEntity.class, emkCheckFactory.getId());
 			req.setAttribute("emkCheckFactoryPage", emkCheckFactory);
+
+			EmkCustomUseEntity customUseEntity = systemService.findUniqueByProperty(EmkCustomUseEntity.class,"cusNum",emkCheckFactory.getCusNum());
+			req.setAttribute("customUseEntity",customUseEntity);
+
+			try {
+				Map countMap = MyBeanUtils.culBeanCounts(emkCheckFactory);
+				req.setAttribute("countMap", countMap);
+				double a=0,b=0;
+				a = Double.parseDouble(countMap.get("finishColums").toString())-7;
+				b = Double.parseDouble(countMap.get("Colums").toString())-8;
+				DecimalFormat df = new DecimalFormat("#.00");
+				req.setAttribute("recent", df.format(a*100/b));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 		return new ModelAndView("com/emk/storage/checkfactory/emkCheckFactory-update");
 	}
@@ -289,6 +320,21 @@ public class EmkCheckFactoryController extends BaseController {
 		if (StringUtil.isNotEmpty(emkCheckFactory.getId())) {
 			emkCheckFactory = emkCheckFactoryService.getEntity(EmkCheckFactoryEntity.class, emkCheckFactory.getId());
 			req.setAttribute("emkCheckFactoryPage", emkCheckFactory);
+
+			EmkCustomUseEntity customUseEntity = systemService.findUniqueByProperty(EmkCustomUseEntity.class,"cusNum",emkCheckFactory.getCusNum());
+			req.setAttribute("customUseEntity",customUseEntity);
+
+			try {
+				Map countMap = MyBeanUtils.culBeanCounts(emkCheckFactory);
+				req.setAttribute("countMap", countMap);
+				double a=0,b=0;
+				a = Double.parseDouble(countMap.get("finishColums").toString())-7;
+				b = Double.parseDouble(countMap.get("Colums").toString())-8;
+				DecimalFormat df = new DecimalFormat("#.00");
+				req.setAttribute("recent", df.format(a*100/b));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 		return new ModelAndView("com/emk/storage/checkfactory/emkCheckFactory-update2");
 	}
@@ -481,70 +527,74 @@ public class EmkCheckFactoryController extends BaseController {
 			if (flag == 0) {
 				for (String id : map.get("ids").toString().split(",")) {
 					EmkCheckFactoryEntity t = emkCheckFactoryService.get(EmkCheckFactoryEntity.class, id);
-					t.setState("1");
 					variables.put("optUser", t.getId());
+					EmkApprovalEntity b = systemService.findUniqueByProperty(EmkApprovalEntity.class,"formId",t.getId());
 
 					List<Task> task = taskService.createTaskQuery().taskAssignee(id).list();
 					if (task.size() > 0) {
 						Task task1 = (Task)task.get(task.size() - 1);
 						if (task1.getTaskDefinitionKey().equals("checkfactoryTask")) {
 							taskService.complete(task1.getId(), variables);
+							t.setState("1");
+							b.setStatus(1);
 						}
 						if (task1.getTaskDefinitionKey().equals("checkTask")) {
-							/*t.setLeader(user.getRealName());
-							t.setLeadUserId(user.getId());
-							t.setLeadAdvice(emkCheckFactoryEntity.getLeadAdvice());
-							if (emkCheckFactoryEntity.getIsPass().equals("0")) {
-								variables.put("isPass", emkCheckFactoryEntity.getIsPass());
-								taskService.complete(task1.getId(), variables);
-								t.setCyUserId(t.getCreateBy());
-								t.setCyer(t.getCreateName());
+							EmkApprovalDetailEntity approvalDetail = ApprovalUtil.saveApprovalDetail(b.getId(),user,b);
 
-							} else {
-								List<HistoricTaskInstance> hisTasks = historyService.createHistoricTaskInstanceQuery().taskAssignee(t.getId()).list();
+								/*t.setLeader(user.getRealName());
+								t.setLeadUserId(user.getId());
+								t.setLeadAdvice(emkCheckFactoryEntity.getLeadAdvice());
+								if (emkCheckFactoryEntity.getIsPass().equals("0")) {
+									variables.put("isPass", emkCheckFactoryEntity.getIsPass());
+									taskService.complete(task1.getId(), variables);
+									t.setCyUserId(t.getCreateBy());
+									t.setCyer(t.getCreateName());
 
-								List<Task> taskList = taskService.createTaskQuery().taskAssignee(t.getId()).list();
-								if (taskList.size() > 0) {
-									Task taskH = (Task)taskList.get(taskList.size() - 1);
-									HistoricTaskInstance historicTaskInstance = hisTasks.get(hisTasks.size() - 2);
-									FlowUtil.turnTransition(taskH.getId(), historicTaskInstance.getTaskDefinitionKey(), variables);
-									Map activityMap = systemService.findOneForJdbc("SELECT GROUP_CONCAT(t0.ID_) ids,GROUP_CONCAT(t0.TASK_ID_) taskids FROM act_hi_actinst t0 WHERE t0.ASSIGNEE_=? AND t0.ACT_ID_=? ORDER BY ID_ ASC", new Object[] { t.getId(), historicTaskInstance.getTaskDefinitionKey() });
-									String[] activitIdArr = activityMap.get("ids").toString().split(",");
-									String[] taskIdArr = activityMap.get("taskids").toString().split(",");
-									systemService.executeSql("UPDATE act_hi_taskinst SET  NAME_=CONCAT('【驳回后】','',NAME_) WHERE ASSIGNEE_>=? AND ID_=?",t.getId(), taskIdArr[1]);
-									systemService.executeSql("delete from act_hi_actinst where ID_>=? and ID_<?", activitIdArr[0], activitIdArr[1] );
+								} else {
+									List<HistoricTaskInstance> hisTasks = historyService.createHistoricTaskInstanceQuery().taskAssignee(t.getId()).list();
+
+									List<Task> taskList = taskService.createTaskQuery().taskAssignee(t.getId()).list();
+									if (taskList.size() > 0) {
+										Task taskH = (Task)taskList.get(taskList.size() - 1);
+										HistoricTaskInstance historicTaskInstance = hisTasks.get(hisTasks.size() - 2);
+										FlowUtil.turnTransition(taskH.getId(), historicTaskInstance.getTaskDefinitionKey(), variables);
+										Map activityMap = systemService.findOneForJdbc("SELECT GROUP_CONCAT(t0.ID_) ids,GROUP_CONCAT(t0.TASK_ID_) taskids FROM act_hi_actinst t0 WHERE t0.ASSIGNEE_=? AND t0.ACT_ID_=? ORDER BY ID_ ASC", new Object[] { t.getId(), historicTaskInstance.getTaskDefinitionKey() });
+										String[] activitIdArr = activityMap.get("ids").toString().split(",");
+										String[] taskIdArr = activityMap.get("taskids").toString().split(",");
+										systemService.executeSql("UPDATE act_hi_taskinst SET  NAME_=CONCAT('【驳回后】','',NAME_) WHERE ASSIGNEE_>=? AND ID_=?",t.getId(), taskIdArr[1]);
+										systemService.executeSql("delete from act_hi_actinst where ID_>=? and ID_<?", activitIdArr[0], activitIdArr[1] );
+									}
+									t.setState("0");
 								}
-								t.setState("0");
+
 							}
-
-						}
-						if (task1.getTaskDefinitionKey().equals("cyTask")) {
-							t.setCyAdvice(emkCheckFactoryEntity.getLeadAdvice());
-							t.setBgUserId(t.getCreateBy());
-							t.setBger(t.getCreateName());
-							taskService.complete(task1.getId(), variables);
-
-						}
-						if (task1.getTaskDefinitionKey().equals("bgTask")) {
-							t.setBgAdvice(emkCheckFactoryEntity.getLeadAdvice());
-							if (emkCheckFactoryEntity.getIsHg().equals("0")) {
-								variables.put("isHg", emkCheckFactoryEntity.getIsHg());
+							if (task1.getTaskDefinitionKey().equals("cyTask")) {
+								t.setCyAdvice(emkCheckFactoryEntity.getLeadAdvice());
+								t.setBgUserId(t.getCreateBy());
+								t.setBger(t.getCreateName());
 								taskService.complete(task1.getId(), variables);
-								t.setState("2");
-							} else {
-								List<HistoricTaskInstance> hisTasks = historyService.createHistoricTaskInstanceQuery().taskAssignee(t.getId()).list();
-								List<Task> taskList = taskService.createTaskQuery().taskAssignee(t.getId()).list();
-								if (taskList.size() > 0) {
-									Task taskH = (Task)taskList.get(taskList.size() - 1);
-									HistoricTaskInstance historicTaskInstance = hisTasks.get(hisTasks.size() - 2);
-									FlowUtil.turnTransition(taskH.getId(), historicTaskInstance.getTaskDefinitionKey(), variables);
-									Map activityMap = systemService.findOneForJdbc("SELECT GROUP_CONCAT(t0.ID_) ids,GROUP_CONCAT(t0.TASK_ID_) taskids FROM act_hi_actinst t0 WHERE t0.ASSIGNEE_=? AND t0.ACT_ID_=? ORDER BY ID_ ASC", new Object[] { t.getId(), historicTaskInstance.getTaskDefinitionKey() });
-									String[] activitIdArr = activityMap.get("ids").toString().split(",");
-									String[] taskIdArr = activityMap.get("taskids").toString().split(",");
-									systemService.executeSql("UPDATE act_hi_taskinst SET  NAME_=CONCAT('【驳回后】','',NAME_) WHERE ASSIGNEE_>=? AND ID_=?",t.getId(), taskIdArr[1]);
-									systemService.executeSql("delete from act_hi_actinst where ID_>=? and ID_<?", activitIdArr[0], activitIdArr[1] );
-								}
-							}*/
+
+							}
+							if (task1.getTaskDefinitionKey().equals("bgTask")) {
+								t.setBgAdvice(emkCheckFactoryEntity.getLeadAdvice());
+								if (emkCheckFactoryEntity.getIsHg().equals("0")) {
+									variables.put("isHg", emkCheckFactoryEntity.getIsHg());
+									taskService.complete(task1.getId(), variables);
+									t.setState("2");
+								} else {
+									List<HistoricTaskInstance> hisTasks = historyService.createHistoricTaskInstanceQuery().taskAssignee(t.getId()).list();
+									List<Task> taskList = taskService.createTaskQuery().taskAssignee(t.getId()).list();
+									if (taskList.size() > 0) {
+										Task taskH = (Task)taskList.get(taskList.size() - 1);
+										HistoricTaskInstance historicTaskInstance = hisTasks.get(hisTasks.size() - 2);
+										FlowUtil.turnTransition(taskH.getId(), historicTaskInstance.getTaskDefinitionKey(), variables);
+										Map activityMap = systemService.findOneForJdbc("SELECT GROUP_CONCAT(t0.ID_) ids,GROUP_CONCAT(t0.TASK_ID_) taskids FROM act_hi_actinst t0 WHERE t0.ASSIGNEE_=? AND t0.ACT_ID_=? ORDER BY ID_ ASC", new Object[] { t.getId(), historicTaskInstance.getTaskDefinitionKey() });
+										String[] activitIdArr = activityMap.get("ids").toString().split(",");
+										String[] taskIdArr = activityMap.get("taskids").toString().split(",");
+										systemService.executeSql("UPDATE act_hi_taskinst SET  NAME_=CONCAT('【驳回后】','',NAME_) WHERE ASSIGNEE_>=? AND ID_=?",t.getId(), taskIdArr[1]);
+										systemService.executeSql("delete from act_hi_actinst where ID_>=? and ID_<?", activitIdArr[0], activitIdArr[1] );
+									}
+								}*/
 						}
 
 					}else {
@@ -552,9 +602,13 @@ public class EmkCheckFactoryController extends BaseController {
 						task = taskService.createTaskQuery().taskAssignee(id).list();
 						Task task1 = task.get(task.size() - 1);
 						taskService.complete(task1.getId(), variables);
+
+						t.setState("1");
+						b.setStatus(1);
 					}
 
-
+					systemService.saveOrUpdate(t);
+					systemService.saveOrUpdate(b);
 					systemService.saveOrUpdate(t);
 				}
 			}
@@ -581,30 +635,11 @@ public class EmkCheckFactoryController extends BaseController {
 
 	@RequestMapping(params="goTime")
 	public ModelAndView goTime(EmkCheckFactoryEntity emkCheckFactoryEntity, HttpServletRequest req, DataGrid dataGrid) {
-		String sql = "";String countsql = "";
-		Map map = ParameterUtil.getParamMaps(req.getParameterMap());
-
-		sql = "SELECT DATE_FORMAT(t1.START_TIME_, '%Y-%m-%d %H:%i:%s') startTime,t1.*,CASE \n" +
-				" WHEN t1.TASK_DEF_KEY_='checkfactoryTask' THEN t2.create_name \n" +
-				" WHEN t1.TASK_DEF_KEY_='checkTask' THEN t2.leader \n" +
-				" END workname FROM act_hi_taskinst t1 \n" +
-				" LEFT JOIN emk_check_factory t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='" + map.get("id") + "' ";
-
-		countsql = " SELECT COUNT(1) FROM act_hi_taskinst t1 where ASSIGNEE_='" + map.get("id") + "' ";
-		if (dataGrid.getPage() == 1) {
-			sql = sql + " limit 0, " + dataGrid.getRows();
-		} else {
-			sql = sql + "limit " + (dataGrid.getPage() - 1) * dataGrid.getRows() + "," + dataGrid.getRows();
-		}
-		systemService.listAllByJdbc(dataGrid, sql, countsql);
-		req.setAttribute("taskList", dataGrid.getResults());
-		if (dataGrid.getResults().size() > 0) {
-			req.setAttribute("stepProcess", Integer.valueOf(dataGrid.getResults().size() - 1));
-		} else {
-			req.setAttribute("stepProcess", Integer.valueOf(0));
-		}
-		emkCheckFactoryEntity = emkCheckFactoryService.getEntity(EmkCheckFactoryEntity.class, emkCheckFactoryEntity.getId());
-		req.setAttribute("emkCheckFactory", emkCheckFactoryEntity);
+		EmkApprovalEntity approvalEntity = systemService.findUniqueByProperty(EmkApprovalEntity.class,"formId",emkCheckFactoryEntity.getId());
+		List<EmkApprovalDetailEntity> approvalDetailEntityList = systemService.findHql("from EmkApprovalDetailEntity where approvalId=?",approvalEntity.getId());
+		req.setAttribute("approvalDetailEntityList", approvalDetailEntityList);
+		req.setAttribute("approvalEntity", approvalEntity);
+		req.setAttribute("createDate", org.jeecgframework.core.util.DateUtils.date2Str(approvalEntity.getCreateDate(), org.jeecgframework.core.util.DateUtils.datetimeFormat));
 		return new ModelAndView("com/emk/storage/checkfactory/time");
 	}
 }

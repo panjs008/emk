@@ -88,7 +88,6 @@ public class EmkCheckFactoryServiceImpl extends CommonServiceImpl implements Emk
 		map.put("businesser", t.getBusinesser());
 		map.put("businesser_name", t.getBusinesserName());
 		map.put("kd_date", t.getKdDate());
-		map.put("gys_type", t.getGysType());
 		map.put("gys", t.getGys());
 		map.put("gys_code", t.getGysCode());
 		map.put("factory_name", t.getFactoryName());
@@ -96,7 +95,6 @@ public class EmkCheckFactoryServiceImpl extends CommonServiceImpl implements Emk
 		map.put("factory_address", t.getFactoryAddress());
 		map.put("relationer", t.getRelationer());
 		map.put("check_type", t.getCheckType());
-		map.put("check_content", t.getCheckContent());
 		map.put("brand", t.getBrand());
 		map.put("sh_date", t.getShDate());
 		return map;
@@ -121,7 +119,6 @@ public class EmkCheckFactoryServiceImpl extends CommonServiceImpl implements Emk
  		sql  = sql.replace("#{businesser}",String.valueOf(t.getBusinesser()));
  		sql  = sql.replace("#{businesser_name}",String.valueOf(t.getBusinesserName()));
  		sql  = sql.replace("#{kd_date}",String.valueOf(t.getKdDate()));
- 		sql  = sql.replace("#{gys_type}",String.valueOf(t.getGysType()));
  		sql  = sql.replace("#{gys}",String.valueOf(t.getGys()));
  		sql  = sql.replace("#{gys_code}",String.valueOf(t.getGysCode()));
  		sql  = sql.replace("#{factory_name}",String.valueOf(t.getFactoryName()));
@@ -129,7 +126,6 @@ public class EmkCheckFactoryServiceImpl extends CommonServiceImpl implements Emk
  		sql  = sql.replace("#{factory_address}",String.valueOf(t.getFactoryAddress()));
  		sql  = sql.replace("#{relationer}",String.valueOf(t.getRelationer()));
  		sql  = sql.replace("#{check_type}",String.valueOf(t.getCheckType()));
- 		sql  = sql.replace("#{check_content}",String.valueOf(t.getCheckContent()));
  		sql  = sql.replace("#{brand}",String.valueOf(t.getBrand()));
  		sql  = sql.replace("#{sh_date}",String.valueOf(t.getShDate()));
  		sql  = sql.replace("#{UUID}",UUID.randomUUID().toString());

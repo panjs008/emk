@@ -58,12 +58,15 @@ public class EmkCheckFactoryEntity implements java.io.Serializable {
 	private String businesser;
 	/**业务员ID*/
 	private String businesserName;
+	@Excel(name = "业务跟单员")
+	private String tracer;
+	private String tracerName;
+	@Excel(name = "生产跟单员")
+	private String developer;
+	private String developerName;
 	/**提交申请日期*/
 	@Excel(name="提交申请日期",width=15)
 	private String kdDate;
-	/**供应商类型*/
-	@Excel(name="供应商类型",width=15)
-	private String gysType;
 	/**供应商*/
 	@Excel(name="供应商",width=15)
 	private String gys;
@@ -82,12 +85,11 @@ public class EmkCheckFactoryEntity implements java.io.Serializable {
 	/**联系人*/
 	@Excel(name="联系人",width=15)
 	private String relationer;
+	@Excel(name="电话",width=15)
+	private String telphone;
 	/**审核类型*/
 	@Excel(name="审核类型",width=15)
 	private String checkType;
-	/**验厂内容*/
-	@Excel(name="验厂内容",width=15)
-	private String checkContent;
 	/**验厂标准*/
 	@Excel(name="验厂标准",width=15)
 	private String brand;
@@ -99,7 +101,41 @@ public class EmkCheckFactoryEntity implements java.io.Serializable {
 	private String ycsqbh;
 	@Excel(name="申请事由",width=15)
 	private String applyReason;
-	private String state;
+	@Excel(name="审核项目",width=15)
+	private String checkItem;
+	private String state;					//0 创建 1 提交 2 已完成 3 未完成
+	private String ycstate;			    //0 未分配验厂员 2 已分配验厂员 3 已完成 4 未完成
+
+	private String noticType;
+	@Excel(name="计划审核日期",width=15)
+	private String jhshDate;
+	@Column(name ="notic_type",nullable=false,length=36)
+	public String getNoticType() {
+		return noticType;
+	}
+
+	public void setNoticType(String noticType) {
+		this.noticType = noticType;
+	}
+
+	@Column(name ="jhsh_date",nullable=false,length=36)
+	public String getJhshDate() {
+		return jhshDate;
+	}
+
+	public void setJhshDate(String jhshDate) {
+		this.jhshDate = jhshDate;
+	}
+
+	@Column(name ="ycstate",nullable=false,length=36)
+	public String getYcstate() {
+		return ycstate;
+	}
+
+	public void setYcstate(String ycstate) {
+		this.ycstate = ycstate;
+	}
+
 	/**
 	 *方法: 取得java.lang.String
 	 *@return: java.lang.String  主键
@@ -309,23 +345,6 @@ public class EmkCheckFactoryEntity implements java.io.Serializable {
 	}
 	/**
 	 *方法: 取得java.lang.String
-	 *@return: java.lang.String  供应商类型
-	 */
-
-	@Column(name ="GYS_TYPE",nullable=true,length=32)
-	public String getGysType(){
-		return this.gysType;
-	}
-
-	/**
-	 *方法: 设置java.lang.String
-	 *@param: java.lang.String  供应商类型
-	 */
-	public void setGysType(String gysType){
-		this.gysType = gysType;
-	}
-	/**
-	 *方法: 取得java.lang.String
 	 *@return: java.lang.String  供应商
 	 */
 
@@ -443,23 +462,7 @@ public class EmkCheckFactoryEntity implements java.io.Serializable {
 	public void setCheckType(String checkType){
 		this.checkType = checkType;
 	}
-	/**
-	 *方法: 取得java.lang.String
-	 *@return: java.lang.String  验厂内容
-	 */
 
-	@Column(name ="CHECK_CONTENT",nullable=true,length=512)
-	public String getCheckContent(){
-		return this.checkContent;
-	}
-
-	/**
-	 *方法: 设置java.lang.String
-	 *@param: java.lang.String  验厂内容
-	 */
-	public void setCheckContent(String checkContent){
-		this.checkContent = checkContent;
-	}
 	/**
 	 *方法: 取得java.lang.String
 	 *@return: java.lang.String  验厂标准
@@ -529,4 +532,59 @@ public class EmkCheckFactoryEntity implements java.io.Serializable {
 	public void setState(String state) {
 		this.state = state;
 	}
+
+	@Column(name ="check_item",nullable=true,length=32)
+	public String getCheckItem() {
+		return checkItem;
+	}
+
+	public void setCheckItem(String checkItem) {
+		this.checkItem = checkItem;
+	}
+
+	@Column(name ="telphone",nullable=true,length=32)
+	public String getTelphone() {
+		return telphone;
+	}
+
+	public void setTelphone(String telphone) {
+		this.telphone = telphone;
+	}
+
+	@Column(name = "TRACER", nullable = true, length = 32)
+	public String getTracer() {
+		return this.tracer;
+	}
+
+	public void setTracer(String tracer) {
+		this.tracer = tracer;
+	}
+
+	@Column(name = "TRACER_NAME", nullable = true, length = 32)
+	public String getTracerName() {
+		return this.tracerName;
+	}
+
+	public void setTracerName(String tracerName) {
+		this.tracerName = tracerName;
+	}
+
+	@Column(name = "DEVELOPER", nullable = true, length = 32)
+	public String getDeveloper() {
+		return this.developer;
+	}
+
+	public void setDeveloper(String developer) {
+		this.developer = developer;
+	}
+
+	@Column(name = "DEVELOPER_NAME", nullable = true, length = 32)
+	public String getDeveloperName() {
+		return this.developerName;
+	}
+
+	public void setDeveloperName(String developerName) {
+		this.developerName = developerName;
+	}
+
 }

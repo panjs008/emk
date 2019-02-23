@@ -48,7 +48,7 @@ public class EmkApprovalEntity implements java.io.Serializable {
 	private String commitTime;
 	/**工单类型*/
 	@Excel(name="工单类型",width=15)
-	private Integer type;
+	private Integer type;								// 0 意向询盘单，1 验厂申请单， 2
 	/**当前节点名称*/
 	@Excel(name="当前节点名称",width=15)
 	private String processName;

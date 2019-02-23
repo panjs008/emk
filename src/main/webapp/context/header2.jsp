@@ -138,4 +138,8 @@
             });
         });
     }
+
+    function downloadFile(url) {
+        window.open("${webRoot}/"+url);
+    }
 </script>

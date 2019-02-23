@@ -192,7 +192,8 @@
 				<input id="peopleFile" name="peopleFile" value="${emkCustomUsePage.peopleFile }" type="hidden" />
 				<input id="peopleFileUrl" name="peopleFileUrl"  value="${emkCustomUsePage.peopleFileUrl }" type="hidden" />
 				<t:upload name="instruction0" id="instruction0" dialog="false" extend="*.jpg;*.png;*.doc;*.txt;*.xls" buttonText="添加文件" queueID="instructionfile" view="false" auto="true" uploader="systemController.do?saveFiles"  onUploadSuccess="uploadSuccess0" >
-				</t:upload><span id="peopleFileId"></span>
+				</t:upload><c:if test="${emkCustomUsePage.peopleFileUrl ne ''}">[<a href="javascript:downloadFile('${emkCustomUsePage.peopleFileUrl }')">${emkCustomUsePage.peopleFile }</a>]</c:if><span id="peopleFileId"></span>
+
 			</td>
 		</tr>
 
@@ -239,7 +240,8 @@
 				<input id="zlFile" name="zlFile" type="hidden" value="${emkCustomUsePage.zlFile }" />
 				<input id="zlFileUrl" name="zlFileUrl" type="hidden" value="${emkCustomUsePage.zlFileUrl }" />
 				<t:upload name="instruction1" id="instruction1" dialog="false" extend="*.jpg;*.png;*.doc;*.txt;*.xls" buttonText="添加文件" queueID="instructionfile" view="false" auto="true" uploader="systemController.do?saveFiles"  onUploadSuccess="uploadSuccess1" >
-				</t:upload><span id="zlFileId"></span>
+				</t:upload><c:if test="${emkCustomUsePage.zlFileUrl ne ''}">[<a href="javascript:downloadFile('${emkCustomUsePage.zlFileUrl }')">${emkCustomUsePage.zlFile }</a>]</c:if><span id="zlFileId"></span>
+
 			</td>
 		</tr>
 
@@ -286,7 +288,8 @@
 				<input id="fkFile" name="fkFile" type="hidden" value="${emkCustomUsePage.fkFile }" />
 				<input id="fkFileUrl" name="fkFileUrl" type="hidden" value="${emkCustomUsePage.fkFileUrl }" />
 				<t:upload name="instruction2" id="instruction2" dialog="false" extend="*.jpg;*.png;*.doc;*.txt;*.xls" buttonText="添加文件" queueID="instructionfile" view="false" auto="true" uploader="systemController.do?saveFiles"  onUploadSuccess="uploadSuccess2" >
-				</t:upload><span id="fkFileId"></span>
+				</t:upload><c:if test="${emkCustomUsePage.fkFileUrl ne ''}">[<a href="javascript:downloadFile('${emkCustomUsePage.fkFileUrl }')">${emkCustomUsePage.fkFile }</a>]</c:if><span id="fkFileId"></span>
+
 			</td>
 		</tr>
 
@@ -333,7 +336,8 @@
 				<input id="checkHuoFile" name="checkHuoFile" type="hidden" value="${emkCustomUsePage.checkHuoFile }" />
 				<input id="checkHuoFileUrl" name="checkHuoFileUrl" type="hidden" value="${emkCustomUsePage.checkHuoFileUrl }" />
 				<t:upload name="instruction3" id="instruction3" dialog="false" extend="*.jpg;*.png;*.doc;*.txt;*.xls" buttonText="添加文件" queueID="instructionfile" view="false" auto="true" uploader="systemController.do?saveFiles"  onUploadSuccess="uploadSuccess3" >
-				</t:upload><span id="checkHuoFileId"></span>
+				</t:upload><c:if test="${emkCustomUsePage.checkHuoFileUrl ne ''}">[<a href="javascript:downloadFile('${emkCustomUsePage.checkHuoFileUrl }')">${emkCustomUsePage.checkHuoFile }</a>]</c:if><span id="checkHuoFileId"></span>
+
 			</td>
 		</tr>
 
@@ -380,7 +384,8 @@
 				<input id="testFile" name="testFile" type="hidden" value="${emkCustomUsePage.testFile }" />
 				<input id="testFileUrl" name="testFileUrl" type="hidden" value="${emkCustomUsePage.testFileUrl }" />
 				<t:upload name="instruction4" id="instruction4" dialog="false" extend="*.jpg;*.png;*.doc;*.txt;*.xls" buttonText="添加文件" queueID="instructionfile" view="false" auto="true" uploader="systemController.do?saveFiles"  onUploadSuccess="uploadSuccess4" >
-				</t:upload><span id="testFileId"></span>
+				</t:upload><c:if test="${emkCustomUsePage.testFileUrl ne ''}">[<a href="javascript:downloadFile('${emkCustomUsePage.testFileUrl }')">${emkCustomUsePage.testFile }</a>]</c:if><span id="testFileId"></span>
+
 			</td>
 		</tr>
 
@@ -427,7 +432,8 @@
 				<input id="pactFile" name="pactFile" type="hidden" value="${emkCustomUsePage.pactFile }" />
 				<input id="pactFileUrl" name="pactFileUrl" type="hidden" value="${emkCustomUsePage.pactFileUrl }" />
 				<t:upload name="instruction5" id="instruction5" dialog="false" extend="*.jpg;*.png;*.doc;*.txt;*.xls" buttonText="添加文件" queueID="instructionfile" view="false" auto="true" uploader="systemController.do?saveFiles"  onUploadSuccess="uploadSuccess5" >
-				</t:upload><span id="pactFileId"></span>
+				</t:upload><c:if test="${emkCustomUsePage.pactFileUrl ne ''}">[<a href="javascript:downloadFile('${emkCustomUsePage.pactFileUrl }')">${emkCustomUsePage.pactFile }</a>]</c:if><span id="pactFileId"></span>
+
 			</td>
 		</tr>
 
@@ -474,7 +480,8 @@
 				<input id="sampleFile" name="sampleFile" type="hidden" value="${emkCustomUsePage.sampleFile }" />
 				<input id="sampleFileUrl" name="sampleFileUrl" type="hidden" value="${emkCustomUsePage.sampleFileUrl }" />
 				<t:upload name="instruction6" id="instruction6" dialog="false" extend="*.jpg;*.png;*.doc;*.txt;*.xls" buttonText="添加文件" queueID="instructionfile" view="false" auto="true" uploader="systemController.do?saveFiles"  onUploadSuccess="uploadSuccess6" >
-				</t:upload><span id="sampleFileId"></span>
+				</t:upload><c:if test="${emkCustomUsePage.sampleFileUrl ne ''}">[<a href="javascript:downloadFile('${emkCustomUsePage.sampleFileUrl }')">${emkCustomUsePage.sampleFile }</a>]</c:if><span id="sampleFileId"></span>
+
 			</td>
 		</tr>
 
@@ -521,7 +528,8 @@
 				<input id="sendHuoFile" name="sendHuoFile" type="hidden" value="${emkCustomUsePage.sendHuoFile }" />
 				<input id="sendHuoFileUrl" name="sendHuoFileUrl" type="hidden" value="${emkCustomUsePage.sendHuoFileUrl }" />
 				<t:upload name="instruction7" id="instruction7" dialog="false" extend="*.jpg;*.png;*.doc;*.txt;*.xls" buttonText="添加文件" queueID="instructionfile" view="false" auto="true" uploader="systemController.do?saveFiles"  onUploadSuccess="uploadSuccess7" >
-				</t:upload><span id="sendHuoFileId"></span>
+				</t:upload><c:if test="${emkCustomUsePage.sendHuoFileUrl ne ''}">[<a href="javascript:downloadFile('${emkCustomUsePage.sendHuoFileUrl }')">${emkCustomUsePage.sendHuoFile }</a>]<span id="sendHuoFileId"></span></c:if>
+
 			</td>
 		</tr>
 

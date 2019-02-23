@@ -7,9 +7,9 @@
 	<t:base type="jquery,easyui,tools,DatePicker"></t:base>
 	<script type="text/javascript">
 		//编写自定义JS代码
-		$("#level").val("${emkFactoryArchivesPage.level}");
 
 		$(function(){
+			$("#level").val("${emkFactoryArchivesPage.level}");
 			$.ajax({
 				url : "ymkCustomController.do?getCity&code=A01A05",
 				type : 'post',

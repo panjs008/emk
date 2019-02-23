@@ -1,5 +1,6 @@
 package com.emk.util;
 
+import com.emk.approval.approvaldetail.entity.EmkApprovalDetailEntity;
 import org.activiti.engine.*;
 import org.activiti.engine.impl.RepositoryServiceImpl;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;

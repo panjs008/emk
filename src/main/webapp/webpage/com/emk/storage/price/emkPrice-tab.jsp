@@ -29,7 +29,7 @@
 
 <body>
 
-<t:tabs id="priceDetail"  iframe="false" tabPosition="top" width="100%" heigth="99%"  fit="true">
+<t:tabs id="priceDetail"  iframe="false" tabPosition="top" width="100%" heigth="${param.hVal}"  fit="true">
 	<t:tab iframe="emkPriceController.do?goBase&id=${param.id}"  width="100%" heigth="99%"   icon="fa fa-calendar" title="基本信息" id="base"></t:tab>
 	<t:tab href="emkPriceController.do?goPb&priceId=${param.id}"   width="100%" icon="fa fa-cube" title="坯布" id="pbdetail"></t:tab>
 	<t:tab href="emkPriceController.do?orderMxList&priceId=${param.id}"   width="100%" icon="fa fa-flask" title="原料面料" id="detail"></t:tab>

@@ -205,7 +205,16 @@ public class EmkEnquiryController extends BaseController {
 
             emkEnquiry.setEnquiryNo("YXDD" + emkEnquiry.getCusNum() + DateUtil.format(new Date(), "yyMMdd") + String.format("%03d", Integer.parseInt(orderNum.get("orderNum").toString())));
             emkEnquiryService.save(emkEnquiry);
+            //type 工单类型，workNum 单号，formId 对应表单ID，bpmName 节点名称，bpmNode 节点代码，advice 处理意见，user 用户对象
             EmkApprovalEntity approvalEntity = new EmkApprovalEntity();
+            EmkApprovalDetailEntity approvalDetailEntity = new EmkApprovalDetailEntity();
+
+            ApprovalUtil.saveApproval(approvalEntity,0,emkEnquiry.getEnquiryNo(),emkEnquiry.getId(),user);
+            systemService.save(approvalEntity);
+
+            ApprovalUtil.saveApprovalDetail(approvalDetailEntity,approvalEntity.getId(),"意向询盘单","instorageTask","提交",user);
+            systemService.save(approvalDetailEntity);
+            /*EmkApprovalEntity approvalEntity = new EmkApprovalEntity();
             approvalEntity.setType(0);
             approvalEntity.setCommitTime(DateUtil.getCurrentTimeString(null));
             approvalEntity.setCommitId(user.getId());
@@ -221,7 +230,7 @@ public class EmkEnquiryController extends BaseController {
             approvalDetail.setBpmName("意向询盘单");
             approvalDetail.setBpmNode("instorageTask");
             approvalDetail.setApproveDate(DateUtil.getCurrentTimeString(null));
-            systemService.save(approvalDetail);
+            systemService.save(approvalDetail);*/
 
             String dataRows = (String) map.get("dataRowsVal");
             if (Utils.notEmpty(dataRows)) {
@@ -661,15 +670,15 @@ public class EmkEnquiryController extends BaseController {
 
                         if (!task1.getTaskDefinitionKey().equals("instorageTask")) {
                             //保存审批意见
-                            EmkApprovalDetailEntity approvalDetail = new EmkApprovalDetailEntity();
-                            approvalDetail.setApprovalId(b.getId());
+                            EmkApprovalDetailEntity approvalDetail = ApprovalUtil.saveApprovalDetail(b.getId(),user,b);
+                            /*approvalDetail.setApprovalId(b.getId());
                             approvalDetail.setApproveUserId(user.getId());
                             approvalDetail.setApproveDate(DateUtil.getCurrentTimeString(null));
                             approvalDetail.setApproveStatus(0);
                             b.setBpmSher(user.getRealName());
                             b.setBpmSherId(user.getId());
-                            b.setBpmDate(DateUtil.getCurrentTimeString(null));
-                            HistoricProcessInstance processInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(task1.getProcessInstanceId()).singleResult();
+                            b.setBpmDate(DateUtil.getCurrentTimeString(null));*/
+                            //HistoricProcessInstance processInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(task1.getProcessInstanceId()).singleResult();
                             flag = 0;
                             if(task1.getTaskDefinitionKey().equals("ywbCheckTask") || task1.getTaskDefinitionKey().equals("jsbCheckTask") || task1.getTaskDefinitionKey().equals("scbCheckTask")){
                                 if (map.get("isPass").equals("0")) {
@@ -814,7 +823,6 @@ public class EmkEnquiryController extends BaseController {
 
     @RequestMapping(params="goTime")
     public ModelAndView goTime(EmkEnquiryEntity emkEnquiryEntity, HttpServletRequest req, DataGrid dataGrid) {
-        String sql = "";String countsql = "";
         EmkApprovalEntity approvalEntity = systemService.findUniqueByProperty(EmkApprovalEntity.class,"formId",emkEnquiryEntity.getId());
         List<EmkApprovalDetailEntity> approvalDetailEntityList = systemService.findHql("from EmkApprovalDetailEntity where approvalId=?",approvalEntity.getId());
         req.setAttribute("approvalDetailEntityList", approvalDetailEntityList);

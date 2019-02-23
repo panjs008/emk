@@ -3,7 +3,7 @@
 <t:base type="jquery,easyui,tools,DatePicker"></t:base>
 <div class="easyui-layout" fit="true">
   <div region="center" style="padding:0px;border:0px">
-  <t:datagrid name="emkCheckFactoryList" checkbox="false" pagination="true" fitColumns="true" title="" actionUrl="emkCheckFactoryController.do?datagrid" idField="id" fit="true" btnCls="bootstrap"  queryMode="group">
+  <t:datagrid name="emkCheckFactoryList" checkbox="false" pagination="true" fitColumns="false" title="" actionUrl="emkCheckFactoryController.do?datagrid" idField="id" fit="true" btnCls="bootstrap"  queryMode="group">
    <t:dgCol title="主键"  field="id"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="创建人名称"  field="createName"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="创建人登录名称"  field="createBy"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
@@ -11,16 +11,25 @@
 
       <t:dgCol title="创建日期"  field="createDate"  formatter="yyyy-MM-dd"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="所属部门"  field="sysOrgCode"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
-      <t:dgCol title="验厂申请表编号"  field="ycsqbh"  queryMode="single"  width="110"></t:dgCol>
-      <t:dgCol title="申请日期"  field="kdDate"  queryMode="single"  width="80"></t:dgCol>
-      <t:dgCol title="审核日期"  field="shDate"  queryMode="single"  width="80"></t:dgCol>
-      <t:dgCol title="业务部门"  field="businesseDeptName"  queryMode="single"  width="80"></t:dgCol>
+      <t:dgCol title="验厂申请表编号" query="true" field="ycsqbh"  queryMode="single"  width="150" frozenColumn="true"></t:dgCol>
+      <t:dgCol title="业务部门" query="true"  field="businesseDeptName"  queryMode="single"  width="90"></t:dgCol>
       <t:dgCol title="业务员"  field="businesserName"  queryMode="single"  width="70"></t:dgCol>
-      <t:dgCol title="客户代码" query="true" field="cusNum"  queryMode="single"  width="70"></t:dgCol>
-      <t:dgCol title="客户名称" query="true" field="cusName"  queryMode="single"  width="130"></t:dgCol>
-      <t:dgCol title="供应商" query="true" field="gys"  queryMode="single"  width="130"></t:dgCol>
-      <t:dgCol title="工厂名称" query="true" field="factoryCode"  dictionary="gongchang" queryMode="single"  width="130"></t:dgCol>
-      <t:dgCol title="状态"  field="state" formatterjs="formatColor"  queryMode="single"  width="60"></t:dgCol>
+      <t:dgCol title="审核类型" query="true"  field="checkType"  queryMode="single"  width="70"></t:dgCol>
+      <t:dgCol title="验厂标准"  field="brand"  queryMode="single"  width="150"></t:dgCol>
+      <t:dgCol title="审核项目" query="true"  field="checkItem" replace="反恐_0,质量_1,人权_2,环保_3,其他_4" queryMode="single"  width="80"></t:dgCol>
+
+      <%--<t:dgCol title="申请日期"  field="kdDate"  queryMode="single"  width="80"></t:dgCol>--%>
+      <t:dgCol title="申请审核日期"  field="shDate"  queryMode="single"  width="100"></t:dgCol>
+      <t:dgCol title="工厂名称" field="factoryCode"  dictionary="gongchang" queryMode="single"  width="130"></t:dgCol>
+      <t:dgCol title="联系人" field="relationer"  queryMode="single"  width="80"></t:dgCol>
+      <t:dgCol title="电话" field="telphone"   queryMode="single"  width="90"></t:dgCol>
+      <t:dgCol title="业务跟单员"  field="tracerName"  queryMode="single"  width="100"></t:dgCol>
+      <t:dgCol title="生产跟单员"  field="developerName"  queryMode="single"  width="100"></t:dgCol>
+      <t:dgCol title="客户代码" query="true" field="cusNum"  queryMode="single"  width="100"></t:dgCol>
+      <%--<t:dgCol title="客户名称" query="true" field="cusName"  queryMode="single"  width="130"></t:dgCol>--%>
+      <%--<t:dgCol title="供应商" query="true" field="gys"  queryMode="single"  width="130"></t:dgCol>--%>
+      <t:dgCol title="申请表状态"  field="state" formatterjs="formatColor"  queryMode="single"  width="100"></t:dgCol>
+      <t:dgCol title="验厂状态"  field="ycstate" formatterjs="formatColor2"  queryMode="single"  width="100"></t:dgCol>
 
       <t:dgFunOpt funname="goToProcess(id,createBy,createName)" title="流程进度" operationCode="process" urlclass="ace_button"  urlStyle="background-color:#ec4758;" urlfont="fa-tasks"></t:dgFunOpt>
       <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add"  url="emkCheckFactoryController.do?goAdd&winTitle=录入验厂申请" funname="add" height="600" width="1000"></t:dgToolBar>
@@ -45,6 +54,14 @@
          return '<span style="color:	#0000FF;">完成</span>';
      } else {
          return '创建';
+     }
+ }
+
+ function formatColor2(val, row) {
+     if (row.ycstate == "0") {
+         return '未分配验厂员';
+     } else if (row.state == "1") {
+         return '<span style="color:	#0000FF;">已分配验厂员</span>';
      }
  }
 

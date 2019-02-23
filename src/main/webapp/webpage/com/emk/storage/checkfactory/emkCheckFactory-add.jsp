@@ -5,7 +5,7 @@
 <head>
 	<title>客户手册</title>
 	<t:base type="jquery,easyui,tools,DatePicker"></t:base>
-	<%@include file="/context/header.jsp"%>
+	<%@include file="/context/header2.jsp"%>
 	<script src="${webRoot}/context/gys.js"></script>
 
 	<script type="text/javascript">
@@ -57,6 +57,38 @@
 				<input id="businesserName" name="businesserName"  type="hidden"  />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">业务员</label>
+			</td>
+		</tr>
+		<tr>
+			<td class="value" align="right" colspan="3">
+				<label class="Validform_label">
+					生产跟单员:
+				</label>
+			</td>
+			<td class="value">
+				<select class="form-control select2" id="developerId"  >
+					<option value=''>请选择</option>
+				</select>
+				<input id="developer" name="developer" readonly type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="developerName" name="developerName"  type="hidden"  />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">生产跟单员</label>
+			</td>
+		</tr>
+		<tr>
+			<td class="value" align="right" colspan="3">
+				<label class="Validform_label">
+					业务跟单员:
+				</label>
+			</td>
+			<td class="value">
+				<select class="form-control select2" id="tracerId"  >
+					<option value=''>请选择</option>
+				</select>
+				<input id="tracer" name="tracer" readonly type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="tracerName" name="tracerName"  type="hidden"  />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">业务跟单员</label>
 			</td>
 		</tr>
 		<tr>
@@ -176,6 +208,7 @@
 				<label class="Validform_label" style="display: none;">审核类型</label>
 			</td>
 		</tr>
+
 		<tr>
 			<td align="right">
 				<label class="Validform_label">
@@ -186,6 +219,38 @@
 				<textarea  id="brand" style="width:95%;height:60px" class="inputxt" rows="4" name="brand"></textarea>
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">验厂标准</label>
+			</td>
+		</tr>
+		<tr>
+			<td align="right">
+				<label class="Validform_label">
+					审核项目:
+				</label>
+			</td>
+			<td class="value">
+				<select id="checkItem" name="checkItem"  datatype="*">
+					<option value="0">反恐</option>
+					<option value="1">质量</option>
+					<option value="2">人权</option>
+					<%--<option value="3">环保</option>
+					<option value="4">其他</option>--%>
+				</select>
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">审核项目</label>
+			</td>
+			<td align="right">
+				<label class="Validform_label">
+					通知类型:
+				</label>
+			</td>
+			<td class="value">
+				<select id="noticType" name="noticType"  datatype="*">
+					<option value="0">半通知</option>
+					<option value="1">通知</option>
+					<option value="2">不通知</option>
+				</select>
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">通知类型</label>
 			</td>
 		</tr>
 		<%--<tr>
@@ -207,10 +272,21 @@
                             </label>
                         </td>
                         <td class="value">
-                            <input id="shDate" name="shDate" readonly  onClick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'kdDate\');}'})" type="text" style="width: 150px" class="Wdate"  ignore="ignore" />
+                            <input id="shDate" name="shDate"  onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})" type="text" style="width: 150px" class="Wdate"  ignore="ignore" />
                             <span class="Validform_checktip"></span>
                             <label class="Validform_label" style="display: none;">申请审核日期</label>
                         </td>
+
+						<td align="right">
+							<label class="Validform_label">
+								计划审核日期:
+							</label>
+						</td>
+						<td class="value">
+							<input id="jhshDate" name="jhshDate"  onClick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'shDate\');}'})" type="text" style="width: 150px" class="Wdate"  ignore="ignore" />
+							<span class="Validform_checktip"></span>
+							<label class="Validform_label" style="display: none;">计划审核日期</label>
+						</td>
                     </tr>
 
 	</table>
