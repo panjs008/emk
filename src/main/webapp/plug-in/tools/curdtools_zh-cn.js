@@ -466,7 +466,7 @@ function createwindow(title, addurl,width,height) {
 	}
     //--author：JueYue---------date：20140427---------for：弹出bug修改,设置了zindex()函数
 	if(addurl.indexOf('emkPriceController.do?goAdd')>=0 || addurl.indexOf('emkPriceController.do?goUpdate')>=0){
-		addurl = addurl + "&wVal="+window.top.document.body.offsetWidth*0.97+ "px&hVal="+window.top.document.body.offsetHeight*0.85+"px";
+		addurl = addurl + "&wVal="+window.top.document.body.offsetWidth*0.97+ "px&hVal="+(window.top.document.body.offsetHeight-120)+"px";
 		$.dialog({
 			content: 'url:'+addurl,
 			lock : true,
