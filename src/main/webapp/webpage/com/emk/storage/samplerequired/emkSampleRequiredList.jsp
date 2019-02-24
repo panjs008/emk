@@ -9,7 +9,7 @@
    <t:dgCol title="创建人登录名称"  field="createBy"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="创建日期"  field="createDate"  formatter="yyyy-MM-dd"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="所属部门"  field="sysOrgCode"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
-   <t:dgCol title="操作" field="opt" frozenColumn="true"  width="140"></t:dgCol>
+   <%--<t:dgCol title="操作" field="opt" frozenColumn="true"  width="140"></t:dgCol>--%>
    <t:dgCol title="需求单号"  field="requiredNo" queryMode="single"  width="140"></t:dgCol>
    <t:dgCol title="提交日期"  field="kdDate"  queryMode="single"  width="80"></t:dgCol>
    <t:dgCol title="交货日期"  field="ysDate"  queryMode="single"  width="80"></t:dgCol>
@@ -25,8 +25,8 @@
       <t:dgCol title="颜色名称"  field="colorZnName"  queryMode="single"  width="70"></t:dgCol>
 
    <%--<t:dgCol title="状态"  field="state"  queryMode="single"  width="80"></t:dgCol>--%>
-      <t:dgFunOpt funname="queryDetail2(id,sampleNo)" title="主辅料" urlclass="ace_button" urlfont="fa-list-alt"></t:dgFunOpt>
-      <t:dgFunOpt funname="queryDetail3(id,sampleNo)" title="工序" urlclass="ace_button" urlfont="fa-cog"></t:dgFunOpt>
+     <%-- <t:dgFunOpt funname="queryDetail2(id,sampleNo)" title="主辅料" urlclass="ace_button" urlfont="fa-list-alt"></t:dgFunOpt>
+      <t:dgFunOpt funname="queryDetail3(id,sampleNo)" title="工序" urlclass="ace_button" urlfont="fa-cog"></t:dgFunOpt>--%>
        <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkSampleRequiredController.do?goAdd&winTitle=录入样品需求单" funname="add" height="600" width="1260"></t:dgToolBar>
        <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit"  url="emkSampleRequiredController.do?goUpdate&winTitle=编辑样品需求单" funname="update" height="600" width="1260"></t:dgToolBar>
       <t:dgToolBar title="查看" icon="fa fa-search" operationCode="look" url="emkSampleRequiredController.do?goUpdate&winTitle=查看样品需求单" funname="detail" height="600" width="1260"></t:dgToolBar>
@@ -36,7 +36,7 @@
   </t:datagrid>
   </div>
  </div>
-<div data-options="region:'east',
+<%--<div data-options="region:'east',
 	title:'清单明细',
 	collapsed:true,
 	split:true,
@@ -49,7 +49,7 @@
 	}"
      style="width: 500px; overflow: hidden;" id="eastPanel">
     <div class="easyui-panel" style="padding:0px;border:0px" fit="true" border="false" id="proDetialListpanel"></div>
-</div>
+</div>--%>
  <script src = "webpage/com/emk/storage/samplerequired/emkSampleRequiredList.js"></script>		
  <script type="text/javascript">
  $(document).ready(function(){

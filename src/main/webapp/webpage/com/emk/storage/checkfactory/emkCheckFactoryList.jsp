@@ -7,8 +7,8 @@
    <t:dgCol title="主键"  field="id"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="创建人名称"  field="createName"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="创建人登录名称"  field="createBy"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
+      <t:dgCol title="当前流程节点"  field="processName"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
       <t:dgCol title="操作" field="opt" frozenColumn="true"  width="100"></t:dgCol>
-
       <t:dgCol title="创建日期"  field="createDate"  formatter="yyyy-MM-dd"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="所属部门"  field="sysOrgCode"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
       <t:dgCol title="验厂申请表编号" query="true" field="ycsqbh"  queryMode="single"  width="150" frozenColumn="true"></t:dgCol>
@@ -31,7 +31,7 @@
       <t:dgCol title="申请表状态"  field="state" formatterjs="formatColor"  queryMode="single"  width="100"></t:dgCol>
       <t:dgCol title="验厂状态"  field="ycstate" formatterjs="formatColor2"  queryMode="single"  width="100"></t:dgCol>
 
-      <t:dgFunOpt funname="goToProcess(id,createBy,createName)" title="流程进度" operationCode="process" urlclass="ace_button"  urlStyle="background-color:#ec4758;" urlfont="fa-tasks"></t:dgFunOpt>
+      <t:dgFunOpt funname="goToProcess(id,createBy,processName,state)" title="流程进度" operationCode="process" urlclass="ace_button"  urlStyle="background-color:#ec4758;" urlfont="fa-tasks"></t:dgFunOpt>
       <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add"  url="emkCheckFactoryController.do?goAdd&winTitle=录入验厂申请" funname="add" height="600" width="1000"></t:dgToolBar>
       <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkCheckFactoryController.do?goUpdate&winTitle=编辑验厂申请" funname="update" height="600" width="1000"></t:dgToolBar>
       <t:dgToolBar title="查看" icon="fa fa-search" operationCode="look" url="emkCheckFactoryController.do?goUpdate&winTitle=查看验厂申请" funname="detail" height="580" width="1000"></t:dgToolBar>
@@ -94,10 +94,34 @@
      });
  }
 
- function goToProcess(id,createBy,processName) {
+ function goToProcess(id,createBy,processName,state){
      var height = window.top.document.body.offsetHeight * 0.85;
-
-     $.ajax({
+     var processNameVal='',node='';
+     if(processName != null){
+         if(processName.indexOf('-') > 0){
+             processNameVal = processName.substring(0,processName.indexOf('-'));
+             node = processName.substring(processName.indexOf('-')+1);
+         }
+     }
+     console.log(processName);
+     if(createBy == "${CUR_USER.userName}"){
+         if(state == '0'){
+             createwindow("流程进度--当前环节：" + processNameVal, "flowController.do?goProcess&node="+node+"&processUrl=com/emk/storage/checkfactory/emkCheckFactory-process&id=" + id, 1200, height);
+         }else {
+             createdetailwindow('流程进度--当前环节：' + processNameVal, 'flowController.do?goProcess&node='+node+'&processUrl=com/emk/storage/checkfactory/emkCheckFactory-process&id=' + id, 1200, height);
+         }
+     }else {
+         if (state == '2') {
+             createdetailwindow('流程进度--当前环节：完成', 'flowController.do?goProcess&node='+node+'&processUrl=com/emk/storage/enquiry/emkEnquiry-process&id=' + id, 1155, height);
+         } else {
+             if(processNameVal =="领导审核" && "${ROLE.rolecode}" == "ywjl") {
+                 createwindow("流程进度--当前环节：" + processNameVal, "flowController.do?goProcess&node="+node+"&processUrl=com/emk/storage/checkfactory/emkCheckFactory-process&id=" + id, 1200, height);
+             }else{
+                 createdetailwindow('流程进度--当前环节：' + processNameVal, 'flowController.do?goProcess&node='+node+'&processUrl=com/emk/storage/checkfactory/emkCheckFactory-process&id=' + id, 1200, height);
+             }
+         }
+     }
+    /* $.ajax({
          url: "flowController.do?getCurrentProcess&tableName=emk_check_factory&title=验厂申请单&id=" + id,
          type: 'post',
          cache: false,
@@ -125,7 +149,7 @@
                  }
              }
          }
-     });
+     });*/
  }
  
 //导入

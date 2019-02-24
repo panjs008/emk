@@ -451,10 +451,13 @@ function createwindow(title, addurl,width,height) {
 	if(addurl.indexOf('emkPriceController.do?goAdd')>=0 || addurl.indexOf('emkPriceController.do?goUpdate')>=0){
 		width =  window.top.document.body.offsetWidth;
 		height =window.top.document.body.offsetHeight-50;
+		addurl = addurl + "&wVal="+window.top.document.body.offsetWidth*0.97+ "px&hVal="+(window.top.document.body.offsetHeight-120)+"px&hVal2="+(window.top.document.body.offsetHeight-160)+"px";
+
 	}
 	if(addurl.indexOf('emkSampleRequiredController.do?goAdd')>=0 || addurl.indexOf('emkSampleRequiredController.do?goUpdate')>=0){
-		width =  window.top.document.body.offsetWidth;
-		height =window.top.document.body.offsetHeight-100;
+		height =window.top.document.body.offsetHeight-50;
+		addurl = addurl + "&wVal="+width+ "px&hVal="+(window.top.document.body.offsetHeight-120)+"px&hVal2="+(window.top.document.body.offsetHeight-160)+"px";
+
 	}
 	if(addurl.indexOf('emkProduceController.do?goAdd')>=0 || addurl.indexOf('emkProduceController.do?goUpdate')>=0){
 		width =  window.top.document.body.offsetWidth;
@@ -464,9 +467,10 @@ function createwindow(title, addurl,width,height) {
 		width =  window.top.document.body.offsetWidth;
 		height =window.top.document.body.offsetHeight-100;
 	}
-    //--author：JueYue---------date：20140427---------for：弹出bug修改,设置了zindex()函数
-	if(addurl.indexOf('emkPriceController.do?goAdd')>=0 || addurl.indexOf('emkPriceController.do?goUpdate')>=0){
-		addurl = addurl + "&wVal="+window.top.document.body.offsetWidth*0.97+ "px&hVal="+(window.top.document.body.offsetHeight-120)+"px&hVal2="+(window.top.document.body.offsetHeight-160)+"px";
+
+	if(addurl.indexOf('emkPriceController.do?goAdd')>=0 || addurl.indexOf('emkPriceController.do?goUpdate')>=0
+			|| addurl.indexOf('emkYptzdController.do?goAdd')>=0 || addurl.indexOf('emkYptzdController.do?goUpdate')>=0
+			|| addurl.indexOf('emkSampleRequiredController.do?goAdd')>=0 || addurl.indexOf('emkSampleRequiredController.do?goUpdate')>=0){
 		$.dialog({
 			content: 'url:'+addurl,
 			lock : true,

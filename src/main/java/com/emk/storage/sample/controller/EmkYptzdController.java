@@ -1,12 +1,19 @@
 package com.emk.storage.sample.controller;
 
 import com.alibaba.fastjson.JSONArray;
+import com.emk.storage.gl.entity.EmkGlEntity;
+import com.emk.storage.pb.entity.EmkPbEntity;
 import com.emk.storage.price.entity.EmkPriceEntity;
 import com.emk.storage.sample.entity.EmkSampleEntity;
 import com.emk.storage.sample.service.EmkSampleServiceI;
+import com.emk.storage.sampledetail.entity.EmkSampleDetailEntity;
+import com.emk.storage.samplegx.entity.EmkSampleGxEntity;
+import com.emk.storage.sampleran.entity.EmkSampleRanEntity;
+import com.emk.storage.sampleyin.entity.EmkSampleYinEntity;
 import com.emk.util.DateUtil;
 import com.emk.util.FlowUtil;
 import com.emk.util.ParameterUtil;
+import com.emk.util.Utils;
 import com.emk.workorder.workorder.entity.EmkWorkOrderEntity;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -79,6 +86,68 @@ public class EmkYptzdController extends BaseController {
     @RequestMapping(params = "list")
     public ModelAndView list(HttpServletRequest request) {
         return new ModelAndView("com/emk/storage/sample/emkSampleList");
+    }
+
+    @RequestMapping(params = "orderMxList")
+    public ModelAndView orderMxList(HttpServletRequest request) {
+        Map map = ParameterUtil.getParamMaps(request.getParameterMap());
+        if (Utils.notEmpty(map.get("priceId"))) {
+            List<EmkSampleDetailEntity> emkSampleDetailEntities = systemService.findHql("from EmkSampleDetailEntity where sampleId=? and type=0", map.get("priceId"));
+            request.setAttribute("emkSampleDetailEntities", emkSampleDetailEntities);
+        }
+        return new ModelAndView("com/emk/storage/price/orderMxList");
+    }
+
+    @RequestMapping(params = "orderMxList2")
+    public ModelAndView orderMxList2(HttpServletRequest request) {
+        Map map = ParameterUtil.getParamMaps(request.getParameterMap());
+        if (Utils.notEmpty(map.get("priceId"))) {
+            List<EmkSampleDetailEntity> emkSampleDetailEntities = systemService.findHql("from EmkSampleDetailEntity where sampleId=? and type=1", map.get("priceId"));
+            request.setAttribute("emkSampleDetailEntities1", emkSampleDetailEntities);
+        }
+        return new ModelAndView("com/emk/storage/price/orderMxList2");
+    }
+
+    @RequestMapping(params = "orderMxList3")
+    public ModelAndView orderMxList3(HttpServletRequest request) {
+        Map map = ParameterUtil.getParamMaps(request.getParameterMap());
+        if (Utils.notEmpty(map.get("priceId"))) {
+            List<EmkSampleDetailEntity> emkSampleDetailEntities = systemService.findHql("from EmkSampleDetailEntity where sampleId=? and type=2", map.get("priceId"));
+            request.setAttribute("emkSampleDetailEntities2", emkSampleDetailEntities);
+        }
+        return new ModelAndView("com/emk/storage/price/orderMxList3");
+    }
+
+    @RequestMapping(params = "gxList")
+    public ModelAndView gxList(HttpServletRequest request) {
+        Map map = ParameterUtil.getParamMaps(request.getParameterMap());
+        if (Utils.notEmpty(map.get("priceId"))) {
+            List<EmkSampleGxEntity> emkSampleGxEntities = systemService.findHql("from EmkSampleGxEntity where sampleId=?", map.get("priceId"));
+            request.setAttribute("emkSampleGxEntities", emkSampleGxEntities);
+        }
+        return new ModelAndView("com/emk/storage/price/gxList");
+    }
+    @RequestMapping(params = "ranList")
+    public ModelAndView ranList(HttpServletRequest request) {
+        Map map = ParameterUtil.getParamMaps(request.getParameterMap());
+        List<Map<String, Object>> list = systemService.findForJdbc("select typecode,typename from t_s_type t2 left join t_s_typegroup t1 on t1.ID=t2.typegroupid where typegroupcode='bmzl'");
+        request.setAttribute("bmzlList", list);
+        if (Utils.notEmpty(map.get("priceId"))) {
+            List<EmkSampleRanEntity> emkSampleRanEntities = systemService.findHql("from EmkSampleRanEntity where sampleId=? and type=0 ", map.get("priceId"));
+            request.setAttribute("emkSampleRanEntities", emkSampleRanEntities);
+        }
+        return new ModelAndView("com/emk/storage/price/ranList");
+    }
+    @RequestMapping(params = "yinList")
+    public ModelAndView yinList(HttpServletRequest request) {
+        Map map = ParameterUtil.getParamMaps(request.getParameterMap());
+        List<Map<String, Object>> list = systemService.findForJdbc("select typecode,typename from t_s_type t2 left join t_s_typegroup t1 on t1.ID=t2.typegroupid where typegroupcode='yhgyzl'");
+        request.setAttribute("yhgyzlList", list);
+        if (Utils.notEmpty(map.get("priceId"))) {
+            List<EmkSampleYinEntity> emkSampleYinEntities = systemService.findHql("from EmkSampleYinEntity where sampleId=?", map.get("priceId"));
+            request.setAttribute("emkSampleYinEntities", emkSampleYinEntities);
+        }
+        return new ModelAndView("com/emk/storage/price/yinList");
     }
 
     /*@RequestMapping(params = "list0")
@@ -247,6 +316,54 @@ public class EmkYptzdController extends BaseController {
 
         return new ModelAndView("com/emk/storage/sample/emkSample-add");
     }
+
+    @RequestMapping(params = "goTab")
+    public ModelAndView goBtn(EmkSampleEntity emkSample, HttpServletRequest req) {
+        return new ModelAndView("com/emk/storage/sample/emkPrice-tab");
+    }
+    @RequestMapping(params = "goBase")
+    public ModelAndView goBase(EmkSampleEntity emkSample, HttpServletRequest req) {
+        req.setAttribute("kdDate", DateUtils.format(new Date(), "yyyy-MM-dd"));
+        if (StringUtil.isNotEmpty(emkSample.getId())) {
+            emkSample = emkSampleService.getEntity(EmkSampleEntity.class, emkSample.getId());
+            req.setAttribute("emkSamplePage", emkSample);
+            try {
+                Map countMap = MyBeanUtils.culBeanCounts(emkSample);
+                req.setAttribute("countMap", countMap);
+                double a=0,b=0;
+                a = Double.parseDouble(countMap.get("finishColums").toString());
+                b = Double.parseDouble(countMap.get("Colums").toString());
+                DecimalFormat df = new DecimalFormat("#.00");
+                req.setAttribute("recent", df.format(a*100/b));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return new ModelAndView("com/emk/storage/price/emkPrice-base");
+    }
+
+    @RequestMapping(params = "goPb")
+    public ModelAndView goPb(EmkPbEntity emkPbEntity, HttpServletRequest req) {
+        if (StringUtil.isNotEmpty(emkPbEntity.getPriceId())) {
+            emkPbEntity = systemService.findUniqueByProperty(EmkPbEntity.class,"priceId",emkPbEntity.getPriceId());
+            req.setAttribute("emkPbPage", emkPbEntity);
+            try {
+                if(Utils.notEmpty(emkPbEntity)){
+                    Map countMap = MyBeanUtils.culBeanCounts(emkPbEntity);
+                    req.setAttribute("countMap", countMap);
+                    double a=0,b=0;
+                    a = Double.parseDouble(countMap.get("finishColums").toString())-4;
+                    b = Double.parseDouble(countMap.get("Colums").toString())-4;
+                    DecimalFormat df = new DecimalFormat("#.00");
+                    req.setAttribute("recent", df.format(a*100/b));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return new ModelAndView("com/emk/storage/price/emkPrice-pb");
+    }
+
 
     @RequestMapping(params = "goUpdate")
     public ModelAndView goUpdate(EmkSampleEntity emkSample, HttpServletRequest req) {

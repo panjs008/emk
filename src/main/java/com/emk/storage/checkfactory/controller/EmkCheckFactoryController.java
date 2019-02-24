@@ -261,6 +261,17 @@ public class EmkCheckFactoryController extends BaseController {
 		message = "验厂申请表更新成功";
 		EmkCheckFactoryEntity t = emkCheckFactoryService.get(EmkCheckFactoryEntity.class, emkCheckFactory.getId());
 		try {
+			if(t.getState().equals("1")){
+				j.setMsg("验厂申请已提交，无法修改");
+				j.setSuccess(false);
+				return j;
+			}
+			if(t.getState().equals("2")){
+				j.setMsg("验厂申请完成，无法修改");
+				j.setSuccess(false);
+				return j;
+			}
+
 			MyBeanUtils.copyBeanNotNull2Bean(emkCheckFactory, t);
 			emkCheckFactoryService.saveOrUpdate(t);
 			systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
@@ -306,7 +317,7 @@ public class EmkCheckFactoryController extends BaseController {
 				req.setAttribute("countMap", countMap);
 				double a=0,b=0;
 				a = Double.parseDouble(countMap.get("finishColums").toString())-7;
-				b = Double.parseDouble(countMap.get("Colums").toString())-8;
+				b = Double.parseDouble(countMap.get("Colums").toString())-9;
 				DecimalFormat df = new DecimalFormat("#.00");
 				req.setAttribute("recent", df.format(a*100/b));
 			} catch (Exception e) {
@@ -533,14 +544,41 @@ public class EmkCheckFactoryController extends BaseController {
 					List<Task> task = taskService.createTaskQuery().taskAssignee(id).list();
 					if (task.size() > 0) {
 						Task task1 = (Task)task.get(task.size() - 1);
+						EmkApprovalDetailEntity approvalDetail = ApprovalUtil.saveApprovalDetail(b.getId(),user,b);
+
 						if (task1.getTaskDefinitionKey().equals("checkfactoryTask")) {
 							taskService.complete(task1.getId(), variables);
 							t.setState("1");
 							b.setStatus(1);
-						}
-						if (task1.getTaskDefinitionKey().equals("checkTask")) {
-							EmkApprovalDetailEntity approvalDetail = ApprovalUtil.saveApprovalDetail(b.getId(),user,b);
 
+							approvalDetail.setBpmName("重新提交验收申请单");
+							approvalDetail.setBpmNode("checkfactoryTask");
+							approvalDetail.setApproveStatus(0);
+							approvalDetail.setApproveAdvice("重新提交");
+						}
+						if(task1.getTaskDefinitionKey().equals("checkTask")) {
+							if (map.get("isPass").equals("0")){
+								variables.put("isPass", map.get("isPass"));
+								taskService.complete(task1.getId(), variables);
+
+								approvalDetail.setBpmName("领导审核");
+								approvalDetail.setBpmNode("checkTask");
+								approvalDetail.setApproveStatus(0);
+								approvalDetail.setApproveAdvice(map.get("advice").toString());
+							}else{
+								systemService.executeSql("delete from act_hi_actinst  where proc_inst_id_=? and act_id_=?  ",task1.getProcessInstanceId(),"checkTask");
+								systemService.executeSql("delete from act_hi_taskinst where proc_inst_id_=? and task_def_key_=?  ",task1.getProcessInstanceId(),"checkTask");
+								systemService.executeSql("update act_ru_task set name_=?,task_def_key_=? where proc_inst_id_=? ","验厂申请","checkfactoryTask",task1.getProcessInstanceId());
+								systemService.executeSql("update act_ru_execution set rev_=1,act_id_=? where ID_=?", "checkfactoryTask",task1.getProcessInstanceId());
+
+								b.setStatus(0);
+								t.setState("0");
+
+								approvalDetail.setBpmName("回退验收申请单");
+								approvalDetail.setBpmNode("checkfactoryTask");
+								approvalDetail.setApproveStatus(1);
+								approvalDetail.setApproveAdvice("回退");
+							}
 								/*t.setLeader(user.getRealName());
 								t.setLeadUserId(user.getId());
 								t.setLeadAdvice(emkCheckFactoryEntity.getLeadAdvice());
@@ -596,6 +634,7 @@ public class EmkCheckFactoryController extends BaseController {
 									}
 								}*/
 						}
+						systemService.save(approvalDetail);
 
 					}else {
 						ProcessInstance pi = processEngine.getRuntimeService().startProcessInstanceByKey("checkfactory", "emkCheckFactoryEntity", variables);
@@ -609,7 +648,6 @@ public class EmkCheckFactoryController extends BaseController {
 
 					systemService.saveOrUpdate(t);
 					systemService.saveOrUpdate(b);
-					systemService.saveOrUpdate(t);
 				}
 			}
 			systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
@@ -627,7 +665,7 @@ public class EmkCheckFactoryController extends BaseController {
 	public ModelAndView goWork(EmkCheckFactoryEntity emkCheckFactoryEntity, HttpServletRequest req) {
 		if (StringUtil.isNotEmpty(emkCheckFactoryEntity.getId())) {
 			emkCheckFactoryEntity = emkCheckFactoryService.getEntity(EmkCheckFactoryEntity.class, emkCheckFactoryEntity.getId());
-			req.setAttribute("emkCheckFactoryEntity", emkCheckFactoryEntity);
+			req.setAttribute("state", emkCheckFactoryEntity.getState());
 		}
 		return new ModelAndView("com/emk/storage/checkfactory/emkCheckFactory-work");
 

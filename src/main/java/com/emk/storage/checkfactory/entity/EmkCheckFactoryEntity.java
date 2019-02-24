@@ -109,6 +109,19 @@ public class EmkCheckFactoryEntity implements java.io.Serializable {
 	private String noticType;
 	@Excel(name="计划审核日期",width=15)
 	private String jhshDate;
+
+	private String processName;
+
+	@Formula("(select CONCAT(p.NAME_,'-',p.TASK_DEF_KEY_) from act_ru_task p where p.ASSIGNEE_ = id limit 0,1)")
+	@Column(name = "process_name", nullable = true, length = 32)
+	public String getProcessName() {
+		return processName;
+	}
+
+	public void setProcessName(String processName) {
+		this.processName = processName;
+	}
+
 	@Column(name ="notic_type",nullable=false,length=36)
 	public String getNoticType() {
 		return noticType;

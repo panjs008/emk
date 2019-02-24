@@ -78,15 +78,7 @@
 								<div class="liright">
 									<div class="histt"><a style="font-size: 14px;">${task.bpmName}</a></div>
 									<div class="histt"><a style="font-size: 12px;">
-										<c:choose>
-										<c:when test="${task.bpmNode eq 'ywbCheckTask'}">
-										审核人【${task.createName}】，评估意见：${task.approveAdvice}，包装部意见：${task.approveAdvice2}
-										</c:when>
-										<c:otherwise>
-										审核人【${task.createName}】，处理意见：${task.approveAdvice}
-										</c:otherwise>
-										</c:choose>
-
+										处理人【${task.createName}】，处理意见：${task.approveAdvice}
 									</div>
 								</div>
 							</div>

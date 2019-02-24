@@ -15,7 +15,7 @@
 <t:formvalid formid="formobj" dialog="true" usePlugin="password" layout="table" action="emkCheckFactoryController.do?doSubmit"  tiptype="1" >
 	<input id="id" name="id" type="hidden" value="${param.id }"/>
 	<table id="adviceTb" style="width: 100%;margin-top:2px;margin-bottom: 4px" cellpadding="0" cellspacing="1" class="formtable">
-		<c:if test="${orderFinish eq '0' && orderPorcess.taskDefinitionKey eq 'checkTask' }">
+		<c:if test="${state eq 1 && param.node eq 'checkTask' }">
 			<tr>
 				<td align="right">
 					<label class="Validform_label">
@@ -32,30 +32,14 @@
 				</td>
 			</tr>
 		</c:if>
-		<c:if test="${orderFinish eq '0' &&orderPorcess.taskDefinitionKey eq 'bgTask'}">
-			<tr>
-				<td align="right">
-					<label class="Validform_label">
-						是否通过:
-					</label>
-				</td>
-				<td class="value" colspan="3">
-					<input name="isHg" type="radio" datatype="*"  value="0">
-					是
-					<input name="isHg" type="radio" datatype="*"   value="1">
-					否
-					<span class="Validform_checktip"></span>
-					<label class="Validform_label" style="display: none;">是否同意</label>
-				</td>
-			</tr>
-		</c:if>
+
 		<tr>
 			<td align="right" width="150px" valign="middle">
 				<label class="Validform_label">
 					处理意见:
 				</label>
 			</td>
-			<td class="value" colspan="3"><textarea datatype="*" id="leadAdvice" style="width:95%;height:80px" class="inputxt" rows="5" name="leadAdvice"></textarea>
+			<td class="value" colspan="3"><textarea datatype="*" id="advice" style="width:95%;height:80px" class="inputxt" rows="5" name="advice"></textarea>
 			</td>
 		</tr>
 </table>
