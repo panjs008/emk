@@ -66,7 +66,7 @@
 	<input class="btn" type="button" value="保存" onclick="save()" style="background:#18a689 none repeat scroll 0 0;height:30px;width:90px !important;border-radius:5px;color: #fff;" onclick="save();">
 	<input class="btn" type="button" value="提交" style="background:#18a689 none repeat scroll 0 0;height:30px;width:90px !important;border-radius:5px;color: #fff;" onclick="save();">
 </div>
-<iframe id="tabfrm" src="emkPriceController.do?goTab" width="100%"  height="${param.hVal}"
+<iframe id="tabfrm" src="emkPriceController.do?goTab&hVal2=${param.hVal2}" width="100%"  height="${param.hVal}"
 		style="border: 0px; line-height: 21px; background: #fff;overflow-x: hidden ; " frameborder="no" border="0" scrolling="no">
 </iframe>
 </body>
