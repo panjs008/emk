@@ -75,7 +75,6 @@ public class EmkSampleRequiredServiceImpl
         map.put("custom_sample", t.getCustomSample());
         map.put("sample_no", t.getSampleNo());
         map.put("sample_no_desc", t.getSampleNoDesc());
-        map.put("is_print_sample", t.getIsPrintSample());
         map.put("is_get_sample", t.getIsGetSample());
         map.put("is_have_old", t.getIsHaveOld());
         map.put("old_image_url", t.getOldImageUrl());
@@ -89,24 +88,12 @@ public class EmkSampleRequiredServiceImpl
         map.put("ys_date", t.getYsDate());
         map.put("level_days", t.getLevelDays());
         map.put("remark", t.getRemark());
-        map.put("tracer", t.getTracer());
-        map.put("tracer_name", t.getTracerName());
         map.put("version", t.getVersion());
         map.put("weight", t.getWeight());
         map.put("chengf", t.getChengf());
         map.put("businesse_dept_name", t.getBusinesseDeptName());
         map.put("businesse_dept_id", t.getBusinesseDeptId());
-        map.put("color_en_name", t.getColorEnName());
-        map.put("color_zn_name", t.getColorZnName());
-        map.put("color_value", t.getColorValue());
-        map.put("size", t.getSize());
-        map.put("total", t.getTotal());
-        map.put("machine_size", t.getMachineSize());
-        map.put("machine_weight", t.getMachineWeight());
-        map.put("down_machine_size", t.getDownMachineSize());
-        map.put("prcent", t.getPrcent());
-        map.put("user_liao", t.getUserLiao());
-        map.put("one_make_date", t.getOneMakeDate());
+
         map.put("ran_required", t.getRanRequired());
         map.put("feng_required", t.getFengRequired());
         map.put("state", t.getState());
@@ -142,7 +129,6 @@ public class EmkSampleRequiredServiceImpl
         sql = sql.replace("#{custom_sample}", String.valueOf(t.getCustomSample()));
         sql = sql.replace("#{sample_no}", String.valueOf(t.getSampleNo()));
         sql = sql.replace("#{sample_no_desc}", String.valueOf(t.getSampleNoDesc()));
-        sql = sql.replace("#{is_print_sample}", String.valueOf(t.getIsPrintSample()));
         sql = sql.replace("#{is_get_sample}", String.valueOf(t.getIsGetSample()));
         sql = sql.replace("#{is_have_old}", String.valueOf(t.getIsHaveOld()));
         sql = sql.replace("#{old_image_url}", String.valueOf(t.getOldImageUrl()));
@@ -156,24 +142,12 @@ public class EmkSampleRequiredServiceImpl
         sql = sql.replace("#{ys_date}", String.valueOf(t.getYsDate()));
         sql = sql.replace("#{level_days}", String.valueOf(t.getLevelDays()));
         sql = sql.replace("#{remark}", String.valueOf(t.getRemark()));
-        sql = sql.replace("#{tracer}", String.valueOf(t.getTracer()));
-        sql = sql.replace("#{tracer_name}", String.valueOf(t.getTracerName()));
         sql = sql.replace("#{version}", String.valueOf(t.getVersion()));
         sql = sql.replace("#{weight}", String.valueOf(t.getWeight()));
         sql = sql.replace("#{chengf}", String.valueOf(t.getChengf()));
         sql = sql.replace("#{businesse_dept_name}", String.valueOf(t.getBusinesseDeptName()));
         sql = sql.replace("#{businesse_dept_id}", String.valueOf(t.getBusinesseDeptId()));
-        sql = sql.replace("#{color_en_name}", String.valueOf(t.getColorEnName()));
-        sql = sql.replace("#{color_zn_name}", String.valueOf(t.getColorZnName()));
-        sql = sql.replace("#{color_value}", String.valueOf(t.getColorValue()));
-        sql = sql.replace("#{size}", String.valueOf(t.getSize()));
-        sql = sql.replace("#{total}", String.valueOf(t.getTotal()));
-        sql = sql.replace("#{machine_size}", String.valueOf(t.getMachineSize()));
-        sql = sql.replace("#{machine_weight}", String.valueOf(t.getMachineWeight()));
-        sql = sql.replace("#{down_machine_size}", String.valueOf(t.getDownMachineSize()));
-        sql = sql.replace("#{prcent}", String.valueOf(t.getPrcent()));
-        sql = sql.replace("#{user_liao}", String.valueOf(t.getUserLiao()));
-        sql = sql.replace("#{one_make_date}", String.valueOf(t.getOneMakeDate()));
+
         sql = sql.replace("#{ran_required}", String.valueOf(t.getRanRequired()));
         sql = sql.replace("#{feng_required}", String.valueOf(t.getFengRequired()));
         sql = sql.replace("#{state}", String.valueOf(t.getState()));

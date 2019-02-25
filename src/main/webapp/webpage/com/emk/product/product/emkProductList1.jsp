@@ -61,11 +61,11 @@
        <t:dgCol title="款号名称"  field="hsName"  queryMode="single"  width="150"></t:dgCol>--%>
           <t:dgCol title="类别"  field="proTypeName"  queryMode="single"  width="150"></t:dgCol>
 
-          <t:dgCol title="辅料名称"  field="proZnName"  query="true" queryMode="single"  width="150"></t:dgCol>
-          <t:dgCol title="辅料代码"  field="proNum" query="true"  queryMode="single"  width="120"></t:dgCol>
+          <t:dgCol title="缝制辅料名称"  field="proZnName"  query="true" queryMode="single"  width="150"></t:dgCol>
+          <t:dgCol title="缝制辅料名称代码"  field="proNum" query="true"  queryMode="single"  width="120"></t:dgCol>
           <t:dgCol title="单件用量"  field="yongliang"  queryMode="single"  width="120"></t:dgCol>
        <%--<t:dgCol title="英文名称"  field="proEnName"  query="true" queryMode="single"  width="120"></t:dgCol>--%>
-   <%--<t:dgCol title="规格型号"  field="brand"  queryMode="single"  width="150"></t:dgCol>--%>
+   <t:dgCol title="缝制辅料规格"  field="brand"  queryMode="single"  width="150"></t:dgCol>
    <t:dgCol title="单位"  field="unit"  queryMode="single"  width="100"></t:dgCol>
           <t:dgCol title="备注"  field="remark"  queryMode="single"  width="100"></t:dgCol>
 

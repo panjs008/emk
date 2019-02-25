@@ -44,8 +44,6 @@ public class EmkSampleRequiredEntity
     private String sampleNo;
     @Excel(name = "描述")
     private String sampleNoDesc;
-    @Excel(name = "是否打过初样")
-    private String isPrintSample;
     @Excel(name = "是否收取打样费")
     private String isGetSample;
     @Excel(name = "是否有原样")
@@ -63,13 +61,40 @@ public class EmkSampleRequiredEntity
     private String sizeImageUrl;
     @Excel(name = "尺寸表")
     private String sizeImage;
+    @Excel(name = "是否有色样")
+    private String isHaveColor;
+    private String colorImageUrl;
+    @Excel(name = "色样")
+    private String colorImage;
+    @Excel(name = "是否有色号")
+    private String isHaveColorNum;
+    private String colorNumImageUrl;
+    @Excel(name = "色号")
+    private String colorNumImage;
+    @Excel(name = "是否有意向订单")
+    private String isEnquiry;
+    @Excel(name = "意向订单号")
+    private String enquiryNo;
+    @Excel(name = "大货交期")
+    private String dhjq;
+    @Excel(name = "距大货交期余天数")
+    private String leaveldhjqDays;
+    @Excel(name = "是否有大货")
+    private String isDh;
+    @Excel(name = "订单号")
+    private String orderNo;
+    @Excel(name = "大货交期")
+    private String dhjq2;
+    @Excel(name = "距大货交期余天数")
+    private String leaveldhjq2Days;
+    @Excel(name = "是否有过预报价")
+    private String isPrice;
+    @Excel(name = "报价单号")
+    private String priceNo;
     @Excel(name = "意向货交期")
     private String ysDate;
     @Excel(name = "距交期余天数")
-    private Integer levelDays;
-    @Excel(name = "业务跟单员")
-    private String tracer;
-    private String tracerName;
+    private String levelDays;
     @Excel(name = "版次")
     private String version;
     @Excel(name = "布面克重")
@@ -79,28 +104,6 @@ public class EmkSampleRequiredEntity
     @Excel(name = "业务部门")
     private String businesseDeptName;
     private String businesseDeptId;
-    @Excel(name = "颜色英文名称")
-    private String colorEnName;
-    @Excel(name = "颜色中文名称")
-    private String colorZnName;
-    @Excel(name = "色号")
-    private String colorValue;
-    @Excel(name = "尺码")
-    private String size;
-    @Excel(name = "数量")
-    private Integer total;
-    @Excel(name = "机台尺寸")
-    private String machineSize;
-    @Excel(name = "下机重量")
-    private String machineWeight;
-    @Excel(name = "下机尺寸")
-    private String downMachineSize;
-    @Excel(name = "密度")
-    private String prcent;
-    @Excel(name = "用料")
-    private String userLiao;
-    @Excel(name = "单件织造时间")
-    private String oneMakeDate;
     @Excel(name = "染色要求")
     private String ranRequired;
     @Excel(name = "缝制要求")
@@ -127,22 +130,12 @@ public class EmkSampleRequiredEntity
     private String fengAdvice;
     @Excel(name = "交期意见")
     private String jqAdvice;
+    @Excel(name = "客户评语")
+    private String customRate;
     @Excel(name = "备注")
     private String remark;
     @Excel(name = "样品类型")
     private String type;
-    @Excel(name = "下机克重")
-    private Double xjkz;
-    @Excel(name = "单件所需时间")
-    private String djsxTime;
-    @Excel(name = "单位")
-    private String unit;
-    @Excel(name = "机台日产量")
-    private Integer jtrcl;
-    @Excel(name = "前道损耗率")
-    private Double qdshl;
-    @Excel(name = "后道损耗率")
-    private Double hdshl;
 
     @Id
     @GeneratedValue(generator = "paymentableGenerator")
@@ -309,14 +302,6 @@ public class EmkSampleRequiredEntity
         this.sampleNoDesc = sampleNoDesc;
     }
 
-    @Column(name = "IS_PRINT_SAMPLE", nullable = true, length = 6)
-    public String getIsPrintSample() {
-        return this.isPrintSample;
-    }
-
-    public void setIsPrintSample(String isPrintSample) {
-        this.isPrintSample = isPrintSample;
-    }
 
     @Column(name = "IS_GET_SAMPLE", nullable = true, length = 6)
     public String getIsGetSample() {
@@ -418,30 +403,12 @@ public class EmkSampleRequiredEntity
     }
 
     @Column(name = "LEVEL_DAYS", nullable = true, length = 32)
-    public Integer getLevelDays() {
+    public String getLevelDays() {
         return this.levelDays;
     }
 
-    public void setLevelDays(Integer levelDays) {
+    public void setLevelDays(String levelDays) {
         this.levelDays = levelDays;
-    }
-
-    @Column(name = "TRACER", nullable = true, length = 32)
-    public String getTracer() {
-        return this.tracer;
-    }
-
-    public void setTracer(String tracer) {
-        this.tracer = tracer;
-    }
-
-    @Column(name = "TRACER_NAME", nullable = true, length = 32)
-    public String getTracerName() {
-        return this.tracerName;
-    }
-
-    public void setTracerName(String tracerName) {
-        this.tracerName = tracerName;
     }
 
     @Column(name = "VERSION", nullable = true, length = 32)
@@ -487,105 +454,6 @@ public class EmkSampleRequiredEntity
 
     public void setBusinesseDeptId(String businesseDeptId) {
         this.businesseDeptId = businesseDeptId;
-    }
-
-    @Column(name = "COLOR_EN_NAME", nullable = true, length = 32)
-    public String getColorEnName() {
-        return this.colorEnName;
-    }
-
-    public void setColorEnName(String colorEnName) {
-        this.colorEnName = colorEnName;
-    }
-
-    @Column(name = "COLOR_ZN_NAME", nullable = true, length = 32)
-    public String getColorZnName() {
-        return this.colorZnName;
-    }
-
-    public void setColorZnName(String colorZnName) {
-        this.colorZnName = colorZnName;
-    }
-
-    @Column(name = "COLOR_VALUE", nullable = true, length = 32)
-    public String getColorValue() {
-        return this.colorValue;
-    }
-
-    public void setColorValue(String colorValue) {
-        this.colorValue = colorValue;
-    }
-
-    @Column(name = "SIZE", nullable = true, length = 32)
-    public String getSize() {
-        return this.size;
-    }
-
-    public void setSize(String size) {
-        this.size = size;
-    }
-
-    @Column(name = "TOTAL", nullable = true, length = 32)
-    public Integer getTotal() {
-        return this.total;
-    }
-
-    public void setTotal(Integer total) {
-        this.total = total;
-    }
-
-    @Column(name = "MACHINE_SIZE", nullable = true, length = 32)
-    public String getMachineSize() {
-        return this.machineSize;
-    }
-
-    public void setMachineSize(String machineSize) {
-        this.machineSize = machineSize;
-    }
-
-    @Column(name = "MACHINE_WEIGHT", nullable = true, length = 32)
-    public String getMachineWeight() {
-        return this.machineWeight;
-    }
-
-    public void setMachineWeight(String machineWeight) {
-        this.machineWeight = machineWeight;
-    }
-
-    @Column(name = "DOWN_MACHINE_SIZE", nullable = true, length = 32)
-    public String getDownMachineSize() {
-        return this.downMachineSize;
-    }
-
-    public void setDownMachineSize(String downMachineSize) {
-        this.downMachineSize = downMachineSize;
-    }
-
-    @Column(name = "PRCENT", nullable = true, length = 32)
-    public String getPrcent() {
-        return this.prcent;
-    }
-
-    public void setPrcent(String prcent) {
-        this.prcent = prcent;
-    }
-
-    @Column(name = "USER_LIAO", nullable = true, length = 32)
-    public String getUserLiao() {
-        return this.userLiao;
-    }
-
-    public void setUserLiao(String userLiao) {
-        this.userLiao = userLiao;
-    }
-
-    @Column(name = "ONE_MAKE_DATE", nullable = true, length = 32)
-    public String getOneMakeDate() {
-        return this.oneMakeDate;
-    }
-
-    public void setOneMakeDate(String oneMakeDate) {
-        this.oneMakeDate = oneMakeDate;
     }
 
     @Column(name = "RAN_REQUIRED", nullable = true, length = 256)
@@ -723,57 +591,156 @@ public class EmkSampleRequiredEntity
         this.type = type;
     }
 
-    @Column(name = "XJKZ", nullable = true, scale = 2, length = 32)
-    public Double getXjkz() {
-        return this.xjkz;
+    @Column(name = "is_have_color", nullable = true, length = 32)
+    public String getIsHaveColor() {
+        return isHaveColor;
     }
 
-    public void setXjkz(Double xjkz) {
-        this.xjkz = xjkz;
+    public void setIsHaveColor(String isHaveColor) {
+        this.isHaveColor = isHaveColor;
     }
 
-    @Column(name = "DJSX_TIME", nullable = true, length = 32)
-    public String getDjsxTime() {
-        return this.djsxTime;
+    @Column(name = "color_image_url", nullable = true, length = 32)
+    public String getColorImageUrl() {
+        return colorImageUrl;
     }
 
-    public void setDjsxTime(String djsxTime) {
-        this.djsxTime = djsxTime;
+    public void setColorImageUrl(String colorImageUrl) {
+        this.colorImageUrl = colorImageUrl;
     }
 
-    @Column(name = "UNIT", nullable = true, length = 32)
-    public String getUnit() {
-        return this.unit;
+    @Column(name = "color_image", nullable = true, length = 32)
+    public String getColorImage() {
+        return colorImage;
     }
 
-    public void setUnit(String unit) {
-        this.unit = unit;
+    public void setColorImage(String colorImage) {
+        this.colorImage = colorImage;
     }
 
-    @Column(name = "JTRCL", nullable = true, length = 32)
-    public Integer getJtrcl() {
-        return this.jtrcl;
+    @Column(name = "is_have_color_num", nullable = true, length = 32)
+    public String getIsHaveColorNum() {
+        return isHaveColorNum;
     }
 
-    public void setJtrcl(Integer jtrcl) {
-        this.jtrcl = jtrcl;
+    public void setIsHaveColorNum(String isHaveColorNum) {
+        this.isHaveColorNum = isHaveColorNum;
     }
 
-    @Column(name = "QDSHL", nullable = true, scale = 2, length = 32)
-    public Double getQdshl() {
-        return this.qdshl;
+    @Column(name = "color_num_image_url", nullable = true, length = 32)
+    public String getColorNumImageUrl() {
+        return colorNumImageUrl;
     }
 
-    public void setQdshl(Double qdshl) {
-        this.qdshl = qdshl;
+    public void setColorNumImageUrl(String colorNumImageUrl) {
+        this.colorNumImageUrl = colorNumImageUrl;
     }
 
-    @Column(name = "HDSHL", nullable = true, scale = 2, length = 32)
-    public Double getHdshl() {
-        return this.hdshl;
+    @Column(name = "color_num_image", nullable = true, length = 32)
+    public String getColorNumImage() {
+        return colorNumImage;
     }
 
-    public void setHdshl(Double hdshl) {
-        this.hdshl = hdshl;
+    public void setColorNumImage(String colorNumImage) {
+        this.colorNumImage = colorNumImage;
+    }
+
+    @Column(name = "is_enquiry", nullable = true, length = 32)
+    public String getIsEnquiry() {
+        return isEnquiry;
+    }
+
+    public void setIsEnquiry(String isEnquiry) {
+        this.isEnquiry = isEnquiry;
+    }
+
+    @Column(name = "enquiry_no", nullable = true, length = 32)
+    public String getEnquiryNo() {
+        return enquiryNo;
+    }
+
+    public void setEnquiryNo(String enquiryNo) {
+        this.enquiryNo = enquiryNo;
+    }
+
+    @Column(name = "dhjq", nullable = true, length = 32)
+    public String getDhjq() {
+        return dhjq;
+    }
+
+    public void setDhjq(String dhjq) {
+        this.dhjq = dhjq;
+    }
+
+    @Column(name = "leaveldhjq_days", nullable = true, length = 32)
+    public String getLeaveldhjqDays() {
+        return leaveldhjqDays;
+    }
+
+    public void setLeaveldhjqDays(String leaveldhjqDays) {
+        this.leaveldhjqDays = leaveldhjqDays;
+    }
+
+    @Column(name = "is_dh", nullable = true, length = 32)
+    public String getIsDh() {
+        return isDh;
+    }
+
+    public void setIsDh(String isDh) {
+        this.isDh = isDh;
+    }
+
+    @Column(name = "order_no", nullable = true, length = 32)
+    public String getOrderNo() {
+        return orderNo;
+    }
+
+    public void setOrderNo(String orderNo) {
+        this.orderNo = orderNo;
+    }
+
+    @Column(name = "dhjq2", nullable = true, length = 32)
+    public String getDhjq2() {
+        return dhjq2;
+    }
+
+    public void setDhjq2(String dhjq2) {
+        this.dhjq2 = dhjq2;
+    }
+
+    @Column(name = "leaveldhjq2_days", nullable = true, length = 32)
+    public String getLeaveldhjq2Days() {
+        return leaveldhjq2Days;
+    }
+
+    public void setLeaveldhjq2Days(String leaveldhjq2Days) {
+        this.leaveldhjq2Days = leaveldhjq2Days;
+    }
+
+    @Column(name = "is_price", nullable = true, length = 32)
+    public String getIsPrice() {
+        return isPrice;
+    }
+
+    public void setIsPrice(String isPrice) {
+        this.isPrice = isPrice;
+    }
+
+    @Column(name = "price_no", nullable = true, length = 32)
+    public String getPriceNo() {
+        return priceNo;
+    }
+
+    public void setPriceNo(String priceNo) {
+        this.priceNo = priceNo;
+    }
+
+    @Column(name = "custom_rate", nullable = true, length = 32)
+    public String getCustomRate() {
+        return customRate;
+    }
+
+    public void setCustomRate(String customRate) {
+        this.customRate = customRate;
     }
 }

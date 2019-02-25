@@ -31,20 +31,7 @@
         $("#orderMxListIDSR").val($("#mxtbSR").find("tr").length-1);
 
         if(chk_value.length>0){
-            /* $.ajax({
-             url : "dxRkglMxController.do?doBatchDel&ids="+chk_value,
-             type : 'post',
-             cache : false,
-             data: null,
-             success : function(data) {
-             var d = $.parseJSON(data);
-             if (d.success) {
-             var msg = d.msg;
-             tip(msg);
-             //W.document.location.reload(true);
-             }
-             }
-             });*/
+
         }
 
     });
@@ -57,7 +44,7 @@
             fixFooter:false
         });
         <c:if test="${param.proOrderId eq null}">
-        $('#addBtnSR').click();
+            $('#addBtnSR').click();
         </c:if>
     });
 
@@ -98,7 +85,7 @@
 </table>
 <div style="padding: 3px; height: 25px; width:100%;margin-bottom:4px " class="datagrid-toolbar"><a id="addBtnSR" href="#"></a> <a id="delBtn" href="#"></a></div>
 <%--<table border="0" cellpadding="2" cellspacing="0" id="jeecgOrderProduct_table">--%>
-<input id="orderMxListIDSR" type="hidden" name="dataRowsVal" value="${fn:length(emkProOrderDetailEntities)}"/>
+<input id="orderMxListIDSR" type="hidden" name="orderMxListIDSR" value="${fn:length(emkProOrderDetailEntities)}"/>
 <div class="table-c">
     <table id="mxtbSR" width="70%" border="0" cellspacing="0" cellpadding="0">
         <tr bgcolor="#F8F8F8" style="height: 32px;" >
@@ -127,12 +114,14 @@
                     <td align="center">
                         <select name="orderMxList[${status.index}].colorNum" style="width: 86%;" nullmsg="请输入色号！" errormsg="请输入色号" datatype="*">
                             <c:forEach items="${colorNumList}" var="category">
-                                <option value="${category.typecode}" ${category.typecode eq poVal.colorVal ? 'selected':''}>${category.typename}</option>
+                                <option value="${category.typecode}" ${category.typecode eq poVal.colorValue ? 'selected':''}>${category.typename}</option>
                             </c:forEach>
                         </select></td>
-                    <td align="center"><input  nullmsg="请输入数量！"  errormsg="请输入数量" value="${poVal.stotal}"name="orderMxList[${status.index}].signTotal" maxlength="100" type="text" value=""
+                    <td align="center"><input  nullmsg="请输入尺码！"  errormsg="请输入尺码" value="${poVal.size}"name="orderMxList[${status.index}].size00" maxlength="100" type="text" value=""
                                                style="width: 86%;" ignore="ignore"></td>
-                    <td align="center"><input  nullmsg="请输入数量！"  errormsg="请输入数量" value="${poVal.mtotal}" name="orderMxList[${status.index}].signTotal01" maxlength="100" type="text" value=""
+                    <td align="center"><input  nullmsg="请输入数量！"  errormsg="请输入数量" value="${poVal.total}"name="orderMxList[${status.index}].signTotal00" maxlength="100" type="text" value=""
+                                               style="width: 86%;" ignore="ignore"></td>
+                    <td align="center"><input  nullmsg="请输入实际打样数量！"  errormsg="请输入实际打样数量" value="${poVal.sjtotal}" name="orderMxList[${status.index}].sjTotal00" maxlength="100" type="text" value=""
                                                style="width: 86%;" ignore="ignore"></td>
 
 

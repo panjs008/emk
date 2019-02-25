@@ -37,6 +37,8 @@ public class EmkEnquiryDetailEntity
     @Excel(name = "单价")
     private Double price;
     private String sortDesc;
+    @Excel(name = "实际数量")
+    private Integer sjtotal;
 
     @Id
     @GeneratedValue(generator = "paymentableGenerator")
@@ -165,5 +167,14 @@ public class EmkEnquiryDetailEntity
 
     public void setSortDesc(String sortDesc) {
         this.sortDesc = sortDesc;
+    }
+
+    @Column(name = "sjtotal", nullable = true, scale = 2, length = 32)
+    public Integer getSjtotal() {
+        return sjtotal;
+    }
+
+    public void setSjtotal(Integer sjtotal) {
+        this.sjtotal = sjtotal;
     }
 }

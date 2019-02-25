@@ -17,7 +17,7 @@
 			baseformArray = baseformArray.concat($("#tabfrm").contents().find("#ranfrm").serializeArray());
 			baseformArray = baseformArray.concat($("#tabfrm").contents().find("#yinfrm").serializeArray());
 			$.ajax({
-				url : "emkPriceController.do?doAdd",
+				url : "emkSampleRequiredController.do?doAdd",
 				type : 'post',
 				cache : false,
 				data: baseformArray,
