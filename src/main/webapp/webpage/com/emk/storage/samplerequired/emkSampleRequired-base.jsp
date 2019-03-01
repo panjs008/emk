@@ -71,6 +71,9 @@
 	</script>
 </head>
 <body>
+<c:if test="${param.id ne null && param.id ne ''}">
+	<iframe scrolling="no" id="processFrm" frameborder="0" style="overflow-x: hidden;overflow-y: hidden"  src="${webRoot}/context/progress.jsp?finishColums=${countMap.finishColums}&Colums=${countMap.Colums}&recent=${recent}" width="100%" height="20px"></iframe>
+</c:if>
 <t:formvalid formid="formobj" dialog="true" usePlugin="password" layout="table" action="emkYptzdController.do?doAdd" tiptype="1">
 	<input id="id" name="id" type="hidden" value="${emkSampleRequiredPage.id }"/>
 	<table style="width: 100%;" cellpadding="0" cellspacing="1" class="formtable">
@@ -292,9 +295,11 @@
 				&nbsp;&nbsp;<input name="isHaveOld" type="radio" datatype="*"  <c:if test="${emkSampleRequiredPage.isHaveOld eq '1'}">checked="true"</c:if> value="1">
 				否
 				<input id="customSample" name="customSample" value="${emkSampleRequiredPage.customSample }" type="hidden" />
-				<img id="uploadimg" src="${emkSampleRequiredPage.customSampleUrl eq null ? 'images/bjlogo.png':emkSampleRequiredPage.customSampleUrl}" width="150" height="150">
+				<img id="uploadimg" src="${emkSampleRequiredPage.customSampleUrl eq null || emkSampleRequiredPage.customSampleUrl eq ''? 'images/bjlogo.png':emkSampleRequiredPage.customSampleUrl}" width="150" height="150">
 				<t:upload name="instruction" id="instruction" dialog="false" extend="*.jpg;*.png;*.gif;*.ico;*.dwg" buttonText="添加文件" queueID="instructionfile" view="false" auto="true" uploader="systemController.do?saveFiles"  onUploadSuccess="uploadSuccess" >
 				</t:upload>
+				<c:if test="${emkSampleRequiredPage.customSampleUrl ne null && emkSampleRequiredPage.customSampleUrl ne ''}">[<a href="javascript:findDetail('${emkSampleRequiredPage.customSampleUrl }')">${emkSampleRequiredPage.customSample }</a>]</c:if>
+
 				<span id="khyyId"></span>
 				<input id="customSampleUrl" name="customSampleUrl" value="${emkSampleRequiredPage.customSampleUrl }" type="hidden" />
 				<span class="Validform_checktip"></span>
@@ -312,9 +317,11 @@
 				&nbsp;&nbsp;<input name="isHaveDgr" type="radio" datatype="*"  <c:if test="${emkSampleRequiredPage.isHaveDgr eq '1'}">checked="true"</c:if> value="1">
 				否
 				<input id="dgrImage" name="dgrImage" type="hidden" value="${emkSampleRequiredPage.dgrImage }" />
-				<img id="uploadimg3" src="${emkSampleRequiredPage.dgrImageUrl eq null ? 'images/bjlogo.png':emkSampleRequiredPage.dgrImageUrl}" width="150" height="150">
+				<img id="uploadimg3" src="${emkSampleRequiredPage.dgrImageUrl eq null || emkSampleRequiredPage.dgrImageUrl eq '' ? 'images/bjlogo.png':emkSampleRequiredPage.dgrImageUrl}" width="150" height="150">
 				<t:upload name="instruction3" id="instruction3" dialog="false" extend="*.jpg;*.png;*.gif;*.ico;*.dwg" buttonText="添加文件" queueID="instructionfile" view="false" auto="true" uploader="systemController.do?saveFiles"  onUploadSuccess="uploadSuccess3" >
 				</t:upload>
+				<c:if test="${emkSampleRequiredPage.dgrImageUrl ne null && emkSampleRequiredPage.dgrImageUrl ne ''}">[<a href="javascript:findDetail('${emkSampleRequiredPage.dgrImageUrl }')">${emkSampleRequiredPage.dgrImage }</a>]</c:if>
+
 				<span id="dgrImageId"></span>
 				<input id="dgrImageUrl" name="dgrImageUrl" type="hidden" value="${emkSampleRequiredPage.dgrImageUrl }" />
 				<span class="Validform_checktip"></span>
@@ -330,9 +337,11 @@
 				是
 				&nbsp;&nbsp;<input name="isHaveSize" type="radio" datatype="*"  <c:if test="${emkSampleRequiredPage.isHaveSize eq '1'}">checked="true"</c:if> value="1">
 				否
-				<img id="uploadimg2" src="${emkSampleRequiredPage.sizeImageUrl eq null ? 'images/bjlogo.png':emkSampleRequiredPage.sizeImageUrl}" width="150" height="150">
+				<img id="uploadimg2" src="${emkSampleRequiredPage.sizeImageUrl eq null || emkSampleRequiredPage.sizeImageUrl eq '' ? 'images/bjlogo.png':emkSampleRequiredPage.sizeImageUrl}" width="150" height="150">
 				<t:upload name="instruction2" id="instruction2" dialog="false" extend="*.jpg;*.png;*.gif;*.ico;*.dwg" buttonText="添加文件" queueID="instructionfile" view="false" auto="true" uploader="systemController.do?saveFiles"  onUploadSuccess="uploadSuccess2" >
 				</t:upload>
+				<c:if test="${emkSampleRequiredPage.sizeImageUrl ne null && emkSampleRequiredPage.sizeImageUrl ne ''}">[<a href="javascript:findDetail('${emkSampleRequiredPage.sizeImageUrl }')">${emkSampleRequiredPage.sizeImage }</a>]</c:if>
+
 				<span id="ccbId"></span>
 				<input id="sizeImageUrl" name="sizeImageUrl" type="hidden" value="${emkSampleRequiredPage.sizeImageUrl }" />
 				<input id="sizeImage" name="sizeImage" type="hidden" value="${emkSampleRequiredPage.sizeImage }" />
@@ -350,9 +359,11 @@
 				是
 				&nbsp;&nbsp;<input name="isHaveColor" type="radio" datatype="*"  <c:if test="${emkSampleRequiredPage.isHaveColor eq '1'}">checked="true"</c:if> value="1">
 				否
-				<img id="uploadimgSy" src="${emkSampleRequiredPage.colorImageUrl eq null ? 'images/bjlogo.png':emkSampleRequiredPage.colorImageUrl}" width="150" height="150">
+				<img id="uploadimgSy" src="${emkSampleRequiredPage.colorImageUrl eq null || emkSampleRequiredPage.colorImageUrl eq '' ? 'images/bjlogo.png':emkSampleRequiredPage.colorImageUrl}" width="150" height="150">
 				<t:upload name="instructionSy" id="instructionSy" dialog="false" extend="*.jpg;*.png;*.gif;*.ico;*.dwg" buttonText="添加文件" queueID="instructionfile" view="false" auto="true" uploader="systemController.do?saveFiles"  onUploadSuccess="uploadSuccessSy" >
 				</t:upload>
+				<c:if test="${emkSampleRequiredPage.colorImageUrl ne null && emkSampleRequiredPage.colorImageUrl ne ''}">[<a href="javascript:findDetail('${emkSampleRequiredPage.colorImageUrl }')">${emkSampleRequiredPage.colorImage }</a>]</c:if>
+
 				<span id="syId"></span>
 				<input id="colorImageUrl" name="colorImageUrl" type="hidden" value="${emkSampleRequiredPage.colorImageUrl }" />
 				<input id="colorImage" name="colorImage" type="hidden" value="${emkSampleRequiredPage.colorImage }" />
@@ -373,9 +384,11 @@
 					是
 					&nbsp;&nbsp;<input name="isHaveColorNum" type="radio" datatype="*"  <c:if test="${emkSampleRequiredPage.isHaveColorNum eq '1'}">checked="true"</c:if> value="1">
 					否<br/>
-					<img id="uploadimgSh" src="${emkSampleRequiredPage.colorNumImageUrl eq null ? 'images/bjlogo.png':emkSampleRequiredPage.colorNumImageUrl}" width="150" height="150">
+					<img id="uploadimgSh" src="${emkSampleRequiredPage.colorNumImageUrl eq null || emkSampleRequiredPage.colorNumImageUrl eq '' ? 'images/bjlogo.png':emkSampleRequiredPage.colorNumImageUrl}" width="150" height="150">
 					<t:upload name="instructionSh" id="instructionSh" dialog="false" extend="*.jpg;*.png;*.gif;*.ico;*.dwg" buttonText="添加文件" queueID="instructionfile" view="false" auto="true" uploader="systemController.do?saveFiles"  onUploadSuccess="uploadSuccessSh" >
 					</t:upload>
+					<c:if test="${emkSampleRequiredPage.colorNumImageUrl ne null && emkSampleRequiredPage.colorNumImageUrl ne ''}">[<a href="javascript:findDetail('${emkSampleRequiredPage.colorNumImageUrl }')">${emkSampleRequiredPage.colorNumImage }</a>]</c:if>
+
 					<span id="shId"></span>
 					<input id="colorNumImageUrl" name="colorNumImageUrl" type="hidden" value="${emkSampleRequiredPage.colorNumImageUrl }" />
 					<input id="colorNumImage" name="colorNumImage" type="hidden" value="${emkSampleRequiredPage.colorNumImage }" />

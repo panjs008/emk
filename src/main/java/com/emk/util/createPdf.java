@@ -3,6 +3,9 @@ package com.emk.util;
 import com.emk.storage.enquiry.entity.EmkEnquiryEntity;
 import com.emk.storage.enquiry.entity.EmkEnquiryEntityA;
 import com.emk.storage.enquirydetail.entity.EmkEnquiryDetailEntity;
+import com.emk.storage.factoryarchives.entity.EmkFactoryArchivesEntity;
+import com.emk.storage.factoryarchives.entity.EmkFactoryArchivesEntityA;
+import com.emk.storage.samplecolor.entity.EmkSampleColorEntity;
 import com.emk.storage.supplier.entity.EmkSupplierEntity;
 import com.emk.storage.supplier.entity.EmkSupplierEntity2;
 import com.itextpdf.text.*;
@@ -397,15 +400,277 @@ public class createPdf {
      * @param emkEnquiryEntity  供应商档案表单实体
      * @return
      */
-    public void generateEmkSupplierPDF(EmkSupplierEntity2 supplierEntity) throws Exception{
+    public void generateFactoryArchivesPDF(EmkFactoryArchivesEntityA supplierEntity) throws Exception{
         BaseFont bfChinese_H = BaseFont.createFont( "c://windows//fonts//simsun.ttc,1" , BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
         com.itextpdf.text.Font FontChinese18 = new com.itextpdf.text.Font(bfChinese_H, 8, Font.NORMAL);
         Paragraph blankRow41 = new Paragraph(8f, " ", FontChinese18);
         //页头信息
 //        document.add(createParagraph("【XXXX有限公司】",headFont,Element.ALIGN_LEFT));
         document.add(createParagraph("供  应  商  档  案",keyFont,Element.ALIGN_CENTER));
+        document.add(createParagraph("档案编号："+supplierEntity.getArchivesNo(),headFont,Element.ALIGN_RIGHT));
+        //表格信息 简易供应商货代运输企业
+        //float[] widths = {4f,10f,10f,20f,15f,8f,11f,12f,10f};
+        float[] widths = {25f,40f,25f,40f};
+        PdfPTable table = createTable(widths);
 
-        //表格信息
+        table.addCell(createCell01("国家:", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(supplierEntity.getGuoJia(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_LEFT,4,1));
+
+        table.addCell(createCell01("省份:", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(supplierEntity.getShengFen(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_LEFT,1,1));
+        table.addCell(createCell01("城市:", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(supplierEntity.getChengShi(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_LEFT,1,1));
+
+        table.addCell(createCell01("供应商产品类型:", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(supplierEntity.getProTypeName(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_LEFT,4,1));
+
+        table.addCell(createCell01("供应商代码:", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(supplierEntity.getCompanyCode(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_LEFT,4,1));
+
+        table.addCell(createCell01("供应商代码:", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(supplierEntity.getCompanyCode(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_LEFT,4,1));
+
+        table.addCell(createCell01("Company Name", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01("English英文:", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(supplierEntity.getCompanyNameZn(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_LEFT,2,1));
+
+        table.addCell(createCell01("(English & Local Language)公司名", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01("Local 中文:", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(supplierEntity.getCompanyNameZn(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_LEFT,2,1));
+
+        table.addCell(createCell01("Address", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01("English英文:", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(supplierEntity.getAddressEn(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_LEFT,2,1));
+
+        table.addCell(createCell01("Address", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01("Local 中文:", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(supplierEntity.getCompanyNameZn(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_LEFT,2,1));
+
+        table.addCell(createCell01("Additional sites (address)其它地址:", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01("Provide address if the facility has additional sites remote from the premises若工厂还有其它经营地址请指明:\n"+supplierEntity.getOtherAddress(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_LEFT,3,1));
+
+        table.addCell(createCell01("Location of the Employee Documents 审核文件所存放的地址:", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01("Provide address if employee documents (e.g. HR / Pay Roll/ Time Attendance Records) are stored in a different location若审核文件（如人事、工资考勤记录等）存放在另一地址请指明:\n"+supplierEntity.getLocationDocuments(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_LEFT,3,1));
+
+        table.addCell(createCell01("Primary Facility Contact & Title 主要联系人姓名及头衔:", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(supplierEntity.getPrimaryContact(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_LEFT,1,1));
+        table.addCell(createCell01("Secondary Facility Contact & Title 第二联系人姓名及头衔:", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(supplierEntity.getSecondaryContact(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_LEFT,1,1));
+
+
+        table.addCell(createCell01("E-mail Address邮箱:", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(supplierEntity.getPrimaryContactEmail(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_LEFT,1,1));
+        table.addCell(createCell01("E-mail Address邮箱:", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(supplierEntity.getSecondaryContactEmail(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_LEFT,1,1));
+
+        table.addCell(createCell01("Telephone Number电话:", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(supplierEntity.getPrimaryContactTel(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_LEFT,1,1));
+        table.addCell(createCell01("Telephone Number电话:", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(supplierEntity.getSecondaryContactTel(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_LEFT,1,1));
+
+        table.addCell(createCell01("Year of Facility Established 成立年份:", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(supplierEntity.getYearEstablished(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_LEFT,1,1));
+        table.addCell(createCell01("Business License Number 营业执照号码:", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(supplierEntity.getLicenseNumber(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_LEFT,1,1));
+
+        table.addCell(createCell01("Facility Business License:", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(supplierEntity.getFacilityBusinessLicense(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_LEFT,1,1));
+        table.addCell(createCell01("Business License/ Permit is issued by 营业执照签发机构:", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(supplierEntity.getPermitSsued(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_LEFT,1,1));
+
+        table.addCell(createCell01("营业执照有效期:", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(supplierEntity.getPermitExpirationDate(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_LEFT,3,1));
+
+        table.addCell(createCell01("Production Process生产工序:", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(supplierEntity.getProductionProcess(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_LEFT,1,1));
+        table.addCell(createCell01("Full production on proposed audit date 审核当天是否全员生产:", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(supplierEntity.getFullProduction().equals("0") ? "YES":"NO", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_LEFT,1,1));
+
+        String text = "";
+        if (supplierEntity.getProductClassification().contains("[0]")) {
+            text += "Home communications, entertainment & hobby equipment,";
+        }
+        if (supplierEntity.getProductClassification().contains("[1]")){
+            text += "Sports and Outdoor Recreation Equipment,";
+        }
+        if (supplierEntity.getProductClassification().contains("[2]")){
+            text += "Furniture and Furnishings,";
+        }
+        if (supplierEntity.getProductClassification().contains("[3]")){
+            text += "Packaging and Containers,";
+        }
+        if (supplierEntity.getProductClassification().contains("[4]")){
+            text += "House appliance,";
+        }
+        if (supplierEntity.getProductClassification().contains("[5]")){
+            text += "Toys,";
+        }
+        if (supplierEntity.getProductClassification().contains("[6]")){
+            text += "Housewares (non-powered),";
+        }
+        if (supplierEntity.getProductClassification().contains("[7]")){
+            text += "Personal care items,";
+        }
+        if (supplierEntity.getProductClassification().contains("[8]")){
+            text += "Chemicals & chemical products,";
+        }
+        if (supplierEntity.getProductClassification().contains("[9]")){
+            text += "Auto Part & Accessory,";
+        }
+        if (supplierEntity.getProductClassification().contains("[10]")){
+            text += "Home workshop apparatus tools,";
+        }
+        if (supplierEntity.getProductClassification().contains("[11]")){
+            text += "Beverage & Food,";
+        }
+        if (supplierEntity.getProductClassification().contains("[12]")){
+            text += "Yard and garden,";
+        }
+        if (supplierEntity.getProductClassification().contains("[13]")){
+            text += "Pet related products,";
+        }
+        if (supplierEntity.getProductClassification().contains("[14]")){
+            text += "Child nursery equipment & supplies,";
+        }
+        if (supplierEntity.getProductClassification().contains("[15]")){
+            text += "Medicine,";
+        }
+        if (supplierEntity.getProductClassification().contains("[16]")){
+            text += "Personal use items,";
+        }
+        if (supplierEntity.getProductClassification().contains("[17]")){
+            text += "Raw Material,";
+        }
+        if (supplierEntity.getProductClassification().contains("[18]")){
+            text += "Garments, Footwear & Accessories,";
+        }
+        if (supplierEntity.getProductClassification().contains("[19]")){
+            text += "Miscellaneous Products,";
+        }
+
+        if (supplierEntity.getProductClassification().contains("[21]")){
+            text += "Servicing Facilities,";
+        }
+        if (supplierEntity.getProductClassification().contains("[23]")){
+            text += "Other,";
+        }
+        if (supplierEntity.getProductClassification().contains("[25]")){
+            text += "Pet related products,";
+        }
+        table.addCell(createCell01("Product Classification of Manufacturing 产业类型:", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(text, textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_LEFT,3,1));
+
+
+        table.addCell(createCell01("Facility Size 企业面积", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,2));
+        table.addCell(createCell01("Facility Land Size (m2 )企业用地面积:", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(supplierEntity.getFacilityLandSize(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_LEFT,2,1));
+
+        table.addCell(createCell01("Total Facility Floor Size (m2) 企业总楼层面积:", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(supplierEntity.getFacilityFoorSize(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_LEFT,2,1));
+
+        document.add(table);
+
+
+       /* float[] widths3 = {21f,200f};
+        table = createTable(widths3);
+        table.addCell(createCellForGysImg("营业执照", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCellForGysImg(" ", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_LEFT,1,1));
+
+        table.addCell(createCellForGysImg("工厂信息表", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCellForGysImg(" ", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_LEFT,1,1));
+
+        document.add(table);
+        document.add(blankRow41);*/
+
+        float[] widths2 = {25f,25f,40f,25f,40f};
+        table = createTable(widths2);
+        table.addCell(createCell01("Number of Buildings建筑物数目", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,2));
+        table.addCell(createCell01("Production 生产:", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(supplierEntity.getProduction(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_LEFT,1,1));
+        table.addCell(createCell01("Dormitory宿舍:", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(supplierEntity.getDormitory(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_LEFT,1,1));
+
+        table.addCell(createCell01("Warehouse仓库:", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(supplierEntity.getWarehouse(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_LEFT,1,1));
+        table.addCell(createCell01("Other (specify)其它（请注明）:", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(supplierEntity.getOtherSpecify(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_LEFT,1,1));
+
+        table.addCell(createCell01("Onsite Service Providers (e.g. security, janitor) 服务供应商（如保安，门卫）", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01("Provide name of each service provider and roles请提供服务供应商的名称及职位:\n"+supplierEntity.getProvideNameProvider(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_LEFT,4,1));
+
+
+        table.addCell(createCell01("Number of Employee Breakdown 员工人数明细", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,2));
+        table.addCell(createCell01("Permanent Employee 直接雇佣员工人数:", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(supplierEntity.getPermanentEmployee(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_LEFT,1,1));
+        table.addCell(createCell01("emporary/Agency临时工/劳务派遣工/外包工人数:", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(supplierEntity.getTemporary(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_LEFT,1,1));
+
+        table.addCell(createCell01("Migrant labour 移民员工:", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(supplierEntity.getMigrantLabour(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_LEFT,1,1));
+        table.addCell(createCell01("Home workers 家内工作者:", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(supplierEntity.getHomeWorkers(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_LEFT,1,1));
+
+        table.addCell(createCell01("Gender Breakdown 性别明细", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01("Female 女性员工人数:", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(supplierEntity.getFemale(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_LEFT,1,1));
+        table.addCell(createCell01("Male男性员工人数::", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(supplierEntity.getMale(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_LEFT,1,1));
+
+        table.addCell(createCell01("Employee Type Breakdown 员工类型明细", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,2));
+        table.addCell(createCell01("#of Production Employees 生产员工人数:", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(supplierEntity.getProductionEmployees(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_LEFT,1,1));
+        table.addCell(createCell01("#of Office/Admin staff办公/行政人员人数:", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(supplierEntity.getAdminStaf(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_LEFT,1,1));
+
+        table.addCell(createCell01("#of Management 管理人员人数::", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(supplierEntity.getManagement(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_LEFT,3,1));
+
+        table.addCell(createCell01("Language Spoken by Employee员工语种", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,2));
+        table.addCell(createCell01("Language1语种1:", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(supplierEntity.getLanguage1(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_LEFT,1,1));
+        table.addCell(createCell01("Total workforce in%占总人数百分比:", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(supplierEntity.getZzsPre1(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_LEFT,1,1));
+
+        table.addCell(createCell01("Language2语种2:", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(supplierEntity.getLanguage2(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_LEFT,1,1));
+        table.addCell(createCell01("Total workforce in%占总人数百分比:", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(supplierEntity.getZzsPre2(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_LEFT,1,1));
+
+        table.addCell(createCell01("Language Spoken by Management管理人员语种", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01("Language1语种1:", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(supplierEntity.getMlanguage1(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_LEFT,1,1));
+        table.addCell(createCell01("Language2语种2:", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(supplierEntity.getMlanguage2(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_LEFT,1,1));
+
+        String level = "";
+        if(supplierEntity.getLevel().equals("0")){
+            level = "不能做单";
+        }else if(supplierEntity.getLevel().equals("1")){
+            level = "能做单有风险";
+        }else if(supplierEntity.getLevel().equals("2")){
+            level = "放心做单";
+        }
+        table.addCell(createCell01("评估风险等级:", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,2));
+        table.addCell(createCell01(level, textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_LEFT,4,1));
+        document.add(table);
+
+        document.close();
+    }
+
+    /**
+     * 简易供应商货代运输企业表
+     * @param emkEnquiryEntity  简易供应商货代运输企业
+     * @return
+     */
+    public void generateEmkSupplierPDF(EmkSupplierEntity2 supplierEntity) throws Exception{
+        BaseFont bfChinese_H = BaseFont.createFont( "c://windows//fonts//simsun.ttc,1" , BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+        com.itextpdf.text.Font FontChinese18 = new com.itextpdf.text.Font(bfChinese_H, 8, Font.NORMAL);
+        Paragraph blankRow41 = new Paragraph(8f, " ", FontChinese18);
+        //页头信息
+//        document.add(createParagraph("【XXXX有限公司】",headFont,Element.ALIGN_LEFT));
+        document.add(createParagraph("简易供应商货代运输企业",keyFont,Element.ALIGN_CENTER));
+
+        //表格信息 简易供应商货代运输企业
         //float[] widths = {4f,10f,10f,20f,15f,8f,11f,12f,10f};
         float[] widths = {25f,40f,15f,40f,15f,40f};
         //float[] widths = {28f,14f};
@@ -630,6 +895,39 @@ public class createPdf {
 
         document.close();
     }
+
+    /**
+     * 意向询盘单
+     * @param emkEnquiryEntity  意向询盘单实体
+     * @param detailEntityList  明细数据
+     * @return
+     */
+    public void generateSyxqdPDF(EmkSampleColorEntity sampleColorEntity, List<Map<String, Object>> detailEntityList) throws Exception{
+        BaseFont bfChinese_H = BaseFont.createFont( "c://windows//fonts//simsun.ttc,1" , BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+        com.itextpdf.text.Font FontChinese18 = new com.itextpdf.text.Font(bfChinese_H, 8, Font.NORMAL);
+        Paragraph blankRow41 = new Paragraph(8f, " ", FontChinese18);
+        //页头信息
+        document.add(createParagraph("【XXXX有限公司】",headFont,Element.ALIGN_LEFT));
+        document.add(createParagraph("色  样  需  求  单",keyFont,Element.ALIGN_CENTER));
+        document.add(createParagraph("色样需求单编号："+sampleColorEntity.getSampleNo(),headFont,Element.ALIGN_RIGHT));
+
+        //表格信息
+        //float[] widths = {4f,10f,10f,20f,15f,8f,11f,12f,10f};
+        float[] widths = {15f,40f,15f,40f,15f,40f};
+        //float[] widths = {28f,14f};
+        PdfPTable table = createTable(widths);
+
+
+        table.addCell(createCell01("客户名称", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(sampleColorEntity.getCusName(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,5));
+
+
+
+        document.add(table);
+
+        document.close();
+    }
+
     public static void main(String[] args) throws Exception {
         File file = new File("d:\\PDF\\T3.pdf");
         File dir = file.getParentFile();

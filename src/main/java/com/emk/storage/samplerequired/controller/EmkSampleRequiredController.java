@@ -1,6 +1,7 @@
 package com.emk.storage.samplerequired.controller;
 
 import com.alibaba.fastjson.JSONArray;
+import com.emk.approval.approval.entity.EmkApprovalEntity;
 import com.emk.storage.enquirydetail.entity.EmkEnquiryDetailEntity;
 import com.emk.storage.pb.entity.EmkPbEntity;
 import com.emk.storage.sample.entity.EmkSampleEntity;
@@ -13,6 +14,7 @@ import com.emk.storage.samplerequired.service.EmkSampleRequiredServiceI;
 import com.emk.storage.sampleyin.entity.EmkSampleYinEntity;
 import com.emk.util.ParameterUtil;
 import com.emk.util.Utils;
+import com.emk.util.WebFileUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -198,7 +200,19 @@ public class EmkSampleRequiredController
             for (String id : ids.split(",")) {
                 EmkSampleRequiredEntity emkSampleRequired = systemService.getEntity(EmkSampleRequiredEntity.class, id);
 
+                WebFileUtils.delete( request.getRealPath("/")+emkSampleRequired.getDgrImageUrl());
+                WebFileUtils.delete( request.getRealPath("/")+emkSampleRequired.getCustomSampleUrl());
+                WebFileUtils.delete( request.getRealPath("/")+emkSampleRequired.getOldImageUrl());
+                WebFileUtils.delete( request.getRealPath("/")+emkSampleRequired.getSizeImageUrl());
+                EmkApprovalEntity approvalEntity = systemService.findUniqueByProperty(EmkApprovalEntity.class,"formId",emkSampleRequired.getId());
 
+                systemService.executeSql("delete from emk_enquiry_detail where enquiry_id=?",emkSampleRequired.getId());
+                //systemService.executeSql("delete from emk_approval where form_id=?",emkSampleRequired.getId());
+                //systemService.executeSql("delete from emk_approval_detail where approval_id=?",approvalEntity.getId());
+                systemService.executeSql("delete from emk_sample_detail where sample_id = ?",emkSampleRequired.getId());
+                systemService.executeSql("delete from emk_sample_gx where sample_id = ?",emkSampleRequired.getId());
+                systemService.executeSql("delete from emk_sample_ran where sample_id = ?",emkSampleRequired.getId());
+                systemService.executeSql("delete from emk_sample_yin where sample_id = ?",emkSampleRequired.getId());
                 emkSampleRequiredService.delete(emkSampleRequired);
                 systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
             }
@@ -590,8 +604,8 @@ public class EmkSampleRequiredController
                 Map countMap = MyBeanUtils.culBeanCounts(emkSampleRequired);
                 req.setAttribute("countMap", countMap);
                 double a=0,b=0;
-                a = Double.parseDouble(countMap.get("finishColums").toString());
-                b = Double.parseDouble(countMap.get("Colums").toString());
+                a = Double.parseDouble(countMap.get("finishColums").toString())-5;
+                b = Double.parseDouble(countMap.get("Colums").toString())-5;
                 DecimalFormat df = new DecimalFormat("#.00");
                 req.setAttribute("recent", df.format(a*100/b));
             } catch (Exception e) {

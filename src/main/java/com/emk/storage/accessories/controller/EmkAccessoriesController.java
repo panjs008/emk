@@ -4,8 +4,10 @@ import com.alibaba.fastjson.JSONArray;
 import com.emk.storage.accessories.entity.EmkAccessoriesEntity;
 import com.emk.storage.accessories.service.EmkAccessoriesServiceI;
 import com.emk.storage.enquirydetail.entity.EmkEnquiryDetailEntity;
+import com.emk.storage.sampledetail.entity.EmkSampleDetailEntity;
 import com.emk.util.FlowUtil;
 import com.emk.util.ParameterUtil;
+import com.emk.util.Utils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -80,7 +82,15 @@ public class EmkAccessoriesController extends BaseController {
         return new ModelAndView("com/emk/storage/accessories/emkAccessoriesList");
     }
 
-
+    @RequestMapping(params = "orderMxList2")
+    public ModelAndView orderMxList2(HttpServletRequest request) {
+        Map map = ParameterUtil.getParamMaps(request.getParameterMap());
+        if (Utils.notEmpty(map.get("sampleId"))) {
+            List<EmkSampleDetailEntity> emkSampleDetailEntities = systemService.findHql("from EmkSampleDetailEntity where sampleId=? and type=1", map.get("sampleId"));
+            request.setAttribute("emkSampleDetailEntities", emkSampleDetailEntities);
+        }
+        return new ModelAndView("com/emk/storage/accessories/orderMxList2");
+    }
 
     @RequestMapping(params = "datagrid")
     public void datagrid(EmkAccessoriesEntity emkAccessories, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid) {
@@ -147,10 +157,38 @@ public class EmkAccessoriesController extends BaseController {
         AjaxJson j = new AjaxJson();
         message = "缝制辅料需求开发单添加成功";
         try {
+            Map map = ParameterUtil.getParamMaps(request.getParameterMap());
             emkAccessories.setState("0");
             Map orderNum = systemService.findOneForJdbc("select CAST(ifnull(max(right(MATERIAL_NO, 2)),0)+1 AS signed) orderNum from emk_accessories");
             emkAccessories.setMaterialNo("SY" + DateUtils.format(new Date(), "yyMMdd") + "B" + String.format("%02d", Integer.valueOf(Integer.parseInt(orderNum.get("orderNum").toString()))));
             emkAccessoriesService.save(emkAccessories);
+
+            String dataRows = (String)map.get("orderMxListID2");
+            //保存原料面料数据
+            if (Utils.notEmpty(dataRows)) {
+                int rows = Integer.parseInt(dataRows);
+                for (int i = 0; i < rows; i++) {
+                    EmkSampleDetailEntity emkSampleDetailEntity = new EmkSampleDetailEntity();
+                    if (Utils.notEmpty(map.get("orderMxList["+i+"].bproZnName"))) {
+                        emkSampleDetailEntity.setProZnName((String)map.get("orderMxList["+i+"].bproZnName"));
+                        emkSampleDetailEntity.setProNum((String)map.get("orderMxList["+i+"].bproNum"));
+                        emkSampleDetailEntity.setBrand((String)map.get("orderMxList["+i+"].bbrand"));
+                        emkSampleDetailEntity.setDirection((String)map.get("orderMxList["+i+"].bdirection"));
+                        emkSampleDetailEntity.setBetchNum((String)map.get("orderMxList["+i+"].bbetchNum"));
+                        emkSampleDetailEntity.setWidth((String)map.get("orderMxList["+i+"].bwidth"));
+                        emkSampleDetailEntity.setColor((String)map.get("orderMxList["+i+"].bcolor"));
+                        emkSampleDetailEntity.setWeight((String)map.get("orderMxList["+i+"].bweight"));
+                        emkSampleDetailEntity.setChengf((String)map.get("orderMxList["+i+"].bchengf"));
+                        emkSampleDetailEntity.setSignTotal((String)map.get("orderMxList["+i+"].bsignTotal"));
+                        emkSampleDetailEntity.setUnit((String)map.get("orderMxList["+i+"].bunit"));
+                        emkSampleDetailEntity.setRemark((String)map.get("orderMxList["+i+"].bremark"));
+                        emkSampleDetailEntity.setGysCode((String)map.get("orderMxList["+i+"].bgysCode"));
+                        emkSampleDetailEntity.setSampleId(emkAccessories.getId());
+                        emkSampleDetailEntity.setType("1");
+                        systemService.save(emkSampleDetailEntity);
+                    }
+                }
+            }
             systemService.addLog(message, Globals.Log_Type_INSERT, Globals.Log_Leavel_INFO);
         } catch (Exception e) {
             e.printStackTrace();
@@ -167,10 +205,41 @@ public class EmkAccessoriesController extends BaseController {
         String message = null;
         AjaxJson j = new AjaxJson();
         message = "缝制辅料需求开发单更新成功";
-        EmkAccessoriesEntity t = (EmkAccessoriesEntity) emkAccessoriesService.get(EmkAccessoriesEntity.class, emkAccessories.getId());
+        Map map = ParameterUtil.getParamMaps(request.getParameterMap());
+
+        EmkAccessoriesEntity t = (EmkAccessoriesEntity) emkAccessoriesService.get(EmkAccessoriesEntity.class, map.get("materailId").toString());
         try {
+            emkAccessories.setId(null);
             MyBeanUtils.copyBeanNotNull2Bean(emkAccessories, t);
             emkAccessoriesService.saveOrUpdate(t);
+
+            String dataRows = (String)map.get("orderMxListID2");
+            //保存原料面料数据
+            if (Utils.notEmpty(dataRows)) {
+                systemService.executeSql("delete from emk_sample_detail where sample_id = ? and type=1",t.getId());
+                int rows = Integer.parseInt(dataRows);
+                for (int i = 0; i < rows; i++) {
+                    EmkSampleDetailEntity emkSampleDetailEntity = new EmkSampleDetailEntity();
+                    if (Utils.notEmpty(map.get("orderMxList["+i+"].bproZnName"))) {
+                        emkSampleDetailEntity.setProZnName((String)map.get("orderMxList["+i+"].bproZnName"));
+                        emkSampleDetailEntity.setProNum((String)map.get("orderMxList["+i+"].bproNum"));
+                        emkSampleDetailEntity.setBrand((String)map.get("orderMxList["+i+"].bbrand"));
+                        emkSampleDetailEntity.setDirection((String)map.get("orderMxList["+i+"].bdirection"));
+                        emkSampleDetailEntity.setBetchNum((String)map.get("orderMxList["+i+"].bbetchNum"));
+                        emkSampleDetailEntity.setWidth((String)map.get("orderMxList["+i+"].bwidth"));
+                        emkSampleDetailEntity.setColor((String)map.get("orderMxList["+i+"].bcolor"));
+                        emkSampleDetailEntity.setWeight((String)map.get("orderMxList["+i+"].bweight"));
+                        emkSampleDetailEntity.setChengf((String)map.get("orderMxList["+i+"].bchengf"));
+                        emkSampleDetailEntity.setSignTotal((String)map.get("orderMxList["+i+"].bsignTotal"));
+                        emkSampleDetailEntity.setUnit((String)map.get("orderMxList["+i+"].bunit"));
+                        emkSampleDetailEntity.setRemark((String)map.get("orderMxList["+i+"].bremark"));
+                        emkSampleDetailEntity.setGysCode((String)map.get("orderMxList["+i+"].bgysCode"));
+                        emkSampleDetailEntity.setSampleId(t.getId());
+                        emkSampleDetailEntity.setType("1");
+                        systemService.save(emkSampleDetailEntity);
+                    }
+                }
+            }
             systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
         } catch (Exception e) {
             e.printStackTrace();
@@ -356,7 +425,7 @@ public class EmkAccessoriesController extends BaseController {
                             taskService.complete(task1.getId(), variables);
                         }
                         if (task1.getTaskDefinitionKey().equals("checkTask")) {
-                            t.setLeader(user.getRealName());
+                            /*t.setLeader(user.getRealName());
                             t.setLeadUserId(user.getId());
                             t.setLeadAdvice(emkAccessoriesEntity.getLeadAdvice());
                             if (emkAccessoriesEntity.getIsPass().equals("0")) {
@@ -379,7 +448,7 @@ public class EmkAccessoriesController extends BaseController {
                                     systemService.executeSql("delete from act_hi_actinst where ID_>=? and ID_<?", activitIdArr[0], activitIdArr[1] );
                                 }
                                 t.setState("0");
-                            }
+                            }*/
 
                         }
 

@@ -21,8 +21,9 @@ function BindSelectSupply(ctrlName, url,type,categoryId) {
     $.getJSON(url, function (data) {
         control.empty();//清空下拉框
         control.append("<option value=''>请选择</option>");
+
         $.each(data.obj, function (i, item) {
-            control.append("<option value='" + item.supplierCode + ","+item.supplier +"'>" + item.supplier + "</option>");
+            control.append("<option value='" + item.companyCode + ","+item.companyNameZn +"'>" + item.companyNameZn + "</option>");
         });
         if(type ==1){
             $("#"+ctrlName).select2('val',categoryId);

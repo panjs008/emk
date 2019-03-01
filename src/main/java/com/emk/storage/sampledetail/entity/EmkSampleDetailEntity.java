@@ -61,6 +61,8 @@ public class EmkSampleDetailEntity implements Serializable {
     private String color;
     @Excel(name = "克重")
     private String weight;
+    @Excel(name = "成分")
+    private String chengf;
     @Excel(name = "位置")
     private String position;
     @Excel(name = "供应商")
@@ -341,5 +343,14 @@ public class EmkSampleDetailEntity implements Serializable {
 
     public void setRkState(String rkState) {
         this.rkState = rkState;
+    }
+
+    @Column(name = "chengf", nullable = true, length = 32)
+    public String getChengf() {
+        return chengf;
+    }
+
+    public void setChengf(String chengf) {
+        this.chengf = chengf;
     }
 }

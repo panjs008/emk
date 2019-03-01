@@ -57,16 +57,7 @@
 			</td>
 		</tr>
 		<tr>
-			<td align="right" style="width: 18%">
-				<label class="Validform_label">
-					订单号:
-				</label>
-			</td>
-			<td class="value" style="width: 32%" >
-				<input id="orderNo" name="orderNo" readonly value="${emkProOrderPage.orderNo}" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">订单号</label>
-			</td>
+
 			<td align="right">
 				<label class="Validform_label">
 					供应商:

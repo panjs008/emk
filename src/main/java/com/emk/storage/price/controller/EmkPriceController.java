@@ -1,6 +1,7 @@
 package com.emk.storage.price.controller;
 
 import com.alibaba.fastjson.JSONArray;
+import com.emk.approval.approval.entity.EmkApprovalEntity;
 import com.emk.bill.proorderdetail.entity.EmkProOrderDetailEntity;
 import com.emk.bound.minstoragedetail.entity.EmkMInStorageDetailEntity;
 import com.emk.storage.gl.entity.EmkGlEntity;
@@ -15,6 +16,7 @@ import com.emk.storage.sampleyin.entity.EmkSampleYinEntity;
 import com.emk.util.FlowUtil;
 import com.emk.util.ParameterUtil;
 import com.emk.util.Utils;
+import com.emk.util.WebFileUtils;
 import com.emk.workorder.workorder.entity.EmkWorkOrderEntity;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -190,6 +192,7 @@ public class EmkPriceController extends BaseController {
         message = "报价单删除成功";
         try {
             emkPriceService.delete(emkPrice);
+
             systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
         } catch (Exception e) {
             e.printStackTrace();
@@ -209,7 +212,19 @@ public class EmkPriceController extends BaseController {
         try {
             for (String id : ids.split(",")) {
                 EmkPriceEntity emkPrice = systemService.getEntity(EmkPriceEntity.class, id);
+                WebFileUtils.delete( request.getRealPath("/")+emkPrice.getDgrImageUrl());
+                WebFileUtils.delete( request.getRealPath("/")+emkPrice.getCustomSampleUrl());
+                WebFileUtils.delete( request.getRealPath("/")+emkPrice.getOldImageUrl());
+                WebFileUtils.delete( request.getRealPath("/")+emkPrice.getSizeImageUrl());
+                EmkApprovalEntity approvalEntity = systemService.findUniqueByProperty(EmkApprovalEntity.class,"formId",emkPrice.getId());
 
+                systemService.executeSql("delete from emk_enquiry_detail where enquiry_id=?",emkPrice.getId());
+                systemService.executeSql("delete from emk_approval where form_id=?",emkPrice.getId());
+                systemService.executeSql("delete from emk_approval_detail where approval_id=?",approvalEntity.getId());
+                systemService.executeSql("delete from emk_sample_detail where sample_id = ?",emkPrice.getId());
+                systemService.executeSql("delete from emk_sample_gx where sample_id = ?",emkPrice.getId());
+                systemService.executeSql("delete from emk_sample_ran where sample_id = ?",emkPrice.getId());
+                systemService.executeSql("delete from emk_sample_yin where sample_id = ?",emkPrice.getId());
 
                 emkPriceService.delete(emkPrice);
                 systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);

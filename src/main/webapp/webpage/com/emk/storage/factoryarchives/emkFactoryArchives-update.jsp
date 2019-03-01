@@ -202,7 +202,7 @@
 				</label>
 			</td>
 			<td class="value" colspan="3">
-				<input id="companyCode" name="companyCode" value="${emkFactoryArchivesPage.companyCode }" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="companyCode" name="companyCode" datatype="*" value="${emkFactoryArchivesPage.companyCode }" type="text" style="width: 150px" class="inputxt" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">供应商代码</label>
 			</td>
@@ -237,7 +237,7 @@
 				</label>
 			</td>
 			<td class="value" colspan="2">
-				<input id="companyNameZn" name="companyNameZn" value="${emkFactoryArchivesPage.companyNameZn }" type="text" style="width: 80%" class="inputxt"  ignore="ignore" />
+				<input id="companyNameZn" name="companyNameZn" value="${emkFactoryArchivesPage.companyNameZn }" datatype="*" type="text" style="width: 80%" class="inputxt" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">Local 中文</label>
 			</td>
@@ -422,7 +422,7 @@
 				</label>
 			</td>
 			<td class="value">
-				<input id="facilityBusinessLicense" name="facilityBusinessLicense" value="${emkFactoryArchivesPage.yearEstablished }" type="text" style="width: 220px" class="inputxt"  ignore="ignore" />
+				<input id="facilityBusinessLicense" name="facilityBusinessLicense" value="${emkFactoryArchivesPage.facilityBusinessLicense }" type="text" style="width: 220px" class="inputxt"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">businesslicen</label>
 			</td>
@@ -432,7 +432,7 @@
 				</label>
 			</td>
 			<td class="value" >
-				<input id="permitSsued" name="permitSsued" type="text" value="${emkFactoryArchivesPage.yearEstablished }" style="width: 220px" class="inputxt"  ignore="ignore" />
+				<input id="permitSsued" name="permitSsued" type="text" value="${emkFactoryArchivesPage.permitSsued }" style="width: 220px" class="inputxt"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">签发机构</label>
 			</td>
@@ -444,7 +444,7 @@
 				</label>
 			</td>
 			<td class="value" colspan="3">
-				<input id="permitExpirationDate" name="permitExpirationDate" value="${emkFactoryArchivesPage.yearEstablished }" type="text" style="width: 220px" class="inputxt"  ignore="ignore" />
+				<input id="permitExpirationDate" name="permitExpirationDate" value="${emkFactoryArchivesPage.permitExpirationDate }" type="text" style="width: 220px" class="inputxt"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">营业执照有效期</label>
 			</td>
@@ -456,7 +456,7 @@
 				</label>
 			</td>
 			<td class="value">
-				<input id="productionProcess" name="productionProcess" value="${emkFactoryArchivesPage.yearEstablished }" type="text" style="width: 220px" class="inputxt"  ignore="ignore" />
+				<input id="productionProcess" name="productionProcess" value="${emkFactoryArchivesPage.productionProcess }" type="text" style="width: 220px" class="inputxt"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">生产工序</label>
 			</td>

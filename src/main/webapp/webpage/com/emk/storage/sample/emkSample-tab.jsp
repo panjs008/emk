@@ -36,9 +36,6 @@
 	<t:tab href="emkPriceController.do?orderMxList2&priceId=${param.id}"   width="100%" icon="fa fa-cut" title="缝制辅料" id="fengdetail"></t:tab>
 	<t:tab href="emkPriceController.do?orderMxList3&priceId=${param.id}"   width="100%" icon="fa fa-cube" title="包装辅料" id="bzdetail"></t:tab>
 	<t:tab href="emkPriceController.do?gxList&priceId=${param.id}"   width="100%" icon="fa fa-cube" title="人工" id="rgdetail"></t:tab>
-	<t:tab href="emkPriceController.do?ranList&priceId=${param.id}"   width="100%" icon="fa fa-cube" title="染色" id="randetail"></t:tab>
-	<t:tab href="emkPriceController.do?yinList&priceId=${param.id}"   width="100%" icon="fa fa-cube" title="印花" id="yindetail"></t:tab>
-
 </t:tabs>
 
 </body>

@@ -40,6 +40,8 @@ public class EmkPackEntity implements Serializable {
     private String customSample;
     @Excel(name = "款号")
     private String sampleNo;
+    @Excel(name = "版次")
+    private String version;
     @Excel(name = "描述")
     private String sampleNoDesc;
     @Excel(name = "是否打过初样")
@@ -63,6 +65,9 @@ public class EmkPackEntity implements Serializable {
     @Excel(name = "业务跟单员")
     private String tracer;
     private String tracerName;
+    @Excel(name = "生产跟单员")
+    private String developer;
+    private String developerName;
     @Excel(name = "订单号")
     private String orderNo;
     @Excel(name = "生产合同号")
@@ -81,10 +86,7 @@ public class EmkPackEntity implements Serializable {
     private String endDate;
     @Excel(name = "客户意见")
     private String cusAdvice;
-    @Excel(name = "业务意见")
-    private String yeAdvice;
-    @Excel(name = "采购部意见")
-    private String cgAdvice;
+
     @Excel(name = "是否参考图片")
     private String isCkImage;
     private String ckImageUrl;
@@ -94,12 +96,6 @@ public class EmkPackEntity implements Serializable {
     private String businesseDeptName;
     private String businesseDeptId;
 
-    @Excel(name = "审核意见")
-    private String leadAdvice;
-    private String isPass;
-    private String leadUserId;
-    @Excel(name = "审核人")
-    private String leader;
     private String state;
 
     @Id
@@ -456,24 +452,6 @@ public class EmkPackEntity implements Serializable {
         this.cusAdvice = cusAdvice;
     }
 
-    @Column(name = "YE_ADVICE", nullable = true, length = 256)
-    public String getYeAdvice() {
-        return this.yeAdvice;
-    }
-
-    public void setYeAdvice(String yeAdvice) {
-        this.yeAdvice = yeAdvice;
-    }
-
-    @Column(name = "CG_ADVICE", nullable = true, length = 256)
-    public String getCgAdvice() {
-        return this.cgAdvice;
-    }
-
-    public void setCgAdvice(String cgAdvice) {
-        this.cgAdvice = cgAdvice;
-    }
-
     @Column(name = "IS_CK_IMAGE", nullable = true, length = 32)
     public String getIsCkImage() {
         return this.isCkImage;
@@ -519,42 +497,6 @@ public class EmkPackEntity implements Serializable {
         this.businesseDeptId = businesseDeptId;
     }
 
-    @Column(name = "LEAD_ADVICE", nullable = true, length = 256)
-    public String getLeadAdvice() {
-        return this.leadAdvice;
-    }
-
-    public void setLeadAdvice(String leadAdvice) {
-        this.leadAdvice = leadAdvice;
-    }
-
-    @Column(name = "IS_PASS", nullable = true, length = 32)
-    public String getIsPass() {
-        return this.isPass;
-    }
-
-    public void setIsPass(String isPass) {
-        this.isPass = isPass;
-    }
-
-    @Column(name = "LEAD_USER_ID", nullable = true, length = 32)
-    public String getLeadUserId() {
-        return this.leadUserId;
-    }
-
-    public void setLeadUserId(String leadUserId) {
-        this.leadUserId = leadUserId;
-    }
-
-    @Column(name = "LEADER", nullable = true, length = 32)
-    public String getLeader() {
-        return this.leader;
-    }
-
-    public void setLeader(String leader) {
-        this.leader = leader;
-    }
-
     @Column(name ="STATE",nullable=true,length=32)
     public String getState(){
         return this.state;
@@ -567,4 +509,31 @@ public class EmkPackEntity implements Serializable {
     public void setState(String state){
         this.state = state;
     }
+
+    @Column(name ="version",nullable=true,length=32)
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+    @Column(name = "DEVELOPER", nullable = true, length = 32)
+    public String getDeveloper() {
+        return this.developer;
+    }
+
+    public void setDeveloper(String developer) {
+        this.developer = developer;
+    }
+
+    @Column(name = "DEVELOPER_NAME", nullable = true, length = 32)
+    public String getDeveloperName() {
+        return this.developerName;
+    }
+
+    public void setDeveloperName(String developerName) {
+        this.developerName = developerName;
+    }
+
 }

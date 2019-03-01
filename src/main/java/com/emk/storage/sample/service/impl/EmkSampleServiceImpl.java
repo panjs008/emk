@@ -65,21 +65,11 @@ public class EmkSampleServiceImpl
         map.put("sys_org_code", t.getSysOrgCode());
         map.put("sample_no", t.getSampleNo());
         map.put("project_no", t.getProjectNo());
-        map.put("factory_name", t.getFactoryName());
-        map.put("factory_code", t.getFactoryCode());
-        map.put("custom_sample_url", t.getCustomSampleUrl());
-        map.put("custom_sample", t.getCustomSample());
-        map.put("sample_size_url", t.getSampleSizeUrl());
-        map.put("sample_size", t.getSampleSize());
         map.put("remark", t.getRemark());
-        map.put("packing", t.getPacking());
-        map.put("pro_name", t.getProName());
+
         map.put("pro_type", t.getProType());
         map.put("pro_type_name", t.getProTypeName());
-        map.put("recevice_date", t.getReceviceDate());
-        map.put("finish_date", t.getFinishDate());
-        map.put("produce_date", t.getProduceDate());
-        map.put("requiretext", t.getRequiretext());
+
         return map;
     }
 
@@ -91,21 +81,9 @@ public class EmkSampleServiceImpl
         sql = sql.replace("#{sys_org_code}", String.valueOf(t.getSysOrgCode()));
         sql = sql.replace("#{sample_no}", String.valueOf(t.getSampleNo()));
         sql = sql.replace("#{project_no}", String.valueOf(t.getProjectNo()));
-        sql = sql.replace("#{factory_name}", String.valueOf(t.getFactoryName()));
-        sql = sql.replace("#{factory_code}", String.valueOf(t.getFactoryCode()));
-        sql = sql.replace("#{custom_sample_url}", String.valueOf(t.getCustomSampleUrl()));
-        sql = sql.replace("#{custom_sample}", String.valueOf(t.getCustomSample()));
-        sql = sql.replace("#{sample_size_url}", String.valueOf(t.getSampleSizeUrl()));
-        sql = sql.replace("#{sample_size}", String.valueOf(t.getSampleSize()));
         sql = sql.replace("#{remark}", String.valueOf(t.getRemark()));
-        sql = sql.replace("#{packing}", String.valueOf(t.getPacking()));
-        sql = sql.replace("#{pro_name}", String.valueOf(t.getProName()));
         sql = sql.replace("#{pro_type}", String.valueOf(t.getProType()));
         sql = sql.replace("#{pro_type_name}", String.valueOf(t.getProTypeName()));
-        sql = sql.replace("#{recevice_date}", String.valueOf(t.getReceviceDate()));
-        sql = sql.replace("#{finish_date}", String.valueOf(t.getFinishDate()));
-        sql = sql.replace("#{produce_date}", String.valueOf(t.getProduceDate()));
-        sql = sql.replace("#{requiretext}", String.valueOf(t.getRequiretext()));
         sql = sql.replace("#{UUID}", UUID.randomUUID().toString());
         return sql;
     }

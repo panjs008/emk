@@ -19,6 +19,10 @@ public class EmkColorEntity implements Serializable {
     private String createBy;
     private Date createDate;
     private String sysOrgCode;
+    @Excel(name = "色样需求单号")
+    private String colorNo;
+    @Excel(name = "色样询盘号")
+    private String syxpNum;
     @Excel(name = "款号")
     private String sampleNo;
     @Excel(name = "客户编号")
@@ -31,8 +35,7 @@ public class EmkColorEntity implements Serializable {
     @Excel(name = "标准色卡")
     private String colorCard;
     private String sampleId;
-    @Excel(name = "色样需求单号")
-    private String colorNo;
+
     @Excel(name = "是否标准色号")
     private String isColorNum;
     private String colorNumUrl;
@@ -54,26 +57,9 @@ public class EmkColorEntity implements Serializable {
     private String colorQtxUrl;
     @Excel(name = "色样种类")
     private String colorType;
-    @Excel(name = "颜色中文名称")
-    private String colorZnName;
-    @Excel(name = "颜色英文名称")
-    private String colorEnName;
-    @Excel(name = "色号")
-    private String seNum;
-    @Excel(name = "色样编号")
-    private String syNum;
-    @Excel(name = "主光源")
-    private String zgy;
-    @Excel(name = "次光源")
     private String cgy;
     @Excel(name = "开单日期")
     private String kdDate;
-    @Excel(name = "交期")
-    private String recevieDate;
-    @Excel(name = "色样规格")
-    private String colorBrand;
-    @Excel(name = "色样数量")
-    private String colorTotal;
     @Excel(name = "色牢度")
     private Double colorSlg;
     @Excel(name = "化学物质")
@@ -82,47 +68,30 @@ public class EmkColorEntity implements Serializable {
     private String gjs;
     @Excel(name = "色样去向")
     private String syTo;
-    @Excel(name = "收件人")
-    private String recevier;
-    @Excel(name = "日期")
-    private String riqi;
-    @Excel(name = "寄件人")
-    private String sender;
-    @Excel(name = "寄件数量")
-    private Integer sendTotal;
-    @Excel(name = "剩余数量")
-    private Integer syTotal;
     @Excel(name = "客户评语")
     private String cusRemark;
-    @Excel(name = "色样状态")
-    private String colorState;
-    @Excel(name = "需求单审批意见")
-    private String advice;
-    @Excel(name = "技术员染色意见")
-    private String jsyAdvice;
-    @Excel(name = "技术部交期意见")
-    private String jsbAdvice;
+
     @Excel(name = "业务员")
     private String businesser;
     private String businesserName;
     @Excel(name = "业务跟单员")
     private String tracer;
     private String tracerName;
+    @Excel(name = "生产跟单员")
+    private String developer;
+    private String developerName;
     @Excel(name = "业务部门")
     private String businesseDeptName;
     private String businesseDeptId;
-    @Excel(name = "寄件日期")
-    private String sendDate;
+
     @Excel(name = "工艺种类")
     private String gyzl;
     private String proType;
     @Excel(name = "款式大类")
     private String proTypeName;
-    private String customSampleUrl;
-    @Excel(name = "图片")
-    private String customSample;
-    @Excel(name = "版次")
-    private String version;
+    @Excel(name = "交货时间")
+    private String recevieDate;
+
     @Excel(name = "描述")
     private String sampleNoDesc;
     @Excel(name = "备注")
@@ -356,51 +325,6 @@ public class EmkColorEntity implements Serializable {
         this.colorType = colorType;
     }
 
-    @Column(name = "COLOR_ZN_NAME", nullable = true, length = 32)
-    public String getColorZnName() {
-        return this.colorZnName;
-    }
-
-    public void setColorZnName(String colorZnName) {
-        this.colorZnName = colorZnName;
-    }
-
-    @Column(name = "COLOR_EN_NAME", nullable = true, length = 32)
-    public String getColorEnName() {
-        return this.colorEnName;
-    }
-
-    public void setColorEnName(String colorEnName) {
-        this.colorEnName = colorEnName;
-    }
-
-    @Column(name = "SE_NUM", nullable = true, length = 32)
-    public String getSeNum() {
-        return this.seNum;
-    }
-
-    public void setSeNum(String seNum) {
-        this.seNum = seNum;
-    }
-
-    @Column(name = "SY_NUM", nullable = true, length = 32)
-    public String getSyNum() {
-        return this.syNum;
-    }
-
-    public void setSyNum(String syNum) {
-        this.syNum = syNum;
-    }
-
-    @Column(name = "ZGY", nullable = true, length = 32)
-    public String getZgy() {
-        return this.zgy;
-    }
-
-    public void setZgy(String zgy) {
-        this.zgy = zgy;
-    }
-
     @Column(name = "CGY", nullable = true, length = 32)
     public String getCgy() {
         return this.cgy;
@@ -417,33 +341,6 @@ public class EmkColorEntity implements Serializable {
 
     public void setKdDate(String kdDate) {
         this.kdDate = kdDate;
-    }
-
-    @Column(name = "RECEVIE_DATE", nullable = true, length = 32)
-    public String getRecevieDate() {
-        return this.recevieDate;
-    }
-
-    public void setRecevieDate(String recevieDate) {
-        this.recevieDate = recevieDate;
-    }
-
-    @Column(name = "COLOR_BRAND", nullable = true, length = 32)
-    public String getColorBrand() {
-        return this.colorBrand;
-    }
-
-    public void setColorBrand(String colorBrand) {
-        this.colorBrand = colorBrand;
-    }
-
-    @Column(name = "COLOR_TOTAL", nullable = true, length = 32)
-    public String getColorTotal() {
-        return this.colorTotal;
-    }
-
-    public void setColorTotal(String colorTotal) {
-        this.colorTotal = colorTotal;
     }
 
     @Column(name = "COLOR_SLG", nullable = true, length = 32)
@@ -482,51 +379,6 @@ public class EmkColorEntity implements Serializable {
         this.syTo = syTo;
     }
 
-    @Column(name = "RECEVIER", nullable = true, length = 32)
-    public String getRecevier() {
-        return this.recevier;
-    }
-
-    public void setRecevier(String recevier) {
-        this.recevier = recevier;
-    }
-
-    @Column(name = "RIQI", nullable = true, length = 32)
-    public String getRiqi() {
-        return this.riqi;
-    }
-
-    public void setRiqi(String riqi) {
-        this.riqi = riqi;
-    }
-
-    @Column(name = "SENDER", nullable = true, length = 32)
-    public String getSender() {
-        return this.sender;
-    }
-
-    public void setSender(String sender) {
-        this.sender = sender;
-    }
-
-    @Column(name = "SEND_TOTAL", nullable = true, length = 32)
-    public Integer getSendTotal() {
-        return this.sendTotal;
-    }
-
-    public void setSendTotal(Integer sendTotal) {
-        this.sendTotal = sendTotal;
-    }
-
-    @Column(name = "SY_TOTAL", nullable = true, length = 32)
-    public Integer getSyTotal() {
-        return this.syTotal;
-    }
-
-    public void setSyTotal(Integer syTotal) {
-        this.syTotal = syTotal;
-    }
-
     @Column(name = "CUS_REMARK", nullable = true, length = 256)
     public String getCusRemark() {
         return this.cusRemark;
@@ -536,41 +388,6 @@ public class EmkColorEntity implements Serializable {
         this.cusRemark = cusRemark;
     }
 
-    @Column(name = "COLOR_STATE", nullable = true, length = 32)
-    public String getColorState() {
-        return this.colorState;
-    }
-
-    public void setColorState(String colorState) {
-        this.colorState = colorState;
-    }
-
-    @Column(name = "ADVICE", nullable = true, length = 256)
-    public String getAdvice() {
-        return this.advice;
-    }
-
-    public void setAdvice(String advice) {
-        this.advice = advice;
-    }
-
-    @Column(name = "JSY_ADVICE", nullable = true, length = 256)
-    public String getJsyAdvice() {
-        return this.jsyAdvice;
-    }
-
-    public void setJsyAdvice(String jsyAdvice) {
-        this.jsyAdvice = jsyAdvice;
-    }
-
-    @Column(name = "JSB_ADVICE", nullable = true, length = 256)
-    public String getJsbAdvice() {
-        return this.jsbAdvice;
-    }
-
-    public void setJsbAdvice(String jsbAdvice) {
-        this.jsbAdvice = jsbAdvice;
-    }
 
     @Column(name = "BUSINESSER", nullable = true, length = 32)
     public String getBusinesser() {
@@ -608,6 +425,24 @@ public class EmkColorEntity implements Serializable {
         this.tracerName = tracerName;
     }
 
+    @Column(name = "DEVELOPER", nullable = true, length = 32)
+    public String getDeveloper() {
+        return this.developer;
+    }
+
+    public void setDeveloper(String developer) {
+        this.developer = developer;
+    }
+
+    @Column(name = "DEVELOPER_NAME", nullable = true, length = 32)
+    public String getDeveloperName() {
+        return this.developerName;
+    }
+
+    public void setDeveloperName(String developerName) {
+        this.developerName = developerName;
+    }
+
     @Column(name = "BUSINESSE_DEPT_NAME", nullable = true, length = 32)
     public String getBusinesseDeptName() {
         return this.businesseDeptName;
@@ -624,15 +459,6 @@ public class EmkColorEntity implements Serializable {
 
     public void setBusinesseDeptId(String businesseDeptId) {
         this.businesseDeptId = businesseDeptId;
-    }
-
-    @Column(name = "SEND_DATE", nullable = true, length = 32)
-    public String getSendDate() {
-        return this.sendDate;
-    }
-
-    public void setSendDate(String sendDate) {
-        this.sendDate = sendDate;
     }
 
     @Column(name = "GYZL", nullable = true, length = 32)
@@ -662,33 +488,6 @@ public class EmkColorEntity implements Serializable {
         this.proTypeName = proTypeName;
     }
 
-    @Column(name = "CUSTOM_SAMPLE_URL", nullable = true, length = 256)
-    public String getCustomSampleUrl() {
-        return this.customSampleUrl;
-    }
-
-    public void setCustomSampleUrl(String customSampleUrl) {
-        this.customSampleUrl = customSampleUrl;
-    }
-
-    @Column(name = "CUSTOM_SAMPLE", nullable = true, length = 32)
-    public String getCustomSample() {
-        return this.customSample;
-    }
-
-    public void setCustomSample(String customSample) {
-        this.customSample = customSample;
-    }
-
-    @Column(name = "VERSION", nullable = true, length = 32)
-    public String getVersion() {
-        return this.version;
-    }
-
-    public void setVersion(String version) {
-        this.version = version;
-    }
-
     @Column(name = "SAMPLE_NO_DESC", nullable = true, length = 256)
     public String getSampleNoDesc() {
         return this.sampleNoDesc;
@@ -705,5 +504,23 @@ public class EmkColorEntity implements Serializable {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    @Column(name = "syxp_num", nullable = true, length = 256)
+    public String getSyxpNum() {
+        return syxpNum;
+    }
+
+    public void setSyxpNum(String syxpNum) {
+        this.syxpNum = syxpNum;
+    }
+
+    @Column(name = "recevie_date", nullable = true, length = 256)
+    public String getRecevieDate() {
+        return recevieDate;
+    }
+
+    public void setRecevieDate(String recevieDate) {
+        this.recevieDate = recevieDate;
     }
 }

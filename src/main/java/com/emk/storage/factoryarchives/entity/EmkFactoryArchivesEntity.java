@@ -46,6 +46,9 @@ public class EmkFactoryArchivesEntity implements java.io.Serializable {
 	/**提交时间*/
 	@Excel(name="提交时间",width=15)
 	private String sumbitDate;
+	/**工厂代码*/
+	@Excel(name="工厂代码",width=15)
+	private String companyCode;
 	/**公司名英文*/
 	@Excel(name="公司名英文",width=15)
 	private String companyNameEn;
@@ -181,9 +184,7 @@ public class EmkFactoryArchivesEntity implements java.io.Serializable {
 	/**评估风险等级*/
 	@Excel(name="评估风险等级",width=15)
 	private String level;
-	/**工厂代码*/
-	@Excel(name="工厂代码",width=15)
-	private String companyCode;
+
 	/**省份*/
 	@Excel(name="省份",width=15)
 	private String shengFen;

@@ -30,6 +30,8 @@
        <t:dgToolBar title="查看" icon="fa fa-search" url="emkFactoryArchivesController.do?goUpdate" funname="detail" width="1100" height="580"></t:dgToolBar>
        <t:dgToolBar title="导入" icon="fa fa-arrow-circle-left" funname="ImportXls"></t:dgToolBar>
        <t:dgToolBar title="导出" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
+   <t:dgToolBar title="导出PDF" icon="fa fa-arrow-circle-right"  funname="doPrintPDF"></t:dgToolBar>
+
   </t:datagrid>
   </div>
  </div>
@@ -73,7 +75,60 @@
   if (row.productClassification.indexOf('[10]') >= 0) {
    text += "Home workshop apparatus tools,";
   }
+  if (row.productClassification.indexOf('[11]') >= 0) {
+   text += "Beverage & Food,";
+  }
+  if (row.productClassification.indexOf('[12]') >= 0) {
+   text += "Yard and garden,";
+  }
+  if (row.productClassification.indexOf('[13]') >= 0) {
+   text += "Pet related products,";
+  }
+  if (row.productClassification.indexOf('[14]') >= 0) {
+   text += "Child nursery equipment & supplies,";
+  }
+  if (row.productClassification.indexOf('[15]') >= 0) {
+   text += "Medicine,";
+  }
+  if (row.productClassification.indexOf('[16]') >= 0) {
+   text += "Personal use items,";
+  }
+  if (row.productClassification.indexOf('[17]') >= 0) {
+   text += "Raw Material,";
+  }
+  if (row.productClassification.indexOf('[18]') >= 0) {
+   text += "Garments, Footwear & Accessories,";
+  }
+  if (row.productClassification.indexOf('[19]') >= 0) {
+   text += "Miscellaneous Products,";
+  }
+
+  if (row.productClassification.indexOf('[21]') >= 0) {
+   text += "Servicing Facilities,";
+  }
+  if (row.productClassification.indexOf('[23]') >= 0) {
+   text += "Other,";
+  }
+  if (row.productClassification.indexOf('[25]') >= 0) {
+   text += "Pet related products,";
+  }
   return text;
+ }
+ function doPrintPDF() {
+     var rowsData = $('#emkFactoryArchivesList').datagrid('getSelections');
+     var ids = [];
+     if (!rowsData || rowsData.length == 0) {
+      tip('请选择需要导出PDF的供应商档案');
+      return;
+     }
+     for ( var i = 0; i < rowsData.length; i++) {
+      ids.push(rowsData[i].id);
+     }
+     $.dialog.confirm('您是否确定导出PDF的供应商档案?', function(r) {
+      if (r) {
+       window.location.href = "emkFactoryArchivesController.do?doPrintPDF&ids="+ids;
+      }
+     });
  }
 //导入
 function ImportXls() {

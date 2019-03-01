@@ -2,6 +2,7 @@ package com.service.custom.controller;
 
 import com.emk.storage.enquiry.entity.EmkEnquiryEntity;
 import com.emk.storage.enquiry.entity.EmkEnquiryEntityA;
+import com.emk.storage.factoryarchives.entity.EmkFactoryArchivesEntity;
 import com.emk.storage.supplier.entity.EmkSupplierEntity;
 import com.emk.util.*;
 import com.service.custom.entity.YmkCustomEntity;
@@ -372,7 +373,7 @@ public class YmkCustomController
 
         try {
             for (String id : ids.split(",")) {
-                String fileName = "d:\\PDF\\"+ DateUtil.format(new Date(),"yyyyMMddHHmmss")+".pdf";
+                String fileName = "c:\\PDF\\"+ DateUtil.format(new Date(),"yyyyMMddHHmmss")+".pdf";
                 File file = new File(fileName);
                 File dir = file.getParentFile();
                 if (!dir.exists()) {
@@ -399,7 +400,7 @@ public class YmkCustomController
                 }
 
                 new createPdf(file).generateEmkCustomPDF(ymkCustomEntityA);
-                String fFileName = "d:\\PDF\\F"+DateUtil.format(new Date(),"yyyyMMddHHmmss")+".pdf";
+                String fFileName = "c:\\PDF\\F"+DateUtil.format(new Date(),"yyyyMMddHHmmss")+".pdf";
                 WaterMark.waterMark(fileName,fFileName, "客户档案");
                 file.delete();
                 WebFileUtils.downLoad(fFileName,response,false);
@@ -462,8 +463,7 @@ public class YmkCustomController
     @ResponseBody
     public AjaxJson findSupplierList(YmkCustomEntity customEntity, HttpServletRequest request) {
         AjaxJson j = new AjaxJson();
-        TSUser user = (TSUser) request.getSession().getAttribute("LOCAL_CLINET_USER");
-        List<EmkSupplierEntity> supplierEntities = systemService.findHql("from EmkSupplierEntity", null);
+        List<EmkFactoryArchivesEntity> supplierEntities = systemService.findHql("from EmkFactoryArchivesEntity", null);
         j.setObj(supplierEntities);
         return j;
     }

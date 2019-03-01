@@ -83,36 +83,22 @@ public class EmkColorServiceImpl
         map.put("color_qtx", t.getColorQtx());
         map.put("color_qtx_url", t.getColorQtxUrl());
         map.put("color_type", t.getColorType());
-        map.put("color_zn_name", t.getColorZnName());
-        map.put("color_en_name", t.getColorEnName());
 
-        map.put("zgy", t.getZgy());
         map.put("cgy", t.getCgy());
         map.put("kd_date", t.getKdDate());
-        map.put("recevie_date", t.getRecevieDate());
-        map.put("color_brand", t.getColorBrand());
-        map.put("color_total", t.getColorTotal());
+
         map.put("color_slg", t.getColorSlg());
         map.put("hxwz", t.getHxwz());
         map.put("gjs", t.getGjs());
         map.put("sy_to", t.getSyTo());
-        map.put("recevier", t.getRecevier());
-        map.put("riqi", t.getRiqi());
-        map.put("sender", t.getSender());
-        map.put("send_total", t.getSendTotal());
-        map.put("sy_total", t.getSyTotal());
         map.put("cus_remark", t.getCusRemark());
-        map.put("color_state", t.getColorState());
-        map.put("advice", t.getAdvice());
-        map.put("jsy_advice", t.getJsyAdvice());
-        map.put("jsb_advice", t.getJsbAdvice());
+
         map.put("businesser", t.getBusinesser());
         map.put("businesser_name", t.getBusinesserName());
         map.put("tracer", t.getTracer());
         map.put("tracer_name", t.getTracerName());
         map.put("businesse_dept_name", t.getBusinesseDeptName());
         map.put("businesse_dept_id", t.getBusinesseDeptId());
-        map.put("send_date", t.getSendDate());
         return map;
     }
 
@@ -142,36 +128,22 @@ public class EmkColorServiceImpl
         sql = sql.replace("#{color_qtx}", String.valueOf(t.getColorQtx()));
         sql = sql.replace("#{color_qtx_url}", String.valueOf(t.getColorQtxUrl()));
         sql = sql.replace("#{color_type}", String.valueOf(t.getColorType()));
-        sql = sql.replace("#{color_zn_name}", String.valueOf(t.getColorZnName()));
-        sql = sql.replace("#{color_en_name}", String.valueOf(t.getColorEnName()));
 
-        sql = sql.replace("#{zgy}", String.valueOf(t.getZgy()));
         sql = sql.replace("#{cgy}", String.valueOf(t.getCgy()));
         sql = sql.replace("#{kd_date}", String.valueOf(t.getKdDate()));
-        sql = sql.replace("#{recevie_date}", String.valueOf(t.getRecevieDate()));
-        sql = sql.replace("#{color_brand}", String.valueOf(t.getColorBrand()));
-        sql = sql.replace("#{color_total}", String.valueOf(t.getColorTotal()));
+
         sql = sql.replace("#{color_slg}", String.valueOf(t.getColorSlg()));
         sql = sql.replace("#{hxwz}", String.valueOf(t.getHxwz()));
         sql = sql.replace("#{gjs}", String.valueOf(t.getGjs()));
         sql = sql.replace("#{sy_to}", String.valueOf(t.getSyTo()));
-        sql = sql.replace("#{recevier}", String.valueOf(t.getRecevier()));
-        sql = sql.replace("#{riqi}", String.valueOf(t.getRiqi()));
-        sql = sql.replace("#{sender}", String.valueOf(t.getSender()));
-        sql = sql.replace("#{send_total}", String.valueOf(t.getSendTotal()));
-        sql = sql.replace("#{sy_total}", String.valueOf(t.getSyTotal()));
         sql = sql.replace("#{cus_remark}", String.valueOf(t.getCusRemark()));
-        sql = sql.replace("#{color_state}", String.valueOf(t.getColorState()));
-        sql = sql.replace("#{advice}", String.valueOf(t.getAdvice()));
-        sql = sql.replace("#{jsy_advice}", String.valueOf(t.getJsyAdvice()));
-        sql = sql.replace("#{jsb_advice}", String.valueOf(t.getJsbAdvice()));
+
         sql = sql.replace("#{businesser}", String.valueOf(t.getBusinesser()));
         sql = sql.replace("#{businesser_name}", String.valueOf(t.getBusinesserName()));
         sql = sql.replace("#{tracer}", String.valueOf(t.getTracer()));
         sql = sql.replace("#{tracer_name}", String.valueOf(t.getTracerName()));
         sql = sql.replace("#{businesse_dept_name}", String.valueOf(t.getBusinesseDeptName()));
         sql = sql.replace("#{businesse_dept_id}", String.valueOf(t.getBusinesseDeptId()));
-        sql = sql.replace("#{send_date}", String.valueOf(t.getSendDate()));
         sql = sql.replace("#{UUID}", UUID.randomUUID().toString());
         return sql;
     }

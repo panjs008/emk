@@ -200,7 +200,7 @@
 						</label>
 					</td>
 					<td class="value" colspan="3">
-						<input id="companyCode" name="companyCode" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+						<input id="companyCode" name="companyCode" datatype="*" type="text" style="width: 150px" class="inputxt"  />
 						<span class="Validform_checktip"></span>
 						<label class="Validform_label" style="display: none;">供应商代码</label>
 					</td>
@@ -235,7 +235,7 @@
 						</label>
 					</td>
 					<td class="value" colspan="2">
-					     	 <input id="companyNameZn" name="companyNameZn" type="text" style="width: 80%" class="inputxt"  ignore="ignore" />
+					     	 <input id="companyNameZn"  datatype="*" name="companyNameZn" type="text" style="width: 80%" class="inputxt"   />
 							<span class="Validform_checktip"></span>
 							<label class="Validform_label" style="display: none;">Local 中文</label>
 						</td>
@@ -426,7 +426,7 @@
 					</td>
 					<td align="right">
 						<label class="Validform_label">
-							Business License/ Permit is issued by<br/>营业执照签发机构::
+							Business License/ Permit is issued by<br/>营业执照签发机构:
 						</label>
 					</td>
 					<td class="value" >

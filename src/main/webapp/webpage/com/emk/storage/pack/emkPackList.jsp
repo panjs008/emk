@@ -9,7 +9,7 @@
    <t:dgCol title="创建人登录名称"  field="createBy"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="创建日期"  field="createDate"  formatter="yyyy-MM-dd"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="所属部门"  field="sysOrgCode"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
-   <t:dgCol title="操作" field="opt" frozenColumn="true"  width="180"></t:dgCol>
+   <t:dgCol title="操作" field="opt" frozenColumn="true"  width="100"></t:dgCol>
    <t:dgCol title="需求单号"  field="parkNo" queryMode="single"  width="100"></t:dgCol>
    <t:dgCol title="提交日期"  field="kdDate"  queryMode="single"  width="80"></t:dgCol>
    <t:dgCol title="图片"  field="customSampleUrl" imageSize="30,30"  image="true"  queryMode="single"  width="50"></t:dgCol>
@@ -27,7 +27,7 @@
    <t:dgCol title="开发最迟日期"  field="ysDate"  queryMode="single"  width="95"></t:dgCol>
       <t:dgCol title="状态"  field="state" formatterjs="formatColor"  queryMode="single"  width="60"></t:dgCol>
       <t:dgFunOpt funname="goToProcess(id,createBy)" title="流程进度" operationCode="process" urlclass="ace_button"  urlStyle="background-color:#ec4758;" urlfont="fa-tasks"></t:dgFunOpt>
-   <t:dgFunOpt funname="queryDetail1(id,parkNo,state)" title="包装辅料" urlclass="ace_button" urlfont="fa-list-alt"></t:dgFunOpt>
+   <%--<t:dgFunOpt funname="queryDetail1(id,parkNo,state)" title="包装辅料" urlclass="ace_button" urlfont="fa-list-alt"></t:dgFunOpt>--%>
    <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkPackController.do?goAdd&winTitle=录入包装需求开发单" funname="add" height="580" width="1000"></t:dgToolBar>
    <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkPackController.do?goUpdate&winTitle=编辑包装需求开发单" funname="update" height="580" width="1000"></t:dgToolBar>
       <t:dgToolBar title="查看" icon="fa fa-search" operationCode="look" url="emkPackController.do?goUpdate&winTitle=查看包装需求开发单" funname="detail" height="580" width="1000"></t:dgToolBar>
@@ -38,19 +38,6 @@
   </t:datagrid>
   </div>
  </div>
-<div data-options="region:'east',
-	title:'清单明细',
-	collapsed:true,
-	split:true,
-	border:false,
-	onExpand : function(){
-		li_east = 1;
-	},
-	onCollapse : function() {
-	    li_east = 0;
-	}"
-     style="width: 500px; overflow: hidden;" id="eastPanel">
- <div class="easyui-panel" style="padding:0px;border:0px" fit="true" border="false" id="proDetialListpanel"></div>
 
  <script src = "webpage/com/emk/storage/pack/emkPackList.js"></script>
  <script type="text/javascript">

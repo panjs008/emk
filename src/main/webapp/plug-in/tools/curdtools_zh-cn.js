@@ -209,13 +209,29 @@ function createdetailwindow(title, addurl,width,height) {
 		width =  window.top.document.body.offsetWidth;
 		height =window.top.document.body.offsetHeight-100;
 	}
-	if(addurl.indexOf('emkPriceController.do?goAdd')>=0 || addurl.indexOf('emkPriceController.do?goUpdate')>=0){
+
+	if(addurl.indexOf('emkProduceController.do?goAdd')>=0 || addurl.indexOf('emkProduceController.do?goUpdate')>=0){
 		width =  window.top.document.body.offsetWidth;
 		height =window.top.document.body.offsetHeight-100;
 	}
-	if(addurl.indexOf('emkSampleRequiredController.do?goAdd')>=0 || addurl.indexOf('emkSampleRequiredController.do?goUpdate')>=0){
+	if(addurl.indexOf('emkProduceScheduleController.do?goAdd')>=0 || addurl.indexOf('emkProduceScheduleController.do?goUpdate')>=0|| addurl.indexOf('flowController.do?goProcess&processUrl=com/emk/produce/produceschedule/emkProduceSchedule-process')>=0){
 		width =  window.top.document.body.offsetWidth;
 		height =window.top.document.body.offsetHeight-100;
+	}
+
+	if(addurl.indexOf('emkPriceController.do?goAdd')>=0 || addurl.indexOf('emkPriceController.do?goUpdate')>=0){
+		width =  window.top.document.body.offsetWidth;
+		height =window.top.document.body.offsetHeight-50;
+		addurl = addurl + "&wVal="+window.top.document.body.offsetWidth*0.97+ "px&hVal="+(window.top.document.body.offsetHeight-120)+"px&hVal2="+(window.top.document.body.offsetHeight-160)+"px";
+
+	}
+	if(addurl.indexOf('emkSampleRequiredController.do?goAdd')>=0 || addurl.indexOf('emkSampleRequiredController.do?goUpdate')>=0){
+		height =window.top.document.body.offsetHeight-50;
+		addurl = addurl + "&wVal="+width+ "px&hVal="+(window.top.document.body.offsetHeight-120)+"px&hVal2="+(window.top.document.body.offsetHeight-160)+"px";
+	}
+	if(addurl.indexOf('emkYptzdController.do?goAdd')>=0 || addurl.indexOf('emkYptzdController.do?goUpdate')>=0){
+		height =window.top.document.body.offsetHeight-50;
+		addurl = addurl + "&wVal="+width+ "px&hVal="+(window.top.document.body.offsetHeight-120)+"px&hVal2="+(window.top.document.body.offsetHeight-160)+"px";
 	}
 	if(addurl.indexOf('emkProduceController.do?goAdd')>=0 || addurl.indexOf('emkProduceController.do?goUpdate')>=0){
 		width =  window.top.document.body.offsetWidth;
@@ -225,10 +241,13 @@ function createdetailwindow(title, addurl,width,height) {
 		width =  window.top.document.body.offsetWidth;
 		height =window.top.document.body.offsetHeight-100;
 	}
-	if(width=="100%" || height=="100%"){
-		width = window.top.document.body.offsetWidth;
-		height =window.top.document.body.offsetHeight-100;
+	if(addurl.indexOf('emkProOrderController.do?goAdd')>=0 || addurl.indexOf('emkProOrderController.do?goUpdate')>=0){
+		width =  window.top.document.body.offsetWidth;
+		height =window.top.document.body.offsetHeight-50;
+		addurl = addurl + "&wVal="+window.top.document.body.offsetWidth*0.97+ "px&hVal="+(window.top.document.body.offsetHeight-120)+"px&hVal2="+(window.top.document.body.offsetHeight-160)+"px";
+
 	}
+
 	if(typeof(windowapi) == 'undefined'){
 		$.dialog({
 			content: 'url:'+addurl,
@@ -459,6 +478,11 @@ function createwindow(title, addurl,width,height) {
 		addurl = addurl + "&wVal="+width+ "px&hVal="+(window.top.document.body.offsetHeight-120)+"px&hVal2="+(window.top.document.body.offsetHeight-160)+"px";
 
 	}
+	if(addurl.indexOf('emkYptzdController.do?goAdd')>=0 || addurl.indexOf('emkYptzdController.do?goUpdate')>=0){
+		height =window.top.document.body.offsetHeight-50;
+		addurl = addurl + "&wVal="+width+ "px&hVal="+(window.top.document.body.offsetHeight-120)+"px&hVal2="+(window.top.document.body.offsetHeight-160)+"px";
+
+	}
 	if(addurl.indexOf('emkProduceController.do?goAdd')>=0 || addurl.indexOf('emkProduceController.do?goUpdate')>=0){
 		width =  window.top.document.body.offsetWidth;
 		height =window.top.document.body.offsetHeight-100;
@@ -467,9 +491,16 @@ function createwindow(title, addurl,width,height) {
 		width =  window.top.document.body.offsetWidth;
 		height =window.top.document.body.offsetHeight-100;
 	}
+	if(addurl.indexOf('emkProOrderController.do?goAdd')>=0 || addurl.indexOf('emkProOrderController.do?goUpdate')>=0){
+		width =  window.top.document.body.offsetWidth;
+		height =window.top.document.body.offsetHeight-50;
+		addurl = addurl + "&wVal="+window.top.document.body.offsetWidth*0.97+ "px&hVal="+(window.top.document.body.offsetHeight-120)+"px&hVal2="+(window.top.document.body.offsetHeight-160)+"px";
 
+	}
 	if(addurl.indexOf('emkPriceController.do?goAdd')>=0 || addurl.indexOf('emkPriceController.do?goUpdate')>=0
 			|| addurl.indexOf('emkYptzdController.do?goAdd')>=0 || addurl.indexOf('emkYptzdController.do?goUpdate')>=0
+			|| addurl.indexOf('emkYptzdController.do?goAdd')>=0 || addurl.indexOf('emkYptzdController.do?goUpdate')>=0
+			|| addurl.indexOf('emkProOrderController.do?goAdd')>=0 || addurl.indexOf('emkProOrderController.do?goUpdate')>=0
 			|| addurl.indexOf('emkSampleRequiredController.do?goAdd')>=0 || addurl.indexOf('emkSampleRequiredController.do?goUpdate')>=0){
 		$.dialog({
 			content: 'url:'+addurl,

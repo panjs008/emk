@@ -2,13 +2,16 @@ package com.emk.storage.customuse.controller;
 import com.emk.storage.customuse.entity.EmkCustomUseEntity;
 import com.emk.storage.customuse.service.EmkCustomUseServiceI;
 
+import java.io.File;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.text.SimpleDateFormat;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.emk.storage.enquiry.entity.EmkEnquiryEntity;
+import com.emk.storage.enquiry.entity.EmkEnquiryEntityA;
+import com.emk.util.*;
 import org.apache.log4j.Logger;
 import org.jeecgframework.web.system.pojo.base.TSUser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,8 +49,6 @@ import java.io.IOException;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-import java.util.Map;
-import java.util.HashMap;
 import org.jeecgframework.core.util.ExceptionUtil;
 
 import org.springframework.http.ResponseEntity;
@@ -61,7 +62,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.jeecgframework.core.beanvalidator.BeanValidators;
-import java.util.Set;
+
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import java.net.URI;
@@ -247,7 +248,7 @@ public class EmkCustomUseController extends BaseController {
 		j.setMsg(message);
 		return j;
 	}
-	
+
 
 	/**
 	 * 客户手册新增页面跳转

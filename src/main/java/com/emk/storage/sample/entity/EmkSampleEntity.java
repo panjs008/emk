@@ -26,34 +26,20 @@ public class EmkSampleEntity implements Serializable {
     @Excel(name = "款号")
     private String sampleNo;
     private String projectNo;
-    @Excel(name = "供应商")
-    private String factoryName;
-    @Excel(name = "供应商代码")
-    private String factoryCode;
-    private String customSampleUrl;
-    @Excel(name = "客户原样")
-    private String customSample;
-    private String sampleSizeUrl;
-    @Excel(name = "尺寸表")
-    private String sampleSize;
-    @Excel(name = "备注")
-    private String remark;
-    @Excel(name = "包装方案")
-    private String packing;
-    @Excel(name = "商品名称")
-    private String proName;
+
     @Excel(name = "产品类别")
     private String proType;
     @Excel(name = "产品类别名称")
     private String proTypeName;
-    @Excel(name = "交货时间")
-    private String receviceDate;
-    @Excel(name = "样衣完成时间")
-    private String finishDate;
-    @Excel(name = "生产板完成时间")
-    private String produceDate;
-    @Excel(name = "要求")
-    private String requiretext;
+    @Excel(name = "样品交期")
+    private String ypjqDate;
+    @Excel(name = "距样品交期余天数")
+    private String leavelypjqDays;
+    @Excel(name = "大货交期")
+    private String dhjq;
+    @Excel(name = "距大货交期余天数")
+    private String leaveldhjqDays;
+
     @Excel(name = "状态")
     private String state;
     @Excel(name = "打样通知单号")
@@ -62,44 +48,50 @@ public class EmkSampleEntity implements Serializable {
     private String type;
     @Excel(name = "开单日期")
     private String kdTime;
+    @Excel(name = "打样需求单日期")
+    private String dyxqdTime;
     @Excel(name = "工艺种类")
     private String gyzl;
     @Excel(name = "版次")
     private String version;
-    @Excel(name = "克重")
-    private String weight;
-    @Excel(name = "成分")
-    private String chengf;
-    @Excel(name = "类型")
-    private String flag;
-    @Excel(name = "完成检查意见")
-    private String finishAdvice;
-    @Excel(name = "布面意见")
-    private String bmAdvice;
-    @Excel(name = "缝制意见")
-    private String fzAdvice;
-    @Excel(name = "染色意见")
-    private String rsAdvice;
-    @Excel(name = "质检员意见")
-    private String zjyAdvice;
-    @Excel(name = "跟单员意见")
-    private String traceAdvice;
-    @Excel(name = "业务员意见")
-    private String businessAdvice;
-    @Excel(name = "综合意见")
-    private String zhAdvice;
-    @Excel(name = "下机克重")
-    private Double xjkz;
-    @Excel(name = "单件所需时间")
-    private Double djsxTime;
-    @Excel(name = "单位")
-    private String unit;
-    @Excel(name = "机台日产量")
-    private Integer jtrcl;
-    @Excel(name = "前道损耗率")
-    private Double qdshl;
-    @Excel(name = "后道损耗率")
-    private Double hdshl;
+    @Excel(name = "打样需求单号")
+    private String xqdh;
+    @Excel(name = "描述")
+    private String sampleNoDesc;
+    @Excel(name = "备注")
+    private String remark;
+
+    @Excel(name = "所用机台尺寸")
+    private String syjtcc;
+    @Excel(name = "下机重量")
+    private String xjzl;
+    @Excel(name = "下机尺寸")
+    private String xjcc;
+    @Excel(name = "密度")
+    private String md;
+    @Excel(name = "用料")
+    private String yl;
+    @Excel(name = "单件织造时间")
+    private String djzjsj;
+
+    @Excel(name = "是否有标准色样")
+    private String isColorStrand;
+    @Excel(name = "是否有潘通色号")
+    private String isPan;
+    @Excel(name = "是否有参考样")
+    private String isCan;
+    @Excel(name = "是否有设计稿")
+    private String isDrg;
+    @Excel(name = "是否有原样")
+    private String isSample;
+    @Excel(name = "是否有物料明细")
+    private String isDetail;
+    @Excel(name = "是否有尺寸表")
+    private String isSize;
+
+    @Excel(name = "业务部门")
+    private String businesseDeptName;
+    private String businesseDeptId;
     @Excel(name = "业务员")
     private String businesser;
     private String businesserName;
@@ -109,24 +101,12 @@ public class EmkSampleEntity implements Serializable {
     @Excel(name = "生产跟单员")
     private String developer;
     private String developerName;
-    @Excel(name = "业务部门")
-    private String businesseDeptName;
-    private String businesseDeptId;
-    @Excel(name = "打样需求单号")
-    private String xqdh;
-    @Excel(name = "报价单号")
-    private String pirceNo;
-    @Excel(name = "订单号")
-    private String orderNo;
-    @Excel(name = "审核意见")
-    private String leadAdvice;
-    @Excel(name = "是否通过")
-    private String isPass;
-    @Excel(name = "审核人ID")
-    private String leadUserId;
-    @Excel(name = "审核人")
-    private String leader;
-
+    @Excel(name = "技术员")
+    private String jser;
+    private String jserName;
+    @Excel(name = "质检员")
+    private String zjer;
+    private String zjerName;
 
     @Id
     @GeneratedValue(generator = "paymentableGenerator")
@@ -212,60 +192,6 @@ public class EmkSampleEntity implements Serializable {
         this.projectNo = projectNo;
     }
 
-    @Column(name = "FACTORY_NAME", nullable = true, length = 32)
-    public String getFactoryName() {
-        return this.factoryName;
-    }
-
-    public void setFactoryName(String factoryName) {
-        this.factoryName = factoryName;
-    }
-
-    @Column(name = "FACTORY_CODE", nullable = true, length = 32)
-    public String getFactoryCode() {
-        return this.factoryCode;
-    }
-
-    public void setFactoryCode(String factoryCode) {
-        this.factoryCode = factoryCode;
-    }
-
-    @Column(name = "CUSTOM_SAMPLE_URL", nullable = true, length = 256)
-    public String getCustomSampleUrl() {
-        return this.customSampleUrl;
-    }
-
-    public void setCustomSampleUrl(String customSampleUrl) {
-        this.customSampleUrl = customSampleUrl;
-    }
-
-    @Column(name = "CUSTOM_SAMPLE", nullable = true, length = 32)
-    public String getCustomSample() {
-        return this.customSample;
-    }
-
-    public void setCustomSample(String customSample) {
-        this.customSample = customSample;
-    }
-
-    @Column(name = "SAMPLE_SIZE_URL", nullable = true, length = 2546)
-    public String getSampleSizeUrl() {
-        return this.sampleSizeUrl;
-    }
-
-    public void setSampleSizeUrl(String sampleSizeUrl) {
-        this.sampleSizeUrl = sampleSizeUrl;
-    }
-
-    @Column(name = "SAMPLE_SIZE", nullable = true, length = 32)
-    public String getSampleSize() {
-        return this.sampleSize;
-    }
-
-    public void setSampleSize(String sampleSize) {
-        this.sampleSize = sampleSize;
-    }
-
     @Column(name = "REMARK", nullable = true, length = 32)
     public String getRemark() {
         return this.remark;
@@ -273,24 +199,6 @@ public class EmkSampleEntity implements Serializable {
 
     public void setRemark(String remark) {
         this.remark = remark;
-    }
-
-    @Column(name = "PACKING", nullable = true, length = 512)
-    public String getPacking() {
-        return this.packing;
-    }
-
-    public void setPacking(String packing) {
-        this.packing = packing;
-    }
-
-    @Column(name = "PRO_NAME", nullable = true, length = 56)
-    public String getProName() {
-        return this.proName;
-    }
-
-    public void setProName(String proName) {
-        this.proName = proName;
     }
 
     @Column(name = "PRO_TYPE", nullable = true, length = 32)
@@ -311,40 +219,40 @@ public class EmkSampleEntity implements Serializable {
         this.proTypeName = proTypeName;
     }
 
-    @Column(name = "RECEVICE_DATE", nullable = true, length = 32)
-    public String getReceviceDate() {
-        return this.receviceDate;
+    @Column(name = "ypjq_date", nullable = true, length = 32)
+    public String getYpjqDate() {
+        return ypjqDate;
     }
 
-    public void setReceviceDate(String receviceDate) {
-        this.receviceDate = receviceDate;
+    public void setYpjqDate(String ypjqDate) {
+        this.ypjqDate = ypjqDate;
     }
 
-    @Column(name = "FINISH_DATE", nullable = true, length = 32)
-    public String getFinishDate() {
-        return this.finishDate;
+    @Column(name = "leavelypjq_days", nullable = true, length = 32)
+    public String getLeavelypjqDays() {
+        return leavelypjqDays;
     }
 
-    public void setFinishDate(String finishDate) {
-        this.finishDate = finishDate;
+    public void setLeavelypjqDays(String leavelypjqDays) {
+        this.leavelypjqDays = leavelypjqDays;
     }
 
-    @Column(name = "PRODUCE_DATE", nullable = true, length = 32)
-    public String getProduceDate() {
-        return this.produceDate;
+    @Column(name = "dhjq", nullable = true, length = 32)
+    public String getDhjq() {
+        return dhjq;
     }
 
-    public void setProduceDate(String produceDate) {
-        this.produceDate = produceDate;
+    public void setDhjq(String dhjq) {
+        this.dhjq = dhjq;
     }
 
-    @Column(name = "REQUIRETEXT", nullable = true, length = 512)
-    public String getRequiretext() {
-        return this.requiretext;
+    @Column(name = "leaveldhjq_days", nullable = true, length = 32)
+    public String getLeaveldhjqDays() {
+        return leaveldhjqDays;
     }
 
-    public void setRequiretext(String requiretext) {
-        this.requiretext = requiretext;
+    public void setLeaveldhjqDays(String leaveldhjqDays) {
+        this.leaveldhjqDays = leaveldhjqDays;
     }
 
     @Column(name = "STATE", nullable = true, length = 6)
@@ -401,157 +309,112 @@ public class EmkSampleEntity implements Serializable {
         this.version = version;
     }
 
-    @Column(name = "WEIGHT", nullable = true, length = 32)
-    public String getWeight() {
-        return this.weight;
+    @Column(name = "XQDH", nullable = true, length = 32)
+    public String getXqdh() {
+        return this.xqdh;
     }
 
-    public void setWeight(String weight) {
-        this.weight = weight;
+    public void setXqdh(String xqdh) {
+        this.xqdh = xqdh;
     }
 
-    @Column(name = "CHENGF", nullable = true, length = 32)
-    public String getChengf() {
-        return this.chengf;
+    @Column(name = "dyxqd_time", nullable = true, length = 32)
+    public String getDyxqdTime() {
+        return dyxqdTime;
     }
 
-    public void setChengf(String chengf) {
-        this.chengf = chengf;
+    public void setDyxqdTime(String dyxqdTime) {
+        this.dyxqdTime = dyxqdTime;
     }
 
-    @Column(name = "FLAG", nullable = true, length = 32)
-    public String getFlag() {
-        return this.flag;
+    @Column(name = "SAMPLE_NO_DESC", nullable = true, length = 256)
+    public String getSampleNoDesc() {
+        return this.sampleNoDesc;
     }
 
-    public void setFlag(String flag) {
-        this.flag = flag;
+    public void setSampleNoDesc(String sampleNoDesc) {
+        this.sampleNoDesc = sampleNoDesc;
     }
 
-    @Column(name = "FINISH_ADVICE", nullable = true, length = 256)
-    public String getFinishAdvice() {
-        return this.finishAdvice;
+    @Column(name = "is_color_strand", nullable = true, length = 256)
+    public String getIsColorStrand() {
+        return isColorStrand;
     }
 
-    public void setFinishAdvice(String finishAdvice) {
-        this.finishAdvice = finishAdvice;
+    public void setIsColorStrand(String isColorStrand) {
+        this.isColorStrand = isColorStrand;
     }
 
-    @Column(name = "BM_ADVICE", nullable = true, length = 256)
-    public String getBmAdvice() {
-        return this.bmAdvice;
+    @Column(name = "is_pan", nullable = true, length = 256)
+    public String getIsPan() {
+        return isPan;
     }
 
-    public void setBmAdvice(String bmAdvice) {
-        this.bmAdvice = bmAdvice;
+    public void setIsPan(String isPan) {
+        this.isPan = isPan;
     }
 
-    @Column(name = "FZ_ADVICE", nullable = true, length = 256)
-    public String getFzAdvice() {
-        return this.fzAdvice;
+    @Column(name = "is_can", nullable = true, length = 256)
+    public String getIsCan() {
+        return isCan;
     }
 
-    public void setFzAdvice(String fzAdvice) {
-        this.fzAdvice = fzAdvice;
+    public void setIsCan(String isCan) {
+        this.isCan = isCan;
     }
 
-    @Column(name = "RS_ADVICE", nullable = true, length = 256)
-    public String getRsAdvice() {
-        return this.rsAdvice;
+    @Column(name = "is_drg", nullable = true, length = 256)
+    public String getIsDrg() {
+        return isDrg;
     }
 
-    public void setRsAdvice(String rsAdvice) {
-        this.rsAdvice = rsAdvice;
+    public void setIsDrg(String isDrg) {
+        this.isDrg = isDrg;
     }
 
-    @Column(name = "ZJY_ADVICE", nullable = true, length = 256)
-    public String getZjyAdvice() {
-        return this.zjyAdvice;
+    @Column(name = "is_sample", nullable = true, length = 256)
+    public String getIsSample() {
+        return isSample;
     }
 
-    public void setZjyAdvice(String zjyAdvice) {
-        this.zjyAdvice = zjyAdvice;
+    public void setIsSample(String isSample) {
+        this.isSample = isSample;
     }
 
-    @Column(name = "TRACE_ADVICE", nullable = true, length = 256)
-    public String getTraceAdvice() {
-        return this.traceAdvice;
+    @Column(name = "is_detail", nullable = true, length = 256)
+    public String getIsDetail() {
+        return isDetail;
     }
 
-    public void setTraceAdvice(String traceAdvice) {
-        this.traceAdvice = traceAdvice;
+    public void setIsDetail(String isDetail) {
+        this.isDetail = isDetail;
     }
 
-    @Column(name = "BUSINESS_ADVICE", nullable = true, length = 256)
-    public String getBusinessAdvice() {
-        return this.businessAdvice;
+    @Column(name = "is_size", nullable = true, length = 256)
+    public String getIsSize() {
+        return isSize;
     }
 
-    public void setBusinessAdvice(String businessAdvice) {
-        this.businessAdvice = businessAdvice;
+    public void setIsSize(String isSize) {
+        this.isSize = isSize;
     }
 
-    @Column(name = "ZH_ADVICE", nullable = true, length = 256)
-    public String getZhAdvice() {
-        return this.zhAdvice;
+    @Column(name = "BUSINESSE_DEPT_NAME", nullable = true, length = 32)
+    public String getBusinesseDeptName() {
+        return this.businesseDeptName;
     }
 
-    public void setZhAdvice(String zhAdvice) {
-        this.zhAdvice = zhAdvice;
+    public void setBusinesseDeptName(String businesseDeptName) {
+        this.businesseDeptName = businesseDeptName;
     }
 
-    @Column(name = "XJKZ", nullable = true, length = 32)
-    public Double getXjkz() {
-        return this.xjkz;
+    @Column(name = "BUSINESSE_DEPT_ID", nullable = true, length = 32)
+    public String getBusinesseDeptId() {
+        return this.businesseDeptId;
     }
 
-    public void setXjkz(Double xjkz) {
-        this.xjkz = xjkz;
-    }
-
-    @Column(name = "DJSX_TIME", nullable = true, length = 32)
-    public Double getDjsxTime() {
-        return this.djsxTime;
-    }
-
-    public void setDjsxTime(Double djsxTime) {
-        this.djsxTime = djsxTime;
-    }
-
-    @Column(name = "UNIT", nullable = true, length = 32)
-    public String getUnit() {
-        return this.unit;
-    }
-
-    public void setUnit(String unit) {
-        this.unit = unit;
-    }
-
-    @Column(name = "JTRCL", nullable = true, length = 32)
-    public Integer getJtrcl() {
-        return this.jtrcl;
-    }
-
-    public void setJtrcl(Integer jtrcl) {
-        this.jtrcl = jtrcl;
-    }
-
-    @Column(name = "QDSHL", nullable = true, scale = 2, length = 32)
-    public Double getQdshl() {
-        return this.qdshl;
-    }
-
-    public void setQdshl(Double qdshl) {
-        this.qdshl = qdshl;
-    }
-
-    @Column(name = "HDSHL", nullable = true, scale = 2, length = 32)
-    public Double getHdshl() {
-        return this.hdshl;
-    }
-
-    public void setHdshl(Double hdshl) {
-        this.hdshl = hdshl;
+    public void setBusinesseDeptId(String businesseDeptId) {
+        this.businesseDeptId = businesseDeptId;
     }
 
     @Column(name = "BUSINESSER", nullable = true, length = 32)
@@ -608,84 +471,93 @@ public class EmkSampleEntity implements Serializable {
         this.developerName = developerName;
     }
 
-    @Column(name = "BUSINESSE_DEPT_NAME", nullable = true, length = 32)
-    public String getBusinesseDeptName() {
-        return this.businesseDeptName;
+    @Column(name = "jser", nullable = true, length = 32)
+    public String getJser() {
+        return jser;
     }
 
-    public void setBusinesseDeptName(String businesseDeptName) {
-        this.businesseDeptName = businesseDeptName;
+    public void setJser(String jser) {
+        this.jser = jser;
     }
 
-    @Column(name = "BUSINESSE_DEPT_ID", nullable = true, length = 32)
-    public String getBusinesseDeptId() {
-        return this.businesseDeptId;
+    @Column(name = "jser_name", nullable = true, length = 32)
+    public String getJserName() {
+        return jserName;
     }
 
-    public void setBusinesseDeptId(String businesseDeptId) {
-        this.businesseDeptId = businesseDeptId;
+    public void setJserName(String jserName) {
+        this.jserName = jserName;
     }
 
-    @Column(name = "XQDH", nullable = true, length = 32)
-    public String getXqdh() {
-        return this.xqdh;
+    @Column(name = "zjer", nullable = true, length = 32)
+    public String getZjer() {
+        return zjer;
     }
 
-    public void setXqdh(String xqdh) {
-        this.xqdh = xqdh;
+    public void setZjer(String zjer) {
+        this.zjer = zjer;
     }
 
-    @Column(name = "PIRCE_NO", nullable = true, length = 32)
-    public String getPirceNo() {
-        return this.pirceNo;
+    @Column(name = "zjer_name", nullable = true, length = 32)
+    public String getZjerName() {
+        return zjerName;
     }
 
-    public void setPirceNo(String pirceNo) {
-        this.pirceNo = pirceNo;
+    public void setZjerName(String zjerName) {
+        this.zjerName = zjerName;
     }
 
-    @Column(name = "order_no", nullable = true, length = 32)
-    public String getOrderNo() {
-        return orderNo;
+    @Column(name = "syjtcc", nullable = true, length = 32)
+    public String getSyjtcc() {
+        return syjtcc;
     }
 
-    public void setOrderNo(String orderNo) {
-        this.orderNo = orderNo;
+    public void setSyjtcc(String syjtcc) {
+        this.syjtcc = syjtcc;
     }
 
-    @Column(name = "LEAD_ADVICE", nullable = true, length = 256)
-    public String getLeadAdvice() {
-        return this.leadAdvice;
+    @Column(name = "xjzl", nullable = true, length = 32)
+    public String getXjzl() {
+        return xjzl;
     }
 
-    public void setLeadAdvice(String leadAdvice) {
-        this.leadAdvice = leadAdvice;
+    public void setXjzl(String xjzl) {
+        this.xjzl = xjzl;
     }
 
-    @Column(name = "IS_PASS", nullable = true, length = 32)
-    public String getIsPass() {
-        return this.isPass;
+    @Column(name = "xjcc", nullable = true, length = 32)
+    public String getXjcc() {
+        return xjcc;
     }
 
-    public void setIsPass(String isPass) {
-        this.isPass = isPass;
+    public void setXjcc(String xjcc) {
+        this.xjcc = xjcc;
     }
 
-    @Column(name = "LEAD_USER_ID", nullable = true, length = 32)
-    public String getLeadUserId() {
-        return this.leadUserId;
+    @Column(name = "md", nullable = true, length = 32)
+    public String getMd() {
+        return md;
     }
 
-    public void setLeadUserId(String leadUserId) {
-        this.leadUserId = leadUserId;
+    public void setMd(String md) {
+        this.md = md;
     }
 
-    @Column(name = "LEADER", nullable = true, length = 32)
-    public String getLeader() {
-        return this.leader;
+    @Column(name = "yl", nullable = true, length = 32)
+    public String getYl() {
+        return yl;
     }
 
-    public void setLeader(String leader) {
-        this.leader = leader;
+    public void setYl(String yl) {
+        this.yl = yl;
+    }
+
+    @Column(name = "djzjsj", nullable = true, length = 32)
+    public String getDjzjsj() {
+        return djzjsj;
+    }
+
+    public void setDjzjsj(String djzjsj) {
+        this.djzjsj = djzjsj;
     }
 }

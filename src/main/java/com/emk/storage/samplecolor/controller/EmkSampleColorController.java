@@ -1,9 +1,11 @@
 package com.emk.storage.samplecolor.controller;
 
 import com.alibaba.fastjson.JSONArray;
+import com.emk.storage.color.entity.EmkColorDetailEntity;
 import com.emk.storage.samplecolor.entity.EmkSampleColorEntity;
 import com.emk.storage.samplecolor.service.EmkSampleColorServiceI;
 import com.emk.util.ParameterUtil;
+import com.emk.util.Utils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -147,8 +149,27 @@ public class EmkSampleColorController extends BaseController {
         try {
             Map map = ParameterUtil.getParamMaps(request.getParameterMap());
             Map orderNum = this.systemService.findOneForJdbc("select CAST(ifnull(max(right(sytzdbh, 2)),0)+1 AS signed) orderNum from emk_sample_color");
-            emkSampleColor.setSytzdbh("SY" + DateUtils.format(new Date(), "yyMMdd") + "B" + String.format("%02d", new Object[]{Integer.valueOf(Integer.parseInt(orderNum.get("orderNum").toString()))}));
+            emkSampleColor.setSytzdbh("SY" + DateUtils.format(new Date(), "yyMMdd") + "B" + String.format("%02d", new Object[]{Integer.parseInt(orderNum.get("orderNum").toString())}));
             this.emkSampleColorService.save(emkSampleColor);
+            //保存明细数据
+            String dataRows = (String) map.get("orderMxListIDSR");
+            if (Utils.notEmpty(dataRows)) {
+                int rows = Integer.parseInt(dataRows);
+                EmkColorDetailEntity detailEntity = null;
+                for (int i = 0; i < rows; i++) {
+                    if (Utils.notEmpty(map.get("orderMxList["+i+"].colorZnName"))){
+                        detailEntity = new EmkColorDetailEntity();
+                        detailEntity.setColorId(emkSampleColor.getId());
+                        detailEntity.setColorZnName(map.get("orderMxList["+i+"].colorZnName").toString());
+                        detailEntity.setSortDesc(String.valueOf(i+1));
+                        detailEntity.setSeNum(map.get("orderMxList["+i+"].seNum").toString());
+                        detailEntity.setVersion(map.get("orderMxList["+i+"].version").toString());
+                        detailEntity.setColorBrand(map.get("orderMxList["+i+"].colorBrand").toString());
+                        detailEntity.setColorTotal(map.get("orderMxList["+i+"].colorTotal").toString());
+                        systemService.save(detailEntity);
+                    }
+                }
+            }
             this.systemService.addLog(message, Globals.Log_Type_INSERT, Globals.Log_Leavel_INFO);
         } catch (Exception e) {
             e.printStackTrace();
@@ -169,6 +190,27 @@ public class EmkSampleColorController extends BaseController {
         try {
             MyBeanUtils.copyBeanNotNull2Bean(emkSampleColor, t);
             this.emkSampleColorService.saveOrUpdate(t);
+            Map map = ParameterUtil.getParamMaps(request.getParameterMap());
+
+            String dataRows = (String) map.get("orderMxListIDSR");
+            if (Utils.notEmpty(dataRows)) {
+                systemService.executeSql("delete from emk_color_detail where color_id=?",t.getId());
+                int rows = Integer.parseInt(dataRows);
+                EmkColorDetailEntity detailEntity = null;
+                for (int i = 0; i < rows; i++) {
+                    if (Utils.notEmpty(map.get("orderMxList["+i+"].colorZnName"))){
+                        detailEntity = new EmkColorDetailEntity();
+                        detailEntity.setColorId(t.getId());
+                        detailEntity.setColorZnName(map.get("orderMxList["+i+"].colorZnName").toString());
+                        detailEntity.setSortDesc(String.valueOf(i+1));
+                        detailEntity.setSeNum(map.get("orderMxList["+i+"].seNum").toString());
+                        detailEntity.setVersion(map.get("orderMxList["+i+"].version").toString());
+                        detailEntity.setColorBrand(map.get("orderMxList["+i+"].colorBrand").toString());
+                        detailEntity.setColorTotal(map.get("orderMxList["+i+"].colorTotal").toString());
+                        systemService.save(detailEntity);
+                    }
+                }
+            }
             this.systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
         } catch (Exception e) {
             e.printStackTrace();

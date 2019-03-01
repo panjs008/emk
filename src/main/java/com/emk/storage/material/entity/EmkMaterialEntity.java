@@ -21,6 +21,14 @@ public class EmkMaterialEntity implements Serializable {
     private String sysOrgCode;
     @Excel(name = "需求单号")
     private String materialNo;
+    @Excel(name = "样品通知单编号")
+    private String sampleNum;
+    @Excel(name = "打样通知单日期")
+    private String sampleDate;
+    @Excel(name = "打样需求单编号")
+    private String xqdh;
+    @Excel(name = "打样需求单日期")
+    private String dyxqdDate;
     @Excel(name = "提交日期")
     private String kdDate;
     @Excel(name = "业务跟单员")
@@ -40,19 +48,12 @@ public class EmkMaterialEntity implements Serializable {
     private String sampleNo;
     @Excel(name = "描述")
     private String sampleNoDesc;
-    @Excel(name = "工厂")
-    private String factoryName;
-    @Excel(name = "工厂Code")
-    private String factoryCode;
     @Excel(name = "业务部门")
     private String businesseDeptName;
     private String businesseDeptId;
     @Excel(name = "生产跟单员")
     private String developer;
     private String developerName;
-    @Excel(name = "采购员")
-    private String cger;
-    private String cgerName;
     @Excel(name = "样品交期")
     private String ypjqDate;
     @Excel(name = "距样品交期剩余天数")
@@ -75,12 +76,6 @@ public class EmkMaterialEntity implements Serializable {
     private Integer leaveFinishDays;
     @Excel(name = "开发单状态")
     private String state;
-    @Excel(name = "技术员意见")
-    private String jsyAdvice;
-    @Excel(name = "跟单员意见")
-    private String developerAdvice;
-    @Excel(name = "业务员意见")
-    private String businesseAdvice;
     @Excel(name = "综合意见")
     private String zhAdvice;
     private String customSampleUrl;
@@ -89,13 +84,6 @@ public class EmkMaterialEntity implements Serializable {
     @Excel(name = "业务跟单员")
     private String tracer;
     private String tracerName;
-
-    @Excel(name = "审核意见")
-    private String leadAdvice;
-    private String isPass;
-    private String leadUserId;
-    @Excel(name = "审核人")
-    private String leader;
 
 
     @Id
@@ -245,24 +233,6 @@ public class EmkMaterialEntity implements Serializable {
         this.sampleNoDesc = sampleNoDesc;
     }
 
-    @Column(name = "FACTORY_NAME", nullable = true, length = 32)
-    public String getFactoryName() {
-        return this.factoryName;
-    }
-
-    public void setFactoryName(String factoryName) {
-        this.factoryName = factoryName;
-    }
-
-    @Column(name = "FACTORY_CODE", nullable = true, length = 32)
-    public String getFactoryCode() {
-        return this.factoryCode;
-    }
-
-    public void setFactoryCode(String factoryCode) {
-        this.factoryCode = factoryCode;
-    }
-
     @Column(name = "BUSINESSE_DEPT_NAME", nullable = true, length = 32)
     public String getBusinesseDeptName() {
         return this.businesseDeptName;
@@ -297,24 +267,6 @@ public class EmkMaterialEntity implements Serializable {
 
     public void setDeveloperName(String developerName) {
         this.developerName = developerName;
-    }
-
-    @Column(name = "CGER", nullable = true, length = 32)
-    public String getCger() {
-        return this.cger;
-    }
-
-    public void setCger(String cger) {
-        this.cger = cger;
-    }
-
-    @Column(name = "CGER_NAME", nullable = true, length = 32)
-    public String getCgerName() {
-        return this.cgerName;
-    }
-
-    public void setCgerName(String cgerName) {
-        this.cgerName = cgerName;
     }
 
     @Column(name = "YPJQ_DATE", nullable = true, length = 32)
@@ -416,33 +368,6 @@ public class EmkMaterialEntity implements Serializable {
         this.state = state;
     }
 
-    @Column(name = "JSY_ADVICE", nullable = true, length = 256)
-    public String getJsyAdvice() {
-        return this.jsyAdvice;
-    }
-
-    public void setJsyAdvice(String jsyAdvice) {
-        this.jsyAdvice = jsyAdvice;
-    }
-
-    @Column(name = "DEVELOPER_ADVICE", nullable = true, length = 256)
-    public String getDeveloperAdvice() {
-        return this.developerAdvice;
-    }
-
-    public void setDeveloperAdvice(String developerAdvice) {
-        this.developerAdvice = developerAdvice;
-    }
-
-    @Column(name = "BUSINESSE_ADVICE", nullable = true, length = 256)
-    public String getBusinesseAdvice() {
-        return this.businesseAdvice;
-    }
-
-    public void setBusinesseAdvice(String businesseAdvice) {
-        this.businesseAdvice = businesseAdvice;
-    }
-
     @Column(name = "ZH_ADVICE", nullable = true, length = 32)
     public String getZhAdvice() {
         return this.zhAdvice;
@@ -488,39 +413,39 @@ public class EmkMaterialEntity implements Serializable {
         this.tracerName = tracerName;
     }
 
-    @Column(name = "LEAD_ADVICE", nullable = true, length = 256)
-    public String getLeadAdvice() {
-        return this.leadAdvice;
+    @Column(name = "sample_num", nullable = true, length = 32)
+    public String getSampleNum() {
+        return sampleNum;
     }
 
-    public void setLeadAdvice(String leadAdvice) {
-        this.leadAdvice = leadAdvice;
+    public void setSampleNum(String sampleNum) {
+        this.sampleNum = sampleNum;
     }
 
-    @Column(name = "IS_PASS", nullable = true, length = 32)
-    public String getIsPass() {
-        return this.isPass;
+    @Column(name = "sample_date", nullable = true, length = 32)
+    public String getSampleDate() {
+        return sampleDate;
     }
 
-    public void setIsPass(String isPass) {
-        this.isPass = isPass;
+    public void setSampleDate(String sampleDate) {
+        this.sampleDate = sampleDate;
     }
 
-    @Column(name = "LEAD_USER_ID", nullable = true, length = 32)
-    public String getLeadUserId() {
-        return this.leadUserId;
+    @Column(name = "xqdh", nullable = true, length = 32)
+    public String getXqdh() {
+        return xqdh;
     }
 
-    public void setLeadUserId(String leadUserId) {
-        this.leadUserId = leadUserId;
+    public void setXqdh(String xqdh) {
+        this.xqdh = xqdh;
     }
 
-    @Column(name = "LEADER", nullable = true, length = 32)
-    public String getLeader() {
-        return this.leader;
+    @Column(name = "dyxqd_date", nullable = true, length = 32)
+    public String getDyxqdDate() {
+        return dyxqdDate;
     }
 
-    public void setLeader(String leader) {
-        this.leader = leader;
+    public void setDyxqdDate(String dyxqdDate) {
+        this.dyxqdDate = dyxqdDate;
     }
 }

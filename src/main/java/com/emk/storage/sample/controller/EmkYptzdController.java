@@ -1,19 +1,18 @@
 package com.emk.storage.sample.controller;
 
 import com.alibaba.fastjson.JSONArray;
+import com.emk.storage.enquirydetail.entity.EmkEnquiryDetailEntity;
 import com.emk.storage.gl.entity.EmkGlEntity;
 import com.emk.storage.pb.entity.EmkPbEntity;
 import com.emk.storage.price.entity.EmkPriceEntity;
+import com.emk.storage.sample.entity.EmkSampleContentEntity;
 import com.emk.storage.sample.entity.EmkSampleEntity;
 import com.emk.storage.sample.service.EmkSampleServiceI;
 import com.emk.storage.sampledetail.entity.EmkSampleDetailEntity;
 import com.emk.storage.samplegx.entity.EmkSampleGxEntity;
 import com.emk.storage.sampleran.entity.EmkSampleRanEntity;
 import com.emk.storage.sampleyin.entity.EmkSampleYinEntity;
-import com.emk.util.DateUtil;
-import com.emk.util.FlowUtil;
-import com.emk.util.ParameterUtil;
-import com.emk.util.Utils;
+import com.emk.util.*;
 import com.emk.workorder.workorder.entity.EmkWorkOrderEntity;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -88,66 +87,77 @@ public class EmkYptzdController extends BaseController {
         return new ModelAndView("com/emk/storage/sample/emkSampleList");
     }
 
-    @RequestMapping(params = "orderMxList")
-    public ModelAndView orderMxList(HttpServletRequest request) {
+    @RequestMapping(params = "detailMxList")
+    public ModelAndView detailMxList(HttpServletRequest request) {
+        List<Map<String, Object>> list = systemService.findForJdbc("select typecode,typename from t_s_type t2 left join t_s_typegroup t1 on t1.ID=t2.typegroupid where typegroupcode='color'");
+        request.setAttribute("colorList", list);
         Map map = ParameterUtil.getParamMaps(request.getParameterMap());
-        if (Utils.notEmpty(map.get("priceId"))) {
-            List<EmkSampleDetailEntity> emkSampleDetailEntities = systemService.findHql("from EmkSampleDetailEntity where sampleId=? and type=0", map.get("priceId"));
-            request.setAttribute("emkSampleDetailEntities", emkSampleDetailEntities);
+        if (Utils.notEmpty(map.get("proOrderId"))) {
+            StringBuilder sql = new StringBuilder();
+            sql.append("select t.id,t.enquiry_id enquiryId,t.color,t.color_value colorVal,t.size,\n" +
+                    " (select t1.total from emk_enquiry_detail t1 where t1.enquiry_id=t.enquiry_id and t1.color=t.color and t1.size='s' limit 0,1) stotal,\n" +
+                    " (select t2.total from emk_enquiry_detail t2 where t2.enquiry_id=t.enquiry_id and t2.color=t.color and t2.size='m' limit 0,1) mtotal,\n" +
+                    " (select t3.total from emk_enquiry_detail t3 where t3.enquiry_id=t.enquiry_id and t3.color=t.color and t3.size='l' limit 0,1) ltotal,\n" +
+                    " (select t4.total from emk_enquiry_detail t4 where t4.enquiry_id=t.enquiry_id and t4.color=t.color and t4.size='xl' limit 0,1) xltotal,\n" +
+                    " (select t5.total from emk_enquiry_detail t5 where t5.enquiry_id=t.enquiry_id and t5.color=t.color and t5.size='2xl' limit 0,1) xxltotal\n" +
+                    " from emk_enquiry_detail t where t.enquiry_id=? group by t.enquiry_id,t.color,t.color_value  order by t.sort_desc asc \n");
+            List<Map<String, Object>> emkProOrderDetailEntities = systemService.findForJdbc(sql.toString(),map.get("proOrderId"));
+            request.setAttribute("emkProOrderDetailEntities", emkProOrderDetailEntities);
         }
-        return new ModelAndView("com/emk/storage/price/orderMxList");
+        return new ModelAndView("com/emk/storage/sample/detailMxList");
     }
 
-    @RequestMapping(params = "orderMxList2")
-    public ModelAndView orderMxList2(HttpServletRequest request) {
+    @RequestMapping(params = "contentList")
+    public ModelAndView contentList(HttpServletRequest request) {
         Map map = ParameterUtil.getParamMaps(request.getParameterMap());
-        if (Utils.notEmpty(map.get("priceId"))) {
-            List<EmkSampleDetailEntity> emkSampleDetailEntities = systemService.findHql("from EmkSampleDetailEntity where sampleId=? and type=1", map.get("priceId"));
-            request.setAttribute("emkSampleDetailEntities1", emkSampleDetailEntities);
+        if(Utils.notEmpty(map.get("sampleId"))){
+            EmkSampleEntity emkSample = emkSampleService.getEntity(EmkSampleEntity.class, map.get("sampleId").toString());
+            request.setAttribute("emkSamplePage", emkSample);
+            List<EmkSampleContentEntity> sampleContentEntities = systemService.findHql("from EmkSampleContentEntity where sampleId=? and type=?",map.get("sampleId"),map.get("type"));
+            request.setAttribute("sampleContentEntities", sampleContentEntities);
         }
-        return new ModelAndView("com/emk/storage/price/orderMxList2");
-    }
-
-    @RequestMapping(params = "orderMxList3")
-    public ModelAndView orderMxList3(HttpServletRequest request) {
-        Map map = ParameterUtil.getParamMaps(request.getParameterMap());
-        if (Utils.notEmpty(map.get("priceId"))) {
-            List<EmkSampleDetailEntity> emkSampleDetailEntities = systemService.findHql("from EmkSampleDetailEntity where sampleId=? and type=2", map.get("priceId"));
-            request.setAttribute("emkSampleDetailEntities2", emkSampleDetailEntities);
+        if (map.get("type").equals("0")) {
+            return new ModelAndView("com/emk/storage/sample/contentList");
         }
-        return new ModelAndView("com/emk/storage/price/orderMxList3");
+        if (map.get("type").equals("1")) {
+            return new ModelAndView("com/emk/storage/sample/contentList2");
+        }
+        if (map.get("type").equals("2")) {
+            return new ModelAndView("com/emk/storage/sample/contentList3");
+        }
+        return new ModelAndView("com/emk/storage/sample/contentList");
     }
 
     @RequestMapping(params = "gxList")
     public ModelAndView gxList(HttpServletRequest request) {
         Map map = ParameterUtil.getParamMaps(request.getParameterMap());
-        if (Utils.notEmpty(map.get("priceId"))) {
-            List<EmkSampleGxEntity> emkSampleGxEntities = systemService.findHql("from EmkSampleGxEntity where sampleId=?", map.get("priceId"));
+        if (Utils.notEmpty(map.get("sampleId"))) {
+            List<EmkSampleGxEntity> emkSampleGxEntities = systemService.findHql("from EmkSampleGxEntity where sampleId=?", map.get("sampleId"));
             request.setAttribute("emkSampleGxEntities", emkSampleGxEntities);
         }
-        return new ModelAndView("com/emk/storage/price/gxList");
+        return new ModelAndView("com/emk/storage/sample/gxList");
     }
     @RequestMapping(params = "ranList")
     public ModelAndView ranList(HttpServletRequest request) {
         Map map = ParameterUtil.getParamMaps(request.getParameterMap());
         List<Map<String, Object>> list = systemService.findForJdbc("select typecode,typename from t_s_type t2 left join t_s_typegroup t1 on t1.ID=t2.typegroupid where typegroupcode='bmzl'");
         request.setAttribute("bmzlList", list);
-        if (Utils.notEmpty(map.get("priceId"))) {
-            List<EmkSampleRanEntity> emkSampleRanEntities = systemService.findHql("from EmkSampleRanEntity where sampleId=? and type=0 ", map.get("priceId"));
+        if (Utils.notEmpty(map.get("sampleId"))) {
+            List<EmkSampleRanEntity> emkSampleRanEntities = systemService.findHql("from EmkSampleRanEntity where sampleId=? and type=0 ", map.get("sampleId"));
             request.setAttribute("emkSampleRanEntities", emkSampleRanEntities);
         }
-        return new ModelAndView("com/emk/storage/price/ranList");
+        return new ModelAndView("com/emk/storage/sample/ranList");
     }
     @RequestMapping(params = "yinList")
     public ModelAndView yinList(HttpServletRequest request) {
         Map map = ParameterUtil.getParamMaps(request.getParameterMap());
         List<Map<String, Object>> list = systemService.findForJdbc("select typecode,typename from t_s_type t2 left join t_s_typegroup t1 on t1.ID=t2.typegroupid where typegroupcode='yhgyzl'");
         request.setAttribute("yhgyzlList", list);
-        if (Utils.notEmpty(map.get("priceId"))) {
-            List<EmkSampleYinEntity> emkSampleYinEntities = systemService.findHql("from EmkSampleYinEntity where sampleId=?", map.get("priceId"));
+        if (Utils.notEmpty(map.get("sampleId"))) {
+            List<EmkSampleYinEntity> emkSampleYinEntities = systemService.findHql("from EmkSampleYinEntity where sampleId=?", map.get("sampleId"));
             request.setAttribute("emkSampleYinEntities", emkSampleYinEntities);
         }
-        return new ModelAndView("com/emk/storage/price/yinList");
+        return new ModelAndView("com/emk/storage/sample/yinList");
     }
 
     /*@RequestMapping(params = "list0")
@@ -166,7 +176,6 @@ public class EmkYptzdController extends BaseController {
             }
         }
         HqlGenerateUtil.installHql(cq, emkSample, request.getParameterMap());
-
 
         cq.add();
         emkSampleService.getDataGridReturn(cq, true);
@@ -216,12 +225,16 @@ public class EmkYptzdController extends BaseController {
                     j.setSuccess(false);
                     return j;
                 }
+//                WebFileUtils.delete( request.getRealPath("/")+emkSample.get());
+                systemService.executeSql("delete from emk_sample_detail where sample_id=?", emkSample.getId());
+                systemService.executeSql("delete from emk_sample_content where sample_id=?", emkSample.getId());
+                systemService.executeSql("delete from emk_sample_gx where sample_id=?", emkSample.getId());
+
                 emkSampleService.delete(emkSample);
-                systemService.executeSql("delete from emk_sample_detail where sample_id=?", new Object[]{emkSample.getId()});
-                systemService.executeSql("delete from emk_sample_gx where sample_id=?", new Object[]{emkSample.getId()});
-                systemService.executeSql("delete from emk_sample_ran where sample_id=?", new Object[]{emkSample.getId()});
-                systemService.executeSql("delete from emk_sample_yin where sample_id=?", new Object[]{emkSample.getId()});
-                systemService.executeSql("delete from emk_sample_total where sample_id=?", new Object[]{emkSample.getId()});
+
+                /*systemService.executeSql("delete from emk_sample_ran where sample_id=?", emkSample.getId());
+                systemService.executeSql("delete from emk_sample_yin where sample_id=?", emkSample.getId());
+//                systemService.executeSql("delete from emk_sample_total where sample_id=?", emkSample.getId());*/
                 systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
             }
         } catch (Exception e) {
@@ -242,12 +255,13 @@ public class EmkYptzdController extends BaseController {
         try {
             emkSample.setState("0");
             if(emkSample.getType().equals("ss") || emkSample.getType().equals("cq")){
-                if(emkSample.getOrderNo() == null || emkSample.getOrderNo().equals("")){
+                /*if(emkSample.getOrderNo() == null || emkSample.getOrderNo().equals("")){
                     j.setSuccess(false);
                     j.setMsg("订单号不能为空");
                     return j;
-                }
+                }*/
             }
+            Map map = ParameterUtil.getParamMaps(request.getParameterMap());
 
             emkSample.setKdTime(DateUtils.format(new Date(), "yyyy-MM-dd"));
             Map orderNum = systemService.findOneForJdbc("select CAST(ifnull(max(right(SAMPLE_NUM, 2)),0)+1 AS signed) orderNum from emk_sample");
@@ -255,6 +269,166 @@ public class EmkYptzdController extends BaseController {
             emkSample.setXqdh("YPXQ" +emkSample.getCusNum()+ DateUtils.format(new Date(), "yyMMdd")+ String.format("%02d", Integer.parseInt(orderNum.get("orderNum").toString())));
             emkSampleService.save(emkSample);
 
+            //保存明细数据
+            String dataRows = (String) map.get("orderMxListIDSR");
+            if (Utils.notEmpty(dataRows)) {
+                int rows = Integer.parseInt(dataRows);
+                EmkEnquiryDetailEntity orderMxEntity = null;
+                EmkEnquiryDetailEntity emkEnquiryDetailEntity = null;
+                for (int i = 0; i < rows; i++) {
+                    if (Utils.notEmpty(map.get("orderMxList["+i+"].color"))){
+                        orderMxEntity = new EmkEnquiryDetailEntity();
+                        orderMxEntity.setEnquiryId(emkSample.getId());
+                        orderMxEntity.setColor(map.get("orderMxList["+i+"].color").toString());
+                        orderMxEntity.setSortDesc(String.valueOf(i+1));
+                        if(Utils.notEmpty(map.get("orderMxList["+i+"].signTotal"))){
+                            emkEnquiryDetailEntity = new EmkEnquiryDetailEntity();
+                            MyBeanUtils.copyBeanNotNull2Bean(orderMxEntity,emkEnquiryDetailEntity);
+                            emkEnquiryDetailEntity.setSize("S");
+                            emkEnquiryDetailEntity.setTotal(Integer.parseInt(map.get("orderMxList["+i+"].signTotal").toString()));
+                            systemService.save(emkEnquiryDetailEntity);
+                        }
+                        if(Utils.notEmpty(map.get("orderMxList["+i+"].signTotal01"))){
+                            emkEnquiryDetailEntity = new EmkEnquiryDetailEntity();
+                            MyBeanUtils.copyBeanNotNull2Bean(orderMxEntity,emkEnquiryDetailEntity);
+                            emkEnquiryDetailEntity.setSize("M");
+                            emkEnquiryDetailEntity.setTotal(Integer.parseInt(map.get("orderMxList["+i+"].signTotal01").toString()));
+                            systemService.save(emkEnquiryDetailEntity);
+                        }
+                        if(Utils.notEmpty(map.get("orderMxList["+i+"].signTotal02"))){
+                            emkEnquiryDetailEntity = new EmkEnquiryDetailEntity();
+                            MyBeanUtils.copyBeanNotNull2Bean(orderMxEntity,emkEnquiryDetailEntity);
+                            emkEnquiryDetailEntity.setSize("L");
+                            emkEnquiryDetailEntity.setTotal(Integer.parseInt(map.get("orderMxList["+i+"].signTotal02").toString()));
+                            systemService.save(emkEnquiryDetailEntity);
+                        }
+                        if(Utils.notEmpty(map.get("orderMxList["+i+"].signTotal03"))){
+                            emkEnquiryDetailEntity = new EmkEnquiryDetailEntity();
+                            MyBeanUtils.copyBeanNotNull2Bean(orderMxEntity,emkEnquiryDetailEntity);
+                            emkEnquiryDetailEntity.setSize("XL");
+                            emkEnquiryDetailEntity.setTotal(Integer.parseInt(map.get("orderMxList["+i+"].signTotal03").toString()));
+                            systemService.save(emkEnquiryDetailEntity);
+                        }
+                        if(Utils.notEmpty(map.get("orderMxList["+i+"].signTotal04"))){
+                            emkEnquiryDetailEntity = new EmkEnquiryDetailEntity();
+                            MyBeanUtils.copyBeanNotNull2Bean(orderMxEntity,emkEnquiryDetailEntity);
+                            emkEnquiryDetailEntity.setSize("2XL");
+                            emkEnquiryDetailEntity.setTotal(Integer.parseInt(map.get("orderMxList["+i+"].signTotal04").toString()));
+                            systemService.save(emkEnquiryDetailEntity);
+                        }
+                        systemService.save(orderMxEntity);
+                    }
+                }
+            }
+
+            dataRows = (String)map.get("orderMxListIDContent");
+            //保存说明数据一
+            if (Utils.notEmpty(dataRows)) {
+                int rows = Integer.parseInt(dataRows);
+                for (int i = 0; i < rows; i++) {
+                    EmkSampleContentEntity emkSampleContentEntity = new EmkSampleContentEntity();
+                    if (Utils.notEmpty(map.get("orderMxList["+i+"].content00"))) {
+                        emkSampleContentEntity.setContent((String)map.get("orderMxList["+i+"].content00"));
+                        emkSampleContentEntity.setSampleId((String)emkSample.getId());
+                        emkSampleContentEntity.setType("0");
+                        systemService.save(emkSampleContentEntity);
+                    }
+                }
+            }
+
+            dataRows = (String)map.get("orderMxListIDContent2");
+            //保存说明数据二
+            if (Utils.notEmpty(dataRows)) {
+                int rows = Integer.parseInt(dataRows);
+                for (int i = 0; i < rows; i++) {
+                    EmkSampleContentEntity emkSampleContentEntity = new EmkSampleContentEntity();
+                    if (Utils.notEmpty(map.get("orderMxList["+i+"].bcontent00"))) {
+                        emkSampleContentEntity.setContent((String)map.get("orderMxList["+i+"].bcontent00"));
+                        emkSampleContentEntity.setSampleId((String)emkSample.getId());
+                        emkSampleContentEntity.setType("1");
+                        systemService.save(emkSampleContentEntity);
+                    }
+                }
+            }
+
+            dataRows = (String)map.get("orderMxListIDContent3");
+            //保存说明数据三
+            if (Utils.notEmpty(dataRows)) {
+                int rows = Integer.parseInt(dataRows);
+                for (int i = 0; i < rows; i++) {
+                    EmkSampleContentEntity emkSampleContentEntity = new EmkSampleContentEntity();
+                    if (Utils.notEmpty(map.get("orderMxList["+i+"].ccontent00"))) {
+                        emkSampleContentEntity.setContent((String)map.get("orderMxList["+i+"].ccontent00"));
+                        emkSampleContentEntity.setSampleId((String)emkSample.getId());
+                        emkSampleContentEntity.setType("2");
+                        systemService.save(emkSampleContentEntity);
+                    }
+                }
+            }
+
+            dataRows = (String)map.get("orderMxListID");
+            //保存原料面料数据
+            if (Utils.notEmpty(dataRows)) {
+                int rows = Integer.parseInt(dataRows);
+                for (int i = 0; i < rows; i++) {
+                    EmkSampleDetailEntity emkSampleDetailEntity = new EmkSampleDetailEntity();
+                    if (Utils.notEmpty(map.get("orderMxList["+i+"].proZnName"))) {
+                        emkSampleDetailEntity.setProZnName((String)map.get("orderMxList["+i+"].proZnName"));
+                        emkSampleDetailEntity.setProNum((String)map.get("orderMxList["+i+"].proNum"));
+                        emkSampleDetailEntity.setPrecent((String)map.get("orderMxList["+i+"].precent"));
+                        emkSampleDetailEntity.setYongliang(Double.parseDouble(map.get("orderMxList["+i+"].yongliang").toString()));
+                        emkSampleDetailEntity.setGysCode((String)map.get("orderMxList["+i+"].gysCode"));
+                        emkSampleDetailEntity.setSignPrice((String)map.get("orderMxList["+i+"].signPrice"));
+                        emkSampleDetailEntity.setSunhaoPrecent(Double.parseDouble(map.get("orderMxList["+i+"].sunhaoPrecent").toString()));
+                        emkSampleDetailEntity.setChengben(Double.parseDouble(map.get("orderMxList["+i+"].chengben").toString()));
+                        emkSampleDetailEntity.setSampleId(emkSample.getId());
+                        emkSampleDetailEntity.setType("0");
+                        systemService.save(emkSampleDetailEntity);
+                    }
+                }
+            }
+            dataRows = (String)map.get("orderMxListID2");
+            //保存缝制辅料数据
+            if (Utils.notEmpty(dataRows)) {
+                int rows = Integer.parseInt(dataRows);
+                for (int i = 0; i < rows; i++) {
+                    EmkSampleDetailEntity emkSampleDetailEntity = new EmkSampleDetailEntity();
+                    if (Utils.notEmpty(map.get("orderMxList["+i+"].bproZnName"))) {
+                        emkSampleDetailEntity.setProZnName((String)map.get("orderMxList["+i+"].bproZnName"));
+                        emkSampleDetailEntity.setProNum((String)map.get("orderMxList["+i+"].bproNum"));
+                        emkSampleDetailEntity.setPrecent((String)map.get("orderMxList["+i+"].bprecent"));
+                        emkSampleDetailEntity.setYongliang(Double.parseDouble(map.get("orderMxList["+i+"].byongliang").toString()));
+                        emkSampleDetailEntity.setGysCode((String)map.get("orderMxList["+i+"].bgysCode"));
+                        emkSampleDetailEntity.setSignPrice((String)map.get("orderMxList["+i+"].bsignPrice"));
+                        emkSampleDetailEntity.setSunhaoPrecent(Double.parseDouble(map.get("orderMxList["+i+"].bsunhaoPrecent").toString()));
+                        emkSampleDetailEntity.setChengben(Double.parseDouble(map.get("orderMxList["+i+"].bchengben").toString()));
+                        emkSampleDetailEntity.setSampleId(emkSample.getId());
+                        emkSampleDetailEntity.setType("1");
+                        systemService.save(emkSampleDetailEntity);
+                    }
+                }
+            }
+            dataRows = (String)map.get("orderMxListID3");
+            //保存包装辅料数据
+            if (Utils.notEmpty(dataRows)) {
+                int rows = Integer.parseInt(dataRows);
+                for (int i = 0; i < rows; i++) {
+                    EmkSampleDetailEntity emkSampleDetailEntity = new EmkSampleDetailEntity();
+                    if (Utils.notEmpty(map.get("orderMxList["+i+"].cproZnName"))) {
+                        emkSampleDetailEntity.setProZnName((String)map.get("orderMxList["+i+"].cproZnName"));
+                        emkSampleDetailEntity.setProNum((String)map.get("orderMxList["+i+"].cproNum"));
+                        emkSampleDetailEntity.setPrecent((String)map.get("orderMxList["+i+"].cprecent"));
+                        emkSampleDetailEntity.setYongliang(Double.parseDouble(map.get("orderMxList["+i+"].cyongliang").toString()));
+                        emkSampleDetailEntity.setGysCode((String)map.get("orderMxList["+i+"].cgysCode"));
+                        emkSampleDetailEntity.setSignPrice((String)map.get("orderMxList["+i+"].csignPrice"));
+                        emkSampleDetailEntity.setSunhaoPrecent(Double.parseDouble(map.get("orderMxList["+i+"].csunhaoPrecent").toString()));
+                        emkSampleDetailEntity.setChengben(Double.parseDouble(map.get("orderMxList["+i+"].cchengben").toString()));
+                        emkSampleDetailEntity.setSampleId(emkSample.getId());
+                        emkSampleDetailEntity.setType("2");
+                        systemService.save(emkSampleDetailEntity);
+                    }
+                }
+            }
             systemService.addLog(message, Globals.Log_Type_INSERT, Globals.Log_Leavel_INFO);
         } catch (Exception e) {
             e.printStackTrace();
@@ -271,13 +445,15 @@ public class EmkYptzdController extends BaseController {
         String message = null;
         AjaxJson j = new AjaxJson();
         message = "样品通知单更新成功";
-        if(emkSample.getType().equals("ss") || emkSample.getType().equals("cq")){
+       /* if(emkSample.getType().equals("ss") || emkSample.getType().equals("cq")){
             if(emkSample.getOrderNo() == null || emkSample.getOrderNo().equals("")){
                 j.setSuccess(false);
                 j.setMsg("订单号不能为空");
                 return j;
             }
-        }
+        }*/
+        Map map = ParameterUtil.getParamMaps(request.getParameterMap());
+
         EmkSampleEntity t = emkSampleService.get(EmkSampleEntity.class, emkSample.getId());
         try {
             if (!t.getState().equals("0")) {
@@ -286,14 +462,176 @@ public class EmkYptzdController extends BaseController {
                 j.setSuccess(false);
                 return  j;
             }
-            TSUser user = (TSUser) request.getSession().getAttribute("LOCAL_CLINET_USER");
-            Map orderNum = systemService.findOneForJdbc("select count(0)+1 orderNum from emk_sample where sys_org_code=?", user.getCurrentDepart().getOrgCode());
-            emkSample.setSampleNum("YPTZD" + DateUtils.format(new Date(), "yyMMdd") + "A" + String.format("%02d", Integer.parseInt(orderNum.get("orderNum").toString())));
 
-            orderNum = systemService.findOneForJdbc("select count(0)+1 orderNum from emk_sample where sys_org_code=?", user.getCurrentDepart().getOrgCode());
-            emkSample.setXqdh("YPXQ" +emkSample.getCusNum()+ DateUtils.format(new Date(), "yyMMdd") + "A" + String.format("%02d", Integer.parseInt(orderNum.get("orderNum").toString())));
             MyBeanUtils.copyBeanNotNull2Bean(emkSample, t);
             emkSampleService.saveOrUpdate(t);
+
+            //保存明细数据
+            String dataRows = (String) map.get("orderMxListIDSR");
+            if (Utils.notEmpty(dataRows)) {
+                systemService.executeSql("delete from emk_enquiry_detail where enquiry_id=?",t.getId());
+                int rows = Integer.parseInt(dataRows);
+                EmkEnquiryDetailEntity orderMxEntity = null;
+                EmkEnquiryDetailEntity emkEnquiryDetailEntity = null;
+                for (int i = 0; i < rows; i++) {
+                    if (Utils.notEmpty(map.get("orderMxList["+i+"].color"))){
+                        orderMxEntity = new EmkEnquiryDetailEntity();
+                        orderMxEntity.setEnquiryId(t.getId());
+                        orderMxEntity.setSortDesc(String.valueOf(i+1));
+                        orderMxEntity.setColor(map.get("orderMxList["+i+"].color").toString());
+                        if(Utils.notEmpty(map.get("orderMxList["+i+"].signTotal"))){
+                            emkEnquiryDetailEntity = new EmkEnquiryDetailEntity();
+                            MyBeanUtils.copyBeanNotNull2Bean(orderMxEntity,emkEnquiryDetailEntity);
+                            emkEnquiryDetailEntity.setSize("S");
+                            emkEnquiryDetailEntity.setTotal(Integer.parseInt(map.get("orderMxList["+i+"].signTotal").toString()));
+                            systemService.save(emkEnquiryDetailEntity);
+                        }
+                        if(Utils.notEmpty(map.get("orderMxList["+i+"].signTotal01"))){
+                            emkEnquiryDetailEntity = new EmkEnquiryDetailEntity();
+                            MyBeanUtils.copyBeanNotNull2Bean(orderMxEntity,emkEnquiryDetailEntity);
+                            emkEnquiryDetailEntity.setSize("M");
+                            emkEnquiryDetailEntity.setTotal(Integer.parseInt(map.get("orderMxList["+i+"].signTotal01").toString()));
+                            systemService.save(emkEnquiryDetailEntity);
+                        }
+                        if(Utils.notEmpty(map.get("orderMxList["+i+"].signTotal02"))){
+                            emkEnquiryDetailEntity = new EmkEnquiryDetailEntity();
+                            MyBeanUtils.copyBeanNotNull2Bean(orderMxEntity,emkEnquiryDetailEntity);
+                            emkEnquiryDetailEntity.setSize("L");
+                            emkEnquiryDetailEntity.setTotal(Integer.parseInt(map.get("orderMxList["+i+"].signTotal02").toString()));
+                            systemService.save(emkEnquiryDetailEntity);
+                        }
+                        if(Utils.notEmpty(map.get("orderMxList["+i+"].signTotal03"))){
+                            emkEnquiryDetailEntity = new EmkEnquiryDetailEntity();
+                            MyBeanUtils.copyBeanNotNull2Bean(orderMxEntity,emkEnquiryDetailEntity);
+                            emkEnquiryDetailEntity.setSize("XL");
+                            emkEnquiryDetailEntity.setTotal(Integer.parseInt(map.get("orderMxList["+i+"].signTotal03").toString()));
+                            systemService.save(emkEnquiryDetailEntity);
+                        }
+                        if(Utils.notEmpty(map.get("orderMxList["+i+"].signTotal04"))){
+                            emkEnquiryDetailEntity = new EmkEnquiryDetailEntity();
+                            MyBeanUtils.copyBeanNotNull2Bean(orderMxEntity,emkEnquiryDetailEntity);
+                            emkEnquiryDetailEntity.setSize("2XL");
+                            emkEnquiryDetailEntity.setTotal(Integer.parseInt(map.get("orderMxList["+i+"].signTotal04").toString()));
+                            systemService.save(emkEnquiryDetailEntity);
+                        }
+                    }
+                }
+            }
+            dataRows = (String)map.get("orderMxListIDContent");
+            //保存说明数据一
+            if (Utils.notEmpty(dataRows)) {
+                systemService.executeSql("delete from emk_sample_content where sample_id=? and type=0",t.getId());
+                int rows = Integer.parseInt(dataRows);
+                for (int i = 0; i < rows; i++) {
+                    EmkSampleContentEntity emkSampleContentEntity = new EmkSampleContentEntity();
+                    if (Utils.notEmpty(map.get("orderMxList["+i+"].content00"))) {
+                        emkSampleContentEntity.setContent((String)map.get("orderMxList["+i+"].content00"));
+                        emkSampleContentEntity.setSampleId((String)emkSample.getId());
+                        emkSampleContentEntity.setType("0");
+                        systemService.save(emkSampleContentEntity);
+                    }
+                }
+            }
+
+            dataRows = (String)map.get("orderMxListIDContent2");
+            //保存说明数据二
+            if (Utils.notEmpty(dataRows)) {
+                systemService.executeSql("delete from emk_sample_content where sample_id=? and type=1",t.getId());
+                int rows = Integer.parseInt(dataRows);
+                for (int i = 0; i < rows; i++) {
+                    EmkSampleContentEntity emkSampleContentEntity = new EmkSampleContentEntity();
+                    if (Utils.notEmpty(map.get("orderMxList["+i+"].bcontent00"))) {
+                        emkSampleContentEntity.setContent((String)map.get("orderMxList["+i+"].bcontent00"));
+                        emkSampleContentEntity.setSampleId((String)emkSample.getId());
+                        emkSampleContentEntity.setType("1");
+                        systemService.save(emkSampleContentEntity);
+                    }
+                }
+            }
+
+            dataRows = (String)map.get("orderMxListIDContent3");
+            //保存说明数据三
+            if (Utils.notEmpty(dataRows)) {
+                systemService.executeSql("delete from emk_sample_content where sample_id=? and type=2",t.getId());
+                int rows = Integer.parseInt(dataRows);
+                for (int i = 0; i < rows; i++) {
+                    EmkSampleContentEntity emkSampleContentEntity = new EmkSampleContentEntity();
+                    if (Utils.notEmpty(map.get("orderMxList["+i+"].ccontent00"))) {
+                        emkSampleContentEntity.setContent((String)map.get("orderMxList["+i+"].ccontent00"));
+                        emkSampleContentEntity.setSampleId((String)emkSample.getId());
+                        emkSampleContentEntity.setType("2");
+                        systemService.save(emkSampleContentEntity);
+                    }
+                }
+            }
+
+            dataRows = (String)map.get("orderMxListID");
+            //保存原料面料数据
+            if (Utils.notEmpty(dataRows)) {
+                systemService.executeSql("delete from emk_sample_detail where sample_id = ? and type=0",t.getId());
+                int rows = Integer.parseInt(dataRows);
+                for (int i = 0; i < rows; i++) {
+                    EmkSampleDetailEntity emkSampleDetailEntity = new EmkSampleDetailEntity();
+                    if (Utils.notEmpty(map.get("orderMxList["+i+"].proZnName"))) {
+                        emkSampleDetailEntity.setProZnName((String)map.get("orderMxList["+i+"].proZnName"));
+                        emkSampleDetailEntity.setProNum((String)map.get("orderMxList["+i+"].proNum"));
+                        emkSampleDetailEntity.setPrecent((String)map.get("orderMxList["+i+"].precent"));
+                        emkSampleDetailEntity.setYongliang(Double.parseDouble(map.get("orderMxList["+i+"].yongliang").toString()));
+                        emkSampleDetailEntity.setGysCode((String)map.get("orderMxList["+i+"].gysCode"));
+                        emkSampleDetailEntity.setSignPrice((String)map.get("orderMxList["+i+"].signPrice"));
+                        emkSampleDetailEntity.setSunhaoPrecent(Double.parseDouble(map.get("orderMxList["+i+"].sunhaoPrecent").toString()));
+                        emkSampleDetailEntity.setChengben(Double.parseDouble(map.get("orderMxList["+i+"].chengben").toString()));
+                        emkSampleDetailEntity.setSampleId(t.getId());
+                        emkSampleDetailEntity.setType("0");
+                        systemService.save(emkSampleDetailEntity);
+                    }
+                }
+            }
+
+            dataRows = (String)map.get("orderMxListID2");
+            //保存缝制辅料数据
+            if (Utils.notEmpty(dataRows)) {
+                systemService.executeSql("delete from emk_sample_detail where sample_id = ? and type=1",t.getId());
+                int rows = Integer.parseInt(dataRows);
+                for (int i = 0; i < rows; i++) {
+                    EmkSampleDetailEntity emkSampleDetailEntity = new EmkSampleDetailEntity();
+                    if (Utils.notEmpty(map.get("orderMxList["+i+"].bproZnName"))) {
+                        emkSampleDetailEntity.setProZnName((String)map.get("orderMxList["+i+"].bproZnName"));
+                        emkSampleDetailEntity.setProNum((String)map.get("orderMxList["+i+"].bproNum"));
+                        emkSampleDetailEntity.setPrecent((String)map.get("orderMxList["+i+"].bprecent"));
+                        emkSampleDetailEntity.setYongliang(Double.parseDouble(map.get("orderMxList["+i+"].byongliang").toString()));
+                        emkSampleDetailEntity.setGysCode((String)map.get("orderMxList["+i+"].bgysCode"));
+                        emkSampleDetailEntity.setSignPrice((String)map.get("orderMxList["+i+"].bsignPrice"));
+                        emkSampleDetailEntity.setSunhaoPrecent(Double.parseDouble(map.get("orderMxList["+i+"].bsunhaoPrecent").toString()));
+                        emkSampleDetailEntity.setChengben(Double.parseDouble(map.get("orderMxList["+i+"].bchengben").toString()));
+                        emkSampleDetailEntity.setSampleId(t.getId());
+                        emkSampleDetailEntity.setType("1");
+                        systemService.save(emkSampleDetailEntity);
+                    }
+                }
+            }
+            dataRows = (String)map.get("orderMxListID3");
+            //保存包装辅料数据
+            if (Utils.notEmpty(dataRows)) {
+                systemService.executeSql("delete from emk_sample_detail where sample_id = ? and type=2",t.getId());
+                int rows = Integer.parseInt(dataRows);
+                for (int i = 0; i < rows; i++) {
+                    EmkSampleDetailEntity emkSampleDetailEntity = new EmkSampleDetailEntity();
+                    if (Utils.notEmpty(map.get("orderMxList["+i+"].cproZnName"))) {
+                        emkSampleDetailEntity.setProZnName((String)map.get("orderMxList["+i+"].cproZnName"));
+                        emkSampleDetailEntity.setProNum((String)map.get("orderMxList["+i+"].cproNum"));
+                        emkSampleDetailEntity.setPrecent((String)map.get("orderMxList["+i+"].cprecent"));
+                        emkSampleDetailEntity.setYongliang(Double.parseDouble(map.get("orderMxList["+i+"].cyongliang").toString()));
+                        emkSampleDetailEntity.setGysCode((String)map.get("orderMxList["+i+"].cgysCode"));
+                        emkSampleDetailEntity.setSignPrice((String)map.get("orderMxList["+i+"].csignPrice"));
+                        emkSampleDetailEntity.setSunhaoPrecent(Double.parseDouble(map.get("orderMxList["+i+"].csunhaoPrecent").toString()));
+                        emkSampleDetailEntity.setChengben(Double.parseDouble(map.get("orderMxList["+i+"].cchengben").toString()));
+                        emkSampleDetailEntity.setSampleId(t.getId());
+                        emkSampleDetailEntity.setType("2");
+                        systemService.save(emkSampleDetailEntity);
+                    }
+                }
+            }
             systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
         } catch (Exception e) {
             e.printStackTrace();
@@ -319,7 +657,7 @@ public class EmkYptzdController extends BaseController {
 
     @RequestMapping(params = "goTab")
     public ModelAndView goBtn(EmkSampleEntity emkSample, HttpServletRequest req) {
-        return new ModelAndView("com/emk/storage/sample/emkPrice-tab");
+        return new ModelAndView("com/emk/storage/sample/emkSample-tab");
     }
     @RequestMapping(params = "goBase")
     public ModelAndView goBase(EmkSampleEntity emkSample, HttpServletRequest req) {
@@ -339,7 +677,7 @@ public class EmkYptzdController extends BaseController {
                 e.printStackTrace();
             }
         }
-        return new ModelAndView("com/emk/storage/price/emkPrice-base");
+        return new ModelAndView("com/emk/storage/sample/emkSample-base");
     }
 
     @RequestMapping(params = "goPb")
@@ -530,7 +868,7 @@ public class EmkYptzdController extends BaseController {
                             taskService.complete(task1.getId(), variables);
                         }
                         if (task1.getTaskDefinitionKey().equals("leadTask")) {
-                            t.setLeader(user.getRealName());
+                          /*  t.setLeader(user.getRealName());
                             t.setLeadUserId(user.getId());
                             t.setLeadAdvice(emkSampleEntity.getLeadAdvice());
                             if (emkSampleEntity.getIsPass().equals("0")) {
@@ -552,43 +890,7 @@ public class EmkYptzdController extends BaseController {
                                 task = taskService.createTaskQuery().taskAssignee(workOrderEntity.getId()).list();
                                 task1 = task.get(task.size() - 1);
                                 taskService.complete(task1.getId(), variables);
-                                /*if(t.getType().equals("cy")){
-                                    Map enquiry = systemService.findOneForJdbc("SELECT t3.id,t3.enquiry_no FROM emk_sample t1 LEFT JOIN emk_price t2 ON t1.PIRCE_NO=t2.pirce_no LEFT JOIN emk_enquiry t3 ON t3.enquiry_no=t2.xp_no where t1.id=? LIMIT 0,1",id);
-                                    if(enquiry != null){
-                                        EmkWorkOrderEntity workOrderEntity = systemService.findUniqueByProperty(EmkWorkOrderEntity.class,"askNo",enquiry.get("enquiry_no").toString());
-                                        workOrderEntity.setSampleNum(t.getSampleNum());
-                                        systemService.saveOrUpdate(workOrderEntity);
-                                    }
-                                }else if(t.getType().equals("ss")){
-                                    EmkProduceScheduleEntity produceScheduleEntity = systemService.findUniqueByProperty(EmkProduceScheduleEntity.class,"orderNo",t.getOrderNo());
-                                    variables.put("optUser", produceScheduleEntity.getId());
 
-                                    produceScheduleEntity.setCqSampleUser(t.getCreateName());
-                                    produceScheduleEntity.setCqSampleUserId(t.getCreateBy());
-                                    produceScheduleEntity.setSsSampleAdvice(t.getLeadAdvice());
-
-                                    task = taskService.createTaskQuery().taskAssignee(produceScheduleEntity.getId()).list();
-
-                                    if (task.size() > 0) {
-                                        Task produceTask = (Task) task.get(task.size() - 1);
-                                        taskService.complete(produceTask.getId(), variables);
-                                        systemService.saveOrUpdate(produceScheduleEntity);
-                                    }
-                                }else if(t.getType().equals("cq")){
-                                    EmkProduceScheduleEntity produceScheduleEntity = systemService.findUniqueByProperty(EmkProduceScheduleEntity.class,"orderNo",t.getOrderNo());
-                                    variables.put("optUser", produceScheduleEntity.getId());
-                                    produceScheduleEntity.setColorUser(t.getLeader());
-                                    produceScheduleEntity.setColorUserId(t.getLeadUserId());
-                                    produceScheduleEntity.setCqSampleAdvice(t.getLeadAdvice());
-
-                                    task = taskService.createTaskQuery().taskAssignee(produceScheduleEntity.getId()).list();
-
-                                    if (task.size() > 0) {
-                                        Task produceTask = (Task) task.get(task.size() - 1);
-                                        taskService.complete(produceTask.getId(), variables);
-                                        systemService.saveOrUpdate(produceScheduleEntity);
-                                    }
-                                }*/
 
                             } else {
                                 List<HistoricTaskInstance> hisTasks = historyService.createHistoricTaskInstanceQuery().taskAssignee(t.getId()).list();
@@ -605,7 +907,7 @@ public class EmkYptzdController extends BaseController {
                                     systemService.executeSql("delete from act_hi_actinst where ID_>=? and ID_<?", activitIdArr[0], activitIdArr[1] );
                                 }
                                 t.setState("0");
-                            }
+                            }*/
                         }
                         systemService.saveOrUpdate(t);
 

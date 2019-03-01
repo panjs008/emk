@@ -43,7 +43,7 @@
             width:'auto',
             fixFooter:false
         });
-        <c:if test="${param.proOrderId eq null}">
+        <c:if test="${param.proOrderId eq null || param.proOrderId eq ''}">
             $('#addBtnSR').click();
         </c:if>
     });

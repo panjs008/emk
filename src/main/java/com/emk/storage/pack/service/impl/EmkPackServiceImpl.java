@@ -96,8 +96,7 @@ public class EmkPackServiceImpl
         map.put("total", t.getTotal());
         map.put("end_date", t.getEndDate());
         map.put("cus_advice", t.getCusAdvice());
-        map.put("ye_advice", t.getYeAdvice());
-        map.put("cg_advice", t.getCgAdvice());
+
         return map;
     }
 
@@ -140,8 +139,6 @@ public class EmkPackServiceImpl
         sql = sql.replace("#{total}", String.valueOf(t.getTotal()));
         sql = sql.replace("#{end_date}", String.valueOf(t.getEndDate()));
         sql = sql.replace("#{cus_advice}", String.valueOf(t.getCusAdvice()));
-        sql = sql.replace("#{ye_advice}", String.valueOf(t.getYeAdvice()));
-        sql = sql.replace("#{cg_advice}", String.valueOf(t.getCgAdvice()));
         sql = sql.replace("#{UUID}", UUID.randomUUID().toString());
         return sql;
     }

@@ -9,55 +9,48 @@
    <t:dgCol title="创建人登录名称"  field="createBy"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="创建日期"  field="createDate"  formatter="yyyy-MM-dd"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="所属部门"  field="sysOrgCode"  hidden="true"  queryMode="single"  width="140"></t:dgCol>
-      <t:dgCol title="操作" field="opt" width="245" frozenColumn="true"></t:dgCol>
-      <t:dgCol title="样品通知单号" query="true"  field="sampleNum"  queryMode="single"  width="115"></t:dgCol>
-      <t:dgCol title="通知单日期"  field="kdTime"  queryMode="single"  width="80"></t:dgCol>
+      <%--<t:dgCol title="操作" field="opt" width="245" frozenColumn="true"></t:dgCol>--%>
+      <t:dgCol title="操作" field="opt" width="100" frozenColumn="true"></t:dgCol>
+
+      <t:dgCol title="样品通知单编号" query="true" frozenColumn="true" field="sampleNum"  queryMode="single"  width="130"></t:dgCol>
+      <t:dgCol title="通知单日期"  field="kdTime"  queryMode="single"  width="90"></t:dgCol>
+      <t:dgCol title="客户名称"  field="cusName"  queryMode="single"  width="160"></t:dgCol>
       <t:dgCol title="客户代码" query="true"  field="cusNum"  queryMode="single"  width="70"></t:dgCol>
-      <t:dgCol title="客户名称"  field="cusName"  queryMode="single"  width="130"></t:dgCol>
-      <t:dgCol title="客户原样"  image="true"  imageSize="30,30" field="customSampleUrl"  queryMode="single"  width="70"></t:dgCol>
-      <t:dgCol title="尺码表" image="true"  imageSize="30,30"  field="sampleSizeUrl"   queryMode="single"  width="60"></t:dgCol>
-      <t:dgCol title="款式大类"  field="proTypeName"  queryMode="single"  width="70"></t:dgCol>
-      <%--<t:dgCol title="商品名称"  field="proName"  queryMode="single"  width="120"></t:dgCol>--%>
-   <t:dgCol title="客户ID"  field="customId"  hidden="true" queryMode="single"  width="120"></t:dgCol>
-   <t:dgCol title="款号"  field="sampleNo"  queryMode="single"  width="80"></t:dgCol>
-      <t:dgCol title="版次"  field="version"  queryMode="single"  width="50"></t:dgCol>
-      <t:dgCol title="工艺种类"  field="gyzl" dictionary="gylx"  queryMode="single"  width="70"></t:dgCol>
+      <t:dgCol title="业务部门"  field="businesseDeptName"  queryMode="single"  width="80"></t:dgCol>
+      <t:dgCol title="业务员"  field="businesserName"  queryMode="single"  width="60"></t:dgCol>
+      <t:dgCol title="款号"  field="sampleNo"  queryMode="single"  width="100"></t:dgCol>
+      <t:dgCol title="描述"  field="sampleNoDesc"  queryMode="single"  width="120"></t:dgCol>
       <t:dgCol title="样品类型"  field="type" dictionary="sampletype" queryMode="single"  width="70"></t:dgCol>
+      <t:dgCol title="样品交期"  field="ypjqDate"  queryMode="single"  width="80"></t:dgCol>
+      <t:dgCol title="距样品交期余天数"  field="leavelypjqDays"  queryMode="single"  width="100"></t:dgCol>
+      <t:dgCol title="大货交期"  field="dhjq"  queryMode="single"  width="80"></t:dgCol>
+      <t:dgCol title="距大货交期余天数"  field="leaveldhjqDays"  queryMode="single"  width="100"></t:dgCol>
+
+      <%--<t:dgCol title="客户原样"  image="true"  imageSize="30,30" field="customSampleUrl"  queryMode="single"  width="70"></t:dgCol>
+      <t:dgCol title="尺码表" image="true"  imageSize="30,30"  field="sampleSizeUrl"   queryMode="single"  width="60"></t:dgCol>--%>
+      <%--<t:dgCol title="商品名称"  field="proName"  queryMode="single"  width="120"></t:dgCol>--%>
+      <t:dgCol title="工艺种类"  field="gyzl" dictionary="gylx"  queryMode="single"  width="70"></t:dgCol>
       <%--<t:dgCol title="布面克重"  field="weight" queryMode="single"  width="70"></t:dgCol>
       <t:dgCol title="布面成分"  field="chengf"  queryMode="single"  width="70"></t:dgCol>--%>
-   <t:dgCol title="交货时间"  field="receviceDate"  queryMode="single"  width="80"></t:dgCol>
-      <t:dgCol title="状态"  field="state" formatterjs="formatColor"  queryMode="single"  width="60"></t:dgCol>
+      <t:dgCol title="样品状态"  field="state" formatterjs="formatColor"  queryMode="single"  width="80"></t:dgCol>
       <%--<t:dgFunOpt funname="queryDetail1(id,sampleNo)" title="数量" urlclass="ace_button" urlfont="fa-list-alt"></t:dgFunOpt>--%>
-      <t:dgFunOpt funname="queryDetail2(id,sampleNum,state)" title="主辅料" urlclass="ace_button" urlfont="fa-list-alt"></t:dgFunOpt>
-      <t:dgFunOpt funname="queryDetail3(id,sampleNum,state)" title="染色" urlStyle="background-color:#ec4758;" urlclass="ace_button" urlfont="fa-file-photo-o"></t:dgFunOpt>
-      <t:dgFunOpt funname="queryDetail4(id,sampleNum,state)" title="印花" urlStyle="background-color:#18a689;" urlclass="ace_button" urlfont="fa-asterisk"></t:dgFunOpt>
-      <t:dgFunOpt funname="queryDetail5(id,sampleNum,state)" title="工序" urlStyle="background-color:#ec4758;" urlclass="ace_button" urlfont="fa-tasks"></t:dgFunOpt>
-
-      <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkYptzdController.do?goAdd&flag=${param.flag}&winTitle=录入样品通知单" funname="add" height="550" width="1000"></t:dgToolBar>
-       <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkYptzdController.do?goUpdate&winTitle=编辑样品通知单" funname="update" height="550" width="1000"></t:dgToolBar>
+      <%--<t:dgFunOpt funname="queryDetail2(id,sampleNum,state)" title="主辅料" urlclass="ace_button" urlfont="fa-list-alt"></t:dgFunOpt>--%>
+      <%--<t:dgFunOpt funname="queryDetail3(id,sampleNum,state)" title="染色" urlStyle="background-color:#ec4758;" urlclass="ace_button" urlfont="fa-file-photo-o"></t:dgFunOpt>--%>
+      <%--<t:dgFunOpt funname="queryDetail4(id,sampleNum,state)" title="印花" urlStyle="background-color:#18a689;" urlclass="ace_button" urlfont="fa-asterisk"></t:dgFunOpt>--%>
+      <%--<t:dgFunOpt funname="queryDetail5(id,sampleNum,state)" title="工序" urlStyle="background-color:#ec4758;" urlclass="ace_button" urlfont="fa-tasks"></t:dgFunOpt>--%>
+      <t:dgFunOpt funname="goToProcess(id,createBy,processName,state,state1,state2,state3)" title="流程进度" operationCode="process" urlclass="ace_button"  urlStyle="background-color:#ec4758;" urlfont="fa-tasks"></t:dgFunOpt>
+      <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkYptzdController.do?goAdd&flag=${param.flag}&winTitle=录入样品通知单" funname="add" height="550" width="1220"></t:dgToolBar>
+       <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkYptzdController.do?goUpdate&winTitle=编辑样品通知单" funname="update" height="550" width="1220"></t:dgToolBar>
       <t:dgToolBar title="提交" operationCode="submit" icon="fa fa-arrow-circle-up" funname="doSubmitV"></t:dgToolBar>
-      <t:dgToolBar title="查看" icon="fa fa-search" operationCode="look" url="emkYptzdController.do?goUpdate&winTitle=查看样品通知单" funname="detail" height="600" width="1210"></t:dgToolBar>
-      <t:dgToolBar title="流程进度" operationCode="process" icon="fa fa-plus" funname="goToProcess"></t:dgToolBar>
+      <t:dgToolBar title="查看" icon="fa fa-search" operationCode="look" url="emkYptzdController.do?goUpdate&winTitle=查看样品通知单" funname="detail" height="550" width="1220"></t:dgToolBar>
+      <%--<t:dgToolBar title="流程进度" operationCode="process" icon="fa fa-plus" funname="goToProcess"></t:dgToolBar>--%>
       <t:dgToolBar title="删除" operationCode="delete"  icon="fa fa-remove" url="emkYptzdController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
       <t:dgToolBar title="导出" operationCode="exp" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
 
   </t:datagrid>
   </div>
  </div>
-<div data-options="region:'east',
-	title:'清单明细',
-	collapsed:true,
-	split:true,
-	border:false,
-	onExpand : function(){
-		li_east = 1;
-	},
-	onCollapse : function() {
-	    li_east = 0;
-	}"
-     style="width: 500px; overflow: hidden;" id="eastPanel">
-    <div class="easyui-panel" style="padding:0px;border:0px" fit="true" border="false" id="proDetialListpanel"></div>
-</div>
+
  <script src = "webpage/com/emk/storage/sample/emkSampleList.js"></script>
  <script type="text/javascript">
  $(document).ready(function(){

@@ -396,7 +396,7 @@ public class EmkEnquiryController extends BaseController {
 
         try {
             for (String id : ids.split(",")) {
-                String fileName = "d:\\PDF\\"+DateUtil.format(new Date(),"yyyyMMddHHmmss")+".pdf";
+                String fileName = "c:\\PDF\\"+DateUtil.format(new Date(),"yyyyMMddHHmmss")+".pdf";
                 File file = new File(fileName);
                 File dir = file.getParentFile();
                 if (!dir.exists()) {
@@ -437,7 +437,7 @@ public class EmkEnquiryController extends BaseController {
                 Map type = systemService.findOneForJdbc("select typecode,typename from t_s_type t2 left join t_s_typegroup t1 on t1.ID=t2.typegroupid where typegroupcode='gylx' and typecode=?",emkEnquiry.getGyzl());
                 emkEnquiryEntityA.setGyzl(type.get("typename").toString());
                 new createPdf(file).generateEmkEnquiryPDF(emkEnquiryEntityA,emkProOrderDetailEntities);
-                String fFileName = "d:\\PDF\\F"+DateUtil.format(new Date(),"yyyyMMddHHmmss")+".pdf";
+                String fFileName = "c:\\PDF\\F"+DateUtil.format(new Date(),"yyyyMMddHHmmss")+".pdf";
                 WaterMark.waterMark(fileName,fFileName, "意向询盘单");
                 file.delete();
                 WebFileUtils.downLoad(fFileName,response,false);

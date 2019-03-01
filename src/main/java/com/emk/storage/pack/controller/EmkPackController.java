@@ -3,8 +3,10 @@ package com.emk.storage.pack.controller;
 import com.alibaba.fastjson.JSONArray;
 import com.emk.storage.pack.entity.EmkPackEntity;
 import com.emk.storage.pack.service.EmkPackServiceI;
+import com.emk.storage.sampledetail.entity.EmkSampleDetailEntity;
 import com.emk.util.FlowUtil;
 import com.emk.util.ParameterUtil;
+import com.emk.util.Utils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -76,6 +78,16 @@ public class EmkPackController extends BaseController {
     @RequestMapping(params = "list")
     public ModelAndView list(HttpServletRequest request) {
         return new ModelAndView("com/emk/storage/pack/emkPackList");
+    }
+
+    @RequestMapping(params = "orderMxList3")
+    public ModelAndView orderMxList3(HttpServletRequest request) {
+        Map map = ParameterUtil.getParamMaps(request.getParameterMap());
+        if (Utils.notEmpty(map.get("sampleId"))) {
+            List<EmkSampleDetailEntity> emkSampleDetailEntities = systemService.findHql("from EmkSampleDetailEntity where sampleId=? and type=2", map.get("sampleId"));
+            request.setAttribute("emkSampleDetailEntities", emkSampleDetailEntities);
+        }
+        return new ModelAndView("com/emk/storage/pack/orderMxList3");
     }
 
     @RequestMapping(params = "datagrid")
@@ -344,7 +356,7 @@ public class EmkPackController extends BaseController {
                             taskService.complete(task1.getId(), variables);
                         }
                         if (task1.getTaskDefinitionKey().equals("checkTask")) {
-                            t.setLeader(user.getRealName());
+                           /* t.setLeader(user.getRealName());
                             t.setLeadUserId(user.getId());
                             t.setLeadAdvice(emkPackEntity.getLeadAdvice());
                             if (emkPackEntity.getIsPass().equals("0")) {
@@ -367,7 +379,7 @@ public class EmkPackController extends BaseController {
                                     systemService.executeSql("delete from act_hi_actinst where ID_>=? and ID_<?", activitIdArr[0], activitIdArr[1] );
                                 }
                                 t.setState("0");
-                            }
+                            }*/
 
                         }
 

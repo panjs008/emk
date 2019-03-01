@@ -74,14 +74,11 @@ public class EmkMaterialServiceImpl
         map.put("pro_type_name", t.getProTypeName());
         map.put("sample_no", t.getSampleNo());
         map.put("sample_no_desc", t.getSampleNoDesc());
-        map.put("factory_name", t.getFactoryName());
-        map.put("factory_code", t.getFactoryCode());
         map.put("businesse_dept_name", t.getBusinesseDeptName());
         map.put("businesse_dept_id", t.getBusinesseDeptId());
         map.put("developer", t.getDeveloper());
         map.put("developer_name", t.getDeveloperName());
-        map.put("cger", t.getCger());
-        map.put("cger_name", t.getCgerName());
+
         map.put("ypjq_date", t.getYpjqDate());
         map.put("leave_ypjq_days", t.getLeaveYpjqDays());
         map.put("leave_dhjq_days", t.getLeaveDhjqDays());
@@ -93,9 +90,6 @@ public class EmkMaterialServiceImpl
         map.put("required_jq_date", t.getRequiredJqDate());
         map.put("leave_finish_days", t.getLeaveFinishDays());
         map.put("state", t.getState());
-        map.put("jsy_advice", t.getJsyAdvice());
-        map.put("developer_advice", t.getDeveloperAdvice());
-        map.put("businesse_advice", t.getBusinesseAdvice());
         map.put("zh_advice", t.getZhAdvice());
         return map;
     }
@@ -117,14 +111,11 @@ public class EmkMaterialServiceImpl
         sql = sql.replace("#{pro_type_name}", String.valueOf(t.getProTypeName()));
         sql = sql.replace("#{sample_no}", String.valueOf(t.getSampleNo()));
         sql = sql.replace("#{sample_no_desc}", String.valueOf(t.getSampleNoDesc()));
-        sql = sql.replace("#{factory_name}", String.valueOf(t.getFactoryName()));
-        sql = sql.replace("#{factory_code}", String.valueOf(t.getFactoryCode()));
         sql = sql.replace("#{businesse_dept_name}", String.valueOf(t.getBusinesseDeptName()));
         sql = sql.replace("#{businesse_dept_id}", String.valueOf(t.getBusinesseDeptId()));
         sql = sql.replace("#{developer}", String.valueOf(t.getDeveloper()));
         sql = sql.replace("#{developer_name}", String.valueOf(t.getDeveloperName()));
-        sql = sql.replace("#{cger}", String.valueOf(t.getCger()));
-        sql = sql.replace("#{cger_name}", String.valueOf(t.getCgerName()));
+
         sql = sql.replace("#{ypjq_date}", String.valueOf(t.getYpjqDate()));
         sql = sql.replace("#{leave_ypjq_days}", String.valueOf(t.getLeaveYpjqDays()));
         sql = sql.replace("#{leave_dhjq_days}", String.valueOf(t.getLeaveDhjqDays()));
@@ -136,9 +127,6 @@ public class EmkMaterialServiceImpl
         sql = sql.replace("#{required_jq_date}", String.valueOf(t.getRequiredJqDate()));
         sql = sql.replace("#{leave_finish_days}", String.valueOf(t.getLeaveFinishDays()));
         sql = sql.replace("#{state}", String.valueOf(t.getState()));
-        sql = sql.replace("#{jsy_advice}", String.valueOf(t.getJsyAdvice()));
-        sql = sql.replace("#{developer_advice}", String.valueOf(t.getDeveloperAdvice()));
-        sql = sql.replace("#{businesse_advice}", String.valueOf(t.getBusinesseAdvice()));
         sql = sql.replace("#{zh_advice}", String.valueOf(t.getZhAdvice()));
         sql = sql.replace("#{UUID}", UUID.randomUUID().toString());
         return sql;

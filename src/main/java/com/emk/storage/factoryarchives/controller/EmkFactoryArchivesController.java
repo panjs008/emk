@@ -1,13 +1,16 @@
 package com.emk.storage.factoryarchives.controller;
+import com.emk.storage.enquiry.entity.EmkEnquiryEntity;
 import com.emk.storage.factoryarchives.entity.EmkFactoryArchivesEntity;
+import com.emk.storage.factoryarchives.entity.EmkFactoryArchivesEntityA;
 import com.emk.storage.factoryarchives.service.EmkFactoryArchivesServiceI;
 
+import java.io.File;
 import java.util.*;
 import java.text.SimpleDateFormat;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.emk.util.DateUtil;
+import com.emk.util.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -236,6 +239,57 @@ public class EmkFactoryArchivesController extends BaseController {
 		}
 		j.setMsg(message);
 		return j;
+	}
+
+	@RequestMapping(params = "doPrintPDF")
+	public String doPrintPDF(String ids, EmkFactoryArchivesEntity emkFactoryArchivesEntity, HttpServletRequest request, HttpServletResponse response) {
+		String message = null;
+
+		try {
+			for (String id : ids.split(",")) {
+				String fileName = "c:\\PDF\\"+ DateUtil.format(new Date(),"yyyyMMddHHmmss")+".pdf";
+				File file = new File(fileName);
+				File dir = file.getParentFile();
+				if (!dir.exists()) {
+					dir.mkdirs();
+				}
+				try {
+					file.createNewFile();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				emkFactoryArchivesEntity = systemService.getEntity(EmkFactoryArchivesEntity.class, id);
+				EmkFactoryArchivesEntityA emkFactoryArchivesEntityA = new EmkFactoryArchivesEntityA();
+				MyBeanUtils.copyBeanNotNull2Bean(emkFactoryArchivesEntity,emkFactoryArchivesEntityA);
+
+
+				Map type = systemService.findOneForJdbc("select typecode,typename from t_s_type t2 left join t_s_typegroup t1 on t1.ID=t2.typegroupid where typegroupcode='trade' and typecode=?",emkFactoryArchivesEntityA.getGuoJia());
+				if(Utils.notEmpty(type)){
+					emkFactoryArchivesEntityA.setGuoJia(type.get("typename").toString());
+				}
+				type = systemService.findOneForJdbc("select code,name from t_s_category where code=?",emkFactoryArchivesEntityA.getShengFen());
+				if(Utils.notEmpty(type)) {
+					emkFactoryArchivesEntityA.setShengFen(type.get("name").toString());
+				}
+				type = systemService.findOneForJdbc("select code,name from t_s_category where code=?",emkFactoryArchivesEntityA.getChengShi());
+				if(Utils.notEmpty(type)) {
+					emkFactoryArchivesEntityA.setChengShi(type.get("name").toString());
+				}
+				new createPdf(file).generateFactoryArchivesPDF(emkFactoryArchivesEntityA);
+				String fFileName = "c:\\PDF\\G"+DateUtil.format(new Date(),"yyyyMMddHHmmss")+".pdf";
+				WaterMark.waterMark(fileName,fFileName, "供应商档案表");
+				file.delete();
+				WebFileUtils.downLoad(fFileName,response,false);
+				file = new File(fFileName);
+				file.delete();
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			message = "询盘单导出PDF失败";
+			throw new BusinessException(e.getMessage());
+		}
+		return NormalExcelConstants.JEECG_EXCEL_VIEW;
 	}
 	
 
