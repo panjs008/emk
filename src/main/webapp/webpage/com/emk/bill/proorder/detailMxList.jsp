@@ -1,194 +1,180 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@include file="/context/mytags.jsp"%>
 <script type="text/javascript">
-    var flag = 0;
+    var srflag = 0;
     var currentFlag = 0;
 
-    function productLook(indexflag){
-        currentFlag = indexflag;
-        $("#chkInfo").click();
-    }
-    function returnToValForProductInfo(){
-        $("#sampleNo"+currentFlag).val($("#hsCode").val());
-        $("#sampleName"+currentFlag).val($("#hsName").val());
-        $("#proNum"+currentFlag).val($("#proNum").val());
-        $("#proName"+currentFlag).val($("#proZnName").val());
-        $("#brand"+currentFlag).val($("#brand").val());
-        $("#signUnit"+currentFlag).val($("#unit").val());
-        $("#price"+currentFlag).val($("#price").val());
-        $("#proId"+currentFlag).val($("#proId").val());
-    }
-    $('#addBtn').linkbutton({
+
+    $('#addBtnSR').linkbutton({
         iconCls: 'icon-add'
     });
     $('#delBtn').linkbutton({
         iconCls: 'icon-remove'
     });
-    $('#addBtn').bind('click', function(){
-        var idStr;
-        flag++;
-        var tr =  $("#add_jeecgOrderProduct_table_template tr").clone();
-        $("#add_jeecgOrderProduct_table").append(tr);
+    $('#addBtnSR').bind('click', function(){
+        srflag++;
+        var tr =  $("#add_jeecgOrderProduct_tableSR_template tr").clone();
+        $("#add_jeecgOrderProduct_tableSR").append(tr);
 
-        /*$("#add_jeecgOrderProduct_table").find("[id='sampleNo0']").attr("name","orderMxList[#index#].sampleNo");
-        $("#add_jeecgOrderProduct_table").find("[id='sampleName0']").attr("name","orderMxList[#index#].sampleName");
-        $("#add_jeecgOrderProduct_table").find("[id='proName0']").attr("name","orderMxList[#index#].proName");
-        $("#add_jeecgOrderProduct_table").find("[id='proId0']").attr("name","orderMxList[#index#].proId");
-        $("#add_jeecgOrderProduct_table").find("[id='proNum0']").attr("name","orderMxList[#index#].proNum");
-        $("#add_jeecgOrderProduct_table").find("[id='brand0']").attr("name","orderMxList[#index#].brand");
-        $("#add_jeecgOrderProduct_table").find("[id='signTotal0']").attr("name","orderMxList[#index#].signTotal");
-        $("#add_jeecgOrderProduct_table").find("[id='signUnit0']").attr("name","orderMxList[#index#].signUnit");
-        $("#add_jeecgOrderProduct_table").find("[id='signPrice0']").attr("name","orderMxList[#index#].signPrice");
-        $("#add_jeecgOrderProduct_table").find("[id='remark0']").attr("name","orderMxList[#index#].remark");*/
-
-
-
-        $("#add_jeecgOrderProduct_table").find("[id='sampleNo00']").attr("datatype","*");
-        $("#add_jeecgOrderProduct_table").find("[id='sampleNo00']").attr("id","sampleNo"+flag);
-
-        $("#add_jeecgOrderProduct_table").find("[id='sampleNo00']").attr("datatype","*");
-        $("#add_jeecgOrderProduct_table").find("[id='sampleName00']").attr("id","sampleName"+flag);
-        $("#add_jeecgOrderProduct_table").find("[id='proName00']").attr("datatype","*");
-        $("#add_jeecgOrderProduct_table").find("[id='signTotal00']").attr("datatype","*");
-        $("#add_jeecgOrderProduct_table").find("[id='signPrice00']").attr("datatype","*");
-
-
-        $("#add_jeecgOrderProduct_table").find("[id='proName00']").attr("id","proName"+flag);
-        $("#add_jeecgOrderProduct_table").find("[id='brand00']").attr("id","brand"+flag);
-        $("#add_jeecgOrderProduct_table").find("[id='signUnit00']").attr("id","signUnit"+flag);
-        $("#add_jeecgOrderProduct_table").find("[id='proId00']").attr("id","proId"+flag);
-        $("#add_jeecgOrderProduct_table").find("[id='proNum00']").attr("id","proNum"+flag);
-        $("#add_jeecgOrderProduct_table").find("[id='signPrice00']").attr("id","price"+flag);
-
-
-
-        idStr = flag;
-        $("#sampleNo"+idStr.toString()).on("click", function () {
-            productLook(idStr);
-        });
-        $("#sampleName"+idStr.toString()).on("click", function () {
-            productLook(idStr);
-        });
-
-        resetTrNum('add_jeecgOrderProduct_table');
-        $("#orderMxListID").val($("#mxtb").find("tr").length-1);
+        /*$("#add_jeecgOrderProduct_tableSR").find("[id='signPrice00']").attr("datatype","d");
+         $("#add_jeecgOrderProduct_tableSR").find("[id='signPrice00']").attr("id","signPrice"+srflag);*/
+        resetTrNum('add_jeecgOrderProduct_tableSR');
+        $("#orderMxListIDSR").val($("#mxtbSR").find("tr").length-1);
     });
     $('#delBtn').bind('click', function(){
         var chk_value =[];
         $('input[name="ck"]:checked').each(function(){
             chk_value.push($(this).val());
         });
-        $("#add_jeecgOrderProduct_table").find("input:checked").parent().parent().remove();
-        resetTrNum('add_jeecgOrderProduct_table');
-        $("#orderMxListID").val($("#mxtb").find("tr").length-1);
-        /* var selectedData = [];
-         $(":checkbox:checked").each(function(){
-         var tablerow = $("#add_jeecgOrderProduct_table").parent("tr");
-         var code = tablerow.find("[name='p_code']").val();
-         var name= tablerow.find("[name='p_name']").val();
-         var price= tablerow.find("[name='p_price']").val();
-         selectedData.push({Code:code,Name:name,Price:price});
-         });*/
+        $("#add_jeecgOrderProduct_tableSR").find("input:checked").parent().parent().remove();
+        resetTrNum('add_jeecgOrderProduct_tableSR');
+        $("#orderMxListIDSR").val($("#mxtbSR").find("tr").length-1);
+
         if(chk_value.length>0){
-           /* $.ajax({
-                url : "dxRkglMxController.do?doBatchDel&ids="+chk_value,
-                type : 'post',
-                cache : false,
-                data: null,
-                success : function(data) {
-                    var d = $.parseJSON(data);
-                    if (d.success) {
-                        var msg = d.msg;
-                        tip(msg);
-                        //W.document.location.reload(true);
-                    }
-                }
-            });*/
+
         }
 
     });
     $(document).ready(function(){
         $(".datagrid-toolbar").parent().css("width","auto");
-        //将表格的表头固定
-        $("#jeecgOrderProduct_table").createhftable({
-            height:'200px',
-            width:'auto',
-            fixFooter:false
-        });
-        <c:if test="${param.inStorageId eq null}">
-            $('#addBtn').click();
+        <c:if test="${param.proOrderId eq null || param.proOrderId eq ''}">
+            $('#addBtnSR').click();
         </c:if>
-        <c:if test="${param.inStorageId ne null}">
-            flag = ${fn:length(orderMxList)};
-        </c:if>
-});
+    });
 
 </script>
-
-<div style="display:none;">
-    <input id="hsCode" name="hsCode" type="text"/>
-    <input id="hsName" name="hsName" type="text"/>
-    <input id="proNum" name="proNum" type="text"/>
-    <input id="proZnName" name="proZnName" type="text" />
-    <input id="brand" name="brand" type="text" />
-    <input id="price" name="price" type="text" />
-    <input id="unit" name="unit" type="text" />
-    <input id="id" name="id" type="text" />
-    <input id="indexFlag" name="indexFlag" type="text" value="0"/>
-
-    <t:choose  hiddenName="id"  hiddenid="id" url="emkProductInfoController.do?proSelect" name="emkProductInfoList" width="750px" height="500px"
-               icon="icon-search" title="选择商品" textname="id,proNum,proZnName,brand,unit,hsCode,hsName,price" isclear="true" isInit="true"></t:choose></div>
-<c:if test="${orderFinish eq ''}">
-    </c:if>
-<div style="padding: 3px; height: 25px; width: width:800px; " class="datagrid-toolbar"><a id="addBtn" href="#">添加</a> <a id="delBtn" href="#">删除</a></div>
-
-<%--<table border="0" cellpadding="2" cellspacing="0" id="jeecgOrderProduct_table">--%>
-<input id="orderMxListID" type="hidden" name="dataRowsVal" value="${fn:length(orderMxList)}"/>
-<table id="mxtb" style="width:100%;" cellpadding="0" cellspacing="2" border="0">
-    <tr bgcolor="#E6E6E6" style="height: 32px;">
-        <td align="center" bgcolor="#EEEEEE" width="40">序号</td>
-        <td align="left" bgcolor="#EEEEEE" width="100">款号</td>
-        <td align="left" bgcolor="#EEEEEE" width="120">产品名称</td>
-        <td align="left" bgcolor="#EEEEEE" width="60">颜色</td>
-        <td align="left" bgcolor="#EEEEEE" width="120">尺码</td>
-        <td align="left" bgcolor="#EEEEEE" width="120">数量</td>
-        <td align="left" bgcolor="#EEEEEE" width="60">单位</td>
-        <td align="left" bgcolor="#EEEEEE" width="100">单价</td>
-        <td align="left" bgcolor="#EEEEEE" width="100">备注</td>
+<style>
+    .table-c table{border-right:1px solid #ddd;border-bottom:1px solid #ddd}
+    .table-c table td{border-left:1px solid #ddd;border-top:1px solid #ddd;height: 36px;}
+</style>
+<!-- 添加明细模版-->
+<table style="width:100%;display: none;border: 1px;" cellpadding="0" cellspacing="2" border="0">
+    <tbody id="add_jeecgOrderProduct_tableSR_template">
+    <tr>
+        <td align="center"><input style="width: 40px;" type="checkbox" name="ck" />
+        <td align="center">
+            <select name="orderMxList[#index#].color" style="width: 86%;" nullmsg="请输入颜色！" errormsg="请输入颜色" datatype="*">
+                <c:forEach items="${colorList}" var="category">
+                    <option value="${category.typecode}">${category.typename}</option>
+                </c:forEach>
+            </select>
+        </td>
+        <td align="center"><input id="totalA" nullmsg="请输入数量！" datatype="n"  errormsg="请输入整数" name="orderMxList[#index#].totalA" maxlength="100" type="text" value=""
+                                  style="width: 86%;" ignore="ignore"></td>
+        <td align="center"><input id="totalB" nullmsg="请输入数量！"  datatype="n"  errormsg="请输入整数" name="orderMxList[#index#].totalB" maxlength="100" type="text" value=""
+                                  style="width: 86%;" ignore="ignore"></td>
+        <td align="center"><input id="totalC" nullmsg="请输入数量！"  datatype="n"  errormsg="请输入整数" name="orderMxList[#index#].totalC" maxlength="100" type="text" value=""
+                                  style="width: 86%;" ignore="ignore"></td>
+        <td align="center"><input id="totalD" nullmsg="请输入数量！"  datatype="n"  errormsg="请输入整数" name="orderMxList[#index#].totalD" maxlength="100" type="text" value=""
+                                  style="width: 86%;" ignore="ignore"></td>
+        <td align="center"><input id="totalE" nullmsg="请输入数量！"  datatype="n"  errormsg="请输入整数" name="orderMxList[#index#].totalE" maxlength="100" type="text" value=""
+                                  style="width: 86%;" ignore="ignore"></td>
+        <td align="center"><input id="totalF" nullmsg="请输入数量！"  datatype="n"  errormsg="请输入整数" name="orderMxList[#index#].totalF" maxlength="100" type="text" value=""
+                                  style="width: 86%;" ignore="ignore"></td>
+        <td align="center"><input id="totalG" nullmsg="请输入数量！"  datatype="n"  errormsg="请输入整数" name="orderMxList[#index#].totalG" maxlength="100" type="text" value=""
+                                  style="width: 86%;" ignore="ignore"></td>
+        <td align="center"><input id="totalH" nullmsg="请输入数量！"  datatype="n"  errormsg="请输入整数" name="orderMxList[#index#].totalH" maxlength="100" type="text" value=""
+                                  style="width: 86%;" ignore="ignore"></td>
+        <td align="center"><input id="totalI" nullmsg="请输入数量！"  datatype="n"  errormsg="请输入整数" name="orderMxList[#index#].totalI" maxlength="100" type="text" value=""
+                                  style="width: 86%;" ignore="ignore"></td>
+        <td align="center"><input id="totalJ" nullmsg="请输入数量！"  datatype="n"  errormsg="请输入整数" name="orderMxList[#index#].totalJ" maxlength="100" type="text" value=""
+                                  style="width: 86%;" ignore="ignore"></td>
+        <td align="center"><input id="totalK" nullmsg="请输入数量！"  datatype="n"  errormsg="请输入整数" name="orderMxList[#index#].totalK" maxlength="100" type="text" value=""
+                                  style="width: 86%;" ignore="ignore"></td>
+        <%--<td align="center">
+            <select name="orderMxList[#index#].size00" style="width: 86%;" nullmsg="请输入尺码！" errormsg="请输入尺码" datatype="*">
+                <c:forEach items="${sizeList}" var="category">
+                    <option value="${category.typecode}">${category.typename}</option>
+                </c:forEach>
+            </select>
+        </td>
+        <td align="center"><input id="signTotal00" nullmsg="请输入数量！"  datatype="n" errormsg="请输入整数" name="orderMxList[#index#].signTotal00" maxlength="100" type="text" value=""
+                                  style="width: 86%;" ignore="ignore"></td>--%>
+        <td align="center"><input id="sumTotal00" nullmsg="请输入总数量！"  datatype="n" errormsg="请输入整数" name="orderMxList[#index#].sumTotal00" maxlength="100" type="text" value=""
+                                  style="width: 86%;" ignore="ignore"></td>
 
     </tr>
-
-    <tbody id="add_jeecgOrderProduct_table">
-    <c:if test="${fn:length(emkProOrderDetailEntities)  > 0 }">
-        <c:forEach items="${emkProOrderDetailEntities}" var="poVal" varStatus="status">
-            <tr>
-                <td align="center"><input style="width: 40px;" type="checkbox" name="ck" value="${poVal.id}"/><input type="hidden" name="orderMxList[${status.index}].id" value="${poVal.id}"/>
-                    <input type="hidden" id="proNum0" name="orderMxList[#index#].proNum" value="${poVal.proNum}"/>
-                </td>
-                <td align="left"><input nullmsg="请输入款号！" onclick="productLook(${status.index})" id="sampleNo0" value="${poVal.sampleNo}" datatype="*" errormsg="请输入款号" name="orderMxList[${status.index}].sampleNo" maxlength="100" type="text" value="0"
-                                        style="width: 100px;"></td>
-                <td align="left">
-                    <input nullmsg="请输入产品名称！" id="sampleName0" onclick="productLook(${status.index})"  datatype="*" value="${poVal.proName}" errormsg="请输入产品名称" name="orderMxList[${status.index}].proName" maxlength="100" type="text" value="0"
-                           style="width: 120px;">
-                </td>
-                <td align="left">
-                    <input nullmsg="请输入颜色！" id="proName0" onclick="productLook(${status.index})"  datatype="*" value="${poVal.color}" errormsg="请输入颜色" name="orderMxList[${status.index}].color" maxlength="100" type="text" value="0"
-                           style="width: 120px;">
-                </td>
-                <td align="left"><input id="brand0" nullmsg="请输入尺码！" datatype="*" value="${poVal.brand}" errormsg="请输入尺码" name="orderMxList[${status.index}].brand" maxlength="100" type="text" value="0"
-                                        style="width: 120px;"></td>
-                <td align="left"><input id="signTotal0" nullmsg="请输入数量！" datatype="*" value="${poVal.total}" errormsg="请输入数量" name="orderMxList[${status.index}].signTotal" maxlength="100" type="text" value="0"
-                                        style="width: 120px;"></td>
-                <td align="left">
-                    <input nullmsg="请输入单位！" id="signUnit0"  errormsg="请输入单位" value="${poVal.unit}" name="orderMxList[${status.index}].signUnit" maxlength="100" type="text" value="-1"
-                           style="width: 60px;"></td>
-                <td align="left"><input nullmsg="请输入单价！" id="signPrice0" datatype="*" value="${poVal.price}" errormsg="请输入单价" name="orderMxList[${status.index}].signPrice" maxlength="100" type="text" value="0"
-                                        style="width: 100px;"></td>
-                <td align="left"><input nullmsg="请输入备注！" id="remark0"  errormsg="请输入备注" value="${poVal.remark}" name="orderMxList[${status.index}].remark" maxlength="100" type="text" value="0"
-                                        style="width: 100px;"></td>
-            </tr>
-
-        </c:forEach>
-    </c:if>
     </tbody>
+
 </table>
+<div style="padding: 3px; height: 25px; width:100%;margin-bottom:4px " class="datagrid-toolbar"><a id="addBtnSR" href="#"></a> <a id="delBtn" href="#"></a></div>
+<%--<table border="0" cellpadding="2" cellspacing="0" id="jeecgOrderProduct_table">--%>
+<input id="orderMxListIDSR" type="hidden" name="orderMxListIDSR" value="${fn:length(emkProOrderDetailEntities)}"/>
+<div class="table-c">
+    <table id="mxtbSR" width="50%" border="0" cellspacing="0" cellpadding="0">
+        <tr bgcolor="#F8F8F8" style="height: 32px;" >
+            <td align="center"  width="40" rowspan="2">序号</td>
+            <td align="center"  width="90" rowspan="2">颜色</td>
+            <td align="center"  width="400" colspan="11" >尺码</td>
+        <%--<td align="center"  width="90">尺码</td>
+            <td align="center"  width="120">数量</td>--%>
+            <td align="center"  width="120" rowspan="2">总数量</td>
+
+        </tr>
+        <tr>
+            <td align="center" ><input  value="${emkSizePage.sizeA}" name="sizeA" maxlength="100" type="text" value="" style="width: 80%;" ignore="ignore"></td>
+            <td align="center" ><input  value="${emkSizePage.sizeB}" name="sizeB" maxlength="100" type="text" value="" style="width: 80%;" ignore="ignore"></td>
+            <td align="center" ><input  value="${emkSizePage.sizeC}" name="sizeC" maxlength="100" type="text" value="" style="width: 80%;" ignore="ignore"></td>
+            <td align="center" ><input  value="${emkSizePage.sizeD}" name="sizeD" maxlength="100" type="text" value="" style="width: 80%;" ignore="ignore"></td>
+            <td align="center" ><input  value="${emkSizePage.sizeE}" name="sizeE" maxlength="100" type="text" value="" style="width: 80%;" ignore="ignore"></td>
+            <td align="center" ><input  value="${emkSizePage.sizeF}" name="sizeF" maxlength="100" type="text" value="" style="width: 80%;" ignore="ignore"></td>
+            <td align="center" ><input  value="${emkSizePage.sizeG}" name="sizeG" maxlength="100" type="text" value="" style="width: 80%;" ignore="ignore"></td>
+            <td align="center" ><input  value="${emkSizePage.sizeH}" name="sizeH" maxlength="100" type="text" value="" style="width: 80%;" ignore="ignore"></td>
+            <td align="center" ><input  value="${emkSizePage.sizeI}" name="sizeI" maxlength="100" type="text" value="" style="width: 80%;" ignore="ignore"></td>
+            <td align="center" ><input  value="${emkSizePage.sizeJ}" name="sizeJ" maxlength="100" type="text" value="" style="width: 80%;" ignore="ignore"></td>
+            <td align="center" ><input  value="${emkSizePage.sizeK}" name="sizeK" maxlength="100" type="text" value="" style="width: 80%;" ignore="ignore"></td>
+        </tr>
+        <tbody id="add_jeecgOrderProduct_tableSR">
+        <c:if test="${fn:length(emkProOrderDetailEntities)  > 0 }">
+            <c:forEach items="${emkProOrderDetailEntities}" var="poVal" varStatus="status">
+                <tr>
+                    <td align="center"><input style="width: 40px;" type="checkbox" name="ck" value="${poVal.id}"/>
+                    </td>
+                    <td align="center">
+                        <select name="orderMxList[${status.index}].color" style="width: 86%;" nullmsg="请输入颜色！" errormsg="请输入颜色" datatype="*">
+                            <c:forEach items="${colorList}" var="category">
+                                <option value="${category.typecode}" ${category.typecode eq poVal.color ? 'selected':''}>${category.typename}</option>
+                            </c:forEach>
+                        </select>
+                    </td>
+                    <td align="center"><input  nullmsg="请输入数量！"  datatype="n"  errormsg="请输入整数" value="${poVal.emkSizeTotalEntity.totalA}" name="orderMxList[${status.index}].totalA" maxlength="100" type="text" value=""
+                                               style="width: 86%;" ignore="ignore"></td>
+                    <td align="center"><input  nullmsg="请输入数量！"  datatype="n"  errormsg="请输入整数"  value="${poVal.emkSizeTotalEntity.totalB}" name="orderMxList[${status.index}].totalB" maxlength="100" type="text" value=""
+                                               style="width: 86%;" ignore="ignore"></td>
+                    <td align="center"><input  nullmsg="请输入数量！"  datatype="n"  errormsg="请输入整数"  value="${poVal.emkSizeTotalEntity.totalC}" name="orderMxList[${status.index}].totalC" maxlength="100" type="text" value=""
+                                               style="width: 86%;" ignore="ignore"></td>
+                    <td align="center"><input nullmsg="请输入数量！"  datatype="n"  errormsg="请输入整数"  value="${poVal.emkSizeTotalEntity.totalD}" name="orderMxList[${status.index}].totalD" maxlength="100" type="text" value=""
+                                              style="width: 86%;" ignore="ignore"></td>
+                    <td align="center"><input nullmsg="请输入数量！"  datatype="n"  errormsg="请输入整数"  value="${poVal.emkSizeTotalEntity.totalE}" name="orderMxList[${status.index}].totalE" maxlength="100" type="text" value=""
+                                              style="width: 86%;" ignore="ignore"></td>
+                    <td align="center"><input  nullmsg="请输入数量！"  datatype="n"  errormsg="请输入整数"  value="${poVal.emkSizeTotalEntity.totalF}" name="orderMxList[${status.index}].totalF" maxlength="100" type="text" value=""
+                                               style="width: 86%;" ignore="ignore"></td>
+                    <td align="center"><input  nullmsg="请输入数量！"  datatype="n"  errormsg="请输入整数"  value="${poVal.emkSizeTotalEntity.totalG}" name="orderMxList[${status.index}].totalG" maxlength="100" type="text" value=""
+                                               style="width: 86%;" ignore="ignore"></td>
+                    <td align="center"><input  nullmsg="请输入数量！"  datatype="n"  errormsg="请输入整数"  value="${poVal.emkSizeTotalEntity.totalH}" name="orderMxList[${status.index}].totalH" maxlength="100" type="text" value=""
+                                               style="width: 86%;" ignore="ignore"></td>
+                    <td align="center"><input  nullmsg="请输入数量！"  datatype="n"  errormsg="请输入整数"  value="${poVal.emkSizeTotalEntity.totalI}" name="orderMxList[${status.index}].totalI" maxlength="100" type="text" value=""
+                                               style="width: 86%;" ignore="ignore"></td>
+                    <td align="center"><input  nullmsg="请输入数量！"  datatype="n"  errormsg="请输入整数"  value="${poVal.emkSizeTotalEntity.totalJ}" name="orderMxList[${status.index}].totalJ" maxlength="100" type="text" value=""
+                                               style="width: 86%;" ignore="ignore"></td>
+                    <td align="center"><input  nullmsg="请输入数量！"  datatype="n"  errormsg="请输入整数"  value="${poVal.emkSizeTotalEntity.totalK}" name="orderMxList[${status.index}].totalK" maxlength="100" type="text" value=""
+                                               style="width: 86%;" ignore="ignore"></td>
+                    <%--<td align="center">
+                        <select name="orderMxList[${status.index}].size00" style="width: 86%;" nullmsg="请输入尺码！" errormsg="请输入尺码" datatype="*">
+                            <c:forEach items="${sizeList}" var="category">
+                                <option value="${category.typecode}" ${category.typecode eq poVal.size ? 'selected':''}>${category.typename}</option>
+                            </c:forEach>
+                        </select>
+                    </td>
+                    <td align="center"><input  nullmsg="请输入数量！"  errormsg="请输入整数" datatype="n" value="${poVal.total}" name="orderMxList[${status.index}].signTotal00" maxlength="100" type="text" value=""
+                                               style="width: 86%;" ignore="ignore"></td>--%>
+                    <td align="center"><input  nullmsg="请输入总数量！"  errormsg="请输入整数" datatype="n" value="${poVal.sumTotal}" name="orderMxList[${status.index}].sumTotal00" maxlength="100" type="text" value=""
+                                               style="width: 86%;" ignore="ignore"></td>
+                </tr>
+
+            </c:forEach>
+        </c:if>
+        </tbody>
+    </table>
+</div>
+

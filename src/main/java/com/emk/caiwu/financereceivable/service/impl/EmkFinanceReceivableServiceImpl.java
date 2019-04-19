@@ -83,13 +83,7 @@ public class EmkFinanceReceivableServiceImpl extends CommonServiceImpl implement
 		map.put("businesse_dept_name", t.getBusinesseDeptName());
 		map.put("businesse_dept_id", t.getBusinesseDeptId());
 		map.put("developer", t.getDeveloper());
-		map.put("developer_name", t.getDeveloperName());
-		map.put("sample_no", t.getSampleNo());
-		map.put("sample_no_desc", t.getSampleNoDesc());
-		map.put("sum_total", t.getSumTotal());
-		map.put("sum_money", t.getSumMoney());
-		map.put("sum_box_total", t.getSumBoxTotal());
-		map.put("sum_box_volume", t.getSumBoxVolume());
+
 		map.put("create_by", t.getCreateBy());
 		map.put("create_date", t.getCreateDate());
 		map.put("sys_org_code", t.getSysOrgCode());
@@ -101,14 +95,7 @@ public class EmkFinanceReceivableServiceImpl extends CommonServiceImpl implement
 		map.put("cargo_date", t.getCargoDate());
 		map.put("leveal_factory_no", t.getLevealFactoryNo());
 		map.put("leveal_date", t.getLevealDate());
-		map.put("order_no", t.getOrderNo());
-		map.put("sker", t.getSker());
-		map.put("bank_account", t.getBankAccount());
-		map.put("bank_name", t.getBankName());
-		map.put("pay_type", t.getPayType());
-		map.put("sk_date", t.getSkDate());
-		map.put("fk_state", t.getFkState());
-		map.put("fk_date", t.getFkDate());
+
 		map.put("state", t.getState());
 		map.put("type", t.getType());
 		map.put("id", t.getId());
@@ -130,13 +117,7 @@ public class EmkFinanceReceivableServiceImpl extends CommonServiceImpl implement
  		sql  = sql.replace("#{businesse_dept_name}",String.valueOf(t.getBusinesseDeptName()));
  		sql  = sql.replace("#{businesse_dept_id}",String.valueOf(t.getBusinesseDeptId()));
  		sql  = sql.replace("#{developer}",String.valueOf(t.getDeveloper()));
- 		sql  = sql.replace("#{developer_name}",String.valueOf(t.getDeveloperName()));
- 		sql  = sql.replace("#{sample_no}",String.valueOf(t.getSampleNo()));
- 		sql  = sql.replace("#{sample_no_desc}",String.valueOf(t.getSampleNoDesc()));
- 		sql  = sql.replace("#{sum_total}",String.valueOf(t.getSumTotal()));
- 		sql  = sql.replace("#{sum_money}",String.valueOf(t.getSumMoney()));
- 		sql  = sql.replace("#{sum_box_total}",String.valueOf(t.getSumBoxTotal()));
- 		sql  = sql.replace("#{sum_box_volume}",String.valueOf(t.getSumBoxVolume()));
+
  		sql  = sql.replace("#{create_by}",String.valueOf(t.getCreateBy()));
  		sql  = sql.replace("#{create_date}",String.valueOf(t.getCreateDate()));
  		sql  = sql.replace("#{sys_org_code}",String.valueOf(t.getSysOrgCode()));
@@ -148,14 +129,7 @@ public class EmkFinanceReceivableServiceImpl extends CommonServiceImpl implement
  		sql  = sql.replace("#{cargo_date}",String.valueOf(t.getCargoDate()));
  		sql  = sql.replace("#{leveal_factory_no}",String.valueOf(t.getLevealFactoryNo()));
  		sql  = sql.replace("#{leveal_date}",String.valueOf(t.getLevealDate()));
- 		sql  = sql.replace("#{order_no}",String.valueOf(t.getOrderNo()));
- 		sql  = sql.replace("#{sker}",String.valueOf(t.getSker()));
- 		sql  = sql.replace("#{bank_account}",String.valueOf(t.getBankAccount()));
- 		sql  = sql.replace("#{bank_name}",String.valueOf(t.getBankName()));
- 		sql  = sql.replace("#{pay_type}",String.valueOf(t.getPayType()));
- 		sql  = sql.replace("#{sk_date}",String.valueOf(t.getSkDate()));
- 		sql  = sql.replace("#{fk_state}",String.valueOf(t.getFkState()));
- 		sql  = sql.replace("#{fk_date}",String.valueOf(t.getFkDate()));
+
  		sql  = sql.replace("#{state}",String.valueOf(t.getState()));
  		sql  = sql.replace("#{type}",String.valueOf(t.getType()));
  		sql  = sql.replace("#{id}",String.valueOf(t.getId()));

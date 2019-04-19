@@ -71,6 +71,8 @@ public class EmkMaterialPactEntity implements Serializable {
     private String rkState;
     @Excel(name = "总数量")
     private Double sumTotal;
+    @Excel(name = "总金额")
+    private Double sumMoney;
     @Excel(name = "总用量")
     private String sumUse;
     @Excel(name = "甲方")
@@ -85,6 +87,8 @@ public class EmkMaterialPactEntity implements Serializable {
     private String fob;
     @Excel(name = "交货地点")
     private String place;
+    @Excel(name = "仓库")
+    private String boundName;
     @Excel(name = "类型")
     private String type;
     @Excel(name = "原产地")
@@ -99,6 +103,14 @@ public class EmkMaterialPactEntity implements Serializable {
     private String telphone;
     @Excel(name = "签定日期")
     private String signDate;
+    @Excel(name = "乙方授权代表")
+    private String ysqdb;
+    @Excel(name = "乙方地址")
+    private String yaddress;
+    @Excel(name = "乙方电话")
+    private String ytelphone;
+    @Excel(name = "签定日期")
+    private String ysignDate;
     @Excel(name = "订单号")
     private String orderNum;
     @Excel(name = "供应商")
@@ -135,6 +147,8 @@ public class EmkMaterialPactEntity implements Serializable {
     private String hter;
     @Excel(name = "状态")
     private String state;
+    @Excel(name="出厂价")
+    private String outPrice;
 
     @Column(name = "GYS", nullable = true, length = 32)
     public String getGys() {
@@ -712,5 +726,68 @@ public class EmkMaterialPactEntity implements Serializable {
 
     public void setHter(String hter) {
         this.hter = hter;
+    }
+
+    @Column(name="out_price", nullable=true, length=32)
+    public String getOutPrice() {
+        return outPrice;
+    }
+
+    public void setOutPrice(String outPrice) {
+        this.outPrice = outPrice;
+    }
+
+    @Column(name="ysqdb", nullable=true, length=32)
+    public String getYsqdb() {
+        return ysqdb;
+    }
+
+    public void setYsqdb(String ysqdb) {
+        this.ysqdb = ysqdb;
+    }
+
+    @Column(name="yaddress", nullable=true, length=32)
+    public String getYaddress() {
+        return yaddress;
+    }
+
+    public void setYaddress(String yaddress) {
+        this.yaddress = yaddress;
+    }
+
+    @Column(name="ytelphone", nullable=true, length=32)
+    public String getYtelphone() {
+        return ytelphone;
+    }
+
+    public void setYtelphone(String ytelphone) {
+        this.ytelphone = ytelphone;
+    }
+
+    @Column(name="ysign_date", nullable=true, length=32)
+    public String getYsignDate() {
+        return ysignDate;
+    }
+
+    public void setYsignDate(String ysignDate) {
+        this.ysignDate = ysignDate;
+    }
+
+    @Column(name="bound_name", nullable=true, length=32)
+    public String getBoundName() {
+        return boundName;
+    }
+
+    public void setBoundName(String boundName) {
+        this.boundName = boundName;
+    }
+
+    @Column(name="sum_money", nullable=true, length=32)
+    public Double getSumMoney() {
+        return sumMoney;
+    }
+
+    public void setSumMoney(Double sumMoney) {
+        this.sumMoney = sumMoney;
     }
 }

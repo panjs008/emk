@@ -1,13 +1,16 @@
 package com.emk.storage.material.controller;
 
 import com.alibaba.fastjson.JSONArray;
+import com.emk.approval.approval.entity.EmkApprovalEntity;
+import com.emk.approval.approvaldetail.entity.EmkApprovalDetailEntity;
+import com.emk.bound.minstorage.entity.EmkMInStorageEntity;
+import com.emk.bound.minstorage.entity.EmkMInStorageEntity2;
+import com.emk.bound.minstoragedetail.entity.EmkMInStorageDetailEntity;
+import com.emk.storage.instorage.entity.EmkInStorageEntity;
 import com.emk.storage.material.entity.EmkMaterialEntity;
 import com.emk.storage.material.service.EmkMaterialServiceI;
 import com.emk.storage.sampledetail.entity.EmkSampleDetailEntity;
-import com.emk.util.FlowUtil;
-import com.emk.util.ParameterUtil;
-import com.emk.util.Utils;
-import com.emk.util.WebFileUtils;
+import com.emk.util.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -83,6 +86,8 @@ public class EmkMaterialController extends BaseController {
     @RequestMapping(params = "orderMxList")
     public ModelAndView orderMxList(HttpServletRequest request) {
         Map map = ParameterUtil.getParamMaps(request.getParameterMap());
+        List<Map<String, Object>> list = systemService.findForJdbc("select company_code gys from emk_factory_archives t2 order by company_code asc ");
+        request.setAttribute("gysList", list);
         if (Utils.notEmpty(map.get("sampleId"))) {
             List<EmkSampleDetailEntity> emkSampleDetailEntities = systemService.findHql("from EmkSampleDetailEntity where sampleId=? and type=0", map.get("sampleId"));
             request.setAttribute("emkSampleDetailEntities", emkSampleDetailEntities);
@@ -113,7 +118,7 @@ public class EmkMaterialController extends BaseController {
     public AjaxJson doDel(EmkMaterialEntity emkMaterial, HttpServletRequest request) {
         String message = null;
         AjaxJson j = new AjaxJson();
-        emkMaterial = (EmkMaterialEntity) systemService.getEntity(EmkMaterialEntity.class, emkMaterial.getId());
+        emkMaterial =  systemService.getEntity(EmkMaterialEntity.class, emkMaterial.getId());
         message = "原料面料需求开发单删除成功";
         try {
             emkMaterialService.delete(emkMaterial);
@@ -138,6 +143,12 @@ public class EmkMaterialController extends BaseController {
                 EmkMaterialEntity emkMaterial =  systemService.getEntity(EmkMaterialEntity.class, id);
                 WebFileUtils.delete( request.getRealPath("/")+emkMaterial.getCustomSampleUrl());
                 systemService.executeSql("delete from emk_sample_detail where sample_id = ?",id);
+
+                EmkApprovalEntity approvalEntity = systemService.findUniqueByProperty(EmkApprovalEntity.class,"formId",id);
+                systemService.executeSql("delete from emk_approval where form_id=?",id);
+                if(Utils.notEmpty(approvalEntity)){
+                    systemService.executeSql("delete from emk_approval_detail where approval_id=?",approvalEntity.getId());
+                }
                 emkMaterialService.delete(emkMaterial);
                 systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
             }
@@ -157,29 +168,35 @@ public class EmkMaterialController extends BaseController {
         AjaxJson j = new AjaxJson();
         message = "原料面料需求开发单添加成功";
         try {
-            Map map = ParameterUtil.getParamMaps(request.getParameterMap());
+            Map<String, String> map = ParameterUtil.getParamMaps(request.getParameterMap());
             emkMaterial.setState("0");
             Map orderNum = systemService.findOneForJdbc("select CAST(ifnull(max(right(MATERIAL_NO, 2)),0)+1 AS signed) orderNum from emk_material");
             emkMaterial.setMaterialNo("SY" + DateUtils.format(new Date(), "yyMMdd") + "B" + String.format("%02d", Integer.parseInt(orderNum.get("orderNum").toString())));
             emkMaterialService.save(emkMaterial);
 
-            String dataRows = (String)map.get("orderMxListID");
+            String dataRows = map.get("orderMxListID");
             //保存原料面料数据
             if (Utils.notEmpty(dataRows)) {
                 int rows = Integer.parseInt(dataRows);
                 for (int i = 0; i < rows; i++) {
                     EmkSampleDetailEntity emkSampleDetailEntity = new EmkSampleDetailEntity();
                     if (Utils.notEmpty(map.get("orderMxList["+i+"].proZnName"))) {
-                        emkSampleDetailEntity.setProZnName((String)map.get("orderMxList["+i+"].proZnName"));
-                        emkSampleDetailEntity.setProNum((String)map.get("orderMxList["+i+"].proNum"));
-                        emkSampleDetailEntity.setPrecent((String)map.get("orderMxList["+i+"].precent"));
-                        emkSampleDetailEntity.setYongliang(Double.parseDouble(map.get("orderMxList["+i+"].yongliang").toString()));
-                        emkSampleDetailEntity.setGysCode((String)map.get("orderMxList["+i+"].gysCode"));
-                        emkSampleDetailEntity.setSignPrice((String)map.get("orderMxList["+i+"].signPrice"));
-                        emkSampleDetailEntity.setSunhaoPrecent(Double.parseDouble(map.get("orderMxList["+i+"].sunhaoPrecent").toString()));
-                        emkSampleDetailEntity.setChengben(Double.parseDouble(map.get("orderMxList["+i+"].chengben").toString()));
+                        emkSampleDetailEntity.setProZnName(map.get("orderMxList["+i+"].proZnName"));
+                        emkSampleDetailEntity.setProNum(map.get("orderMxList["+i+"].proNum"));
+                        emkSampleDetailEntity.setBrand(map.get("orderMxList["+i+"].brand"));
+                        emkSampleDetailEntity.setDirection(map.get("orderMxList["+i+"].direction"));
+                        emkSampleDetailEntity.setBetchNum(map.get("orderMxList["+i+"].betchNum"));
+                        emkSampleDetailEntity.setWidth(map.get("orderMxList["+i+"].width"));
+                        emkSampleDetailEntity.setColor(map.get("orderMxList["+i+"].color"));
+                        emkSampleDetailEntity.setWeight(map.get("orderMxList["+i+"].weight"));
+                        emkSampleDetailEntity.setChengf(map.get("orderMxList["+i+"].chengf"));
+                        emkSampleDetailEntity.setSignTotal(map.get("orderMxList["+i+"].signTotal"));
+                        emkSampleDetailEntity.setUnit(map.get("orderMxList["+i+"].unit"));
+                        emkSampleDetailEntity.setRemark(map.get("orderMxList["+i+"].remark"));
+                        emkSampleDetailEntity.setGysCode(map.get("orderMxList["+i+"].gysCode"));
                         emkSampleDetailEntity.setSampleId(emkMaterial.getId());
                         emkSampleDetailEntity.setType("0");
+
                         systemService.save(emkSampleDetailEntity);
                     }
                 }
@@ -200,13 +217,22 @@ public class EmkMaterialController extends BaseController {
         String message = null;
         AjaxJson j = new AjaxJson();
         message = "原料面料需求开发单更新成功";
-        Map map = ParameterUtil.getParamMaps(request.getParameterMap());
-        EmkMaterialEntity t = (EmkMaterialEntity) emkMaterialService.get(EmkMaterialEntity.class, map.get("materailId").toString());
+        Map<String, String> map = ParameterUtil.getParamMaps(request.getParameterMap());
+        emkMaterial.setProTypeName(emkMaterial.getProTypeName().replaceAll(",",""));
+        emkMaterial.setProType(emkMaterial.getProType().replaceAll(",",""));
+        EmkMaterialEntity t =  emkMaterialService.get(EmkMaterialEntity.class, map.get("materailId").toString());
+        if(Utils.notEmpty(t.getState())){
+            if(!t.getState().equals("0")){
+                j.setMsg("原料面料需求开发单已提交，无法进行修改");
+                j.setSuccess(false);
+                return j;
+            }
+        }
         try {
             emkMaterial.setId(null);
             MyBeanUtils.copyBeanNotNull2Bean(emkMaterial, t);
             emkMaterialService.saveOrUpdate(t);
-            String dataRows = (String)map.get("orderMxListID");
+            String dataRows = map.get("orderMxListID");
             //保存原料面料数据
             if (Utils.notEmpty(dataRows)) {
                 systemService.executeSql("delete from emk_sample_detail where sample_id = ? and type=0",t.getId());
@@ -214,16 +240,22 @@ public class EmkMaterialController extends BaseController {
                 for (int i = 0; i < rows; i++) {
                     EmkSampleDetailEntity emkSampleDetailEntity = new EmkSampleDetailEntity();
                     if (Utils.notEmpty(map.get("orderMxList["+i+"].proZnName"))) {
-                        emkSampleDetailEntity.setProZnName((String)map.get("orderMxList["+i+"].proZnName"));
-                        emkSampleDetailEntity.setProNum((String)map.get("orderMxList["+i+"].proNum"));
-                        emkSampleDetailEntity.setPrecent((String)map.get("orderMxList["+i+"].precent"));
-                        emkSampleDetailEntity.setYongliang(Double.parseDouble(map.get("orderMxList["+i+"].yongliang").toString()));
-                        emkSampleDetailEntity.setGysCode((String)map.get("orderMxList["+i+"].gysCode"));
-                        emkSampleDetailEntity.setSignPrice((String)map.get("orderMxList["+i+"].signPrice"));
-                        emkSampleDetailEntity.setSunhaoPrecent(Double.parseDouble(map.get("orderMxList["+i+"].sunhaoPrecent").toString()));
-                        emkSampleDetailEntity.setChengben(Double.parseDouble(map.get("orderMxList["+i+"].chengben").toString()));
+                        emkSampleDetailEntity.setProZnName(map.get("orderMxList["+i+"].proZnName"));
+                        emkSampleDetailEntity.setProNum(map.get("orderMxList["+i+"].proNum"));
+                        emkSampleDetailEntity.setBrand(map.get("orderMxList["+i+"].brand"));
+                        emkSampleDetailEntity.setDirection(map.get("orderMxList["+i+"].direction"));
+                        emkSampleDetailEntity.setBetchNum(map.get("orderMxList["+i+"].betchNum"));
+                        emkSampleDetailEntity.setWidth(map.get("orderMxList["+i+"].width"));
+                        emkSampleDetailEntity.setColor(map.get("orderMxList["+i+"].color"));
+                        emkSampleDetailEntity.setWeight(map.get("orderMxList["+i+"].weight"));
+                        emkSampleDetailEntity.setChengf(map.get("orderMxList["+i+"].chengf"));
+                        emkSampleDetailEntity.setSignTotal(map.get("orderMxList["+i+"].signTotal"));
+                        emkSampleDetailEntity.setUnit(map.get("orderMxList["+i+"].unit"));
+                        emkSampleDetailEntity.setRemark(map.get("orderMxList["+i+"].remark"));
+                        emkSampleDetailEntity.setGysCode(map.get("orderMxList["+i+"].gysCode"));
                         emkSampleDetailEntity.setSampleId(t.getId());
                         emkSampleDetailEntity.setType("0");
+
                         systemService.save(emkSampleDetailEntity);
                     }
                 }
@@ -243,7 +275,7 @@ public class EmkMaterialController extends BaseController {
     public ModelAndView goAdd(EmkMaterialEntity emkMaterial, HttpServletRequest req) {
         req.setAttribute("kdDate", DateUtils.format(new Date(), "yyyy-MM-dd"));
         if (StringUtil.isNotEmpty(emkMaterial.getId())) {
-            emkMaterial = (EmkMaterialEntity) emkMaterialService.getEntity(EmkMaterialEntity.class, emkMaterial.getId());
+            emkMaterial =  emkMaterialService.getEntity(EmkMaterialEntity.class, emkMaterial.getId());
             req.setAttribute("emkMaterialPage", emkMaterial);
         }
         return new ModelAndView("com/emk/storage/material/emkMaterial-add");
@@ -252,7 +284,7 @@ public class EmkMaterialController extends BaseController {
     @RequestMapping(params = "goUpdate")
     public ModelAndView goUpdate(EmkMaterialEntity emkMaterial, HttpServletRequest req) {
         if (StringUtil.isNotEmpty(emkMaterial.getId())) {
-            emkMaterial = (EmkMaterialEntity) emkMaterialService.getEntity(EmkMaterialEntity.class, emkMaterial.getId());
+            emkMaterial =  emkMaterialService.getEntity(EmkMaterialEntity.class, emkMaterial.getId());
             req.setAttribute("emkMaterialPage", emkMaterial);
         }
         return new ModelAndView("com/emk/storage/material/emkMaterial-update");
@@ -261,7 +293,7 @@ public class EmkMaterialController extends BaseController {
     @RequestMapping(params = "goUpdate2")
     public ModelAndView goUpdate2(EmkMaterialEntity emkMaterial, HttpServletRequest req) {
         if (StringUtil.isNotEmpty(emkMaterial.getId())) {
-            emkMaterial = (EmkMaterialEntity) emkMaterialService.getEntity(EmkMaterialEntity.class, emkMaterial.getId());
+            emkMaterial =  emkMaterialService.getEntity(EmkMaterialEntity.class, emkMaterial.getId());
             req.setAttribute("emkMaterialPage", emkMaterial);
         }
         return new ModelAndView("com/emk/storage/material/emkMaterial-update2");
@@ -308,7 +340,7 @@ public class EmkMaterialController extends BaseController {
     @ResponseBody
     @ApiOperation(value = "根据ID获取原料面料需求开发单信息", notes = "根据ID获取原料面料需求开发单信息", httpMethod = "GET", produces = "application/json")
     public ResponseMessage<?> get(@ApiParam(required = true, name = "id", value = "ID") @PathVariable("id") String id) {
-        EmkMaterialEntity task = (EmkMaterialEntity) emkMaterialService.get(EmkMaterialEntity.class, id);
+        EmkMaterialEntity task =  emkMaterialService.get(EmkMaterialEntity.class, id);
         if (task == null) {
             return Result.error("根据ID获取原料面料需求开发单信息为空");
         }
@@ -375,7 +407,8 @@ public class EmkMaterialController extends BaseController {
         try {
             int flag = 0;
             TSUser user = (TSUser)request.getSession().getAttribute("LOCAL_CLINET_USER");
-            Map map = ParameterUtil.getParamMaps(request.getParameterMap());
+            Map<String, String> map = ParameterUtil.getParamMaps(request.getParameterMap());
+
             if ((emkMaterialEntity.getId() == null) || (emkMaterialEntity.getId().isEmpty())) {
                 for (String id : map.get("ids").toString().split(",")) {
                     EmkMaterialEntity materialEntity = systemService.getEntity(EmkMaterialEntity.class, id);
@@ -393,50 +426,219 @@ public class EmkMaterialController extends BaseController {
             if (flag == 0) {
                 for (String id : map.get("ids").toString().split(",")) {
                     EmkMaterialEntity t = emkMaterialService.get(EmkMaterialEntity.class, id);
+                    EmkApprovalEntity b = systemService.findUniqueByProperty(EmkApprovalEntity.class,"formId",t.getId());
+                    if(Utils.isEmpty(b)){
+                        b = new EmkApprovalEntity();
+                        EmkApprovalDetailEntity approvalDetailEntity = new EmkApprovalDetailEntity();
+                        ApprovalUtil.saveApproval(b,4,t.getMaterialNo(),t.getId(),user);
+                        systemService.save(b);
+                        ApprovalUtil.saveApprovalDetail(approvalDetailEntity,b.getId(),"原料面料需求开发申请单","materialTask","提交",user);
+                        systemService.save(approvalDetailEntity);
+                    }
+
+                    List<Task> task = taskService.createTaskQuery().taskAssignee(id).list();
+                    TSUser makerUser = systemService.findUniqueByProperty(TSUser.class,"userName",t.getCreateBy());
+                    TSUser bpmUser = null;
+                    if (task.size() > 0) {
+                        bpmUser = systemService.get(TSUser.class,b.getBpmSherId());
+                    }else{
+                        bpmUser = systemService.get(TSUser.class,b.getCommitId());
+                    }
+                    //保存审批意见
+                    EmkApprovalDetailEntity approvalDetail = ApprovalUtil.saveApprovalDetail(b.getId(),user,b,map.get("advice"));
+
+
                     t.setState("1");
                     variables.put("optUser", t.getId());
 
-                    List<Task> task = taskService.createTaskQuery().taskAssignee(id).list();
                     if (task.size() > 0) {
                         Task task1 = (Task)task.get(task.size() - 1);
-                        if (task1.getTaskDefinitionKey().equals("checkfactoryTask")) {
+                        if (task1.getTaskDefinitionKey().equals("materialTask")) {
                             taskService.complete(task1.getId(), variables);
+                            t.setState("1");
+                            b.setStatus(1);
+                            saveApprvoalDetail(approvalDetail,"重新提交的原料面料需求开发申请单","materialTask",0,"重新提交原料面料需求开发申请单");
+                            saveSmsAndEmailForMany("业务员","业务员审核","您有【"+b.getCreateName()+"】重新提交的原料面料需求开发申请单，单号："+b.getWorkNum()+"，请及时审核。",user.getUserName());
+                        }
+                        if (task1.getTaskDefinitionKey().equals("ywyTask")) {
+                            if(map.get("isPass").equals("0")) {
+                                variables.put("isPass","0");
+                                taskService.complete(task1.getId(), variables);
+                                b.setStatus(35);
+                                approvalDetail.setBpmName("业务员审核");
+                                t.setState("35");
+                                approvalDetail.setApproveStatus(0);
+                                saveSmsAndEmailForMany("业务经理","业务员审核","您有【"+user.getRealName()+"】审核过的原料面料需求开发申请单，单号："+b.getWorkNum()+"，请及时审核。",user.getUserName());
+                            }else{
+                                saveApprvoalDetail(approvalDetail,"业务员审核","ywyTask",1,"回退");
+                                backProcess(task1.getProcessInstanceId(),"ywyTask","materialTask","原料面料需求开发申请单");
+                                t.setState("0");
+                                b.setStatus(0);
+                                b.setBpmStatus("1");
+                                saveSmsAndEmailForOne("业务经理审核","您有【"+user.getRealName()+"】回退的原料面料需求开发申请单，单号："+b.getWorkNum()+"，请及时处理。",bpmUser,user.getUserName());
+                            }
                         }
                         if (task1.getTaskDefinitionKey().equals("checkTask")) {
-                           /* t.setLeader(user.getRealName());
-                            t.setLeadUserId(user.getId());
-                            t.setLeadAdvice(emkMaterialEntity.getLeadAdvice());
-                            if (emkMaterialEntity.getIsPass().equals("0")) {
-                                variables.put("isPass", emkMaterialEntity.getIsPass());
+                            if(map.get("isPass").equals("0")) {
+                                variables.put("isPass","0");
                                 taskService.complete(task1.getId(), variables);
-                                t.setState("2");
-                            } else {
-                                List<HistoricTaskInstance> hisTasks = historyService.createHistoricTaskInstanceQuery().taskAssignee(t.getId()).list();
+                                b.setStatus(3);
+                                approvalDetail.setBpmName("业务经理审核");
+                                t.setState("3");
+                                approvalDetail.setApproveStatus(0);
+                                saveSmsAndEmailForMany("采购员","业务经理审核","您有【"+user.getRealName()+"】审核过的原料面料需求开发申请单，单号："+b.getWorkNum()+"，请及时审核。",user.getUserName());
+                            }else{
+                                saveApprvoalDetail(approvalDetail,"业务经理审核","checkTask",1,"回退");
+                                backProcess(task1.getProcessInstanceId(),"checkTask","materialTask","原料面料需求开发申请单");
+                                systemService.executeSql("delete from act_hi_actinst  where proc_inst_id_=? and act_id_=? ",task1.getProcessInstanceId(),"ywyTask");
+                                systemService.executeSql("delete from act_hi_taskinst where proc_inst_id_=? and task_def_key_=? ",task1.getProcessInstanceId(),"ywyTask");
+                                t.setState("0");
+                                b.setStatus(0);
+                                b.setBpmStatus("1");
+                                saveSmsAndEmailForOne("业务经理审核","您有【"+user.getRealName()+"】回退的原料面料需求开发申请单，单号："+b.getWorkNum()+"，请及时处理。",bpmUser,user.getUserName());
+                            }
+                        }
+                        if (task1.getTaskDefinitionKey().equals("cgyTask")) {
+                            if(map.get("isPass").equals("0")) {
+                                variables.put("isPass","0");
+                                taskService.complete(task1.getId(), variables);
+                                b.setStatus(24);
+                                approvalDetail.setBpmName("采购员审核");
+                                t.setState("24");
+                                approvalDetail.setApproveStatus(0);
+                                saveSmsAndEmailForMany("采购经理","采购员审核","您有【"+user.getRealName()+"】审核过的原料面料需求开发申请单，单号："+b.getWorkNum()+"，请及时审核。",user.getUserName());
+                            }else{
+                                saveApprvoalDetail(approvalDetail,"采购员审核","cgyTask",1,"回退");
+                                backProcess(task1.getProcessInstanceId(),"cgyTask","checkTask","业务经理审核");
+                                systemService.executeSql("delete from act_hi_actinst  where proc_inst_id_=? and act_id_=? ",task1.getProcessInstanceId(),"isPass");
 
-                                List<Task> taskList = taskService.createTaskQuery().taskAssignee(t.getId()).list();
-                                if (taskList.size() > 0) {
-                                    Task taskH = (Task)taskList.get(taskList.size() - 1);
-                                    HistoricTaskInstance historicTaskInstance = hisTasks.get(hisTasks.size() - 2);
-                                    FlowUtil.turnTransition(taskH.getId(), historicTaskInstance.getTaskDefinitionKey(), variables);
-                                    Map activityMap = systemService.findOneForJdbc("SELECT GROUP_CONCAT(t0.ID_) ids,GROUP_CONCAT(t0.TASK_ID_) taskids FROM act_hi_actinst t0 WHERE t0.ASSIGNEE_=? AND t0.ACT_ID_=? ORDER BY ID_ ASC", new Object[] { t.getId(), historicTaskInstance.getTaskDefinitionKey() });
-                                    String[] activitIdArr = activityMap.get("ids").toString().split(",");
-                                    String[] taskIdArr = activityMap.get("taskids").toString().split(",");
-                                    systemService.executeSql("UPDATE act_hi_taskinst SET  NAME_=CONCAT('【驳回后】','',NAME_) WHERE ASSIGNEE_>=? AND ID_=?",t.getId(), taskIdArr[1]);
-                                    systemService.executeSql("delete from act_hi_actinst where ID_>=? and ID_<?", activitIdArr[0], activitIdArr[1] );
+                                t.setState("4");
+                                b.setStatus(4);
+                                b.setBpmStatus("1");
+                                saveSmsAndEmailForOne("采购员审核","您有【"+user.getRealName()+"】回退的原料面料需求开发申请单，单号："+b.getWorkNum()+"，请及时处理。",bpmUser,user.getUserName());
+                            }
+                        }
+                        if (task1.getTaskDefinitionKey().equals("cgjlTask")) {
+                            b.setNextBpmSherId(bpmUser.getId());
+                            b.setNextBpmSher(bpmUser.getRealName());
+
+                            if(map.get("isPass").equals("0")) {
+                                variables.put("isPass","0");
+                                taskService.complete(task1.getId(), variables);
+                                b.setStatus(15);
+                                approvalDetail.setBpmName("采购部经理复核");
+                                t.setState("15");
+                                approvalDetail.setApproveStatus(0);
+                                saveSmsAndEmailForMany("业务经理","采购部经理复核","您有【"+user.getRealName()+"】审核过的原料面料需求开发申请单，单号："+b.getWorkNum()+"，请及时审核。",user.getUserName());
+                            }else{
+                                saveApprvoalDetail(approvalDetail,"采购部经理复核","cgjlTask",1,"回退");
+                                backProcess(task1.getProcessInstanceId(),"cgjlTask","cgyTask","采购员审核");
+                                t.setState("36");
+                                b.setStatus(36);
+                                b.setBpmStatus("1");
+                                saveSmsAndEmailForOne("采购部经理复核","您有【"+user.getRealName()+"】回退的原料面料需求开发申请单，单号："+b.getWorkNum()+"，请及时处理。",bpmUser,user.getUserName());
+                            }
+                        }
+                        if (task1.getTaskDefinitionKey().equals("cgyzxTask")) {
+                            if(map.get("isPass").equals("0")) {
+                                variables.put("isPass","0");
+                                taskService.complete(task1.getId(), variables);
+                                b.setStatus(37);
+                                approvalDetail.setBpmName("采购员执行");
+                                t.setState("37");
+                                approvalDetail.setApproveStatus(0);
+                            }
+                        }
+                        if (task1.getTaskDefinitionKey().equals("cgyjdTask")) {
+                            if(map.get("isPass").equals("0")) {
+                                variables.put("isPass","0");
+                                taskService.complete(task1.getId(), variables);
+                                b.setStatus(38);
+                                approvalDetail.setBpmName("采购员进度");
+                                t.setState("38");
+                                approvalDetail.setApproveStatus(0);
+                            }
+                        }
+                        if (task1.getTaskDefinitionKey().equals("rksqTask")) {
+                            if(map.get("isPass").equals("0")) {
+                                variables.put("isPass","0");
+                                taskService.complete(task1.getId(), variables);
+                                b.setStatus(39);
+                                approvalDetail.setBpmName("入库申请单【采购员】");
+                                t.setState("39");
+
+                                EmkMInStorageEntity emkMInStorageEntity = new EmkMInStorageEntity();
+                                MyBeanUtils.copyBeanNotNull2Bean(t,emkMInStorageEntity);
+                                emkMInStorageEntity.setId(null);
+                                emkMInStorageEntity.setRkNo("RK"+DateUtil.format(new Date(),"yyyyMMddHHmmss"));
+                                emkMInStorageEntity.setType("0");
+                                emkMInStorageEntity.setCreateBy(user.getUserName());
+                                emkMInStorageEntity.setCreateName(user.getRealName());
+                                emkMInStorageEntity.setState("0");
+                                emkMInStorageEntity.setFormType("1");
+                                emkMInStorageEntity.setAppler(user.getRealName());
+                                emkMInStorageEntity.setApplerId(user.getId());
+                                emkMInStorageEntity.setRker(map.get("realName"));
+                                emkMInStorageEntity.setRkerId(map.get("userName"));
+                                emkMInStorageEntity.setCaigouer(user.getRealName());
+                                emkMInStorageEntity.setCaigouerName(user.getUserName());
+                                emkMInStorageEntity.setMaterialNo(t.getMaterialNo());
+                                systemService.save(emkMInStorageEntity);
+
+                                List<EmkSampleDetailEntity> emkSampleDetailEntities = systemService.findHql("from EmkSampleDetailEntity where sampleId=? and type=0", t.getId());
+                                EmkMInStorageDetailEntity emkMInStorageDetailEntity = null;
+                                for(EmkSampleDetailEntity sampleDetailEntity : emkSampleDetailEntities){
+                                    emkMInStorageDetailEntity = new EmkMInStorageDetailEntity();
+                                    MyBeanUtils.copyBeanNotNull2Bean(sampleDetailEntity,emkMInStorageDetailEntity);
+                                    emkMInStorageDetailEntity.setId(null);
+                                    emkMInStorageDetailEntity.setTotal(sampleDetailEntity.getSumTotal());
+                                    emkMInStorageDetailEntity.setInStorageId(emkMInStorageEntity.getId());
+                                    systemService.save(emkMInStorageDetailEntity);
                                 }
 
-                            }*/
+                            }
                         }
+                        if (task1.getTaskDefinitionKey().equals("cgjlshTask")) {
+                            if(map.get("isPass").equals("0")) {
+                                if(b.getStatus().equals(39)){
+                                    variables.put("isType","0");
+                                }
+                                taskService.complete(task1.getId(), variables);
+                                b.setStatus(41);
+                                approvalDetail.setBpmName("采购部经理审核");
+                                t.setState("41");
+                                approvalDetail.setApproveStatus(0);
 
+                                EmkMInStorageEntity emkMInStorageEntity = systemService.findUniqueByProperty(EmkMInStorageEntity.class,"materialNo",t.getMaterialNo());
+                                saveSmsAndEmailForOne("采购部经理审核","您有【"+user.getRealName()+"】提交的入库申请单，单号："+emkMInStorageEntity.getRkNo()+"，请及时处理。",bpmUser,user.getUserName());
+                            }else{
+                                saveApprvoalDetail(approvalDetail,"采购部经理审核","rksqTask",1,"回退");
+                                backProcess(task1.getProcessInstanceId(),"cgjlshTask","cgjlshTask","采购部经理审核");
+                                t.setState("36");
+                                b.setStatus(36);
+                                b.setBpmStatus("1");
+                                saveSmsAndEmailForOne("采购部经理审核","您有【"+user.getRealName()+"】回退的入库申请单，单号："+b.getWorkNum()+"，请及时处理。",bpmUser,user.getUserName());
+                            }
+                        }
+                        systemService.save(approvalDetail);
                     }else {
                         ProcessInstance pi = processEngine.getRuntimeService().startProcessInstanceByKey("material", "emkMaterialEntity", variables);
                         task = taskService.createTaskQuery().taskAssignee(id).list();
                         Task task1 = task.get(task.size() - 1);
                         taskService.complete(task1.getId(), variables);
+
+                        t.setState("1");
+                        b.setStatus(1);
+                        b.setBpmStatus("0");
+                        b.setProcessName("业务员审核");
+
+                        saveApprvoalDetail(approvalDetail,"提交的原料面料需求开发申请单","materialTask",0,"提交原料面料需求开发申请单");
+                        saveSmsAndEmailForMany("业务员","业务员审核","您有【"+b.getCreateName()+"】提交的原料面料需求开发申请单，单号："+b.getWorkNum()+"，请及时审核。",user.getUserName());
                     }
 
-
                     systemService.saveOrUpdate(t);
+                    systemService.saveOrUpdate(b);
+
                 }
             }
             systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
@@ -462,31 +664,11 @@ public class EmkMaterialController extends BaseController {
 
     @RequestMapping(params="goTime")
     public ModelAndView goTime(EmkMaterialEntity emkMaterialEntity, HttpServletRequest req, DataGrid dataGrid) {
-        String sql = "";String countsql = "";
-        Map map = ParameterUtil.getParamMaps(req.getParameterMap());
-
-        sql = "SELECT DATE_FORMAT(t1.START_TIME_, '%Y-%m-%d %H:%i:%s') startTime,t1.*,CASE \n" +
-                " WHEN t1.TASK_DEF_KEY_='materialTask' THEN t2.create_name \n" +
-                " WHEN t1.TASK_DEF_KEY_='checkTask' THEN t2.leader \n" +
-                " END workname FROM act_hi_taskinst t1 \n" +
-                " LEFT JOIN emk_material t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='" + map.get("id") + "' ";
-
-        countsql = " SELECT COUNT(1) FROM act_hi_taskinst t1 where ASSIGNEE_='" + map.get("id") + "' ";
-        if (dataGrid.getPage() == 1) {
-            sql = sql + " limit 0, " + dataGrid.getRows();
-        } else {
-            sql = sql + "limit " + (dataGrid.getPage() - 1) * dataGrid.getRows() + "," + dataGrid.getRows();
-        }
-        systemService.listAllByJdbc(dataGrid, sql, countsql);
-        req.setAttribute("taskList", dataGrid.getResults());
-        if (dataGrid.getResults().size() > 0) {
-            req.setAttribute("stepProcess", Integer.valueOf(dataGrid.getResults().size() - 1));
-        } else {
-            req.setAttribute("stepProcess", Integer.valueOf(0));
-        }
-        emkMaterialEntity = emkMaterialService.getEntity(EmkMaterialEntity.class, emkMaterialEntity.getId());
-        req.setAttribute("emkMaterial", emkMaterialEntity);
+        EmkApprovalEntity approvalEntity = systemService.findUniqueByProperty(EmkApprovalEntity.class,"formId",emkMaterialEntity.getId());
+        List<EmkApprovalDetailEntity> approvalDetailEntityList = systemService.findHql("from EmkApprovalDetailEntity where approvalId=? order by approveDate asc",approvalEntity.getId());
+        req.setAttribute("approvalDetailEntityList", approvalDetailEntityList);
+        req.setAttribute("approvalEntity", approvalEntity);
+        req.setAttribute("createDate", org.jeecgframework.core.util.DateUtils.date2Str(approvalEntity.getCreateDate(), org.jeecgframework.core.util.DateUtils.datetimeFormat));
         return new ModelAndView("com/emk/storage/material/time");
-
     }
 }

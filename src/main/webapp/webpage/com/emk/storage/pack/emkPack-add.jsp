@@ -328,11 +328,12 @@
 				<input id="customSampleUrl" name="customSampleUrl" type="hidden" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">是否有原样</label>
-			</td><td align="right">
-			<label class="Validform_label">
-				是否有参考图片:
-			</label>
-		</td>
+			</td>
+			<td align="right">
+				<label class="Validform_label">
+					是否有参考图片:
+				</label>
+			</td>
 			<td class="value">
 				<input name="isCkImage" type="radio" datatype="*" <c:if test="${emkPackPage.isCkImage eq '0'}">checked="true"</c:if> value="0">
 				是
@@ -363,7 +364,7 @@
 				</label>
 			</td>
 			<td class="value" colspan="5">
-				<textarea  id="cusAdvice" style="width:95%;height:70px" class="inputxt" rows="3" name="remark"></textarea>
+				<textarea  id="cusAdvice" style="width:95%;height:70px" class="inputxt" rows="3" name="cusAdvice"></textarea>
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">客户评语</label>
 			</td>

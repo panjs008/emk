@@ -1,4 +1,5 @@
 package com.emk.produce.produce.controller;
+import com.emk.produce.produce.entity.EmkProduceDetailEntity;
 import com.emk.produce.produce.entity.EmkProduceEntity;
 import com.emk.produce.produce.service.EmkProduceServiceI;
 import java.util.ArrayList;
@@ -7,8 +8,10 @@ import java.text.SimpleDateFormat;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.emk.produce.ssysycy.entity.EmkSsysycyDetailEntity;
 import com.emk.storage.enquirydetail.entity.EmkEnquiryDetailEntity;
 import com.emk.util.ParameterUtil;
+import com.emk.util.Utils;
 import org.apache.log4j.Logger;
 import org.jeecgframework.web.system.pojo.base.TSUser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -112,6 +115,21 @@ public class EmkProduceController extends BaseController {
 	public ModelAndView list(HttpServletRequest request) {
 		return new ModelAndView("com/emk/produce/produce/emkProduceList");
 	}
+
+	@RequestMapping(params = "detailMxList")
+	public ModelAndView detailMxList(HttpServletRequest request) {
+		Map map = ParameterUtil.getParamMaps(request.getParameterMap());
+		List<Map<String, Object>> list = systemService.findForJdbc("select typecode,typename from t_s_type t2 left join t_s_typegroup t1 on t1.ID=t2.typegroupid where typegroupcode='color'");
+		request.setAttribute("colorList", list);
+		list = systemService.findForJdbc("select typecode,typename from t_s_type t2 left join t_s_typegroup t1 on t1.ID=t2.typegroupid where typegroupcode='size'");
+		request.setAttribute("sizeList", list);
+		if (Utils.notEmpty(map.get("pId"))) {
+			List<EmkProduceDetailEntity> emkProduceDetailEntities = systemService.findHql("from EmkProduceDetailEntity where pId=?", map.get("pId"));
+			request.setAttribute("emkProduceDetailEntities", emkProduceDetailEntities);
+		}
+		return new ModelAndView("com/emk/produce/produce/detailMxList");
+	}
+
 
 	@RequestMapping(params = "orderMxList")
 	public ModelAndView orderMxList(HttpServletRequest request) {
@@ -264,25 +282,93 @@ public class EmkProduceController extends BaseController {
 		String message = null;
 		AjaxJson j = new AjaxJson();
 		message = "采购生产进度管理更新成功";
-		EmkProduceEntity t = emkProduceService.get(EmkProduceEntity.class, emkProduce.getId());
+		Map<String, String> map = ParameterUtil.getParamMaps(request.getParameterMap());
+		EmkProduceEntity t = emkProduceService.get(EmkProduceEntity.class, map.get("produceId"));
 		try {
 			emkProduce.setState("0");
+			emkProduce.setId(null);
 			MyBeanUtils.copyBeanNotNull2Bean(emkProduce, t);
 			emkProduceService.saveOrUpdate(t);
-			Map<String, String> map = ParameterUtil.getParamMaps(request.getParameterMap());
 
-			this.systemService.executeSql("delete from emk_enquiry_detail where ENQUIRY_ID=?", t.getId());
-			String dataRows = (String) map.get("dataRowsVal");
-			if ((dataRows != null) && (!dataRows.isEmpty())) {
+			//保存明细数据
+			String dataRows = (String) map.get("orderMxListIDSR");
+			if (Utils.notEmpty(dataRows)) {
+				systemService.executeSql("delete from emk_produce_detail_schedule where p_id = ? ",t.getId());
+
 				int rows = Integer.parseInt(dataRows);
+				EmkProduceDetailEntity emkProduceDetailEntity = null;
 				for (int i = 0; i < rows; i++) {
-					EmkEnquiryDetailEntity orderMxEntity = new EmkEnquiryDetailEntity();
-					if ((map.get("orderMxList[" + i + "].color") != null) && (!((String) map.get("orderMxList[" + i + "].color")).equals(""))) {
-						orderMxEntity.setEnquiryId(t.getId());
-						orderMxEntity.setColor((String) map.get("orderMxList[" + i + "].color"));
-						orderMxEntity.setSize((String) map.get("orderMxList[" + i + "].size"));
-						orderMxEntity.setTotal(Integer.valueOf(Integer.parseInt((String) map.get("orderMxList[" + i + "].signTotal"))));
-						this.systemService.save(orderMxEntity);
+					if (Utils.notEmpty(map.get("orderMxList["+i+"].orderNo00"))){
+						emkProduceDetailEntity = new EmkProduceDetailEntity();
+						emkProduceDetailEntity.setpId(t.getId());
+						emkProduceDetailEntity.setOrderNo(map.get("orderMxList["+i+"].orderNo00"));
+						emkProduceDetailEntity.setCusNum(map.get("orderMxList["+i+"].cusNum00"));
+						emkProduceDetailEntity.setProduceHtNum(map.get("orderMxList["+i+"].produceHtNum00"));
+						emkProduceDetailEntity.setGysCode(map.get("orderMxList["+i+"].gysCode00"));
+						emkProduceDetailEntity.setGyzl(map.get("orderMxList["+i+"].gyzl00"));
+						emkProduceDetailEntity.setProTypeName(map.get("orderMxList["+i+"].proTypeName00"));
+						emkProduceDetailEntity.setSampleNo(map.get("orderMxList["+i+"].sampleNo00"));
+						emkProduceDetailEntity.setSampleNoDesc(map.get("orderMxList["+i+"].sampleDesc00"));
+						emkProduceDetailEntity.setColor(map.get("orderMxList["+i+"].color"));
+						emkProduceDetailEntity.setSize(map.get("orderMxList["+i+"].size"));
+
+						if(Utils.notEmpty(map.get("orderMxList["+i+"].signTotal00"))){
+							emkProduceDetailEntity.setSumTotal(Integer.parseInt(map.get("orderMxList["+i+"].signTotal00")));
+						}
+						emkProduceDetailEntity.setYlblState(map.get("orderMxList["+i+"].ylblState00"));
+						emkProduceDetailEntity.setYlblLimitDate(map.get("orderMxList["+i+"].ylblLimitDate00"));
+						if(Utils.notEmpty(map.get("orderMxList["+i+"].leavelYlblDay00"))){
+							emkProduceDetailEntity.setLeavelYlblDay(Integer.parseInt(map.get("orderMxList["+i+"].leavelYlblDay00")));
+						}
+
+						emkProduceDetailEntity.setFzblState(map.get("orderMxList["+i+"].fzblState00"));
+						emkProduceDetailEntity.setFzblLimitDate(map.get("orderMxList["+i+"].fzblLimitDate00"));
+						if(Utils.notEmpty(map.get("orderMxList["+i+"].leavelFzblDay00"))){
+							emkProduceDetailEntity.setLeavelFzblDay(Integer.parseInt(map.get("orderMxList["+i+"].leavelFzblDay00")));
+						}
+
+						emkProduceDetailEntity.setBzblState(map.get("orderMxList["+i+"].bzblState00"));
+						emkProduceDetailEntity.setBzblLimitDate(map.get("orderMxList["+i+"].bzblLimitDate00"));
+						if(Utils.notEmpty(map.get("orderMxList["+i+"].leavelBzblDay00"))){
+							emkProduceDetailEntity.setLeavelBzblDay(Integer.parseInt(map.get("orderMxList["+i+"].leavelBzblDay00")));
+						}
+
+						emkProduceDetailEntity.setRanState(map.get("orderMxList["+i+"].ranState00"));
+						emkProduceDetailEntity.setRanFinish(map.get("orderMxList["+i+"].ranFinish00"));
+						emkProduceDetailEntity.setRanUnfinish(map.get("orderMxList["+i+"].ranUnfinish00"));
+
+						emkProduceDetailEntity.setCaiState(map.get("orderMxList["+i+"].caiState00"));
+						emkProduceDetailEntity.setCaiFinish(map.get("orderMxList["+i+"].caiFinish00"));
+						emkProduceDetailEntity.setCaiUnfinish(map.get("orderMxList["+i+"].caiUnfinish00"));
+
+						emkProduceDetailEntity.setFzState(map.get("orderMxList["+i+"].fzState00"));
+						emkProduceDetailEntity.setFzFinish(map.get("orderMxList["+i+"].fzFinish00"));
+						emkProduceDetailEntity.setFzUnfinish(map.get("orderMxList["+i+"].fzUnfinish00"));
+
+						emkProduceDetailEntity.setBtState(map.get("orderMxList["+i+"].btState00"));
+						emkProduceDetailEntity.setBtFinish(map.get("orderMxList["+i+"].btFinish00"));
+						emkProduceDetailEntity.setBtUnfinish(map.get("orderMxList["+i+"].btUnfinish00"));
+
+						emkProduceDetailEntity.setZtState(map.get("orderMxList["+i+"].ztState00"));
+						emkProduceDetailEntity.setZtFinish(map.get("orderMxList["+i+"].ztFinish00"));
+						emkProduceDetailEntity.setZtUnfinish(map.get("orderMxList["+i+"].ztUnfinish00"));
+
+						emkProduceDetailEntity.setBzState(map.get("orderMxList["+i+"].bzState00"));
+						emkProduceDetailEntity.setBzFinish(map.get("orderMxList["+i+"].bzFinish00"));
+						emkProduceDetailEntity.setBzUnfinish(map.get("orderMxList["+i+"].bzUnfinish00"));
+
+						emkProduceDetailEntity.setZcrq(map.get("orderMxList["+i+"].zcrq00"));
+						emkProduceDetailEntity.setZcrqDate(map.get("orderMxList["+i+"].zcrqDate00"));
+						emkProduceDetailEntity.setLevalZcrq(map.get("orderMxList["+i+"].levalZcrq00"));
+
+						emkProduceDetailEntity.setWcrq(map.get("orderMxList["+i+"].wcrq00"));
+						emkProduceDetailEntity.setWcrqDate(map.get("orderMxList["+i+"].wcrqDate00"));
+						emkProduceDetailEntity.setLevalWcrq(map.get("orderMxList["+i+"].levalWcrq00"));
+
+						emkProduceDetailEntity.setOutDate(map.get("orderMxList["+i+"].outDate00"));
+						emkProduceDetailEntity.setSortDesc(String.valueOf(i+1));
+
+						systemService.save(emkProduceDetailEntity);
 					}
 				}
 			}

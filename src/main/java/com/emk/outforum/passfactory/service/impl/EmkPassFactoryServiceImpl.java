@@ -85,29 +85,18 @@ public class EmkPassFactoryServiceImpl extends CommonServiceImpl implements EmkP
 		map.put("developer", t.getDeveloper());
 		map.put("developer_name", t.getDeveloperName());
 
-		map.put("sample_no", t.getSampleNo());
-		map.put("sample_no_desc", t.getSampleNoDesc());
+
 		map.put("id", t.getId());
 		map.put("create_name", t.getCreateName());
 		map.put("create_by", t.getCreateBy());
 		map.put("create_date", t.getCreateDate());
 		map.put("sys_org_code", t.getSysOrgCode());
-		map.put("out_fourm_no", t.getOutFourmNo());
-		map.put("cargo_no", t.getCargoNo());
-		map.put("leveal_factory_no", t.getLevealFactoryNo());
-		map.put("order_no", t.getOrderNo());
-		map.put("cwer", t.getCwer());
+
 		map.put("cargo_date", t.getCargoDate());
-		map.put("leveal_date", t.getLevealDate());
-		map.put("sum_box", t.getSumBox());
+
 		map.put("cus_num", t.getCusNum());
 		map.put("cus_name", t.getCusName());
-		map.put("ysdw_name", t.getYsdwName());
-		map.put("ysdw_code", t.getYsdwCode());
-		map.put("driver", t.getDriver());
-		map.put("drver_tel", t.getDrverTel());
-		map.put("driver_num", t.getDriverNum());
-		map.put("state", t.getState());
+
 		return map;
 	}
  	
@@ -127,29 +116,18 @@ public class EmkPassFactoryServiceImpl extends CommonServiceImpl implements EmkP
  		sql  = sql.replace("#{developer}",String.valueOf(t.getDeveloper()));
  		sql  = sql.replace("#{developer_name}",String.valueOf(t.getDeveloperName()));
 
- 		sql  = sql.replace("#{sample_no}",String.valueOf(t.getSampleNo()));
- 		sql  = sql.replace("#{sample_no_desc}",String.valueOf(t.getSampleNoDesc()));
+
  		sql  = sql.replace("#{id}",String.valueOf(t.getId()));
  		sql  = sql.replace("#{create_name}",String.valueOf(t.getCreateName()));
  		sql  = sql.replace("#{create_by}",String.valueOf(t.getCreateBy()));
  		sql  = sql.replace("#{create_date}",String.valueOf(t.getCreateDate()));
  		sql  = sql.replace("#{sys_org_code}",String.valueOf(t.getSysOrgCode()));
- 		sql  = sql.replace("#{out_fourm_no}",String.valueOf(t.getOutFourmNo()));
- 		sql  = sql.replace("#{cargo_no}",String.valueOf(t.getCargoNo()));
- 		sql  = sql.replace("#{leveal_factory_no}",String.valueOf(t.getLevealFactoryNo()));
- 		sql  = sql.replace("#{order_no}",String.valueOf(t.getOrderNo()));
- 		sql  = sql.replace("#{cwer}",String.valueOf(t.getCwer()));
+
  		sql  = sql.replace("#{cargo_date}",String.valueOf(t.getCargoDate()));
- 		sql  = sql.replace("#{leveal_date}",String.valueOf(t.getLevealDate()));
- 		sql  = sql.replace("#{sum_box}",String.valueOf(t.getSumBox()));
+
  		sql  = sql.replace("#{cus_num}",String.valueOf(t.getCusNum()));
  		sql  = sql.replace("#{cus_name}",String.valueOf(t.getCusName()));
- 		sql  = sql.replace("#{ysdw_name}",String.valueOf(t.getYsdwName()));
- 		sql  = sql.replace("#{ysdw_code}",String.valueOf(t.getYsdwCode()));
- 		sql  = sql.replace("#{driver}",String.valueOf(t.getDriver()));
- 		sql  = sql.replace("#{drver_tel}",String.valueOf(t.getDrverTel()));
- 		sql  = sql.replace("#{driver_num}",String.valueOf(t.getDriverNum()));
- 		sql  = sql.replace("#{state}",String.valueOf(t.getState()));
+
  		sql  = sql.replace("#{UUID}",UUID.randomUUID().toString());
  		return sql;
  	}

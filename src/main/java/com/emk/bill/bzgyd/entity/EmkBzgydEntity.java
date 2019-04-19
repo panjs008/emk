@@ -109,6 +109,12 @@ public class EmkBzgydEntity implements java.io.Serializable {
 	/**包装状态*/
 	@Excel(name="包装状态",width=15)
 	private String bzState;
+	@Excel(name = "单件")
+	private String one;
+	@Excel(name = "胶袋")
+	private String polybag;
+	@Excel(name = "装箱")
+	private String boxup;
 	
 	/**
 	 *方法: 取得java.lang.String
@@ -589,4 +595,31 @@ public class EmkBzgydEntity implements java.io.Serializable {
 	public void setBzState(String bzState){
 		this.bzState = bzState;
 	}
+
+	@Column(name = "ONE", nullable = true, length = 32)
+	public String getOne() {
+		return this.one;
+	}
+
+	public void setOne(String one) {
+		this.one = one;
+	}
+
+	@Column(name = "POLYBAG", nullable = true, length = 32)
+	public String getPolybag() {
+		return this.polybag;
+	}
+
+	public void setPolybag(String polybag) {
+		this.polybag = polybag;
+	}
+	@Column(name = "BOXUP", nullable = true, length = 256)
+	public String getBoxup() {
+		return this.boxup;
+	}
+
+	public void setBoxup(String boxup) {
+		this.boxup = boxup;
+	}
+
 }

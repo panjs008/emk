@@ -13,8 +13,13 @@ import org.jeecgframework.poi.excel.annotation.Excel;
 
 @Entity
 @Table(name = "emk_invoices", schema = "")
-public class EmkInvoicesEntity
-        implements Serializable {
+public class EmkInvoicesEntity implements Serializable {
+    private String id;
+    private String createName;
+    private String createBy;
+    private Date createDate;
+    private String sysOrgCode;
+
     @Excel(name = "业务员")
     private String businesser;
     private String businesserName;
@@ -27,19 +32,10 @@ public class EmkInvoicesEntity
     @Excel(name = "生产跟单员")
     private String developer;
     private String developerName;
-    @Excel(name = "款号")
-    private String sampleNo;
-    @Excel(name = "描述")
-    private String sampleNoDesc;
+
     @Excel(name = "出厂日期")
     private String outDate;
-    private String id;
-    private String createName;
-    private String createBy;
-    private Date createDate;
-    private String sysOrgCode;
-    @Excel(name = "订单号")
-    private String orderNo;
+
     @Excel(name = "船务员")
     private String cwyer;
     @Excel(name = "生产方名称")
@@ -68,6 +64,8 @@ public class EmkInvoicesEntity
     private String signAddress;
     @Excel(name = "电话")
     private String signTelphone;
+    @Excel(name = "出货通知单号")
+    private String outForumNo;
     @Excel(name = "订舱通知单号")
     private String cargoNo;
     @Excel(name = "离厂放行条号")
@@ -76,6 +74,9 @@ public class EmkInvoicesEntity
     private String cusNum;
     @Excel(name = "客户名称")
     private String cusName;
+    @Excel(name = "客户地址")
+    private String cusAddress;
+    private String telphone;
 
     @Column(name = "BUSINESSER", nullable = true, length = 32)
     public String getBusinesser() {
@@ -149,24 +150,6 @@ public class EmkInvoicesEntity
         this.developerName = developerName;
     }
 
-    @Column(name = "SAMPLE_NO", nullable = true, length = 32)
-    public String getSampleNo() {
-        return this.sampleNo;
-    }
-
-    public void setSampleNo(String sampleNo) {
-        this.sampleNo = sampleNo;
-    }
-
-    @Column(name = "SAMPLE_NO_DESC", nullable = true, length = 32)
-    public String getSampleNoDesc() {
-        return this.sampleNoDesc;
-    }
-
-    public void setSampleNoDesc(String sampleNoDesc) {
-        this.sampleNoDesc = sampleNoDesc;
-    }
-
     @Column(name = "OUT_DATE", nullable = true, length = 32)
     public String getOutDate() {
         return this.outDate;
@@ -222,15 +205,6 @@ public class EmkInvoicesEntity
 
     public void setSysOrgCode(String sysOrgCode) {
         this.sysOrgCode = sysOrgCode;
-    }
-
-    @Column(name = "ORDER_NO", nullable = true, length = 32)
-    public String getOrderNo() {
-        return this.orderNo;
-    }
-
-    public void setOrderNo(String orderNo) {
-        this.orderNo = orderNo;
     }
 
     @Column(name = "CWYER", nullable = true, length = 32)
@@ -393,5 +367,31 @@ public class EmkInvoicesEntity
 
     public void setCusName(String cusName) {
         this.cusName = cusName;
+    }
+
+    @Column(name = "cus_address", nullable = true, length = 32)
+    public String getCusAddress() {
+        return cusAddress;
+    }
+
+    public void setCusAddress(String cusAddress) {
+        this.cusAddress = cusAddress;
+    }
+
+    @Column(name = "telphone", nullable = true, length = 32)
+    public String getTelphone() {
+        return telphone;
+    }
+
+    public void setTelphone(String telphone) {
+        this.telphone = telphone;
+    }
+    @Column(name = "OUT_FORUM_NO", nullable = true, length = 32)
+    public String getOutForumNo() {
+        return this.outForumNo;
+    }
+
+    public void setOutForumNo(String outForumNo) {
+        this.outForumNo = outForumNo;
     }
 }

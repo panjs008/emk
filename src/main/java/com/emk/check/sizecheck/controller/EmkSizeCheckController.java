@@ -1,6 +1,9 @@
 package com.emk.check.sizecheck.controller;
 import com.emk.check.qualitycheck.entity.EmkQualityCheckEntity;
+import com.emk.check.sizecheck.entity.EmkSizeCheckDetailEntity;
 import com.emk.check.sizecheck.entity.EmkSizeCheckEntity;
+import com.emk.check.sizecheck.entity.EmkSizeEntity;
+import com.emk.check.sizecheck.entity.EmkSizeTotalEntity;
 import com.emk.check.sizecheck.service.EmkSizeCheckServiceI;
 
 import java.util.*;
@@ -8,9 +11,11 @@ import java.text.SimpleDateFormat;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.emk.produce.invoices.entity.EmkInvoicesDetailEntity;
 import com.emk.storage.enquirydetail.entity.EmkEnquiryDetailEntity;
 import com.emk.util.FlowUtil;
 import com.emk.util.ParameterUtil;
+import com.emk.util.Utils;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.TaskService;
@@ -131,11 +136,29 @@ public class EmkSizeCheckController extends BaseController {
 		request.setAttribute("categoryEntityList", codeList);
 		Map map = ParameterUtil.getParamMaps(request.getParameterMap());
 		if ((map.get("proOrderId") != null) && (!map.get("proOrderId").equals(""))) {
-			List<EmkEnquiryDetailEntity> emkProOrderDetailEntities = this.systemService.findHql("from EmkEnquiryDetailEntity where enquiryId=?", new Object[]{map.get("proOrderId")});
+			List<EmkEnquiryDetailEntity> emkProOrderDetailEntities = this.systemService.findHql("from EmkEnquiryDetailEntity where enquiryId=?", map.get("proOrderId"));
 			request.setAttribute("emkProOrderDetailEntities", emkProOrderDetailEntities);
 		}
 		return new ModelAndView("com/emk/check/sizecheck/orderMxList");
 	}
+
+	@RequestMapping(params = "detailMxList")
+	public ModelAndView detailMxList(HttpServletRequest request) {
+		Map map = ParameterUtil.getParamMaps(request.getParameterMap());
+		List<Map<String, Object>> list = systemService.findForJdbc("select typecode,typename from t_s_type t2 left join t_s_typegroup t1 on t1.ID=t2.typegroupid where typegroupcode='color'");
+		request.setAttribute("colorList", list);
+		list = systemService.findForJdbc("select typecode,typename from t_s_type t2 left join t_s_typegroup t1 on t1.ID=t2.typegroupid where typegroupcode='size'");
+		request.setAttribute("sizeList", list);
+		if (Utils.notEmpty(map.get("sizeCheckId"))) {
+			List<EmkSizeCheckDetailEntity> emkSizeCheckDetailEntities = systemService.findHql("from EmkSizeCheckDetailEntity where sizeCheckId=?", map.get("sizeCheckId"));
+			request.setAttribute("emkSizeCheckDetailEntities", emkSizeCheckDetailEntities);
+
+			EmkSizeEntity emkSizeEntity = systemService.findUniqueByProperty(EmkSizeEntity.class,"formId",map.get("sizeCheckId"));
+			request.setAttribute("emkSizePage", emkSizeEntity);
+		}
+		return new ModelAndView("com/emk/check/sizecheck/detailMxList");
+	}
+
 
 	/**
 	 * easyui AJAX请求数据
@@ -228,24 +251,79 @@ public class EmkSizeCheckController extends BaseController {
 	 */
 	@RequestMapping(params = "doAdd")
 	@ResponseBody
-	public AjaxJson doAdd(EmkSizeCheckEntity emkSizeCheck, HttpServletRequest request) {
+	public AjaxJson doAdd(EmkSizeCheckEntity emkSizeCheck,EmkSizeEntity emkSize,HttpServletRequest request) {
 		String message = null;
 		AjaxJson j = new AjaxJson();
 		message = "尺寸检查表添加成功";
 		try{
 			emkSizeCheckService.save(emkSizeCheck);
+			emkSize.setFormId(emkSizeCheck.getId());
+			systemService.save(emkSize);
 			Map<String, String> map = ParameterUtil.getParamMaps(request.getParameterMap());
-			String dataRows = (String) map.get("dataRowsVal");
-			if ((dataRows != null) && (!dataRows.isEmpty())) {
+			String dataRows = (String) map.get("orderMxListIDSR");
+			if (Utils.notEmpty(dataRows)) {
 				int rows = Integer.parseInt(dataRows);
+				EmkSizeCheckDetailEntity emkSizeCheckDetailEntity = null;
+				EmkSizeTotalEntity emkSizeTotalEntity = null;
 				for (int i = 0; i < rows; i++) {
-					EmkEnquiryDetailEntity orderMxEntity = new EmkEnquiryDetailEntity();
-					if ((map.get("orderMxList[" + i + "].color") != null) && (!((String) map.get("orderMxList[" + i + "].color")).equals(""))) {
-						orderMxEntity.setEnquiryId(emkSizeCheck.getId());
-						orderMxEntity.setColor((String) map.get("orderMxList[" + i + "].color"));
-						orderMxEntity.setSize((String) map.get("orderMxList[" + i + "].size"));
-						orderMxEntity.setTotal(Integer.valueOf(Integer.parseInt((String) map.get("orderMxList[" + i + "].signTotal"))));
-						this.systemService.save(orderMxEntity);
+					emkSizeCheckDetailEntity = new EmkSizeCheckDetailEntity();
+					emkSizeTotalEntity = new EmkSizeTotalEntity();
+					if (Utils.notEmpty(map.get("orderMxList["+i+"].buWei00"))) {
+						emkSizeCheckDetailEntity.setBuWei(map.get("orderMxList["+i+"].buWei00"));
+						emkSizeCheckDetailEntity.setSeqNum(String.valueOf((char)(i % 26 + (int) 'A')));
+						emkSizeCheckDetailEntity.setBtotalA(map.get("orderMxList["+i+"].totalA2"));
+						emkSizeCheckDetailEntity.setBtotalB(map.get("orderMxList["+i+"].totalB2"));
+						emkSizeCheckDetailEntity.setBtotalC(map.get("orderMxList["+i+"].totalC2"));
+						emkSizeCheckDetailEntity.setBtotalD(map.get("orderMxList["+i+"].totalD2"));
+						emkSizeCheckDetailEntity.setBtotalE(map.get("orderMxList["+i+"].totalE2"));
+						emkSizeCheckDetailEntity.setBtotalF(map.get("orderMxList["+i+"].totalF2"));
+						emkSizeCheckDetailEntity.setBtotalG(map.get("orderMxList["+i+"].totalG2"));
+						emkSizeCheckDetailEntity.setBtotalH(map.get("orderMxList["+i+"].totalH2"));
+						emkSizeCheckDetailEntity.setBtotalI(map.get("orderMxList["+i+"].totalI2"));
+						emkSizeCheckDetailEntity.setBtotalJ(map.get("orderMxList["+i+"].totalJ2"));
+						emkSizeCheckDetailEntity.setBtotalK(map.get("orderMxList["+i+"].totalK2"));
+
+						emkSizeCheckDetailEntity.setCtotalA(map.get("orderMxList["+i+"].totalA3"));
+						emkSizeCheckDetailEntity.setCtotalB(map.get("orderMxList["+i+"].totalB3"));
+						emkSizeCheckDetailEntity.setCtotalC(map.get("orderMxList["+i+"].totalC3"));
+						emkSizeCheckDetailEntity.setCtotalD(map.get("orderMxList["+i+"].totalD3"));
+						emkSizeCheckDetailEntity.setCtotalE(map.get("orderMxList["+i+"].totalE3"));
+						emkSizeCheckDetailEntity.setCtotalF(map.get("orderMxList["+i+"].totalF3"));
+						emkSizeCheckDetailEntity.setCtotalG(map.get("orderMxList["+i+"].totalG3"));
+						emkSizeCheckDetailEntity.setCtotalH(map.get("orderMxList["+i+"].totalH3"));
+						emkSizeCheckDetailEntity.setCtotalI(map.get("orderMxList["+i+"].totalI3"));
+						emkSizeCheckDetailEntity.setCtotalJ(map.get("orderMxList["+i+"].totalJ3"));
+						emkSizeCheckDetailEntity.setCtotalK(map.get("orderMxList["+i+"].totalK3"));
+
+						emkSizeCheckDetailEntity.setDtotalA(map.get("orderMxList["+i+"].totalA4"));
+						emkSizeCheckDetailEntity.setDtotalB(map.get("orderMxList["+i+"].totalB4"));
+						emkSizeCheckDetailEntity.setDtotalC(map.get("orderMxList["+i+"].totalC4"));
+						emkSizeCheckDetailEntity.setDtotalD(map.get("orderMxList["+i+"].totalD4"));
+						emkSizeCheckDetailEntity.setDtotalE(map.get("orderMxList["+i+"].totalE4"));
+						emkSizeCheckDetailEntity.setDtotalF(map.get("orderMxList["+i+"].totalF4"));
+						emkSizeCheckDetailEntity.setDtotalG(map.get("orderMxList["+i+"].totalG4"));
+						emkSizeCheckDetailEntity.setDtotalH(map.get("orderMxList["+i+"].totalH4"));
+						emkSizeCheckDetailEntity.setDtotalI(map.get("orderMxList["+i+"].totalI4"));
+						emkSizeCheckDetailEntity.setDtotalJ(map.get("orderMxList["+i+"].totalJ4"));
+						emkSizeCheckDetailEntity.setDtotalK(map.get("orderMxList["+i+"].totalK4"));
+
+						emkSizeCheckDetailEntity.setSizeCheckId(emkSizeCheck.getId());
+						systemService.save(emkSizeCheckDetailEntity);
+
+
+						emkSizeTotalEntity.setTotalA(map.get("orderMxList["+i+"].totalA"));
+						emkSizeTotalEntity.setTotalB(map.get("orderMxList["+i+"].totalB"));
+						emkSizeTotalEntity.setTotalC(map.get("orderMxList["+i+"].totalC"));
+						emkSizeTotalEntity.setTotalD(map.get("orderMxList["+i+"].totalD"));
+						emkSizeTotalEntity.setTotalE(map.get("orderMxList["+i+"].totalE"));
+						emkSizeTotalEntity.setTotalF(map.get("orderMxList["+i+"].totalF"));
+						emkSizeTotalEntity.setTotalG(map.get("orderMxList["+i+"].totalG"));
+						emkSizeTotalEntity.setTotalH(map.get("orderMxList["+i+"].totalH"));
+						emkSizeTotalEntity.setTotalI(map.get("orderMxList["+i+"].totalI"));
+						emkSizeTotalEntity.setTotalJ(map.get("orderMxList["+i+"].totalJ"));
+						emkSizeTotalEntity.setTotalK(map.get("orderMxList["+i+"].totalK"));
+						emkSizeTotalEntity.setpId(emkSizeCheckDetailEntity.getId());
+						systemService.save(emkSizeTotalEntity);
 					}
 				}
 			}
@@ -267,36 +345,104 @@ public class EmkSizeCheckController extends BaseController {
 	 */
 	@RequestMapping(params = "doUpdate")
 	@ResponseBody
-	public AjaxJson doUpdate(EmkSizeCheckEntity emkSizeCheck, HttpServletRequest request) {
+	public AjaxJson doUpdate(EmkSizeCheckEntity emkSizeCheck,EmkSizeEntity emkSize, HttpServletRequest request) {
 		String message = null;
 		AjaxJson j = new AjaxJson();
 		message = "尺寸检查表更新成功";
-		EmkSizeCheckEntity t = emkSizeCheckService.get(EmkSizeCheckEntity.class, emkSizeCheck.getId());
-		try {
-			MyBeanUtils.copyBeanNotNull2Bean(emkSizeCheck, t);
-			emkSizeCheckService.saveOrUpdate(t);
-			Map<String, String> map = ParameterUtil.getParamMaps(request.getParameterMap());
-			this.systemService.executeSql("delete from emk_enquiry_detail where ENQUIRY_ID=?", new Object[]{t.getId()});
+		if(Utils.notEmpty(emkSizeCheck.getId())){
+			EmkSizeCheckEntity t = emkSizeCheckService.get(EmkSizeCheckEntity.class, emkSizeCheck.getId());
+			EmkSizeEntity t2 = systemService.findUniqueByProperty(EmkSizeEntity.class,"formId",emkSizeCheck.getId());
+			try {
+				MyBeanUtils.copyBeanNotNull2Bean(emkSizeCheck, t);
+				emkSizeCheckService.saveOrUpdate(t);
 
-			String dataRows = (String) map.get("dataRowsVal");
-			if ((dataRows != null) && (!dataRows.isEmpty())) {
-				int rows = Integer.parseInt(dataRows);
-				for (int i = 0; i < rows; i++) {
-					EmkEnquiryDetailEntity orderMxEntity = new EmkEnquiryDetailEntity();
-					if ((map.get("orderMxList[" + i + "].color") != null) && (!((String) map.get("orderMxList[" + i + "].color")).equals(""))) {
-						orderMxEntity.setEnquiryId(t.getId());
-						orderMxEntity.setColor((String) map.get("orderMxList[" + i + "].color"));
-						orderMxEntity.setSize((String) map.get("orderMxList[" + i + "].size"));
-						orderMxEntity.setTotal(Integer.valueOf(Integer.parseInt((String) map.get("orderMxList[" + i + "].signTotal"))));
-						this.systemService.save(orderMxEntity);
+				emkSize.setId(null);
+				if(Utils.notEmpty(t2)){
+					MyBeanUtils.copyBeanNotNull2Bean(emkSize, t2);
+					systemService.saveOrUpdate(t2);
+				}else{
+					t2 = new EmkSizeEntity();
+					MyBeanUtils.copyBeanNotNull2Bean(emkSize, t2);
+					t2.setFormId(t.getId());
+					systemService.save(t2);
+				}
+
+				Map<String, String> map = ParameterUtil.getParamMaps(request.getParameterMap());
+				String dataRows = (String) map.get("orderMxListIDSR");
+				if (Utils.notEmpty(dataRows)) {
+					int rows = Integer.parseInt(dataRows);
+					this.systemService.executeSql("delete from emk_size_total where FIND_IN_SET(p_id,(SELECT GROUP_CONCAT(id) FROM emk_size_detail where size_check_id=?))", t.getId());
+					this.systemService.executeSql("delete from emk_size_detail where size_check_id=?", t.getId());
+
+					EmkSizeCheckDetailEntity emkSizeCheckDetailEntity = null;
+					EmkSizeTotalEntity emkSizeTotalEntity = null;
+					for (int i = 0; i < rows; i++) {
+						emkSizeCheckDetailEntity = new EmkSizeCheckDetailEntity();
+						emkSizeTotalEntity = new EmkSizeTotalEntity();
+						if (Utils.notEmpty(map.get("orderMxList["+i+"].buWei00"))) {
+							emkSizeCheckDetailEntity.setBuWei(map.get("orderMxList["+i+"].buWei00"));
+							emkSizeCheckDetailEntity.setSeqNum(String.valueOf((char)(i % 26 + (int) 'A')));
+							emkSizeCheckDetailEntity.setBtotalA(map.get("orderMxList["+i+"].totalA2"));
+							emkSizeCheckDetailEntity.setBtotalB(map.get("orderMxList["+i+"].totalB2"));
+							emkSizeCheckDetailEntity.setBtotalC(map.get("orderMxList["+i+"].totalC2"));
+							emkSizeCheckDetailEntity.setBtotalD(map.get("orderMxList["+i+"].totalD2"));
+							emkSizeCheckDetailEntity.setBtotalE(map.get("orderMxList["+i+"].totalE2"));
+							emkSizeCheckDetailEntity.setBtotalF(map.get("orderMxList["+i+"].totalF2"));
+							emkSizeCheckDetailEntity.setBtotalG(map.get("orderMxList["+i+"].totalG2"));
+							emkSizeCheckDetailEntity.setBtotalH(map.get("orderMxList["+i+"].totalH2"));
+							emkSizeCheckDetailEntity.setBtotalI(map.get("orderMxList["+i+"].totalI2"));
+							emkSizeCheckDetailEntity.setBtotalJ(map.get("orderMxList["+i+"].totalJ2"));
+							emkSizeCheckDetailEntity.setBtotalK(map.get("orderMxList["+i+"].totalK2"));
+
+							emkSizeCheckDetailEntity.setCtotalA(map.get("orderMxList["+i+"].totalA3"));
+							emkSizeCheckDetailEntity.setCtotalB(map.get("orderMxList["+i+"].totalB3"));
+							emkSizeCheckDetailEntity.setCtotalC(map.get("orderMxList["+i+"].totalC3"));
+							emkSizeCheckDetailEntity.setCtotalD(map.get("orderMxList["+i+"].totalD3"));
+							emkSizeCheckDetailEntity.setCtotalE(map.get("orderMxList["+i+"].totalE3"));
+							emkSizeCheckDetailEntity.setCtotalF(map.get("orderMxList["+i+"].totalF3"));
+							emkSizeCheckDetailEntity.setCtotalG(map.get("orderMxList["+i+"].totalG3"));
+							emkSizeCheckDetailEntity.setCtotalH(map.get("orderMxList["+i+"].totalH3"));
+							emkSizeCheckDetailEntity.setCtotalI(map.get("orderMxList["+i+"].totalI3"));
+							emkSizeCheckDetailEntity.setCtotalJ(map.get("orderMxList["+i+"].totalJ3"));
+							emkSizeCheckDetailEntity.setCtotalK(map.get("orderMxList["+i+"].totalK3"));
+
+							emkSizeCheckDetailEntity.setDtotalA(map.get("orderMxList["+i+"].totalA4"));
+							emkSizeCheckDetailEntity.setDtotalB(map.get("orderMxList["+i+"].totalB4"));
+							emkSizeCheckDetailEntity.setDtotalC(map.get("orderMxList["+i+"].totalC4"));
+							emkSizeCheckDetailEntity.setDtotalD(map.get("orderMxList["+i+"].totalD4"));
+							emkSizeCheckDetailEntity.setDtotalE(map.get("orderMxList["+i+"].totalE4"));
+							emkSizeCheckDetailEntity.setDtotalF(map.get("orderMxList["+i+"].totalF4"));
+							emkSizeCheckDetailEntity.setDtotalG(map.get("orderMxList["+i+"].totalG4"));
+							emkSizeCheckDetailEntity.setDtotalH(map.get("orderMxList["+i+"].totalH4"));
+							emkSizeCheckDetailEntity.setDtotalI(map.get("orderMxList["+i+"].totalI4"));
+							emkSizeCheckDetailEntity.setDtotalJ(map.get("orderMxList["+i+"].totalJ4"));
+							emkSizeCheckDetailEntity.setDtotalK(map.get("orderMxList["+i+"].totalK4"));
+
+							emkSizeCheckDetailEntity.setSizeCheckId(emkSizeCheck.getId());
+							systemService.save(emkSizeCheckDetailEntity);
+
+							emkSizeTotalEntity.setTotalA(map.get("orderMxList["+i+"].totalA"));
+							emkSizeTotalEntity.setTotalB(map.get("orderMxList["+i+"].totalB"));
+							emkSizeTotalEntity.setTotalC(map.get("orderMxList["+i+"].totalC"));
+							emkSizeTotalEntity.setTotalD(map.get("orderMxList["+i+"].totalD"));
+							emkSizeTotalEntity.setTotalE(map.get("orderMxList["+i+"].totalE"));
+							emkSizeTotalEntity.setTotalF(map.get("orderMxList["+i+"].totalF"));
+							emkSizeTotalEntity.setTotalG(map.get("orderMxList["+i+"].totalG"));
+							emkSizeTotalEntity.setTotalH(map.get("orderMxList["+i+"].totalH"));
+							emkSizeTotalEntity.setTotalI(map.get("orderMxList["+i+"].totalI"));
+							emkSizeTotalEntity.setTotalJ(map.get("orderMxList["+i+"].totalJ"));
+							emkSizeTotalEntity.setTotalK(map.get("orderMxList["+i+"].totalK"));
+							emkSizeTotalEntity.setpId(emkSizeCheckDetailEntity.getId());
+							systemService.save(emkSizeTotalEntity);
+						}
 					}
 				}
+				systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
+			} catch (Exception e) {
+				e.printStackTrace();
+				message = "尺寸检查表更新失败";
+				throw new BusinessException(e.getMessage());
 			}
-			systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
-		} catch (Exception e) {
-			e.printStackTrace();
-			message = "尺寸检查表更新失败";
-			throw new BusinessException(e.getMessage());
 		}
 		j.setMsg(message);
 		return j;
@@ -312,13 +458,11 @@ public class EmkSizeCheckController extends BaseController {
 	public ModelAndView goAdd(EmkSizeCheckEntity emkSizeCheck, HttpServletRequest req) {
 		req.setAttribute("kdDate", DateUtils.format(new Date(), "yyyy-MM-dd"));
 
-		List<Map<String, Object>> codeList = this.systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", new Object[]{"A03"});
-		req.setAttribute("categoryEntityList", codeList);
 		TSUser user = (TSUser) req.getSession().getAttribute("LOCAL_CLINET_USER");
-		Map orderNum = this.systemService.findOneForJdbc("select count(0)+1 orderNum from emk_size_check where sys_org_code=?", new Object[]{user.getCurrentDepart().getOrgCode()});
-		req.setAttribute("sizeCheckNum","CCJC" + DateUtils.format(new Date(), "yyMMdd") + String.format("%04d", new Object[]{Integer.valueOf(Integer.parseInt(orderNum.get("orderNum").toString()))}));
+		Map orderNum = this.systemService.findOneForJdbc("select count(0)+1 orderNum from emk_size_check where sys_org_code=?", user.getCurrentDepart().getOrgCode());
+		req.setAttribute("sizeCheckNum","CCJC" + DateUtils.format(new Date(), "yyMMdd") + String.format("%04d", Integer.parseInt(orderNum.get("orderNum").toString())));
 		if (StringUtil.isNotEmpty(emkSizeCheck.getId())) {
-			emkSizeCheck = emkSizeCheckService.getEntity(EmkSizeCheckEntity.class, emkSizeCheck.getId());
+			emkSizeCheck = systemService.findUniqueByProperty(EmkSizeCheckEntity.class,"qualityCheckId",emkSizeCheck.getId());
 			req.setAttribute("emkSizeCheckPage", emkSizeCheck);
 		}
 		return new ModelAndView("com/emk/check/sizecheck/emkSizeCheck-add");
@@ -330,7 +474,7 @@ public class EmkSizeCheckController extends BaseController {
 	 */
 	@RequestMapping(params = "goUpdate")
 	public ModelAndView goUpdate(EmkSizeCheckEntity emkSizeCheck, HttpServletRequest req) {
-		List<Map<String, Object>> codeList = this.systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", new Object[]{"A03"});
+		List<Map<String, Object>> codeList = this.systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", "A03");
 		req.setAttribute("categoryEntityList", codeList);
 		if (StringUtil.isNotEmpty(emkSizeCheck.getId())) {
 			emkSizeCheck = emkSizeCheckService.getEntity(EmkSizeCheckEntity.class, emkSizeCheck.getId());
@@ -338,9 +482,10 @@ public class EmkSizeCheckController extends BaseController {
 		}
 		return new ModelAndView("com/emk/check/sizecheck/emkSizeCheck-update");
 	}
+
 	@RequestMapping(params = "goUpdate2")
 	public ModelAndView goUpdate2(EmkSizeCheckEntity emkSizeCheck, HttpServletRequest req) {
-		List<Map<String, Object>> codeList = this.systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", new Object[]{"A03"});
+		List<Map<String, Object>> codeList = this.systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", "A03");
 		req.setAttribute("categoryEntityList", codeList);
 		if (StringUtil.isNotEmpty(emkSizeCheck.getId())) {
 			emkSizeCheck = emkSizeCheckService.getEntity(EmkSizeCheckEntity.class, emkSizeCheck.getId());

@@ -8,9 +8,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
-@Entity
-@Table(name = "emk_price", schema = "")
-public class EmkPriceEntity2 implements Serializable {
+public class EmkPriceEntityA implements Serializable {
     private String id;
     private String createName;
     private String createBy;
@@ -63,18 +61,12 @@ public class EmkPriceEntity2 implements Serializable {
     @Excel(name = "业务跟单员")
     private String tracer;
     private String tracerName;
-    @Excel(name = "布面克重")
-    private String weight;
-    @Excel(name = "布面成分")
-    private String chengf;
     @Excel(name = "业务部门")
     private String businesseDeptName;
     @Excel(name = "业务部门ID")
     private String businesseDeptId;
     @Excel(name = "状态")
     private String state;
-    @Excel(name = "备注")
-    private String remark;
 
     @Excel(name = "报价类型")
     private String bjlx;
@@ -84,14 +76,16 @@ public class EmkPriceEntity2 implements Serializable {
     private String guoJia;
     @Excel(name = "报价币种")
     private String bz;
-    @Excel(name = "目标价位")
-    private Double targetPrice;
+    @Excel(name = "布面克重")
+    private String weight;
+    @Excel(name = "布面成分")
+    private String chengf;
+
     @Excel(name = "预计数量")
     private Integer evlateTotal;
     @Excel(name = "尺码范围")
     private String sizeFawei;
-    @Excel(name = "管理费")
-    private Double glMoney;
+
     @Excel(name = "测试费")
     private Double testMoney;
     @Excel(name = "利润")
@@ -124,6 +118,8 @@ public class EmkPriceEntity2 implements Serializable {
     private Double sumYin;
     @Excel(name = "总计")
     private Double sumMoney;
+    @Excel(name = "目标价位")
+    private Double targetPrice;
     @Excel(name = "目标价")
     private Double targetJw;
     @Excel(name = "外币价")
@@ -136,10 +132,12 @@ public class EmkPriceEntity2 implements Serializable {
     private Double argeePrice;
     @Excel(name = "毛利润率")
     private Double maoRate;
-    @Excel(name = "供应商同意价")
+    @Excel(name = "买家同意价")
     private Double gysArgeePrice;
-    @Excel(name = "客户同意价")
+    @Excel(name = "卖家同意价")
     private Double cusArgeePrice;
+    @Excel(name = "最终确认价")
+    private Double confirmPrice;
     @Excel(name = "币种")
     private String bizhong;
 
@@ -499,15 +497,6 @@ public class EmkPriceEntity2 implements Serializable {
         this.state = state;
     }
 
-    @Column(name = "REMARK", nullable = true, length = 256)
-    public String getRemark() {
-        return this.remark;
-    }
-
-    public void setRemark(String remark) {
-        this.remark = remark;
-    }
-
     @Column(name = "BJLX", nullable = true, length = 32)
     public String getBjlx() {
         return this.bjlx;
@@ -569,15 +558,6 @@ public class EmkPriceEntity2 implements Serializable {
 
     public void setSizeFawei(String sizeFawei) {
         this.sizeFawei = sizeFawei;
-    }
-
-    @Column(name = "GL_MONEY", nullable = true, scale = 2, length = 32)
-    public Double getGlMoney() {
-        return this.glMoney;
-    }
-
-    public void setGlMoney(Double glMoney) {
-        this.glMoney = glMoney;
     }
 
     @Column(name = "TEST_MONEY", nullable = true, scale = 2, length = 32)
@@ -796,13 +776,13 @@ public class EmkPriceEntity2 implements Serializable {
         this.dyNo = dyNo;
     }
 
-    @Column(name = "target_jw", nullable = true, length = 32)
-    public Double getTargetJw() {
-        return targetJw;
+    @Column(name = "confirm_price", nullable = true, length = 32)
+    public Double getConfirmPrice() {
+        return confirmPrice;
     }
 
-    public void setTargetJw(Double targetJw) {
-        this.targetJw = targetJw;
+    public void setConfirmPrice(Double confirmPrice) {
+        this.confirmPrice = confirmPrice;
     }
 
     @Column(name = "sum_zj", nullable = true, length = 32)
@@ -821,5 +801,14 @@ public class EmkPriceEntity2 implements Serializable {
 
     public void setSumGl(Double sumGl) {
         this.sumGl = sumGl;
+    }
+
+    @Column(name = "target_jw", nullable = true, length = 32)
+    public Double getTargetJw() {
+        return targetJw;
+    }
+
+    public void setTargetJw(Double targetJw) {
+        this.targetJw = targetJw;
     }
 }

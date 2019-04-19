@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@include file="/context/mytags.jsp"%>
 <script type="text/javascript">
-    var flaggx = 0;
+    var flaggx = ${fn:length(emkSampleGxEntities)};
     var currentFlaggx = 0;
 
 
@@ -13,6 +13,7 @@
     });
     $('#addBtngx').bind('click', function(){
         flaggx++;
+        $("#dseqNum").html(flaggx);
         var tr =  $("#add_jeecgOrderProduct_tabletgx2_templategx tr").clone();
         $("#add_jeecgOrderProduct_tabletgx").append(tr);
 
@@ -44,7 +45,7 @@
             width:'auto',
             fixFooter:false
         });
-        <c:if test="${param.priceId eq null || param.priceId eq ''}">
+        <c:if test="${param.priceId eq null || param.priceId eq '' || fn:length(emkSampleGxEntities) eq 0}">
             $('#addBtngx').click();
         </c:if>
     });
@@ -58,7 +59,8 @@
 <table style="width:100%;display: none;border: 1px;" cellpadding="0" cellspacing="2" border="0">
     <tbody id="add_jeecgOrderProduct_tabletgx2_templategx">
     <tr>
-        <td align="center"><input style="width: 40px;" type="checkbox" name="ck" />
+        <td align="center"><input style="width: 40px;" type="checkbox" name="ck" /></td>
+        <td align="center" width="40"><span id="dseqNum"></span></td>
         <td align="center"><input id="gxmc00" nullmsg="请输入工序名称！"  errormsg="请输入工序名称"  name="orderMxList[#index#].gxmc" maxlength="100" type="text" value=""
                                   style="width: 86%;" ignore="ignore"></td>
         <td align="center"><input id="gxdjhs00" nullmsg="请输入单件耗时！"  errormsg="请输入单件耗时" name="orderMxList[#index#].gxdjhs" maxlength="100" type="text" value=""
@@ -79,7 +81,8 @@
     <div class="table-c">
         <table id="mxtbgx" width="70%" border="0" cellspacing="0" cellpadding="0">
             <tr bgcolor="#F8F8F8" style="height: 32px;" >
-                <td align="center"  width="40">序号</td>
+                <td align="center"  width="40"><input type="checkbox" onclick="selectAll(this.checked)" /></td>
+                <td align="center" width="40">序号</td>
                 <td align="center"  width="150">工序名称</td>
                 <td align="center"  width="150">单件耗时</td>
                 <td align="center"  width="150">单位</td>
@@ -91,9 +94,9 @@
             <c:if test="${fn:length(emkSampleGxEntities)  > 0 }">
                 <c:forEach items="${emkSampleGxEntities}" var="poVal" varStatus="status">
                     <tr>
-                        <td align="center"><input style="width: 40px;" type="checkbox" name="ck" value="${poVal.id}"/>
-                        </td>
-                        <td align="center"><input  nullmsg="请输入工序名称！"  errormsg="请输入工序名称" value="${poVal.gxmc}"name="orderMxList[${status.index}].gxmc" maxlength="100" type="text" value=""
+                        <td align="center"><input style="width: 40px;" type="checkbox" name="ck" value="${poVal.id}"/></td>
+                        <td align="center" width="40">${status.index+1}</td>
+                        <td align="center"><input  nullmsg="请输入工序名称！"  errormsg="请输入工序名称" value="${poVal.gxmc}" name="orderMxList[${status.index}].gxmc" maxlength="100" type="text" value=""
                                                    style="width: 86%;" ignore="ignore"></td>
                         <td align="center"><input  nullmsg="请输入单件耗时！"  errormsg="请输入单件耗时" value="${poVal.djhs}" name="orderMxList[${status.index}].gxdjhs" maxlength="100" type="text" value=""
                                                    style="width: 86%;" ignore="ignore"></td>

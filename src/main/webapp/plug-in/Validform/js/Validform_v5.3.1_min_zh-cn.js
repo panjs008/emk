@@ -693,7 +693,7 @@
 		       var params=validType.split(",");
 		       var  ajaxResultValue=Validform.util.ajax_check(params[0],params[1],$(this).val(),$("input[name='"+params[2]+"']").val());
 			   var resultParams= new Array(); //定义一数组
-                resultParams=ajaxResultValue.split("+"); //字符分割     
+                resultParams=ajaxResultValue.split("+"); //字符分割
 			   if (resultParams[1] == "false" && tipType == 1) {
                     msgobj.find(".Validform_info").html(resultParams[0]);
                     msghidden = false;
@@ -839,6 +839,10 @@
 				_this[0].validform_valid = "true";
 			}
 			if (!bool) {
+				//var setInputId = $(_this[0]).attr("id");
+				//console.log(setInputId);
+				//$(_this[0]).attr("value","");
+				//$("#"+setInputId).val("");
 				Validform.util.showmsg.call(curform, flag.info,
 						settings.tiptype, {
 							obj : $(this),
@@ -1000,7 +1004,7 @@
 								errorobj = null;
 							});
 			
-			
+
 			if (settings.showAllError) {
 				curform.find(".Validform_error:first").focus();
 			}

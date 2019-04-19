@@ -223,10 +223,9 @@ function createdetailwindow(title, addurl,width,height) {
 		width =  window.top.document.body.offsetWidth;
 		height =window.top.document.body.offsetHeight-50;
 		addurl = addurl + "&wVal="+window.top.document.body.offsetWidth*0.97+ "px&hVal="+(window.top.document.body.offsetHeight-120)+"px&hVal2="+(window.top.document.body.offsetHeight-160)+"px";
-
 	}
 	if(addurl.indexOf('emkSampleRequiredController.do?goAdd')>=0 || addurl.indexOf('emkSampleRequiredController.do?goUpdate')>=0){
-		height =window.top.document.body.offsetHeight-50;
+		height =window.top.document.body.offsetHeight-100;
 		addurl = addurl + "&wVal="+width+ "px&hVal="+(window.top.document.body.offsetHeight-120)+"px&hVal2="+(window.top.document.body.offsetHeight-160)+"px";
 	}
 	if(addurl.indexOf('emkYptzdController.do?goAdd')>=0 || addurl.indexOf('emkYptzdController.do?goUpdate')>=0){
@@ -245,9 +244,38 @@ function createdetailwindow(title, addurl,width,height) {
 		width =  window.top.document.body.offsetWidth;
 		height =window.top.document.body.offsetHeight-50;
 		addurl = addurl + "&wVal="+window.top.document.body.offsetWidth*0.97+ "px&hVal="+(window.top.document.body.offsetHeight-120)+"px&hVal2="+(window.top.document.body.offsetHeight-160)+"px";
-
 	}
-
+	if(addurl.indexOf('emkMaterialPactController.do?goAdd')>=0 || addurl.indexOf('emkMaterialPactController.do?goUpdate')>=0){
+		height =window.top.document.body.offsetHeight-80;
+	}
+	if(addurl.indexOf('emkMaterialPactController.do?goAdd2')>=0 || addurl.indexOf('emkMaterialPactController.do?goUpdate2')>=0){
+		height =window.top.document.body.offsetHeight-80;
+	}
+	if(addurl.indexOf('emkContractController.do?goAdd')>=0 || addurl.indexOf('emkContractController.do?goUpdate')>=0){
+		height =window.top.document.body.offsetHeight-80;
+	}
+	if(addurl.indexOf('emkCargoSpaceController.do?goAdd')>=0 || addurl.indexOf('emkCargoSpaceController.do?goUpdate')>=0){
+		height =window.top.document.body.offsetHeight-80;
+	}
+	if(addurl.indexOf('emkSsysycyController.do?goAdd')>=0 || addurl.indexOf('emkSsysycyController.do?goUpdate')>=0){
+		height =window.top.document.body.offsetHeight-80;
+	}
+	if(addurl.indexOf('com/emk/storage/enquiry/emkEnquiry-process')>=0){
+		height =window.top.document.body.offsetHeight-100;
+	}
+	console.log(addurl);
+	if(addurl.indexOf('com/emk/storage/material/emkMaterial-process')>=0){
+		height =window.top.document.body.offsetHeight-100;
+	}
+	if(addurl.indexOf('com/emk/storage/price/emkPrice-process')>=0){
+		width =  window.top.document.body.offsetWidth;
+		height =window.top.document.body.offsetHeight-100;
+		addurl = addurl + "&wVal="+window.top.document.body.offsetWidth*0.97+ "px&hVal="+(window.top.document.body.offsetHeight-190)+"px&hVal2="+(window.top.document.body.offsetHeight-230)+"px";
+	}
+	if(addurl.indexOf('com/emk/storage/samplerequired/emkSampleRequired-process')>=0){
+		height =window.top.document.body.offsetHeight-100;
+		addurl = addurl + "&wVal="+window.top.document.body.offsetWidth*0.97+ "px&hVal="+(window.top.document.body.offsetHeight-190)+"px&hVal2="+(window.top.document.body.offsetHeight-230)+"px";
+	}
 	if(typeof(windowapi) == 'undefined'){
 		$.dialog({
 			content: 'url:'+addurl,
@@ -476,12 +504,10 @@ function createwindow(title, addurl,width,height) {
 	if(addurl.indexOf('emkSampleRequiredController.do?goAdd')>=0 || addurl.indexOf('emkSampleRequiredController.do?goUpdate')>=0){
 		height =window.top.document.body.offsetHeight-50;
 		addurl = addurl + "&wVal="+width+ "px&hVal="+(window.top.document.body.offsetHeight-120)+"px&hVal2="+(window.top.document.body.offsetHeight-160)+"px";
-
 	}
 	if(addurl.indexOf('emkYptzdController.do?goAdd')>=0 || addurl.indexOf('emkYptzdController.do?goUpdate')>=0){
 		height =window.top.document.body.offsetHeight-50;
 		addurl = addurl + "&wVal="+width+ "px&hVal="+(window.top.document.body.offsetHeight-120)+"px&hVal2="+(window.top.document.body.offsetHeight-160)+"px";
-
 	}
 	if(addurl.indexOf('emkProduceController.do?goAdd')>=0 || addurl.indexOf('emkProduceController.do?goUpdate')>=0){
 		width =  window.top.document.body.offsetWidth;
@@ -497,10 +523,42 @@ function createwindow(title, addurl,width,height) {
 		addurl = addurl + "&wVal="+window.top.document.body.offsetWidth*0.97+ "px&hVal="+(window.top.document.body.offsetHeight-120)+"px&hVal2="+(window.top.document.body.offsetHeight-160)+"px";
 
 	}
+	if(addurl.indexOf('emkMaterialPactController.do?goAdd')>=0 || addurl.indexOf('emkMaterialPactController.do?goUpdate')>=0){
+		height =window.top.document.body.offsetHeight-80;
+	}
+	if(addurl.indexOf('emkMaterialPactController.do?goAdd2')>=0 || addurl.indexOf('emkMaterialPactController.do?goUpdate2')>=0){
+		height =window.top.document.body.offsetHeight-80;
+	}
+	if(addurl.indexOf('emkContractController.do?goAdd')>=0 || addurl.indexOf('emkContractController.do?goUpdate')>=0){
+		height =window.top.document.body.offsetHeight-80;
+	}
+	if(addurl.indexOf('emkSsysycyController.do?goAdd')>=0 || addurl.indexOf('emkSsysycyController.do?goUpdate')>=0){
+		height =window.top.document.body.offsetHeight-80;
+	}
+	if(addurl.indexOf('emkQualityCheckController.do?goAdd')>=0 || addurl.indexOf('emkQualityCheckController.do?goUpdate')>=0){
+		height =window.top.document.body.offsetHeight-50;
+		addurl = addurl + "&wVal="+width+ "px&hVal="+(window.top.document.body.offsetHeight-120)+"px&hVal2="+(window.top.document.body.offsetHeight-160)+"px";
+	}
+	if(addurl.indexOf('com/emk/storage/enquiry/emkEnquiry-process')>=0){
+		height =window.top.document.body.offsetHeight-100;
+	}
+	if(addurl.indexOf('com/emk/storage/material/emkMaterial-process')>=0){
+		height =window.top.document.body.offsetHeight-100;
+	}
+	if(addurl.indexOf('com/emk/storage/price/emkPrice-process')>=0){
+		width =  window.top.document.body.offsetWidth;
+		height =window.top.document.body.offsetHeight-100;
+		addurl = addurl + "&wVal="+window.top.document.body.offsetWidth*0.97+ "px&hVal="+(window.top.document.body.offsetHeight-190)+"px&hVal2="+(window.top.document.body.offsetHeight-230)+"px";
+	}
+	if(addurl.indexOf('com/emk/storage/samplerequired/emkSampleRequired-process')>=0){
+		height =window.top.document.body.offsetHeight-100;
+		addurl = addurl + "&wVal="+window.top.document.body.offsetWidth*0.97+ "px&hVal="+(window.top.document.body.offsetHeight-190)+"px&hVal2="+(window.top.document.body.offsetHeight-230)+"px";
+	}
 	if(addurl.indexOf('emkPriceController.do?goAdd')>=0 || addurl.indexOf('emkPriceController.do?goUpdate')>=0
 			|| addurl.indexOf('emkYptzdController.do?goAdd')>=0 || addurl.indexOf('emkYptzdController.do?goUpdate')>=0
 			|| addurl.indexOf('emkYptzdController.do?goAdd')>=0 || addurl.indexOf('emkYptzdController.do?goUpdate')>=0
 			|| addurl.indexOf('emkProOrderController.do?goAdd')>=0 || addurl.indexOf('emkProOrderController.do?goUpdate')>=0
+			|| addurl.indexOf('emkQualityCheckController.do?goAdd')>=0 || addurl.indexOf('emkQualityCheckController.do?goUpdate')>=0
 			|| addurl.indexOf('emkSampleRequiredController.do?goAdd')>=0 || addurl.indexOf('emkSampleRequiredController.do?goUpdate')>=0){
 		$.dialog({
 			content: 'url:'+addurl,

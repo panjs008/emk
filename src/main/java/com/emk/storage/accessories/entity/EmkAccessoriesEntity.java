@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.GenericGenerator;
 import org.jeecgframework.poi.excel.annotation.Excel;
 
@@ -81,7 +82,8 @@ public class EmkAccessoriesEntity implements Serializable {
     @Excel(name = "业务跟单员")
     private String tracer;
     private String tracerName;
-
+    private String processName;
+    private String formType;
 
 
     @Id
@@ -442,5 +444,24 @@ public class EmkAccessoriesEntity implements Serializable {
 
     public void setDyxqdDate(String dyxqdDate) {
         this.dyxqdDate = dyxqdDate;
+    }
+
+    @Formula("(select CONCAT(p.NAME_,'-',p.TASK_DEF_KEY_) from act_ru_task p where p.ASSIGNEE_ = id limit 0,1)")
+    @Column(name = "process_name", nullable = true, length = 32)
+    public String getProcessName() {
+        return processName;
+    }
+
+    public void setProcessName(String processName) {
+        this.processName = processName;
+    }
+
+    @Column(name = "form_type", nullable = true, length = 32)
+    public String getFormType() {
+        return formType;
+    }
+
+    public void setFormType(String formType) {
+        this.formType = formType;
     }
 }

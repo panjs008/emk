@@ -8,9 +8,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.emk.check.qualitycheck.entity.EmkQualityCheckEntity;
+import com.emk.check.sizecheck.entity.EmkSizeEntity;
+import com.emk.check.sizecheck.entity.EmkSizeTotalEntity;
+import com.emk.produce.invoices.entity.EmkInvoicesDetailEntity;
 import com.emk.storage.enquirydetail.entity.EmkEnquiryDetailEntity;
 import com.emk.util.FlowUtil;
 import com.emk.util.ParameterUtil;
+import com.emk.util.Utils;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.TaskService;
@@ -131,10 +135,24 @@ public class EmkCheckController extends BaseController {
 		request.setAttribute("categoryEntityList", codeList);
 		Map map = ParameterUtil.getParamMaps(request.getParameterMap());
 		if ((map.get("proOrderId") != null) && (!map.get("proOrderId").equals(""))) {
-			List<EmkEnquiryDetailEntity> emkProOrderDetailEntities = this.systemService.findHql("from EmkEnquiryDetailEntity where enquiryId=?", new Object[]{map.get("proOrderId")});
+			List<EmkEnquiryDetailEntity> emkProOrderDetailEntities = this.systemService.findHql("from EmkEnquiryDetailEntity where enquiryId=?", map.get("proOrderId"));
 			request.setAttribute("emkProOrderDetailEntities", emkProOrderDetailEntities);
 		}
 		return new ModelAndView("com/emk/check/check/orderMxList");
+	}
+
+	@RequestMapping(params = "detailMxList")
+	public ModelAndView detailMxList(HttpServletRequest request) {
+		Map map = ParameterUtil.getParamMaps(request.getParameterMap());
+		List<Map<String, Object>> list = systemService.findForJdbc("select typecode,typename from t_s_type t2 left join t_s_typegroup t1 on t1.ID=t2.typegroupid where typegroupcode='color'");
+		request.setAttribute("colorList", list);
+		list = systemService.findForJdbc("select typecode,typename from t_s_type t2 left join t_s_typegroup t1 on t1.ID=t2.typegroupid where typegroupcode='size'");
+		request.setAttribute("sizeList", list);
+		if (Utils.notEmpty(map.get("invoicesId"))) {
+			List<EmkInvoicesDetailEntity> emkInvoicesDetailEntities = systemService.findHql("from EmkInvoicesDetailEntity where invoicesId=?", map.get("invoicesId"));
+			request.setAttribute("emkInvoicesDetailEntities", emkInvoicesDetailEntities);
+		}
+		return new ModelAndView("com/emk/check/check/detailMxList");
 	}
 
 	/**
@@ -208,6 +226,7 @@ public class EmkCheckController extends BaseController {
 				EmkCheckEntity emkCheck = systemService.getEntity(EmkCheckEntity.class, 
 				id
 				);
+				systemService.executeSql("delete from emk_invoices_detail where invoices_id = ?",id);
 				emkCheckService.delete(emkCheck);
 				systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
 			}
@@ -229,26 +248,60 @@ public class EmkCheckController extends BaseController {
 	 */
 	@RequestMapping(params = "doAdd")
 	@ResponseBody
-	public AjaxJson doAdd(EmkCheckEntity emkCheck, HttpServletRequest request) {
+	public AjaxJson doAdd(EmkCheckEntity emkCheck,EmkSizeEntity emkSize, HttpServletRequest request) {
 		String message = null;
 		AjaxJson j = new AjaxJson();
 		message = "验货申请表添加成功";
 		try{
 			emkCheck.setState("0");
-
 			emkCheckService.save(emkCheck);
+			emkSize.setFormId(emkCheck.getId());
+			systemService.save(emkSize);
 			Map<String, String> map = ParameterUtil.getParamMaps(request.getParameterMap());
-			String dataRows = (String) map.get("dataRowsVal");
-			if ((dataRows != null) && (!dataRows.isEmpty())) {
+			String dataRows = (String) map.get("orderMxListIDSR");
+			if (Utils.notEmpty(dataRows)) {
 				int rows = Integer.parseInt(dataRows);
+				EmkInvoicesDetailEntity emkInvoicesDetailEntity = null;
+				EmkSizeTotalEntity emkSizeTotalEntity = null;
 				for (int i = 0; i < rows; i++) {
-					EmkEnquiryDetailEntity orderMxEntity = new EmkEnquiryDetailEntity();
-					if ((map.get("orderMxList[" + i + "].color") != null) && (!((String) map.get("orderMxList[" + i + "].color")).equals(""))) {
-						orderMxEntity.setEnquiryId(emkCheck.getId());
-						orderMxEntity.setColor((String) map.get("orderMxList[" + i + "].color"));
-						orderMxEntity.setSize((String) map.get("orderMxList[" + i + "].size"));
-						orderMxEntity.setTotal(Integer.valueOf(Integer.parseInt((String) map.get("orderMxList[" + i + "].signTotal"))));
-						this.systemService.save(orderMxEntity);
+					emkInvoicesDetailEntity = new EmkInvoicesDetailEntity();
+					if (Utils.notEmpty(map.get("orderMxList["+i+"].orderNo00"))) {
+						emkInvoicesDetailEntity.setOrderNo(map.get("orderMxList["+i+"].orderNo00"));
+						emkInvoicesDetailEntity.setSampleNo(map.get("orderMxList["+i+"].sampleNo00"));
+						emkInvoicesDetailEntity.setSampleNoDesc(map.get("orderMxList["+i+"].sampleDesc00"));
+
+						emkInvoicesDetailEntity.setColor(map.get("orderMxList["+i+"].color"));
+						emkInvoicesDetailEntity.setSize(map.get("orderMxList["+i+"].size"));
+
+						if(Utils.notEmpty(map.get("orderMxList["+i+"].signTotal00"))){
+							emkInvoicesDetailEntity.setTotal(Integer.parseInt(map.get("orderMxList["+i+"].signTotal00")));
+						}
+						if(Utils.notEmpty(map.get("orderMxList["+i+"].sumTotal"))){
+							emkInvoicesDetailEntity.setSumTotal(Integer.parseInt(map.get("orderMxList["+i+"].sumTotal")));
+						}
+						if(Utils.notEmpty(map.get("orderMxList["+i+"].signPrice"))) {
+							emkInvoicesDetailEntity.setPrice(Double.parseDouble(map.get("orderMxList["+i+"].signPrice")));
+						}
+						emkInvoicesDetailEntity.setMoney(map.get("orderMxList["+i+"].money"));
+						emkInvoicesDetailEntity.setSumMoney(map.get("orderMxList["+i+"].sumMoney"));
+
+						emkInvoicesDetailEntity.setInvoicesId(emkCheck.getId());
+						systemService.save(emkInvoicesDetailEntity);
+
+						emkSizeTotalEntity = new EmkSizeTotalEntity();
+						emkSizeTotalEntity.setTotalA(map.get("orderMxList["+i+"].totalA"));
+						emkSizeTotalEntity.setTotalB(map.get("orderMxList["+i+"].totalB"));
+						emkSizeTotalEntity.setTotalC(map.get("orderMxList["+i+"].totalC"));
+						emkSizeTotalEntity.setTotalD(map.get("orderMxList["+i+"].totalD"));
+						emkSizeTotalEntity.setTotalE(map.get("orderMxList["+i+"].totalE"));
+						emkSizeTotalEntity.setTotalF(map.get("orderMxList["+i+"].totalF"));
+						emkSizeTotalEntity.setTotalG(map.get("orderMxList["+i+"].totalG"));
+						emkSizeTotalEntity.setTotalH(map.get("orderMxList["+i+"].totalH"));
+						emkSizeTotalEntity.setTotalI(map.get("orderMxList["+i+"].totalI"));
+						emkSizeTotalEntity.setTotalJ(map.get("orderMxList["+i+"].totalJ"));
+						emkSizeTotalEntity.setTotalK(map.get("orderMxList["+i+"].totalK"));
+						emkSizeTotalEntity.setpId(emkInvoicesDetailEntity.getId());
+						systemService.save(emkSizeTotalEntity);
 					}
 				}
 			}
@@ -270,29 +323,77 @@ public class EmkCheckController extends BaseController {
 	 */
 	@RequestMapping(params = "doUpdate")
 	@ResponseBody
-	public AjaxJson doUpdate(EmkCheckEntity emkCheck, HttpServletRequest request) {
+	public AjaxJson doUpdate(EmkCheckEntity emkCheck, EmkSizeEntity emkSize, HttpServletRequest request) {
 		String message = null;
 		AjaxJson j = new AjaxJson();
 		message = "验货申请表更新成功";
-		EmkCheckEntity t = emkCheckService.get(EmkCheckEntity.class, emkCheck.getId());
+		Map<String, String> map = ParameterUtil.getParamMaps(request.getParameterMap());
+		EmkCheckEntity t = emkCheckService.get(EmkCheckEntity.class, map.get("checkId"));
+		EmkSizeEntity t2 = systemService.findUniqueByProperty(EmkSizeEntity.class,"formId",t.getId());
+
 		try {
 			emkCheck.setState("0");
+			emkCheck.setId(null);
 			MyBeanUtils.copyBeanNotNull2Bean(emkCheck, t);
 			emkCheckService.saveOrUpdate(t);
-			Map<String, String> map = ParameterUtil.getParamMaps(request.getParameterMap());
-			this.systemService.executeSql("delete from emk_enquiry_detail where ENQUIRY_ID=?", new Object[]{t.getId()});
 
-			String dataRows = (String) map.get("dataRowsVal");
-			if ((dataRows != null) && (!dataRows.isEmpty())) {
+			emkSize.setId(null);
+			if(Utils.notEmpty(t2)){
+				MyBeanUtils.copyBeanNotNull2Bean(emkSize, t2);
+				systemService.saveOrUpdate(t2);
+			}else{
+				t2 = new EmkSizeEntity();
+				MyBeanUtils.copyBeanNotNull2Bean(emkSize, t2);
+				t2.setFormId(t.getId());
+				systemService.save(t2);
+			}
+			String dataRows = (String) map.get("orderMxListIDSR");
+			if (Utils.notEmpty(dataRows)) {
+				this.systemService.executeSql("delete from emk_size_total where FIND_IN_SET(p_id,(SELECT GROUP_CONCAT(id) FROM emk_invoices_detail where invoices_id=?))", t.getId());
+				systemService.executeSql("delete from emk_invoices_detail where invoices_id = ?",t.getId());
 				int rows = Integer.parseInt(dataRows);
+
+				EmkInvoicesDetailEntity emkInvoicesDetailEntity = null;
+				EmkSizeTotalEntity emkSizeTotalEntity = null;
 				for (int i = 0; i < rows; i++) {
-					EmkEnquiryDetailEntity orderMxEntity = new EmkEnquiryDetailEntity();
-					if ((map.get("orderMxList[" + i + "].color") != null) && (!((String) map.get("orderMxList[" + i + "].color")).equals(""))) {
-						orderMxEntity.setEnquiryId(t.getId());
-						orderMxEntity.setColor((String) map.get("orderMxList[" + i + "].color"));
-						orderMxEntity.setSize((String) map.get("orderMxList[" + i + "].size"));
-						orderMxEntity.setTotal(Integer.valueOf(Integer.parseInt((String) map.get("orderMxList[" + i + "].signTotal"))));
-						this.systemService.save(orderMxEntity);
+					emkInvoicesDetailEntity = new EmkInvoicesDetailEntity();
+					if (Utils.notEmpty(map.get("orderMxList["+i+"].orderNo00"))) {
+						emkInvoicesDetailEntity.setOrderNo(map.get("orderMxList["+i+"].orderNo00"));
+						emkInvoicesDetailEntity.setSampleNo(map.get("orderMxList["+i+"].sampleNo00"));
+						emkInvoicesDetailEntity.setSampleNoDesc(map.get("orderMxList["+i+"].sampleDesc00"));
+
+						emkInvoicesDetailEntity.setColor(map.get("orderMxList["+i+"].color"));
+						emkInvoicesDetailEntity.setSize(map.get("orderMxList["+i+"].size"));
+
+						if(Utils.notEmpty(map.get("orderMxList["+i+"].signTotal00"))){
+							emkInvoicesDetailEntity.setTotal(Integer.parseInt(map.get("orderMxList["+i+"].signTotal00")));
+						}
+						if(Utils.notEmpty(map.get("orderMxList["+i+"].sumTotal"))){
+							emkInvoicesDetailEntity.setSumTotal(Integer.parseInt(map.get("orderMxList["+i+"].sumTotal")));
+						}
+						if(Utils.notEmpty(map.get("orderMxList["+i+"].signPrice"))) {
+							emkInvoicesDetailEntity.setPrice(Double.parseDouble(map.get("orderMxList["+i+"].signPrice")));
+						}
+						emkInvoicesDetailEntity.setMoney(map.get("orderMxList["+i+"].money"));
+						emkInvoicesDetailEntity.setSumMoney(map.get("orderMxList["+i+"].sumMoney"));
+
+						emkInvoicesDetailEntity.setInvoicesId(t.getId());
+						systemService.save(emkInvoicesDetailEntity);
+
+						emkSizeTotalEntity = new EmkSizeTotalEntity();
+						emkSizeTotalEntity.setTotalA(map.get("orderMxList["+i+"].totalA"));
+						emkSizeTotalEntity.setTotalB(map.get("orderMxList["+i+"].totalB"));
+						emkSizeTotalEntity.setTotalC(map.get("orderMxList["+i+"].totalC"));
+						emkSizeTotalEntity.setTotalD(map.get("orderMxList["+i+"].totalD"));
+						emkSizeTotalEntity.setTotalE(map.get("orderMxList["+i+"].totalE"));
+						emkSizeTotalEntity.setTotalF(map.get("orderMxList["+i+"].totalF"));
+						emkSizeTotalEntity.setTotalG(map.get("orderMxList["+i+"].totalG"));
+						emkSizeTotalEntity.setTotalH(map.get("orderMxList["+i+"].totalH"));
+						emkSizeTotalEntity.setTotalI(map.get("orderMxList["+i+"].totalI"));
+						emkSizeTotalEntity.setTotalJ(map.get("orderMxList["+i+"].totalJ"));
+						emkSizeTotalEntity.setTotalK(map.get("orderMxList["+i+"].totalK"));
+						emkSizeTotalEntity.setpId(emkInvoicesDetailEntity.getId());
+						systemService.save(emkSizeTotalEntity);
 					}
 				}
 			}
@@ -317,9 +418,9 @@ public class EmkCheckController extends BaseController {
 		TSUser user = (TSUser) req.getSession().getAttribute("LOCAL_CLINET_USER");
 
 		req.setAttribute("kdDate", DateUtils.format(new Date(), "yyyy-MM-dd"));
-		Map orderNum = this.systemService.findOneForJdbc("select count(0)+1 orderNum from emk_check where sys_org_code=?", new Object[]{user.getCurrentDepart().getOrgCode()});
-		req.setAttribute("checkNum","YHBH"  + DateUtils.format(new Date(), "yyMMdd") + String.format("%06d", new Object[]{Integer.valueOf(Integer.parseInt(orderNum.get("orderNum").toString()))}));
-		List<Map<String, Object>> codeList = this.systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", new Object[]{"A03"});
+		Map orderNum = this.systemService.findOneForJdbc("select count(0)+1 orderNum from emk_check where sys_org_code=?", user.getCurrentDepart().getOrgCode());
+		req.setAttribute("checkNum","YHBH"  + DateUtils.format(new Date(), "yyMMdd") + String.format("%06d", Integer.parseInt(orderNum.get("orderNum").toString())));
+		List<Map<String, Object>> codeList = this.systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", "A03");
 		req.setAttribute("categoryEntityList", codeList);
 		if (StringUtil.isNotEmpty(emkCheck.getId())) {
 			emkCheck = emkCheckService.getEntity(EmkCheckEntity.class, emkCheck.getId());
@@ -334,7 +435,7 @@ public class EmkCheckController extends BaseController {
 	 */
 	@RequestMapping(params = "goUpdate")
 	public ModelAndView goUpdate(EmkCheckEntity emkCheck, HttpServletRequest req) {
-		List<Map<String, Object>> codeList = this.systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", new Object[]{"A03"});
+		List<Map<String, Object>> codeList = this.systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", "A03");
 		req.setAttribute("categoryEntityList", codeList);
 		if (StringUtil.isNotEmpty(emkCheck.getId())) {
 			emkCheck = emkCheckService.getEntity(EmkCheckEntity.class, emkCheck.getId());
@@ -344,7 +445,7 @@ public class EmkCheckController extends BaseController {
 	}
 	@RequestMapping(params = "goUpdate2")
 	public ModelAndView goUpdate2(EmkCheckEntity emkCheck, HttpServletRequest req) {
-		List<Map<String, Object>> codeList = this.systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", new Object[]{"A03"});
+		List<Map<String, Object>> codeList = this.systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", "A03");
 		req.setAttribute("categoryEntityList", codeList);
 		if (StringUtil.isNotEmpty(emkCheck.getId())) {
 			emkCheck = emkCheckService.getEntity(EmkCheckEntity.class, emkCheck.getId());

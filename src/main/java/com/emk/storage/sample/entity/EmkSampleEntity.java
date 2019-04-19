@@ -107,6 +107,11 @@ public class EmkSampleEntity implements Serializable {
     @Excel(name = "质检员")
     private String zjer;
     private String zjerName;
+    private String formType;
+    private String factoryCode;
+    private String ylgg;
+    private String pfkz;
+
 
     @Id
     @GeneratedValue(generator = "paymentableGenerator")
@@ -559,5 +564,41 @@ public class EmkSampleEntity implements Serializable {
 
     public void setDjzjsj(String djzjsj) {
         this.djzjsj = djzjsj;
+    }
+
+    @Column(name = "form_type", nullable = true, length = 32)
+    public String getFormType() {
+        return formType;
+    }
+
+    public void setFormType(String formType) {
+        this.formType = formType;
+    }
+
+    @Column(name = "factory_code", nullable = true, length = 32)
+    public String getFactoryCode() {
+        return factoryCode;
+    }
+
+    public void setFactoryCode(String factoryCode) {
+        this.factoryCode = factoryCode;
+    }
+
+    @Column(name = "ylgg", nullable = true, length = 32)
+    public String getYlgg() {
+        return ylgg;
+    }
+
+    public void setYlgg(String ylgg) {
+        this.ylgg = ylgg;
+    }
+
+    @Column(name = "pfkz", nullable = true, length = 32)
+    public String getPfkz() {
+        return pfkz;
+    }
+
+    public void setPfkz(String pfkz) {
+        this.pfkz = pfkz;
     }
 }

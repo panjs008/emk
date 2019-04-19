@@ -25,7 +25,7 @@ function BindSelectSupply(ctrlName, url,type,categoryId) {
         $.each(data.obj, function (i, item) {
             control.append("<option value='" + item.companyCode + ","+item.companyNameZn +"'>" + item.companyNameZn + "</option>");
         });
-        if(type ==1){
+        if(type ==1 && categoryId !='' && categoryId != null && categoryId!= 'undefined,undefined'){
             $("#"+ctrlName).select2('val',categoryId);
         }
     });

@@ -96,6 +96,9 @@ public class EmkTestCostEntity implements java.io.Serializable {
 	/**数量*/
 	@Excel(name="数量",width=15)
 	private String total;
+	/**数量*/
+	@Excel(name="总金额",width=15)
+	private String sumMoney;
 	/**测试种类*/
 	@Excel(name="测试种类",width=15)
 	private String testType;
@@ -873,5 +876,14 @@ public class EmkTestCostEntity implements java.io.Serializable {
 	 */
 	public void setState(String state){
 		this.state = state;
+	}
+
+	@Column(name ="sum_money",nullable=true,length=32)
+	public String getSumMoney() {
+		return sumMoney;
+	}
+
+	public void setSumMoney(String sumMoney) {
+		this.sumMoney = sumMoney;
 	}
 }

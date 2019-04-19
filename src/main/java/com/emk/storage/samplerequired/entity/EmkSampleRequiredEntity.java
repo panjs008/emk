@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.GenericGenerator;
 import org.jeecgframework.poi.excel.annotation.Excel;
 
@@ -104,10 +105,6 @@ public class EmkSampleRequiredEntity
     @Excel(name = "业务部门")
     private String businesseDeptName;
     private String businesseDeptId;
-    @Excel(name = "染色要求")
-    private String ranRequired;
-    @Excel(name = "缝制要求")
-    private String fengRequired;
     @Excel(name = "状态")
     private String state;
     @Excel(name = "样品去向")
@@ -122,20 +119,14 @@ public class EmkSampleRequiredEntity
     private Integer sendTotal;
     @Excel(name = "剩余数量")
     private Integer levelTotal;
-    @Excel(name = "审批意见")
-    private String checkAdvice;
-    @Excel(name = "布面意见")
-    private String buAdvice;
-    @Excel(name = "缝制意见")
-    private String fengAdvice;
-    @Excel(name = "交期意见")
-    private String jqAdvice;
     @Excel(name = "客户评语")
     private String customRate;
     @Excel(name = "备注")
     private String remark;
     @Excel(name = "样品类型")
     private String type;
+    private String processName;
+    private String formType;
 
     @Id
     @GeneratedValue(generator = "paymentableGenerator")
@@ -456,24 +447,6 @@ public class EmkSampleRequiredEntity
         this.businesseDeptId = businesseDeptId;
     }
 
-    @Column(name = "RAN_REQUIRED", nullable = true, length = 256)
-    public String getRanRequired() {
-        return this.ranRequired;
-    }
-
-    public void setRanRequired(String ranRequired) {
-        this.ranRequired = ranRequired;
-    }
-
-    @Column(name = "FENG_REQUIRED", nullable = true, length = 256)
-    public String getFengRequired() {
-        return this.fengRequired;
-    }
-
-    public void setFengRequired(String fengRequired) {
-        this.fengRequired = fengRequired;
-    }
-
     @Column(name = "STATE", nullable = true, length = 32)
     public String getState() {
         return this.state;
@@ -535,42 +508,6 @@ public class EmkSampleRequiredEntity
 
     public void setLevelTotal(Integer levelTotal) {
         this.levelTotal = levelTotal;
-    }
-
-    @Column(name = "CHECK_ADVICE", nullable = true, length = 256)
-    public String getCheckAdvice() {
-        return this.checkAdvice;
-    }
-
-    public void setCheckAdvice(String checkAdvice) {
-        this.checkAdvice = checkAdvice;
-    }
-
-    @Column(name = "BU_ADVICE", nullable = true, length = 256)
-    public String getBuAdvice() {
-        return this.buAdvice;
-    }
-
-    public void setBuAdvice(String buAdvice) {
-        this.buAdvice = buAdvice;
-    }
-
-    @Column(name = "FENG_ADVICE", nullable = true, length = 256)
-    public String getFengAdvice() {
-        return this.fengAdvice;
-    }
-
-    public void setFengAdvice(String fengAdvice) {
-        this.fengAdvice = fengAdvice;
-    }
-
-    @Column(name = "JQ_ADVICE", nullable = true, length = 256)
-    public String getJqAdvice() {
-        return this.jqAdvice;
-    }
-
-    public void setJqAdvice(String jqAdvice) {
-        this.jqAdvice = jqAdvice;
     }
 
     @Column(name = "REMARK", nullable = true, length = 256)
@@ -742,5 +679,24 @@ public class EmkSampleRequiredEntity
 
     public void setCustomRate(String customRate) {
         this.customRate = customRate;
+    }
+
+    @Formula("(select CONCAT(p.NAME_,'-',p.TASK_DEF_KEY_) from act_ru_task p where p.ASSIGNEE_ = id limit 0,1)")
+    @Column(name = "process_name", nullable = true, length = 32)
+    public String getProcessName() {
+        return processName;
+    }
+
+    public void setProcessName(String processName) {
+        this.processName = processName;
+    }
+
+    @Column(name = "form_type", nullable = true, length = 32)
+    public String getFormType() {
+        return formType;
+    }
+
+    public void setFormType(String formType) {
+        this.formType = formType;
     }
 }

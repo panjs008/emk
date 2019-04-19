@@ -90,30 +90,10 @@ public class EmkShipServiceImpl extends CommonServiceImpl implements EmkShipServ
 		map.put("developer", t.getDeveloper());
 		map.put("developer_name", t.getDeveloperName());
 		map.put("cwer", t.getCwer());
-		map.put("price", t.getPrice());
-		map.put("sum_box_total", t.getSumBoxTotal());
-		map.put("sum_box_volume", t.getSumBoxVolume());
-		map.put("sum_box_jz", t.getSumBoxJz());
-		map.put("sum_box_mao", t.getSumBoxMao());
-		map.put("cargo_no", t.getCargoNo());
-		map.put("out_forum_no", t.getOutForumNo());
-		map.put("leveal_factory_no", t.getLevealFactoryNo());
-		map.put("gys", t.getGys());
-		map.put("gys_code", t.getGysCode());
+
 		map.put("cus_num", t.getCusNum());
 		map.put("cus_name", t.getCusName());
-		map.put("leveal_date", t.getLevealDate());
-		map.put("order_no", t.getOrderNo());
-		map.put("ht_num", t.getHtNum());
-		map.put("ship_desc", t.getShipDesc());
-		map.put("total", t.getTotal());
-		map.put("td_num", t.getTdNum());
-		map.put("td_state", t.getTdState());
-		map.put("fp_num", t.getFpNum());
-		map.put("fp_state", t.getFpState());
-		map.put("box_num", t.getBoxNum());
-		map.put("box_state", t.getBoxState());
-		map.put("arrvie_date", t.getArrvieDate());
+
 		return map;
 	}
  	
@@ -138,30 +118,10 @@ public class EmkShipServiceImpl extends CommonServiceImpl implements EmkShipServ
  		sql  = sql.replace("#{developer}",String.valueOf(t.getDeveloper()));
  		sql  = sql.replace("#{developer_name}",String.valueOf(t.getDeveloperName()));
  		sql  = sql.replace("#{cwer}",String.valueOf(t.getCwer()));
- 		sql  = sql.replace("#{price}",String.valueOf(t.getPrice()));
- 		sql  = sql.replace("#{sum_box_total}",String.valueOf(t.getSumBoxTotal()));
- 		sql  = sql.replace("#{sum_box_volume}",String.valueOf(t.getSumBoxVolume()));
- 		sql  = sql.replace("#{sum_box_jz}",String.valueOf(t.getSumBoxJz()));
- 		sql  = sql.replace("#{sum_box_mao}",String.valueOf(t.getSumBoxMao()));
- 		sql  = sql.replace("#{cargo_no}",String.valueOf(t.getCargoNo()));
- 		sql  = sql.replace("#{out_forum_no}",String.valueOf(t.getOutForumNo()));
- 		sql  = sql.replace("#{leveal_factory_no}",String.valueOf(t.getLevealFactoryNo()));
- 		sql  = sql.replace("#{gys}",String.valueOf(t.getGys()));
- 		sql  = sql.replace("#{gys_code}",String.valueOf(t.getGysCode()));
+
  		sql  = sql.replace("#{cus_num}",String.valueOf(t.getCusNum()));
  		sql  = sql.replace("#{cus_name}",String.valueOf(t.getCusName()));
- 		sql  = sql.replace("#{leveal_date}",String.valueOf(t.getLevealDate()));
- 		sql  = sql.replace("#{order_no}",String.valueOf(t.getOrderNo()));
- 		sql  = sql.replace("#{ht_num}",String.valueOf(t.getHtNum()));
- 		sql  = sql.replace("#{ship_desc}",String.valueOf(t.getShipDesc()));
- 		sql  = sql.replace("#{total}",String.valueOf(t.getTotal()));
- 		sql  = sql.replace("#{td_num}",String.valueOf(t.getTdNum()));
- 		sql  = sql.replace("#{td_state}",String.valueOf(t.getTdState()));
- 		sql  = sql.replace("#{fp_num}",String.valueOf(t.getFpNum()));
- 		sql  = sql.replace("#{fp_state}",String.valueOf(t.getFpState()));
- 		sql  = sql.replace("#{box_num}",String.valueOf(t.getBoxNum()));
- 		sql  = sql.replace("#{box_state}",String.valueOf(t.getBoxState()));
- 		sql  = sql.replace("#{arrvie_date}",String.valueOf(t.getArrvieDate()));
+
  		sql  = sql.replace("#{UUID}",UUID.randomUUID().toString());
  		return sql;
  	}

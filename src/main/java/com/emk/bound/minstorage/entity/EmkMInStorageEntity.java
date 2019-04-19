@@ -44,6 +44,9 @@ public class EmkMInStorageEntity implements java.io.Serializable {
 	private String sysOrgCode;
 	/**状态*/
 	private String state;
+	/**入库单号*/
+	@Excel(name="入库单号",width=15)
+	private String rkNo;
 	/**订单号*/
 	@Excel(name="订单号",width=15)
 	private String orderNo;
@@ -76,18 +79,25 @@ public class EmkMInStorageEntity implements java.io.Serializable {
 	private String developer;
 	/**生产跟单员ID*/
 	private String developerName;
-	/**出货日期*/
-	@Excel(name="出货日期",width=15)
-	private String outDate;
-	/**入库日期*/
+
+	/**采购员*/
+	@Excel(name="采购员",width=15)
+	private String caigouer;
+	/**采购员*/
+	private String caigouerName;
+
+	@Excel(name="申请日期",width=15)
+	private String sqDate;
+	@Excel(name="业务日期",width=15)
+	private String businesserDate;
+	@Excel(name="业务跟日期",width=15)
+	private String tracerDate;
+	@Excel(name="采购日期",width=15)
+	private String caigouerDate;
 	@Excel(name="入库日期",width=15)
 	private String kdDate;
-	/**采购合同号*/
-	@Excel(name="采购合同号",width=15)
-	private String htNum;
-	/**预采购合同号*/
-	@Excel(name="预采购合同号",width=15)
-	private String yhtNum;
+	@Excel(name="数量",width=15)
+	private String total;
 	/**款号*/
 	@Excel(name="款号",width=15)
 	private String sampleNo;
@@ -110,25 +120,10 @@ public class EmkMInStorageEntity implements java.io.Serializable {
 	private String rker;
 	/**入库人ID*/
 	private String rkerId;
-	@Excel(name="审核意见")
-	private String leadAdvice;
-	@Excel(name="是否通过")
-	private String isPass;
-	private String leadUserId;
-	@Excel(name="审核人")
-	private String leader;
 
-	@Excel(name="处理意见")
-	private String jlAdvice;
-	private String jlUserId;
-	@Excel(name="处理人")
-	private String jlUserName;
-
-	@Excel(name="处理意见")
-	private String rkAdvice;
-	private String rkUserId;
-	@Excel(name="处理人")
-	private String rkUserName;
+	private String processName;
+	private String materialNo;
+	private String formType;
 
 	/**
 	 *方法: 取得java.lang.String
@@ -154,8 +149,8 @@ public class EmkMInStorageEntity implements java.io.Serializable {
 	 *方法: 取得java.lang.String
 	 *@return: java.lang.String  创建人名称
 	 */
-	@Formula("(select p.NAME_ from act_ru_task p where p.ASSIGNEE_ = id)")
-	@Column(name ="CREATE_NAME",nullable=true,length=50)
+	//@Formula("(select p.NAME_ from act_ru_task p where p.ASSIGNEE_ = id)")
+	//@Column(name ="CREATE_NAME",nullable=true,length=50)
 	public String getCreateName(){
 		return this.createName;
 	}
@@ -439,23 +434,7 @@ public class EmkMInStorageEntity implements java.io.Serializable {
 	public void setDeveloperName(String developerName){
 		this.developerName = developerName;
 	}
-	/**
-	 *方法: 取得java.lang.String
-	 *@return: java.lang.String  出货日期
-	 */
 
-	@Column(name ="OUT_DATE",nullable=true,length=32)
-	public String getOutDate(){
-		return this.outDate;
-	}
-
-	/**
-	 *方法: 设置java.lang.String
-	 *@param: java.lang.String  出货日期
-	 */
-	public void setOutDate(String outDate){
-		this.outDate = outDate;
-	}
 	/**
 	 *方法: 取得java.lang.String
 	 *@return: java.lang.String  入库日期
@@ -473,40 +452,7 @@ public class EmkMInStorageEntity implements java.io.Serializable {
 	public void setKdDate(String kdDate){
 		this.kdDate = kdDate;
 	}
-	/**
-	 *方法: 取得java.lang.String
-	 *@return: java.lang.String  采购合同号
-	 */
 
-	@Column(name ="HT_NUM",nullable=true,length=32)
-	public String getHtNum(){
-		return this.htNum;
-	}
-
-	/**
-	 *方法: 设置java.lang.String
-	 *@param: java.lang.String  采购合同号
-	 */
-	public void setHtNum(String htNum){
-		this.htNum = htNum;
-	}
-	/**
-	 *方法: 取得java.lang.String
-	 *@return: java.lang.String  预采购合同号
-	 */
-
-	@Column(name ="YHT_NUM",nullable=true,length=32)
-	public String getYhtNum(){
-		return this.yhtNum;
-	}
-
-	/**
-	 *方法: 设置java.lang.String
-	 *@param: java.lang.String  预采购合同号
-	 */
-	public void setYhtNum(String yhtNum){
-		this.yhtNum = yhtNum;
-	}
 	/**
 	 *方法: 取得java.lang.String
 	 *@return: java.lang.String  款号
@@ -644,101 +590,103 @@ public class EmkMInStorageEntity implements java.io.Serializable {
 		this.rkerId = rkerId;
 	}
 
-	@Column(name="LEAD_ADVICE", nullable=true, length=256)
-	public String getLeadAdvice()
-	{
-		return this.leadAdvice;
+	@Column(name="caigouer", nullable=true, length=32)
+	public String getCaigouer() {
+		return caigouer;
 	}
 
-	public void setLeadAdvice(String leadAdvice)
-	{
-		this.leadAdvice = leadAdvice;
+	public void setCaigouer(String caigouer) {
+		this.caigouer = caigouer;
 	}
 
-	@Column(name="IS_PASS", nullable=true, length=32)
-	public String getIsPass()
-	{
-		return this.isPass;
+	@Column(name="caigouer_name", nullable=true, length=32)
+	public String getCaigouerName() {
+		return caigouerName;
 	}
 
-	public void setIsPass(String isPass)
-	{
-		this.isPass = isPass;
+	public void setCaigouerName(String caigouerName) {
+		this.caigouerName = caigouerName;
 	}
 
-	@Column(name="LEAD_USER_ID", nullable=true, length=32)
-	public String getLeadUserId()
-	{
-		return this.leadUserId;
+	@Column(name="sq_date", nullable=true, length=32)
+	public String getSqDate() {
+		return sqDate;
 	}
 
-	public void setLeadUserId(String leadUserId)
-	{
-		this.leadUserId = leadUserId;
+	public void setSqDate(String sqDate) {
+		this.sqDate = sqDate;
 	}
 
-	@Column(name="LEADER", nullable=true, length=32)
-	public String getLeader()
-	{
-		return this.leader;
+	@Column(name="businesser_date", nullable=true, length=32)
+	public String getBusinesserDate() {
+		return businesserDate;
 	}
 
-	public void setLeader(String leader)
-	{
-		this.leader = leader;
+	public void setBusinesserDate(String businesserDate) {
+		this.businesserDate = businesserDate;
 	}
 
-	@Column(name="jl_advice", nullable=true, length=32)
-	public String getJlAdvice() {
-		return jlAdvice;
+	@Column(name="tracer_date", nullable=true, length=32)
+	public String getTracerDate() {
+		return tracerDate;
 	}
 
-	public void setJlAdvice(String jlAdvice) {
-		this.jlAdvice = jlAdvice;
+	public void setTracerDate(String tracerDate) {
+		this.tracerDate = tracerDate;
 	}
 
-	@Column(name="jl_user_id", nullable=true, length=32)
-	public String getJlUserId() {
-		return jlUserId;
+	@Column(name="caigouer_date", nullable=true, length=32)
+	public String getCaigouerDate() {
+		return caigouerDate;
 	}
 
-	public void setJlUserId(String jlUserId) {
-		this.jlUserId = jlUserId;
+	public void setCaigouerDate(String caigouerDate) {
+		this.caigouerDate = caigouerDate;
 	}
 
-	@Column(name="jl_user_name", nullable=true, length=32)
-	public String getJlUserName() {
-		return jlUserName;
+	@Column(name="total", nullable=true, length=32)
+	public String getTotal() {
+		return total;
 	}
 
-	public void setJlUserName(String jlUserName) {
-		this.jlUserName = jlUserName;
+	public void setTotal(String total) {
+		this.total = total;
 	}
 
-	@Column(name="rk_advice", nullable=true, length=32)
-	public String getRkAdvice() {
-		return rkAdvice;
+	@Formula("(select CONCAT(p.NAME_,'-',p.TASK_DEF_KEY_) from act_ru_task p where p.ASSIGNEE_ = id limit 0,1)")
+	@Column(name = "process_name", nullable = true, length = 32)
+	public String getProcessName() {
+		return processName;
 	}
 
-	public void setRkAdvice(String rkAdvice) {
-		this.rkAdvice = rkAdvice;
+	public void setProcessName(String processName) {
+		this.processName = processName;
 	}
 
-	@Column(name="rk_user_id", nullable=true, length=32)
-	public String getRkUserId() {
-		return rkUserId;
+	@Column(name = "form_type", nullable = true, length = 32)
+	public String getFormType() {
+		return formType;
 	}
 
-	public void setRkUserId(String rkUserId) {
-		this.rkUserId = rkUserId;
+	public void setFormType(String formType) {
+		this.formType = formType;
 	}
 
-	@Column(name="rk_user_name", nullable=true, length=32)
-	public String getRkUserName() {
-		return rkUserName;
+	@Column(name = "rk_no", nullable = true, length = 32)
+	public String getRkNo() {
+		return rkNo;
 	}
 
-	public void setRkUserName(String rkUserName) {
-		this.rkUserName = rkUserName;
+	public void setRkNo(String rkNo) {
+		this.rkNo = rkNo;
+	}
+
+	@Column(name = "MATERIAL_NO", nullable = true, length = 32)
+	public String getMaterialNo() {
+		return this.materialNo;
+	}
+
+	public void setMaterialNo(String materialNo) {
+		this.materialNo = materialNo;
 	}
 }

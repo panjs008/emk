@@ -38,7 +38,7 @@
             width:'auto',
             fixFooter:false
         });
-        <c:if test="${param.priceId eq null || param.priceId eq ''}">
+        <c:if test="${param.priceId eq null || param.priceId eq '' || fn:length(emkSampleRanEntities) eq 0}">
             $('#addBtnran').click();
         </c:if>
     });
@@ -96,7 +96,7 @@
                                     <option value="${category.typecode}" ${category.typecode eq poVal.buType ? 'selected':''}>${category.typename}</option>
                                 </c:forEach>
                             </select>
-                           <%-- <input  nullmsg="请输入布面种类！"  errormsg="请输入布面种类" value="${poVal.buType}"name="orderMxList[${status.index}].bmzl" maxlength="100" type="text" value=""
+                           <%-- <input  nullmsg="请输入布面种类！"  errormsg="请输入布面种类" value="${poVal.buType}" name="orderMxList[${status.index}].bmzl" maxlength="100" type="text" value=""
                                                    style="width: 86%;" ignore="ignore">--%></td>
                         <td align="center"><input  nullmsg="请输入染色单价！"  errormsg="请输入染色单价" datatype="d" value="${poVal.price}" name="orderMxList[${status.index}].rsdj" maxlength="100" type="text" value=""
                                                    style="width: 86%;" ignore="ignore"></td>

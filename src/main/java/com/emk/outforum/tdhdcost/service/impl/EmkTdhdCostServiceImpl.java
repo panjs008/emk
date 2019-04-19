@@ -84,37 +84,20 @@ public class EmkTdhdCostServiceImpl extends CommonServiceImpl implements EmkTdhd
 		map.put("businesse_dept_id", t.getBusinesseDeptId());
 		map.put("developer", t.getDeveloper());
 		map.put("developer_name", t.getDeveloperName());
-		map.put("sample_no_desc", t.getSampleNoDesc());
-		map.put("price", t.getPrice());
-		map.put("sum_box_total", t.getSumBoxTotal());
-		map.put("sum_box_volume", t.getSumBoxVolume());
-		map.put("sum_box_jz", t.getSumBoxJz());
-		map.put("sum_box_mao", t.getSumBoxMao());
+
 		map.put("id", t.getId());
 		map.put("create_name", t.getCreateName());
 		map.put("create_by", t.getCreateBy());
 		map.put("create_date", t.getCreateDate());
 		map.put("sys_org_code", t.getSysOrgCode());
 		map.put("cwyer", t.getCwyer());
-		map.put("cargo_no", t.getCargoNo());
-		map.put("leveal_factory_no", t.getLevealFactoryNo());
+
 		map.put("cus_num", t.getCusNum());
 		map.put("cus_name", t.getCusName());
-		map.put("gys", t.getGys());
-		map.put("gys_code", t.getGysCode());
-		map.put("leveal_date", t.getLevealDate());
-		map.put("out_forum_no", t.getOutForumNo());
-		map.put("total", t.getTotal());
-		map.put("ht_num", t.getHtNum());
-		map.put("td_num", t.getTdNum());
-		map.put("td_state", t.getTdState());
+
 		map.put("hdfy_fp", t.getHdfyFp());
 		map.put("cost", t.getCost());
 		map.put("pay_state", t.getPayState());
-		map.put("hd_name", t.getHdName());
-		map.put("hd_code", t.getHdCode());
-		map.put("bgzt", t.getBgzt());
-		map.put("hgfxzt", t.getHgfxzt());
 		return map;
 	}
  	
@@ -133,37 +116,20 @@ public class EmkTdhdCostServiceImpl extends CommonServiceImpl implements EmkTdhd
  		sql  = sql.replace("#{businesse_dept_id}",String.valueOf(t.getBusinesseDeptId()));
  		sql  = sql.replace("#{developer}",String.valueOf(t.getDeveloper()));
  		sql  = sql.replace("#{developer_name}",String.valueOf(t.getDeveloperName()));
- 		sql  = sql.replace("#{sample_no_desc}",String.valueOf(t.getSampleNoDesc()));
- 		sql  = sql.replace("#{price}",String.valueOf(t.getPrice()));
- 		sql  = sql.replace("#{sum_box_total}",String.valueOf(t.getSumBoxTotal()));
- 		sql  = sql.replace("#{sum_box_volume}",String.valueOf(t.getSumBoxVolume()));
- 		sql  = sql.replace("#{sum_box_jz}",String.valueOf(t.getSumBoxJz()));
- 		sql  = sql.replace("#{sum_box_mao}",String.valueOf(t.getSumBoxMao()));
+
  		sql  = sql.replace("#{id}",String.valueOf(t.getId()));
  		sql  = sql.replace("#{create_name}",String.valueOf(t.getCreateName()));
  		sql  = sql.replace("#{create_by}",String.valueOf(t.getCreateBy()));
  		sql  = sql.replace("#{create_date}",String.valueOf(t.getCreateDate()));
  		sql  = sql.replace("#{sys_org_code}",String.valueOf(t.getSysOrgCode()));
  		sql  = sql.replace("#{cwyer}",String.valueOf(t.getCwyer()));
- 		sql  = sql.replace("#{cargo_no}",String.valueOf(t.getCargoNo()));
- 		sql  = sql.replace("#{leveal_factory_no}",String.valueOf(t.getLevealFactoryNo()));
+
  		sql  = sql.replace("#{cus_num}",String.valueOf(t.getCusNum()));
  		sql  = sql.replace("#{cus_name}",String.valueOf(t.getCusName()));
- 		sql  = sql.replace("#{gys}",String.valueOf(t.getGys()));
- 		sql  = sql.replace("#{gys_code}",String.valueOf(t.getGysCode()));
- 		sql  = sql.replace("#{leveal_date}",String.valueOf(t.getLevealDate()));
- 		sql  = sql.replace("#{out_forum_no}",String.valueOf(t.getOutForumNo()));
- 		sql  = sql.replace("#{total}",String.valueOf(t.getTotal()));
- 		sql  = sql.replace("#{ht_num}",String.valueOf(t.getHtNum()));
- 		sql  = sql.replace("#{td_num}",String.valueOf(t.getTdNum()));
- 		sql  = sql.replace("#{td_state}",String.valueOf(t.getTdState()));
+
  		sql  = sql.replace("#{hdfy_fp}",String.valueOf(t.getHdfyFp()));
  		sql  = sql.replace("#{cost}",String.valueOf(t.getCost()));
  		sql  = sql.replace("#{pay_state}",String.valueOf(t.getPayState()));
- 		sql  = sql.replace("#{hd_name}",String.valueOf(t.getHdName()));
- 		sql  = sql.replace("#{hd_code}",String.valueOf(t.getHdCode()));
- 		sql  = sql.replace("#{bgzt}",String.valueOf(t.getBgzt()));
- 		sql  = sql.replace("#{hgfxzt}",String.valueOf(t.getHgfxzt()));
  		sql  = sql.replace("#{UUID}",UUID.randomUUID().toString());
  		return sql;
  	}

@@ -6,8 +6,10 @@ import com.emk.bill.materialcontract.entity.EmkMaterialContractEntity2;
 import com.emk.bill.materialcontract.service.EmkMaterialContractServiceI;
 import com.emk.bill.materialcontractdetail.entity.EmkMaterialContractDetailEntity;
 import com.emk.storage.instorage.entity.EmkInStorageEntity;
+import com.emk.storage.sampledetail.entity.EmkSampleDetailEntity;
 import com.emk.util.FlowUtil;
 import com.emk.util.ParameterUtil;
+import com.emk.util.Utils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -124,6 +126,24 @@ public class EmkMaterialContractController extends BaseController {
     public ModelAndView list3(HttpServletRequest request) {
         return new ModelAndView("com/emk/bill/materialcontract/emkMaterialContractList3");
     }
+    @RequestMapping(params = "orderMxList")
+    public ModelAndView orderMxList(HttpServletRequest request) {
+        Map map = ParameterUtil.getParamMaps(request.getParameterMap());
+        if (Utils.notEmpty(map.get("proOrderId"))) {
+            List<EmkSampleDetailEntity> emkSampleDetailEntities = systemService.findHql("from EmkSampleDetailEntity where sampleId=? and type=?", map.get("proOrderId"),map.get("type"));
+            request.setAttribute("emkSampleDetailEntities", emkSampleDetailEntities);
+        }
+        if(map.get("type").equals("0")){
+            return new ModelAndView("com/emk/bill/materialcontract/orderMxList");
+        }else if(map.get("type").equals("1")){
+            return new ModelAndView("com/emk/bill/materialcontract/orderMxList2");
+        }else if(map.get("type").equals("2")){
+            return new ModelAndView("com/emk/bill/materialcontract/orderMxList3");
+        }
+        return new ModelAndView("com/emk/bill/materialcontract/orderMxList");
+    }
+
+
 
     @RequestMapping(params = "emkMaterialContractDetailList")
     public ModelAndView rkglMxList(HttpServletRequest request) {
@@ -195,7 +215,7 @@ public class EmkMaterialContractController extends BaseController {
 
     @RequestMapping(params = "doAdd")
     @ResponseBody
-    public AjaxJson doAdd(EmkMaterialContractEntity2 emkMaterialContract, HttpServletRequest request) {
+    public AjaxJson doAdd(EmkMaterialContractEntity emkMaterialContract, HttpServletRequest request) {
         String message = null;
         AjaxJson j = new AjaxJson();
         message = "原料采购合同表添加成功";
@@ -203,22 +223,76 @@ public class EmkMaterialContractController extends BaseController {
             emkMaterialContract.setState("0");
             this.emkMaterialContractService.save(emkMaterialContract);
             Map<String, String> map = ParameterUtil.getParamMaps(request.getParameterMap());
-            String dataRows = (String) map.get("dataRowsVal");
-            if ((dataRows != null) && (!dataRows.isEmpty())) {
+            String dataRows = map.get("orderMxListID");
+            dataRows = map.get("orderMxListID");
+            //保存原料面料数据
+            if (Utils.notEmpty(dataRows)) {
                 int rows = Integer.parseInt(dataRows);
                 for (int i = 0; i < rows; i++) {
-                    EmkMaterialContractDetailEntity rkglMxEntity = new EmkMaterialContractDetailEntity();
-                    if ((map.get("rkglMxList[" + i + "].proName") != null) && (!((String) map.get("rkglMxList[" + i + "].proName")).equals(""))) {
-                        rkglMxEntity.setContractId(emkMaterialContract.getId());
-                        rkglMxEntity.setProZnName((String) map.get("rkglMxList[" + i + "].proName"));
-                        rkglMxEntity.setProNum((String) map.get("rkglMxList[" + i + "].proNum"));
-                        rkglMxEntity.setBrand((String) map.get("rkglMxList[" + i + "].brand"));
-                        rkglMxEntity.setTotal(Integer.valueOf(Integer.parseInt((String) map.get("rkglMxList[" + i + "].signTotal"))));
-                        rkglMxEntity.setSignPrice(Double.valueOf(Double.parseDouble((String) map.get("rkglMxList[" + i + "].signPrice"))));
-                        rkglMxEntity.setInTotal(Integer.parseInt((map.get("rkglMxList[" + i + "].inTotal") != null) && (!((String) map.get("rkglMxList[" + i + "].inTotal")).isEmpty()) ? (String) map.get("rkglMxList[" + i + "].inTotal") : "0"));
-                        rkglMxEntity.setOutTotal(Integer.parseInt((map.get("rkglMxList[" + i + "].outTotal") != null) && (!((String) map.get("rkglMxList[" + i + "].outTotal")).isEmpty()) ? (String) map.get("rkglMxList[" + i + "].outTotal") : "0"));
-                        rkglMxEntity.setLeavelTotal(Integer.parseInt((map.get("rkglMxList[" + i + "].leavelTotal") != null) && (!((String) map.get("rkglMxList[" + i + "].leavelTotal")).isEmpty()) ? (String) map.get("rkglMxList[" + i + "].leavelTotal") : "0"));
-                        this.systemService.save(rkglMxEntity);
+                    EmkSampleDetailEntity emkSampleDetailEntity = new EmkSampleDetailEntity();
+                    if (Utils.notEmpty(map.get("orderMxList["+i+"].proZnName"))) {
+                        emkSampleDetailEntity.setProZnName(map.get("orderMxList["+i+"].proZnName"));
+                        emkSampleDetailEntity.setProNum(map.get("orderMxList["+i+"].proNum"));
+                        emkSampleDetailEntity.setDirection(map.get("orderMxList["+i+"].direction"));
+                        emkSampleDetailEntity.setBetchNum(map.get("orderMxList["+i+"].betchNum"));
+                        emkSampleDetailEntity.setWidth(map.get("orderMxList["+i+"].width"));
+                        emkSampleDetailEntity.setColor(map.get("orderMxList["+i+"].color"));
+                        emkSampleDetailEntity.setWeight(map.get("orderMxList["+i+"].weight"));
+                        emkSampleDetailEntity.setChengf(map.get("orderMxList["+i+"].chengf"));
+                        emkSampleDetailEntity.setSumTotal(map.get("orderMxList["+i+"].sumTotal"));
+                        emkSampleDetailEntity.setSignPrice(map.get("orderMxList["+i+"].signPrice"));
+                        emkSampleDetailEntity.setUnit(map.get("orderMxList["+i+"].unit"));
+                        emkSampleDetailEntity.setSampleId(emkMaterialContract.getId());
+                        emkSampleDetailEntity.setType("0");
+                        systemService.save(emkSampleDetailEntity);
+                    }
+                }
+            }
+            dataRows = map.get("orderMxListID2");
+            //保存缝制辅料数据
+            if (Utils.notEmpty(dataRows)) {
+                int rows = Integer.parseInt(dataRows);
+                for (int i = 0; i < rows; i++) {
+                    EmkSampleDetailEntity emkSampleDetailEntity = new EmkSampleDetailEntity();
+                    if (Utils.notEmpty(map.get("orderMxList["+i+"].proZnName"))) {
+                        emkSampleDetailEntity.setProZnName(map.get("orderMxList["+i+"].proZnName"));
+                        emkSampleDetailEntity.setProNum(map.get("orderMxList["+i+"].proNum"));
+                        emkSampleDetailEntity.setDirection(map.get("orderMxList["+i+"].direction"));
+                        emkSampleDetailEntity.setBetchNum(map.get("orderMxList["+i+"].betchNum"));
+                        emkSampleDetailEntity.setWidth(map.get("orderMxList["+i+"].width"));
+                        emkSampleDetailEntity.setColor(map.get("orderMxList["+i+"].color"));
+                        emkSampleDetailEntity.setWeight(map.get("orderMxList["+i+"].weight"));
+                        emkSampleDetailEntity.setChengf(map.get("orderMxList["+i+"].chengf"));
+                        emkSampleDetailEntity.setSumTotal(map.get("orderMxList["+i+"].sumTotal"));
+                        emkSampleDetailEntity.setSignPrice(map.get("orderMxList["+i+"].signPrice"));
+                        emkSampleDetailEntity.setUnit(map.get("orderMxList["+i+"].unit"));
+                        emkSampleDetailEntity.setSampleId(emkMaterialContract.getId());
+                        emkSampleDetailEntity.setType("1");
+                        systemService.save(emkSampleDetailEntity);
+                    }
+                }
+            }
+            dataRows = map.get("orderMxListID3");
+            //保存包装辅料数据
+            if (Utils.notEmpty(dataRows)) {
+                int rows = Integer.parseInt(dataRows);
+                for (int i = 0; i < rows; i++) {
+                    EmkSampleDetailEntity emkSampleDetailEntity = new EmkSampleDetailEntity();
+                    if (Utils.notEmpty(map.get("orderMxList["+i+"].proZnName"))) {
+                        emkSampleDetailEntity.setProZnName(map.get("orderMxList["+i+"].proZnName"));
+                        emkSampleDetailEntity.setProNum(map.get("orderMxList["+i+"].proNum"));
+                        emkSampleDetailEntity.setDirection(map.get("orderMxList["+i+"].direction"));
+                        emkSampleDetailEntity.setBetchNum(map.get("orderMxList["+i+"].betchNum"));
+                        emkSampleDetailEntity.setWidth(map.get("orderMxList["+i+"].width"));
+                        emkSampleDetailEntity.setColor(map.get("orderMxList["+i+"].color"));
+                        emkSampleDetailEntity.setWeight(map.get("orderMxList["+i+"].weight"));
+                        emkSampleDetailEntity.setChengf(map.get("orderMxList["+i+"].chengf"));
+                        emkSampleDetailEntity.setSumTotal(map.get("orderMxList["+i+"].sumTotal"));
+                        emkSampleDetailEntity.setSignPrice(map.get("orderMxList["+i+"].signPrice"));
+                        emkSampleDetailEntity.setUnit(map.get("orderMxList["+i+"].unit"));
+                        emkSampleDetailEntity.setSampleId(emkMaterialContract.getId());
+                        emkSampleDetailEntity.setType("2");
+                        systemService.save(emkSampleDetailEntity);
                     }
                 }
             }
@@ -234,7 +308,7 @@ public class EmkMaterialContractController extends BaseController {
 
     @RequestMapping(params = "doUpdate")
     @ResponseBody
-    public AjaxJson doUpdate(EmkMaterialContractEntity2 emkMaterialContract, HttpServletRequest request) {
+    public AjaxJson doUpdate(EmkMaterialContractEntity emkMaterialContract, HttpServletRequest request) {
         String message = null;
         AjaxJson j = new AjaxJson();
         message = "原料采购合同表更新成功";
@@ -244,24 +318,82 @@ public class EmkMaterialContractController extends BaseController {
             emkMaterialContract.setId(null);
             MyBeanUtils.copyBeanNotNull2Bean(emkMaterialContract, t);
             this.emkMaterialContractService.saveOrUpdate(t);
-            this.systemService.executeSql("delete from emk_material_contract_detail where CONTRACT_ID=?", t.getId());
 
-            String dataRows = (String) map.get("dataRowsVal");
-            if ((dataRows != null) && (!dataRows.isEmpty())) {
+            String dataRows = map.get("orderMxListID");
+            dataRows = map.get("orderMxListID");
+            //保存原料面料数据
+            if (Utils.notEmpty(dataRows)) {
+                systemService.executeSql("delete from emk_sample_detail where sample_id = ? and type=0",t.getId());
                 int rows = Integer.parseInt(dataRows);
                 for (int i = 0; i < rows; i++) {
-                    EmkMaterialContractDetailEntity rkglMxEntity = new EmkMaterialContractDetailEntity();
-                    if ((map.get("rkglMxList[" + i + "].proName") != null) && (!((String) map.get("rkglMxList[" + i + "].proName")).equals(""))) {
-                        rkglMxEntity.setContractId(t.getId());
-                        rkglMxEntity.setProZnName((String) map.get("rkglMxList[" + i + "].proName"));
-                        rkglMxEntity.setProNum((String) map.get("rkglMxList[" + i + "].proNum"));
-                        rkglMxEntity.setBrand((String) map.get("rkglMxList[" + i + "].brand"));
-                        rkglMxEntity.setTotal(Integer.valueOf(Integer.parseInt((String) map.get("rkglMxList[" + i + "].signTotal"))));
-                        rkglMxEntity.setSignPrice(Double.valueOf(Double.parseDouble((String) map.get("rkglMxList[" + i + "].signPrice"))));
-                        rkglMxEntity.setInTotal(Integer.valueOf(Integer.parseInt((map.get("rkglMxList[" + i + "].inTotal") != null) && (!((String) map.get("rkglMxList[" + i + "].inTotal")).isEmpty()) ? (String) map.get("rkglMxList[" + i + "].inTotal") : "0")));
-                        rkglMxEntity.setOutTotal(Integer.valueOf(Integer.parseInt((map.get("rkglMxList[" + i + "].outTotal") != null) && (!((String) map.get("rkglMxList[" + i + "].outTotal")).isEmpty()) ? (String) map.get("rkglMxList[" + i + "].outTotal") : "0")));
-                        rkglMxEntity.setLeavelTotal(Integer.valueOf(Integer.parseInt((map.get("rkglMxList[" + i + "].leavelTotal") != null) && (!((String) map.get("rkglMxList[" + i + "].leavelTotal")).isEmpty()) ? (String) map.get("rkglMxList[" + i + "].leavelTotal") : "0")));
-                        this.systemService.save(rkglMxEntity);
+                    EmkSampleDetailEntity emkSampleDetailEntity = new EmkSampleDetailEntity();
+                    if (Utils.notEmpty(map.get("orderMxList["+i+"].proZnName"))) {
+                        emkSampleDetailEntity.setProZnName(map.get("orderMxList["+i+"].proZnName"));
+                        emkSampleDetailEntity.setProNum(map.get("orderMxList["+i+"].proNum"));
+                        emkSampleDetailEntity.setDirection(map.get("orderMxList["+i+"].direction"));
+                        emkSampleDetailEntity.setBetchNum(map.get("orderMxList["+i+"].betchNum"));
+                        emkSampleDetailEntity.setWidth(map.get("orderMxList["+i+"].width"));
+                        emkSampleDetailEntity.setColor(map.get("orderMxList["+i+"].color"));
+                        emkSampleDetailEntity.setWeight(map.get("orderMxList["+i+"].weight"));
+                        emkSampleDetailEntity.setChengf(map.get("orderMxList["+i+"].chengf"));
+                        emkSampleDetailEntity.setSumTotal(map.get("orderMxList["+i+"].sumTotal"));
+                        emkSampleDetailEntity.setSignPrice(map.get("orderMxList["+i+"].signPrice"));
+                        emkSampleDetailEntity.setUnit(map.get("orderMxList["+i+"].unit"));
+                        emkSampleDetailEntity.setSampleId(t.getId());
+                        emkSampleDetailEntity.setType("0");
+                        systemService.save(emkSampleDetailEntity);
+                    }
+                }
+            }
+            dataRows = map.get("orderMxListID2");
+            //保存缝制辅料数据
+            if (Utils.notEmpty(dataRows)) {
+                systemService.executeSql("delete from emk_sample_detail where sample_id = ? and type=1",t.getId());
+
+                int rows = Integer.parseInt(dataRows);
+                for (int i = 0; i < rows; i++) {
+                    EmkSampleDetailEntity emkSampleDetailEntity = new EmkSampleDetailEntity();
+                    if (Utils.notEmpty(map.get("orderMxList["+i+"].proZnName"))) {
+                        emkSampleDetailEntity.setProZnName(map.get("orderMxList["+i+"].proZnName"));
+                        emkSampleDetailEntity.setProNum(map.get("orderMxList["+i+"].proNum"));
+                        emkSampleDetailEntity.setDirection(map.get("orderMxList["+i+"].direction"));
+                        emkSampleDetailEntity.setBetchNum(map.get("orderMxList["+i+"].betchNum"));
+                        emkSampleDetailEntity.setWidth(map.get("orderMxList["+i+"].width"));
+                        emkSampleDetailEntity.setColor(map.get("orderMxList["+i+"].color"));
+                        emkSampleDetailEntity.setWeight(map.get("orderMxList["+i+"].weight"));
+                        emkSampleDetailEntity.setChengf(map.get("orderMxList["+i+"].chengf"));
+                        emkSampleDetailEntity.setSumTotal(map.get("orderMxList["+i+"].sumTotal"));
+                        emkSampleDetailEntity.setSignPrice(map.get("orderMxList["+i+"].signPrice"));
+                        emkSampleDetailEntity.setUnit(map.get("orderMxList["+i+"].unit"));
+                        emkSampleDetailEntity.setSampleId(t.getId());
+                        emkSampleDetailEntity.setType("1");
+                        systemService.save(emkSampleDetailEntity);
+                    }
+                }
+            }
+            dataRows = map.get("orderMxListID3");
+            //保存包装辅料数据
+            if (Utils.notEmpty(dataRows)) {
+                systemService.executeSql("delete from emk_sample_detail where sample_id = ? and type=2",t.getId());
+
+                int rows = Integer.parseInt(dataRows);
+                for (int i = 0; i < rows; i++) {
+                    EmkSampleDetailEntity emkSampleDetailEntity = new EmkSampleDetailEntity();
+                    if (Utils.notEmpty(map.get("orderMxList["+i+"].proZnName"))) {
+                        emkSampleDetailEntity.setProZnName(map.get("orderMxList["+i+"].proZnName"));
+                        emkSampleDetailEntity.setProNum(map.get("orderMxList["+i+"].proNum"));
+                        emkSampleDetailEntity.setDirection(map.get("orderMxList["+i+"].direction"));
+                        emkSampleDetailEntity.setBetchNum(map.get("orderMxList["+i+"].betchNum"));
+                        emkSampleDetailEntity.setWidth(map.get("orderMxList["+i+"].width"));
+                        emkSampleDetailEntity.setColor(map.get("orderMxList["+i+"].color"));
+                        emkSampleDetailEntity.setWeight(map.get("orderMxList["+i+"].weight"));
+                        emkSampleDetailEntity.setChengf(map.get("orderMxList["+i+"].chengf"));
+                        emkSampleDetailEntity.setSumTotal(map.get("orderMxList["+i+"].sumTotal"));
+                        emkSampleDetailEntity.setSignPrice(map.get("orderMxList["+i+"].signPrice"));
+                        emkSampleDetailEntity.setUnit(map.get("orderMxList["+i+"].unit"));
+                        emkSampleDetailEntity.setSampleId(t.getId());
+                        emkSampleDetailEntity.setType("2");
+                        systemService.save(emkSampleDetailEntity);
                     }
                 }
             }
@@ -291,6 +423,14 @@ public class EmkMaterialContractController extends BaseController {
         if (StringUtil.isNotEmpty(emkMaterialContract.getId())) {
             emkMaterialContract = emkMaterialContractService.getEntity(EmkMaterialContractEntity.class, emkMaterialContract.getId());
             req.setAttribute("emkMaterialContractPage", emkMaterialContract);
+
+            if(emkMaterialContract.getType().equals("0")){
+                req.setAttribute("pactTypeName", "原料面料");
+            }else if(emkMaterialContract.getType().equals("1")){
+                req.setAttribute("pactTypeName", "缝制辅料");
+            }else if(emkMaterialContract.getType().equals("2")){
+                req.setAttribute("pactTypeName", "包装辅料");
+            }
         }
         req.getSession().setAttribute("orderFinish", "");
 

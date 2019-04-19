@@ -311,6 +311,18 @@
 		<tr>
 			<td align="right">
 				<label class="Validform_label">
+					币种:
+				</label>
+			</td>
+			<td class="value" colspan="3">
+				<t:dictSelect id="bz" field="bz" typeGroupCode="cointype" datatype="*" defaultVal="${ymkCustomPage.bz }" hasLabel="false" title="币种"></t:dictSelect>
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">币种</label>
+			</td>
+		</tr>
+		<tr>
+			<td align="right">
+				<label class="Validform_label">
 					建立商业关系时间:
 				</label>
 			</td>

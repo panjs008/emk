@@ -66,15 +66,13 @@ public class EmkInvoicesServiceImpl
         map.put("businesse_dept_id", t.getBusinesseDeptId());
         map.put("developer", t.getDeveloper());
         map.put("developer_name", t.getDeveloperName());
-        map.put("sample_no", t.getSampleNo());
-        map.put("sample_no_desc", t.getSampleNoDesc());
+
         map.put("out_date", t.getOutDate());
         map.put("id", t.getId());
         map.put("create_name", t.getCreateName());
         map.put("create_by", t.getCreateBy());
         map.put("create_date", t.getCreateDate());
         map.put("sys_org_code", t.getSysOrgCode());
-        map.put("order_no", t.getOrderNo());
         map.put("cwyer", t.getCwyer());
         map.put("scfmc", t.getScfmc());
         map.put("address", t.getAddress());
@@ -103,15 +101,12 @@ public class EmkInvoicesServiceImpl
         sql = sql.replace("#{businesse_dept_id}", String.valueOf(t.getBusinesseDeptId()));
         sql = sql.replace("#{developer}", String.valueOf(t.getDeveloper()));
         sql = sql.replace("#{developer_name}", String.valueOf(t.getDeveloperName()));
-        sql = sql.replace("#{sample_no}", String.valueOf(t.getSampleNo()));
-        sql = sql.replace("#{sample_no_desc}", String.valueOf(t.getSampleNoDesc()));
         sql = sql.replace("#{out_date}", String.valueOf(t.getOutDate()));
         sql = sql.replace("#{id}", String.valueOf(t.getId()));
         sql = sql.replace("#{create_name}", String.valueOf(t.getCreateName()));
         sql = sql.replace("#{create_by}", String.valueOf(t.getCreateBy()));
         sql = sql.replace("#{create_date}", String.valueOf(t.getCreateDate()));
         sql = sql.replace("#{sys_org_code}", String.valueOf(t.getSysOrgCode()));
-        sql = sql.replace("#{order_no}", String.valueOf(t.getOrderNo()));
         sql = sql.replace("#{cwyer}", String.valueOf(t.getCwyer()));
         sql = sql.replace("#{scfmc}", String.valueOf(t.getScfmc()));
         sql = sql.replace("#{address}", String.valueOf(t.getAddress()));

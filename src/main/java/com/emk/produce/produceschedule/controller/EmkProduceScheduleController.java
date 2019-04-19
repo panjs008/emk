@@ -414,7 +414,7 @@ public class EmkProduceScheduleController extends BaseController {
                                 taskService.complete(task1.getId(), variables);
 
 
-                                EmkProOrderEntity proOrderEntity = systemService.findUniqueByProperty(EmkProOrderEntity.class,"orderNo",t.getOrderNo());
+                             /*   EmkProOrderEntity proOrderEntity = systemService.findUniqueByProperty(EmkProOrderEntity.class,"orderNo",t.getOrderNo());
                                 EmkWorkOrderEntity workOrderEntity = systemService.findUniqueByProperty(EmkWorkOrderEntity.class,"workNo",proOrderEntity.getWorkNo());
 
                                 workOrderEntity.setProduceUserId(user.getUserName());
@@ -425,7 +425,7 @@ public class EmkProduceScheduleController extends BaseController {
 
                                 task = taskService.createTaskQuery().taskAssignee(workOrderEntity.getId()).list();
                                 task1 = (Task)task.get(task.size() - 1);
-                                taskService.complete(task1.getId(), variables);
+                                taskService.complete(task1.getId(), variables);*/
                             } else {
                                 List<HistoricTaskInstance> hisTasks = historyService.createHistoricTaskInstanceQuery().taskAssignee(t.getId()).list();
 
@@ -533,7 +533,7 @@ public class EmkProduceScheduleController extends BaseController {
                             t.setOutUserId(user.getUserName());
                             taskService.complete(task1.getId(), variables);
 
-                            EmkProOrderEntity proOrderEntity = systemService.findUniqueByProperty(EmkProOrderEntity.class,"orderNo",t.getOrderNo());
+                          /*  EmkProOrderEntity proOrderEntity = systemService.findUniqueByProperty(EmkProOrderEntity.class,"orderNo",t.getOrderNo());
                             EmkWorkOrderEntity workOrderEntity = systemService.findUniqueByProperty(EmkWorkOrderEntity.class,"workNo",proOrderEntity.getWorkNo());
 
                             workOrderEntity.setCheckUserId(user.getUserName());
@@ -555,7 +555,7 @@ public class EmkProduceScheduleController extends BaseController {
 
                             task = taskService.createTaskQuery().taskAssignee(workOrderEntity.getId()).list();
                             task1 = (Task)task.get(task.size() - 1);
-                            taskService.complete(task1.getId(), variables);
+                            taskService.complete(task1.getId(), variables);*/
                         }
                         if (task1.getTaskDefinitionKey().equals("wqTask")) {
                             t.setWeiAdvice(t.getLeadAdvice());
@@ -570,7 +570,7 @@ public class EmkProduceScheduleController extends BaseController {
                             taskService.complete(task1.getId(), variables);
                             t.setState("2");
 
-                            EmkProOrderEntity proOrderEntity = systemService.findUniqueByProperty(EmkProOrderEntity.class,"orderNo",t.getOrderNo());
+                          /*  EmkProOrderEntity proOrderEntity = systemService.findUniqueByProperty(EmkProOrderEntity.class,"orderNo",t.getOrderNo());
                             EmkWorkOrderEntity workOrderEntity = systemService.findUniqueByProperty(EmkWorkOrderEntity.class,"workNo",proOrderEntity.getWorkNo());
 
                             workOrderEntity.setCaiwuUserId(user.getUserName());
@@ -582,7 +582,7 @@ public class EmkProduceScheduleController extends BaseController {
 
                             task = taskService.createTaskQuery().taskAssignee(workOrderEntity.getId()).list();
                             task1 = (Task)task.get(task.size() - 1);
-                            taskService.complete(task1.getId(), variables);
+                            taskService.complete(task1.getId(), variables);*/
                         }
 
                         systemService.saveOrUpdate(t);

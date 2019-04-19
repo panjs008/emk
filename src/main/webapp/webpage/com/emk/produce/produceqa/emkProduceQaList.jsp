@@ -26,8 +26,8 @@
    <t:dgCol title="款式大类"  field="proTypeName"  queryMode="single"  width="70"></t:dgCol>
 
    <t:dgDelOpt title="删除" operationCode="delete" url="emkProduceQaController.do?doDel&id={id}" urlclass="ace_button"  urlfont="fa-trash-o"/>
-       <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkProduceQaController.do?goAdd&winTitle=录入单生产问题单" funname="add" height="600" width="1000"></t:dgToolBar>
-       <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkProduceQaController.do?goUpdate&winTitle=编辑单生产问题单" funname="update" height="600" width="1000"></t:dgToolBar>
+       <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkProduceQaController.do?goAdd&winTitle=录入单生产问题单" funname="add" height="600" width="1100"></t:dgToolBar>
+       <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkProduceQaController.do?goUpdate&winTitle=编辑单生产问题单" funname="update" height="600" width="1100"></t:dgToolBar>
        <t:dgToolBar title="删除" operationCode="delete"  icon="fa fa-remove" url="emkProduceQaController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
   </t:datagrid>
   </div>

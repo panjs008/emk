@@ -32,6 +32,9 @@ import org.jeecgframework.poi.excel.annotation.Excel;
 @Table(name = "emk_m_out_storage", schema = "")
 @SuppressWarnings("serial")
 public class EmkMOutStorageEntity implements java.io.Serializable {
+	/**出库单号*/
+	@Excel(name="出库单号",width=15)
+	private String ckNo;
 	/**业务员*/
 	@Excel(name="业务员",width=15)
 	private String businesser;
@@ -55,6 +58,23 @@ public class EmkMOutStorageEntity implements java.io.Serializable {
 	/**出货日期*/
 	@Excel(name="出货日期",width=15)
 	private String outDate;
+	/**采购员*/
+	@Excel(name="采购员",width=15)
+	private String caigouer;
+	/**采购员*/
+	private String caigouerName;
+
+	@Excel(name="申请日期",width=15)
+	private String sqDate;
+	@Excel(name="业务日期",width=15)
+	private String businesserDate;
+	@Excel(name="业务跟日期",width=15)
+	private String tracerDate;
+	@Excel(name="采购日期",width=15)
+	private String caigouerDate;
+	@Excel(name="数量",width=15)
+	private String total;
+
 	/**申请人*/
 	@Excel(name="申请人",width=15)
 	private String appler;
@@ -109,25 +129,9 @@ public class EmkMOutStorageEntity implements java.io.Serializable {
 	@Excel(name="出库日期",width=15)
 	private String kdDate;
 
-	@Excel(name="审核意见")
-	private String leadAdvice;
-	@Excel(name="是否通过")
-	private String isPass;
-	private String leadUserId;
-	@Excel(name="审核人")
-	private String leader;
-
-	@Excel(name="处理意见")
-	private String clAdvice;
-	private String clUserId;
-	@Excel(name="处理人")
-	private String clUserName;
-
-	@Excel(name="处理意见")
-	private String ckAdvice;
-	private String ckUserId;
-	@Excel(name="处理人")
-	private String ckUserName;
+	private String processName;
+	private String materialNo;
+	private String formType;
 	/**
 	 *方法: 取得java.lang.String
 	 *@return: java.lang.String  业务员
@@ -443,8 +447,8 @@ public class EmkMOutStorageEntity implements java.io.Serializable {
 	 *方法: 取得java.lang.String
 	 *@return: java.lang.String  创建人名称
 	 */
-	@Formula("(select p.NAME_ from act_ru_task p where p.ASSIGNEE_ = id)")
-	@Column(name ="CREATE_NAME",nullable=true,length=32)
+	//@Formula("(select p.NAME_ from act_ru_task p where p.ASSIGNEE_ = id)")
+	//@Column(name ="CREATE_NAME",nullable=true,length=32)
 	public String getCreateName(){
 		return this.createName;
 	}
@@ -625,101 +629,103 @@ public class EmkMOutStorageEntity implements java.io.Serializable {
 		this.applerId = applerId;
 	}
 
-	@Column(name="LEAD_ADVICE", nullable=true, length=256)
-	public String getLeadAdvice()
-	{
-		return this.leadAdvice;
+	@Column(name="caigouer", nullable=true, length=32)
+	public String getCaigouer() {
+		return caigouer;
 	}
 
-	public void setLeadAdvice(String leadAdvice)
-	{
-		this.leadAdvice = leadAdvice;
+	public void setCaigouer(String caigouer) {
+		this.caigouer = caigouer;
 	}
 
-	@Column(name="IS_PASS", nullable=true, length=32)
-	public String getIsPass()
-	{
-		return this.isPass;
+	@Column(name="caigouer_name", nullable=true, length=32)
+	public String getCaigouerName() {
+		return caigouerName;
 	}
 
-	public void setIsPass(String isPass)
-	{
-		this.isPass = isPass;
+	public void setCaigouerName(String caigouerName) {
+		this.caigouerName = caigouerName;
 	}
 
-	@Column(name="LEAD_USER_ID", nullable=true, length=32)
-	public String getLeadUserId()
-	{
-		return this.leadUserId;
+	@Column(name="sq_date", nullable=true, length=32)
+	public String getSqDate() {
+		return sqDate;
 	}
 
-	public void setLeadUserId(String leadUserId)
-	{
-		this.leadUserId = leadUserId;
+	public void setSqDate(String sqDate) {
+		this.sqDate = sqDate;
 	}
 
-	@Column(name="LEADER", nullable=true, length=32)
-	public String getLeader()
-	{
-		return this.leader;
+	@Column(name="businesser_date", nullable=true, length=32)
+	public String getBusinesserDate() {
+		return businesserDate;
 	}
 
-	public void setLeader(String leader)
-	{
-		this.leader = leader;
+	public void setBusinesserDate(String businesserDate) {
+		this.businesserDate = businesserDate;
 	}
 
-	@Column(name="cl_advice", nullable=true, length=32)
-	public String getClAdvice() {
-		return clAdvice;
+	@Column(name="tracer_date", nullable=true, length=32)
+	public String getTracerDate() {
+		return tracerDate;
 	}
 
-	public void setClAdvice(String clAdvice) {
-		this.clAdvice = clAdvice;
+	public void setTracerDate(String tracerDate) {
+		this.tracerDate = tracerDate;
 	}
 
-	@Column(name="cl_user_id", nullable=true, length=32)
-	public String getClUserId() {
-		return clUserId;
+	@Column(name="caigouer_date", nullable=true, length=32)
+	public String getCaigouerDate() {
+		return caigouerDate;
 	}
 
-	public void setClUserId(String clUserId) {
-		this.clUserId = clUserId;
+	public void setCaigouerDate(String caigouerDate) {
+		this.caigouerDate = caigouerDate;
 	}
 
-	@Column(name="cl_user_name", nullable=true, length=32)
-	public String getClUserName() {
-		return clUserName;
+	@Column(name="total", nullable=true, length=32)
+	public String getTotal() {
+		return total;
 	}
 
-	public void setClUserName(String clUserName) {
-		this.clUserName = clUserName;
+	public void setTotal(String total) {
+		this.total = total;
 	}
 
-	@Column(name="ck_advice", nullable=true, length=32)
-	public String getCkAdvice() {
-		return ckAdvice;
+	@Formula("(select CONCAT(p.NAME_,'-',p.TASK_DEF_KEY_) from act_ru_task p where p.ASSIGNEE_ = id limit 0,1)")
+	@Column(name = "process_name", nullable = true, length = 32)
+	public String getProcessName() {
+		return processName;
 	}
 
-	public void setCkAdvice(String ckAdvice) {
-		this.ckAdvice = ckAdvice;
+	public void setProcessName(String processName) {
+		this.processName = processName;
 	}
 
-	@Column(name="ck_user_id", nullable=true, length=32)
-	public String getCkUserId() {
-		return ckUserId;
+	@Column(name = "form_type", nullable = true, length = 32)
+	public String getFormType() {
+		return formType;
 	}
 
-	public void setCkUserId(String ckUserId) {
-		this.ckUserId = ckUserId;
+	public void setFormType(String formType) {
+		this.formType = formType;
 	}
 
-	@Column(name="ck_user_name", nullable=true, length=32)
-	public String getCkUserName() {
-		return ckUserName;
+	@Column(name = "ck_no", nullable = true, length = 32)
+	public String getCkNo() {
+		return ckNo;
 	}
 
-	public void setCkUserName(String ckUserName) {
-		this.ckUserName = ckUserName;
+	public void setCkNo(String ckNo) {
+		this.ckNo = ckNo;
+	}
+
+	@Column(name = "MATERIAL_NO", nullable = true, length = 32)
+	public String getMaterialNo() {
+		return this.materialNo;
+	}
+
+	public void setMaterialNo(String materialNo) {
+		this.materialNo = materialNo;
 	}
 }

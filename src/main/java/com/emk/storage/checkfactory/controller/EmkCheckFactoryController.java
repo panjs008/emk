@@ -520,7 +520,8 @@ public class EmkCheckFactoryController extends BaseController {
 		try {
 			int flag = 0;
 			TSUser user = (TSUser)request.getSession().getAttribute("LOCAL_CLINET_USER");
-			Map map = ParameterUtil.getParamMaps(request.getParameterMap());
+			Map<String, String> map = ParameterUtil.getParamMaps(request.getParameterMap());
+
 			if ((emkCheckFactoryEntity.getId() == null) || (emkCheckFactoryEntity.getId().isEmpty())) {
 				for (String id : map.get("ids").toString().split(",")) {
 					EmkCheckFactoryEntity checkFactoryEntity = systemService.getEntity(EmkCheckFactoryEntity.class, id);
@@ -544,7 +545,7 @@ public class EmkCheckFactoryController extends BaseController {
 					List<Task> task = taskService.createTaskQuery().taskAssignee(id).list();
 					if (task.size() > 0) {
 						Task task1 = (Task)task.get(task.size() - 1);
-						EmkApprovalDetailEntity approvalDetail = ApprovalUtil.saveApprovalDetail(b.getId(),user,b);
+						EmkApprovalDetailEntity approvalDetail = ApprovalUtil.saveApprovalDetail(b.getId(),user,b,map.get("advice"));
 
 						if (task1.getTaskDefinitionKey().equals("checkfactoryTask")) {
 							taskService.complete(task1.getId(), variables);

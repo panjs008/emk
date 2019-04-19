@@ -1161,7 +1161,10 @@ public class UserController extends BaseController {
     public String userSelectCw() {
         return "system/user/userSelectCw";
     }
-
+    @RequestMapping(params = "userSelectUserKey")
+    public String userSelectUserKey() {
+        return "system/user/userSelectUserKey";
+    }
     @RequestMapping(params = "userdept0")
     public String userdept0() {
         return "system/user/userdept0";

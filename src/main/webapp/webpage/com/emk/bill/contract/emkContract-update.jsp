@@ -3,79 +3,21 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>购销合同</title>
+	<title>面料预采购合同</title>
 	<t:base type="jquery,easyui,tools,DatePicker"></t:base>
 
 	<%@include file="/context/header2.jsp"%>
-
+	<%--<script src="${webRoot}/context/gys.js"></script>--%>
 
 	<script type="text/javascript">
-		function resetTrNum(tableId) {
-			$tbody = $("#"+tableId+"");
-			$tbody.find('>tr').each(function(i){
-				$(':input, select', this).each(function(){
-					var $this = $(this), name = $this.attr('name'), val = $this.val();
-					if(name!=null){
-						if (name.indexOf("#index#") >= 0){
-							$this.attr("name",name.replace('#index#',i));
-						}else{
-							var s = name.indexOf("[");
-							var e = name.indexOf("]");
-							var new_name = name.substring(s+1,e);
-							$this.attr("name",name.replace(new_name,i));
-						}
-					}
-				});
-			});
-		}
-		$(document).ready(function(){
-			$("#detailId").load("emkContractController.do?orderMxList&proOrderId=${emkContractPage.id }");
-		});
+		//编写自定义JS代码
 
 	</script>
 </head>
 <body>
 <t:formvalid formid="formobj" dialog="true" usePlugin="password" layout="table" action="emkContractController.do?doUpdate" tiptype="1">
-	<input id="id" name="id" type="hidden" value="${emkContractPage.id }"/>
-	<input id="partyAId" name="partyAId" type="hidden" value="${emkContractPage.partyAId }"/>
-	<input id="partyBId" name="partyBId" type="hidden" value="${emkContractPage.partyBId }"/>
-
-
+	<input id="pactId" name="pactId" type="hidden" value="${emkContractPage.id }"/>
 	<table style="width: 100%;" cellpadding="0" cellspacing="1" class="formtable">
-		<tr>
-			<td align="right" >
-				<label class="Validform_label">
-					合同编号:
-				</label>
-			</td>
-			<td class="value">
-				<input id="htNum" name="htNum"  value="${emkContractPage.htNum}" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">合同编号</label>
-			</td>
-			<td align="right" >
-				<label class="Validform_label">
-					订单号:
-				</label>
-			</td>
-			<td class="value">
-				<input id="orderNo" name="orderNo" readonly value="${emkContractPage.orderNo}" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">订单号</label>
-			</td>
-			<td align="right">
-				<label class="Validform_label">
-					款号:
-				</label>
-			</td>
-			<td class="value">
-				<input id="sampleNo" name="sampleNo" type="text" value="${emkContractPage.sampleNo }" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">款号</label>
-			</td>
-
-
-		</tr>
 		<tr>
 			<td align="right" >
 				<label class="Validform_label">
@@ -87,16 +29,7 @@
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">甲方</label>
 			</td>
-			<td align="right" >
-				<label class="Validform_label">
-					乙方:
-				</label>
-			</td>
-			<td class="value">
-				<input id="partyB" name="partyB"  value="${emkContractPage.partyB}" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">乙方</label>
-			</td>
+
 			<td align="right" >
 				<label class="Validform_label">
 					业务部门:
@@ -108,9 +41,28 @@
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">业务部门</label>
 			</td>
+			<td align="right" >
+				<label class="Validform_label">
+					合同编号:
+				</label>
+			</td>
+			<td class="value">
+				<input id="htNum" name="htNum"  value="${emkContractPage.htNum}" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">合同编号</label>
+			</td>
 		</tr>
-
 		<tr>
+			<td align="right" >
+				<label class="Validform_label">
+					乙方:
+				</label>
+			</td>
+			<td class="value">
+				<input id="partyB" name="partyB"  value="${emkContractPage.partyB}" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">乙方</label>
+			</td>
 
 			<td align="right" >
 				<label class="Validform_label">
@@ -126,6 +78,21 @@
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">业务员</label>
 			</td>
+			<td align="right">
+				<label class="Validform_label">
+					日期:
+				</label>
+			</td>
+			<td class="value">
+				<input id="recevieDate" name="recevieDate" readonly value="${emkContractPage.recevieDate}" onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})"  type="text" style="width: 150px" class="Wdate"  ignore="ignore" />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">日期</label>
+			</td>
+		</tr>
+		<tr>
+			<td class="value" colspan="2">
+
+			</td>
 			<td align="right" >
 				<label class="Validform_label">
 					业务跟单员:
@@ -139,6 +106,14 @@
 				<input id="tracerName" name="tracerName"  type="hidden" value="${emkContractPage.tracerName }" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">业务员</label>
+			</td>
+			<td class="value" colspan="2">
+
+			</td>
+		</tr>
+		<tr>
+			<td class="value" colspan="2">
+
 			</td>
 			<td align="right" >
 				<label class="Validform_label">
@@ -154,103 +129,111 @@
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">业务员</label>
 			</td>
-		</tr>
+			<td class="value" colspan="2">
 
-
-
-		<tr>
-			<td align="right">
-				<label class="Validform_label">
-					总数量:
-				</label>
-			</td>
-			<td class="value">
-				<input id="sumTotal" name="sumTotal" value="${emkContractPage.sumTotal }"  type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">总数量</label>
-			</td>
-			<td align="right">
-				<label class="Validform_label">
-					总金额:
-				</label>
-			</td>
-			<td class="value">
-				<input id="sumMoney" name="sumMoney" value="${emkContractPage.sumMoney }"  type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">总金额</label>
-			</td>
-
-			<td align="right">
-				<label class="Validform_label">
-					交货时间:
-				</label>
-			</td>
-			<td class="value">
-				<input id="recevieDate" name="recevieDate" readonly value="${emkContractPage.recevieDate}" onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})"  type="text" style="width: 150px" class="Wdate"  ignore="ignore" />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">交货时间</label>
-			</td>
-
-
-		</tr>
-
-		<tr>
-			<td align="right">
-				<label class="Validform_label">
-					描述:
-				</label>
-			</td>
-			<td class="value" colspan="5">
-				<textarea  id="sampleNoDesc" style="width:95%;height:50px" class="inputxt" rows="3" name="sampleNoDesc">${emkContractPage.sampleNoDesc }</textarea>
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">描述</label>
 			</td>
 		</tr>
 
 		<tr>
-			<td align="right">
+			<td align="left" class="value"  colspan="6">
 				<label class="Validform_label">
-					原产地及生产商:
+					一、订单明细和条款:
 				</label>
 			</td>
-			<td class="value">
-				<input id="ycd" name="ycd" value="${emkContractPage.ycd }"  type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">原产地及生产商</label>
-			</td>
-			<td align="right">
-				<label class="Validform_label">
-					付款方式:
-				</label>
-			</td>
-			<td class="value">
-				<input id="payType" name="payType" value="${emkContractPage.payType }"  type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">付款方式</label>
-			</td>
-			<td align="right">
-				<label class="Validform_label">
-					电话:
-				</label>
-			</td>
-			<td class="value">
-				<input id="telphone" name="telphone" value="${emkContractPage.telphone }"  type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">电话</label>
+		</tr>
+	</table>
+
+	<t:tabs id="orderDetail" iframe="false"  tabPosition="top" fit="false">
+		<t:tab href="emkContractController.do?detailMxList&proOrderId=${emkContractPage.id}" icon="icon-search" title="明细" id="detail"></t:tab>
+	</t:tabs>
+	<table style="width: 100%;margin-top:22px;" cellpadding="0" cellspacing="1" class="formtable">
+		<tr>
+			<td class="value" colspan="4">
+				1）以上单价为出厂价：<input id="outPrice" name="outPrice" value="${emkContractPage.outPrice }"  type="text" style="width: 60px" class="inputxt"  ignore="ignore" />，FOB：<input id="fob" name="fob" value="${emkContractPage.fob }"  type="text" style="width: 100px" class="inputxt"  ignore="ignore" />(备注： )，尺码颜色的数量分配如上表或见附件。
 			</td>
 		</tr>
 		<tr>
-			<td align="right">
-				<label class="Validform_label">
-					交货地点:
-				</label>
+			<td class="value" colspan="4">
+				2）甲方确保按以上条款及乙方确认品质后生产大货，准时进仓，如有变化按双方修改文件为准；
 			</td>
-			<td class="value">
-				<input id="place" name="place" value="${emkContractPage.place }"  type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">交货地点</label>
+		</tr>
+		<tr>
+			<td class="value" colspan="4">
+				3）甲方在出货前合理时间内提供准确的预报箱单供乙方定仓，通过乙方指定的出口代理公司和货运代理报关出口。需要商检的货物乙方提前一周以上通知甲方，甲方在报关前及时提供相关单证。
 			</td>
-			<td align="right">
+		</tr>
+		<tr>
+			<td class="value" colspan="4">
+				4）甲方须及时提供乙方生产进程并同意乙方的查货人员进入生产工厂验货，根据乙方的验货报告及时改进；经验货合格后方可出货。
+			</td>
+		</tr>
+		<tr>
+			<td class="value" colspan="4">
+				5）包装:根据客人指示资料提供的要求。
+			</td>
+		</tr>
+		<tr>
+			<td class="value" colspan="4">
+				6）交货地点：乙方指定<input id="place" name="place" value="${emkContractPage.place }"  type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				或<input id="boundName" name="boundName" value="${emkContractPage.boundName }"  type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				仓库。
+			</td>
+		</tr>
+		<tr>
+			<td class="value" colspan="4">
+				7）原产地及生产商：<input id="ycd" name="ycd" value="${emkContractPage.ycd }"  type="text" style="width: 50%" class="inputxt"  ignore="ignore" />
+			</td>
+		</tr>
+		<tr>
+			<td class="value" colspan="4">
+				二、付款方式：
+			</td>
+		</tr>
+		<tr>
+			<td class="value" colspan="4">
+				1）<input id="payType" name="payType" value="${emkContractPage.payType }"  type="text" style="width: 50%" class="inputxt"  ignore="ignore" />
+			</td>
+		</tr>
+		<tr>
+			<td class="value" colspan="4">
+				2）订单确认后，乙方应及时付订金，甲方收到订金之后安排预定原料。出货前乙方应及时安排货款。如不能安时付款的，依次造成不能及时预定原料，不能上机生产的并耽误货期的情况，甲方概不负责。
+			</td>
+		</tr>
+		<tr>
+			<td class="value" colspan="4">
+				3）甲方仅代付衣架款，乙方负责衣架的订购及送货至甲方仓库。
+			</td>
+		</tr>
+		<tr>
+			<td class="value" colspan="4">
+				三、其他：
+			</td>
+		</tr>
+		<tr>
+			<td class="value" colspan="4">
+				1）本合同依法签订，一旦签订即具法律效力，双方必须全面履行。不得单方擅自变更或解除。如履行本协协议时发生争议，由甲，乙双方协商解决。协商不成的，双方一致同意交由协议签订双方的任何一方当地人民法院通过诉讼方式予以解决。
+			</td>
+		</tr>
+		<tr>
+			<td class="value" colspan="4">
+				2）本合同正本二份，双方各执一份，具有同等法律效力。
+			</td>
+		</tr>
+		<tr>
+			<td class="value" colspan="4">
+				3）甲方仅代付衣架款，乙方负责衣架的订购及送货至甲方仓库。
+			</td>
+		</tr>
+		<tr>
+			<td class="value" colspan="2" align="left">
+				甲方
+			</td>
+			<td class="value" colspan="2" align="left">
+				乙方
+			</td>
+		</tr>
+		<tr>
+			<td align="right" >
 				<label class="Validform_label">
 					法定代表授权代表:
 				</label>
@@ -262,6 +245,18 @@
 			</td>
 			<td align="right">
 				<label class="Validform_label">
+					法定代表授权代表:
+				</label>
+			</td>
+			<td class="value">
+				<input id="ysqdb" name="ysqdb" value="${emkContractPage.ysqdb }"  type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">法定代表授权代表</label>
+			</td>
+		</tr>
+		<tr>
+			<td align="right">
+				<label class="Validform_label">
 					地址:
 				</label>
 			</td>
@@ -270,50 +265,77 @@
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">地址</label>
 			</td>
-
+			<td align="right">
+				<label class="Validform_label">
+					地址:
+				</label>
+			</td>
+			<td class="value">
+				<input id="yaddress" name="yaddress" value="${emkContractPage.yaddress }"  type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">地址</label>
+			</td>
 		</tr>
 		<tr>
-
+			<td align="right">
+				<label class="Validform_label">
+					电话:
+				</label>
+			</td>
+			<td class="value">
+				<input id="telphone" name="telphone" value="${emkContractPage.telphone }"  type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">电话</label>
+			</td>
+			<td align="right">
+				<label class="Validform_label">
+					电话:
+				</label>
+			</td>
+			<td class="value">
+				<input id="ytelphone" name="ytelphone" value="${emkContractPage.ytelphone }"  type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">电话</label>
+			</td>
+		</tr>
+		<tr>
 			<td align="right">
 				<label class="Validform_label">
 					签定日期:
 				</label>
 			</td>
-			<td class="value" colspan="5">
+			<td class="value">
 				<input id="signDate" name="signDate" value="${emkContractPage.signDate }" readonly onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})"   type="text" style="width: 150px" class="Wdate"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">签定日期</label>
 			</td>
-
-		</tr>
-	</table>
-	<div id="detailId" style="width: auto; height: 200px;" ><%-- 增加一个div，用于调节页面大小，否则默认太小 --%>
-
-	</div>
-	<!-- 添加 产品明细 模版-->
-	<table style="width:100%;display: none" cellpadding="0" cellspacing="2" border="0">
-		<tbody id="add_jeecgOrderProduct_table_template">
-		<tr>
-			<td align="center"><input style="width: 40px;" type="checkbox" name="ck" />
-			<td align="left">
-				<select name="orderMxList[#index#].color" style="width: 70%;" nullmsg="请输入颜色！" errormsg="请输入颜色" datatype="*">
-					<c:forEach items="${categoryEntityList}" var="category">
-						<option value="${category.code}">${category.name}</option>
-					</c:forEach>
-				</select>
-				<%--<input nullmsg="请输入颜色！" id="proName00"  errormsg="请输入颜色" name="orderMxList[#index#].color" maxlength="100" type="text" value=""
-					   style="width: 70%;">--%>
+			<td align="right">
+				<label class="Validform_label">
+					签定日期:
+				</label>
 			</td>
-			<td align="left">
-				<input id="size00" nullmsg="请输入尺码！"  errormsg="请输入尺码" name="orderMxList[#index#].size" maxlength="100" type="text" value=""
-									style="width: 70%;"></td>
-			<td align="left"><input id="signTotal00" nullmsg="请输入数量！"  errormsg="请输入数量" name="orderMxList[#index#].signTotal" maxlength="100" type="text" value=""
-									style="width: 70%;"></td>
-			<td align="left"><input nullmsg="请输入单价！" id="signPrice00" errormsg="请输入单价" name="orderMxList[#index#].signPrice" maxlength="100" type="text" value=""
-									style="width: 70%;"></td>
+			<td class="value">
+				<input id="ysignDate" name="ysignDate" value="${emkContractPage.ysignDate }" readonly onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})"   type="text" style="width: 150px" class="Wdate"  ignore="ignore" />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">签定日期</label>
+			</td>
 		</tr>
-		</tbody>
-
 	</table>
+
 </t:formvalid>
 </body>
+<script>
+	$(document).ready(function() {
+
+		$('#proTypeTree').combotree({
+			url : 'emkProductTypeController.do?setPOfficeInfo&selfId=${emkProductTypePage.id}',
+			panelHeight: 200,
+			width: 157,
+			onClick: function(node){
+				$("#proType").val(node.id);
+				$("#proTypeName").val(node.text);
+
+			}
+		});
+	});
+</script>

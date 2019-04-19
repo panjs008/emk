@@ -23,8 +23,8 @@
 
       <t:dgCol title="状态"  field="state" formatterjs="formatColor"  queryMode="single"  width="70"></t:dgCol>
       <t:dgFunOpt funname="goToProcess(id)" title="流程进度" operationCode="process" urlclass="ace_button"  urlStyle="background-color:#ec4758;" urlfont="fa-tasks"></t:dgFunOpt>
-      <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkFinanceReceivableController.do?goAdd1&type=1&winTitle=录入应付通知单" funname="add" height="600" width="1000"></t:dgToolBar>
-      <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkFinanceReceivableController.do?goUpdate1&type=0&winTitle=编辑应付通知单" funname="update" height="600" width="1100"></t:dgToolBar>
+      <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkFinanceReceivableController.do?goAdd1&type=1&winTitle=录入应付通知单" funname="add" height="600" width="1300"></t:dgToolBar>
+      <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkFinanceReceivableController.do?goUpdate1&type=1&winTitle=编辑应付通知单" funname="update" height="600" width="1300"></t:dgToolBar>
       <t:dgToolBar title="提交" operationCode="submit" icon="fa fa-arrow-circle-up" funname="doSubmitV"></t:dgToolBar>
       <t:dgToolBar title="删除" operationCode="delete"  icon="fa fa-remove" url="emkFinanceReceivableController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
       <t:dgToolBar title="导出" operationCode="exp" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>

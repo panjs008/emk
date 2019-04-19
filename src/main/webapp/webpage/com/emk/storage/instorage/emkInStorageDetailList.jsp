@@ -175,7 +175,7 @@
                 </td>
                 <td align="left"><input id="brand0" nullmsg="请输入规格！" datatype="*" value="${poVal.brand}" errormsg="请输入规格" name="rkglMxList[${status.index}].brand" maxlength="100" type="text" value="0"
                                         style="width: 120px;"></td>
-                <td align="left"><input id="signTotal0" nullmsg="请输入数量！" datatype="*" value="${poVal.signTotal}" errormsg="请输入数量" name="rkglMxList[${status.index}].signTotal" maxlength="100" type="text" value="0"
+                <td align="left"><input id="signTotal0" nullmsg="请输入数量！" datatype="*" value="${poVal.signTotal}" errormsg="请输入整数" name="rkglMxList[${status.index}].signTotal" maxlength="100" type="text" value="0"
                                         style="width: 120px;"></td>
                 <td align="left">
                     <input nullmsg="请输入单位！" id="signUnit0"  errormsg="请输入单位" value="${poVal.signUnit}" name="rkglMxList[${status.index}].signUnit" maxlength="100" type="text" value="-1"

@@ -259,7 +259,7 @@
 				</tr>
 
 
-			<tr>
+			<%--<tr>
 				<td align="right">
 					<label class="Validform_label">
 						单件用量:
@@ -270,6 +270,19 @@
 					<span class="Validform_checktip"></span>
 					<label class="Validform_label" style="display: none;">单件用量</label>
 				</td>
+
+			</tr>--%>
+			<tr>
+				<td align="right">
+					<label class="Validform_label">
+						规格:
+					</label>
+				</td>
+				<td class="value">
+					<input id="brand" name="brand" type="text" value="${emkProductPage.brand }"  style="width: 150px" class="inputxt"  ignore="ignore" />
+					<span class="Validform_checktip"></span>
+					<label class="Validform_label" style="display: none;">规格</label>
+				</td>
 				<td align="right">
 					<label class="Validform_label">
 						单位:
@@ -279,18 +292,6 @@
 					<input id="unit" name="unit" type="text" value="${emkProductPage.unit }"  style="width: 150px" class="inputxt"  ignore="ignore" />
 					<span class="Validform_checktip"></span>
 					<label class="Validform_label" style="display: none;">单位</label>
-				</td>
-			</tr>
-			<tr>
-				<td align="right">
-					<label class="Validform_label">
-						规格:
-					</label>
-				</td>
-				<td class="value" colspan="3">
-					<input id="brand" name="brand" type="text" value="${emkProductPage.brand }"  style="width: 150px" class="inputxt"  ignore="ignore" />
-					<span class="Validform_checktip"></span>
-					<label class="Validform_label" style="display: none;">规格</label>
 				</td>
 			</tr>
 			<tr>

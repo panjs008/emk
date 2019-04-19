@@ -1,9 +1,13 @@
 package com.emk.storage.pack.controller;
 
 import com.alibaba.fastjson.JSONArray;
+import com.emk.approval.approval.entity.EmkApprovalEntity;
+import com.emk.approval.approvaldetail.entity.EmkApprovalDetailEntity;
+import com.emk.storage.material.entity.EmkMaterialEntity;
 import com.emk.storage.pack.entity.EmkPackEntity;
 import com.emk.storage.pack.service.EmkPackServiceI;
 import com.emk.storage.sampledetail.entity.EmkSampleDetailEntity;
+import com.emk.util.ApprovalUtil;
 import com.emk.util.FlowUtil;
 import com.emk.util.ParameterUtil;
 import com.emk.util.Utils;
@@ -104,7 +108,7 @@ public class EmkPackController extends BaseController {
 
 
         cq.add();
-        this.emkPackService.getDataGridReturn(cq, true);
+        emkPackService.getDataGridReturn(cq, true);
         TagUtil.datagrid(response, dataGrid);
     }
 
@@ -113,11 +117,11 @@ public class EmkPackController extends BaseController {
     public AjaxJson doDel(EmkPackEntity emkPack, HttpServletRequest request) {
         String message = null;
         AjaxJson j = new AjaxJson();
-        emkPack = (EmkPackEntity) this.systemService.getEntity(EmkPackEntity.class, emkPack.getId());
+        emkPack = systemService.getEntity(EmkPackEntity.class, emkPack.getId());
         message = "包装辅料需求开发单删除成功";
         try {
-            this.emkPackService.delete(emkPack);
-            this.systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
+            emkPackService.delete(emkPack);
+            systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
         } catch (Exception e) {
             e.printStackTrace();
             message = "包装辅料需求开发单删除失败";
@@ -135,11 +139,11 @@ public class EmkPackController extends BaseController {
         message = "包装辅料需求开发单删除成功";
         try {
             for (String id : ids.split(",")) {
-                EmkPackEntity emkPack = (EmkPackEntity) this.systemService.getEntity(EmkPackEntity.class, id);
+                EmkPackEntity emkPack = systemService.getEntity(EmkPackEntity.class, id);
 
 
-                this.emkPackService.delete(emkPack);
-                this.systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
+                emkPackService.delete(emkPack);
+                systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -157,10 +161,34 @@ public class EmkPackController extends BaseController {
         AjaxJson j = new AjaxJson();
         message = "包装辅料需求开发单添加成功";
         try {
+            Map map = ParameterUtil.getParamMaps(request.getParameterMap());
             emkPack.setState("0");
             emkPack.setParkNo(emkPack.getSampleNo() + DateUtils.format(new Date(), "yyMMdd"));
-            this.emkPackService.save(emkPack);
-            this.systemService.addLog(message, Globals.Log_Type_INSERT, Globals.Log_Leavel_INFO);
+            emkPackService.save(emkPack);
+
+            String dataRows = (String)map.get("orderMxListID3");
+            //保存包装辅料数据
+            if (Utils.notEmpty(dataRows)) {
+                int rows = Integer.parseInt(dataRows);
+                for (int i = 0; i < rows; i++) {
+                    EmkSampleDetailEntity emkSampleDetailEntity = new EmkSampleDetailEntity();
+                    if (Utils.notEmpty(map.get("orderMxList["+i+"].cproZnName"))) {
+                        emkSampleDetailEntity.setProZnName((String)map.get("orderMxList["+i+"].cproZnName"));
+                        emkSampleDetailEntity.setProNum((String)map.get("orderMxList["+i+"].cproNum"));
+                        emkSampleDetailEntity.setGysCode((String)map.get("orderMxList["+i+"].cgysCode"));
+                        emkSampleDetailEntity.setBrand((String)map.get("orderMxList["+i+"].cbrand"));
+                        emkSampleDetailEntity.setChengf((String)map.get("orderMxList["+i+"].cchengf"));
+                        emkSampleDetailEntity.setWeight((String)map.get("orderMxList["+i+"].cweight"));
+                        emkSampleDetailEntity.setSignTotal((String)map.get("orderMxList["+i+"].csignTotal"));
+                        emkSampleDetailEntity.setSignPrice((String)map.get("orderMxList["+i+"].csignPrice"));
+
+                        emkSampleDetailEntity.setSampleId(emkPack.getId());
+                        emkSampleDetailEntity.setType("2");
+                        systemService.save(emkSampleDetailEntity);
+                    }
+                }
+            }
+            systemService.addLog(message, Globals.Log_Type_INSERT, Globals.Log_Leavel_INFO);
         } catch (Exception e) {
             e.printStackTrace();
             message = "包装辅料需求开发单添加失败";
@@ -176,11 +204,35 @@ public class EmkPackController extends BaseController {
         String message = null;
         AjaxJson j = new AjaxJson();
         message = "包装辅料需求开发单更新成功";
-        EmkPackEntity t = (EmkPackEntity) this.emkPackService.get(EmkPackEntity.class, emkPack.getId());
+        Map map = ParameterUtil.getParamMaps(request.getParameterMap());
+        EmkPackEntity t = emkPackService.get(EmkPackEntity.class,  map.get("materailId").toString());
         try {
             MyBeanUtils.copyBeanNotNull2Bean(emkPack, t);
-            this.emkPackService.saveOrUpdate(t);
-            this.systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
+            emkPackService.saveOrUpdate(t);
+
+            String dataRows = (String)map.get("orderMxListID3");
+            //保存包装辅料数据
+            if (Utils.notEmpty(dataRows)) {
+                systemService.executeSql("delete from emk_sample_detail where sample_id = ? and type=2",t.getId());
+                int rows = Integer.parseInt(dataRows);
+                for (int i = 0; i < rows; i++) {
+                    EmkSampleDetailEntity emkSampleDetailEntity = new EmkSampleDetailEntity();
+                    if (Utils.notEmpty(map.get("orderMxList["+i+"].cproZnName"))) {
+                        emkSampleDetailEntity.setProZnName((String)map.get("orderMxList["+i+"].cproZnName"));
+                        emkSampleDetailEntity.setProNum((String)map.get("orderMxList["+i+"].cproNum"));
+                        emkSampleDetailEntity.setGysCode((String)map.get("orderMxList["+i+"].cgysCode"));
+                        emkSampleDetailEntity.setBrand((String)map.get("orderMxList["+i+"].cbrand"));
+                        emkSampleDetailEntity.setChengf((String)map.get("orderMxList["+i+"].cchengf"));
+                        emkSampleDetailEntity.setWeight((String)map.get("orderMxList["+i+"].cweight"));
+                        emkSampleDetailEntity.setSignTotal((String)map.get("orderMxList["+i+"].csignTotal"));
+                        emkSampleDetailEntity.setSignPrice((String)map.get("orderMxList["+i+"].csignPrice"));
+                        emkSampleDetailEntity.setSampleId(t.getId());
+                        emkSampleDetailEntity.setType("2");
+                        systemService.save(emkSampleDetailEntity);
+                    }
+                }
+            }
+            systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
         } catch (Exception e) {
             e.printStackTrace();
             message = "包装辅料需求开发单更新失败";
@@ -194,7 +246,7 @@ public class EmkPackController extends BaseController {
     public ModelAndView goAdd(EmkPackEntity emkPack, HttpServletRequest req) {
         req.setAttribute("kdDate", DateUtils.format(new Date(), "yyyy-MM-dd"));
         if (StringUtil.isNotEmpty(emkPack.getId())) {
-            emkPack = (EmkPackEntity) this.emkPackService.getEntity(EmkPackEntity.class, emkPack.getId());
+            emkPack = emkPackService.getEntity(EmkPackEntity.class, emkPack.getId());
             req.setAttribute("emkPackPage", emkPack);
         }
         return new ModelAndView("com/emk/storage/pack/emkPack-add");
@@ -203,7 +255,7 @@ public class EmkPackController extends BaseController {
     @RequestMapping(params = "goUpdate")
     public ModelAndView goUpdate(EmkPackEntity emkPack, HttpServletRequest req) {
         if (StringUtil.isNotEmpty(emkPack.getId())) {
-            emkPack = (EmkPackEntity) this.emkPackService.getEntity(EmkPackEntity.class, emkPack.getId());
+            emkPack = emkPackService.getEntity(EmkPackEntity.class, emkPack.getId());
             req.setAttribute("emkPackPage", emkPack);
         }
         return new ModelAndView("com/emk/storage/pack/emkPack-update");
@@ -212,7 +264,7 @@ public class EmkPackController extends BaseController {
     @RequestMapping(params = "goUpdate2")
     public ModelAndView goUpdate2(EmkPackEntity emkPack, HttpServletRequest req) {
         if (StringUtil.isNotEmpty(emkPack.getId())) {
-            emkPack = (EmkPackEntity) this.emkPackService.getEntity(EmkPackEntity.class, emkPack.getId());
+            emkPack = emkPackService.getEntity(EmkPackEntity.class, emkPack.getId());
             req.setAttribute("emkPackPage", emkPack);
         }
         return new ModelAndView("com/emk/storage/pack/emkPack-update2");
@@ -229,7 +281,7 @@ public class EmkPackController extends BaseController {
     public String exportXls(EmkPackEntity emkPack, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid, ModelMap modelMap) {
         CriteriaQuery cq = new CriteriaQuery(EmkPackEntity.class, dataGrid);
         HqlGenerateUtil.installHql(cq, emkPack, request.getParameterMap());
-        List<EmkPackEntity> emkPacks = this.emkPackService.getListByCriteriaQuery(cq, Boolean.valueOf(false));
+        List<EmkPackEntity> emkPacks = emkPackService.getListByCriteriaQuery(cq, Boolean.valueOf(false));
         modelMap.put("fileName", "包装辅料需求开发单");
         modelMap.put("entity", EmkPackEntity.class);
         modelMap.put("params", new ExportParams("包装辅料需求开发单列表", "导出人:" + ResourceUtil.getSessionUser().getRealName(), "导出信息"));
@@ -252,7 +304,7 @@ public class EmkPackController extends BaseController {
     @ResponseBody
     @ApiOperation(value = "包装辅料需求开发单列表信息", produces = "application/json", httpMethod = "GET")
     public ResponseMessage<List<EmkPackEntity>> list() {
-        List<EmkPackEntity> listEmkPacks = this.emkPackService.getList(EmkPackEntity.class);
+        List<EmkPackEntity> listEmkPacks = emkPackService.getList(EmkPackEntity.class);
         return Result.success(listEmkPacks);
     }
 
@@ -260,7 +312,7 @@ public class EmkPackController extends BaseController {
     @ResponseBody
     @ApiOperation(value = "根据ID获取包装辅料需求开发单信息", notes = "根据ID获取包装辅料需求开发单信息", httpMethod = "GET", produces = "application/json")
     public ResponseMessage<?> get(@ApiParam(required = true, name = "id", value = "ID") @PathVariable("id") String id) {
-        EmkPackEntity task = (EmkPackEntity) this.emkPackService.get(EmkPackEntity.class, id);
+        EmkPackEntity task = emkPackService.get(EmkPackEntity.class, id);
         if (task == null) {
             return Result.error("根据ID获取包装辅料需求开发单信息为空");
         }
@@ -271,12 +323,12 @@ public class EmkPackController extends BaseController {
     @ResponseBody
     @ApiOperation("创建包装辅料需求开发单")
     public ResponseMessage<?> create(@ApiParam(name = "包装辅料需求开发单对象") @RequestBody EmkPackEntity emkPack, UriComponentsBuilder uriBuilder) {
-        Set<ConstraintViolation<EmkPackEntity>> failures = this.validator.validate(emkPack, new Class[0]);
+        Set<ConstraintViolation<EmkPackEntity>> failures = validator.validate(emkPack, new Class[0]);
         if (!failures.isEmpty()) {
             return Result.error(JSONArray.toJSONString(BeanValidators.extractPropertyAndMessage(failures)));
         }
         try {
-            this.emkPackService.save(emkPack);
+            emkPackService.save(emkPack);
         } catch (Exception e) {
             e.printStackTrace();
             return Result.error("包装辅料需求开发单信息保存失败");
@@ -288,12 +340,12 @@ public class EmkPackController extends BaseController {
     @ResponseBody
     @ApiOperation(value = "更新包装辅料需求开发单", notes = "更新包装辅料需求开发单")
     public ResponseMessage<?> update(@ApiParam(name = "包装辅料需求开发单对象") @RequestBody EmkPackEntity emkPack) {
-        Set<ConstraintViolation<EmkPackEntity>> failures = this.validator.validate(emkPack, new Class[0]);
+        Set<ConstraintViolation<EmkPackEntity>> failures = validator.validate(emkPack, new Class[0]);
         if (!failures.isEmpty()) {
             return Result.error(JSONArray.toJSONString(BeanValidators.extractPropertyAndMessage(failures)));
         }
         try {
-            this.emkPackService.saveOrUpdate(emkPack);
+            emkPackService.saveOrUpdate(emkPack);
         } catch (Exception e) {
             e.printStackTrace();
             return Result.error("更新包装辅料需求开发单信息失败");
@@ -310,7 +362,7 @@ public class EmkPackController extends BaseController {
             return Result.error("ID不能为空");
         }
         try {
-            this.emkPackService.deleteEntityById(EmkPackEntity.class, id);
+            emkPackService.deleteEntityById(EmkPackEntity.class, id);
         } catch (Exception e) {
             e.printStackTrace();
             return Result.error("包装辅料需求开发单删除失败");
@@ -328,7 +380,8 @@ public class EmkPackController extends BaseController {
         try {
             int flag = 0;
             TSUser user = (TSUser)request.getSession().getAttribute("LOCAL_CLINET_USER");
-            Map map = ParameterUtil.getParamMaps(request.getParameterMap());
+            Map<String, String> map = ParameterUtil.getParamMaps(request.getParameterMap());
+
             if(emkPackEntity.getId() == null || emkPackEntity.getId().isEmpty()) {
                 for (String id : map.get("ids").toString().split(",")) {
                     EmkPackEntity packEntity = systemService.getEntity(EmkPackEntity.class, id);
@@ -346,10 +399,29 @@ public class EmkPackController extends BaseController {
             if (flag == 0) {
                 for (String id : map.get("ids").toString().split(",")) {
                     EmkPackEntity t = emkPackService.get(EmkPackEntity.class, id);
-                    t.setState("1");
-                    variables.put("optUser", t.getId());
+                    EmkApprovalEntity b = systemService.findUniqueByProperty(EmkApprovalEntity.class,"formId",t.getId());
+                    if(Utils.isEmpty(b)){
+                        b = new EmkApprovalEntity();
+                        EmkApprovalDetailEntity approvalDetailEntity = new EmkApprovalDetailEntity();
+                        ApprovalUtil.saveApproval(b,4,t.getParkNo(),t.getId(),user);
+                        systemService.save(b);
+                        ApprovalUtil.saveApprovalDetail(approvalDetailEntity,b.getId(),"包装辅料需求开发申请单","packTask","提交",user);
+                        systemService.save(approvalDetailEntity);
+                    }
 
                     List<Task> task = taskService.createTaskQuery().taskAssignee(id).list();
+                    TSUser makerUser = systemService.findUniqueByProperty(TSUser.class,"userName",t.getCreateBy());
+                    TSUser bpmUser = null;
+                    if (task.size() > 0) {
+                        bpmUser = systemService.get(TSUser.class,b.getBpmSherId());
+                    }else{
+                        bpmUser = systemService.get(TSUser.class,b.getCommitId());
+                    }
+                    //保存审批意见
+                    EmkApprovalDetailEntity approvalDetail = ApprovalUtil.saveApprovalDetail(b.getId(),user,b,map.get("advice"));
+
+                    t.setState("1");
+                    variables.put("optUser", t.getId());
                     if (task.size() > 0) {
                         Task task1 = (Task)task.get(task.size() - 1);
                         if (task1.getTaskDefinitionKey().equals("checkfactoryTask")) {
@@ -405,6 +477,7 @@ public class EmkPackController extends BaseController {
         return j;
     }
 
+
     @RequestMapping(params="goWork")
     public ModelAndView goWork(EmkPackEntity emkPackEntity, HttpServletRequest req) {
         if (StringUtil.isNotEmpty(emkPackEntity.getId())) {
@@ -412,35 +485,14 @@ public class EmkPackController extends BaseController {
             req.setAttribute("emkPack", emkPackEntity);
         }
         return new ModelAndView("com/emk/storage/pack/emkPack-work");
-
     }
-
     @RequestMapping(params="goTime")
     public ModelAndView goTime(EmkPackEntity emkPackEntity, HttpServletRequest req, DataGrid dataGrid) {
-        String sql = "";String countsql = "";
-        Map map = ParameterUtil.getParamMaps(req.getParameterMap());
-
-        sql = "SELECT DATE_FORMAT(t1.START_TIME_, '%Y-%m-%d %H:%i:%s') startTime,t1.*,CASE \n" +
-                " WHEN t1.TASK_DEF_KEY_='packTask' THEN t2.create_name \n" +
-                " WHEN t1.TASK_DEF_KEY_='checkTask' THEN t2.leader \n" +
-                " END workname FROM act_hi_taskinst t1 \n" +
-                " LEFT JOIN emk_pack t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='" + map.get("id") + "' ";
-
-        countsql = " SELECT COUNT(1) FROM act_hi_taskinst t1 where ASSIGNEE_='" + map.get("id") + "' ";
-        if (dataGrid.getPage() == 1) {
-            sql = sql + " limit 0, " + dataGrid.getRows();
-        } else {
-            sql = sql + "limit " + (dataGrid.getPage() - 1) * dataGrid.getRows() + "," + dataGrid.getRows();
-        }
-        systemService.listAllByJdbc(dataGrid, sql, countsql);
-        req.setAttribute("taskList", dataGrid.getResults());
-        if (dataGrid.getResults().size() > 0) {
-            req.setAttribute("stepProcess", Integer.valueOf(dataGrid.getResults().size() - 1));
-        } else {
-            req.setAttribute("stepProcess", Integer.valueOf(0));
-        }
-        emkPackEntity = emkPackService.getEntity(EmkPackEntity.class, emkPackEntity.getId());
-        req.setAttribute("emkPack", emkPackEntity);
+        EmkApprovalEntity approvalEntity = systemService.findUniqueByProperty(EmkApprovalEntity.class,"formId",emkPackEntity.getId());
+        List<EmkApprovalDetailEntity> approvalDetailEntityList = systemService.findHql("from EmkApprovalDetailEntity where approvalId=? order by approveDate asc",approvalEntity.getId());
+        req.setAttribute("approvalDetailEntityList", approvalDetailEntityList);
+        req.setAttribute("approvalEntity", approvalEntity);
+        req.setAttribute("createDate", org.jeecgframework.core.util.DateUtils.date2Str(approvalEntity.getCreateDate(), org.jeecgframework.core.util.DateUtils.datetimeFormat));
         return new ModelAndView("com/emk/storage/pack/time");
     }
 }

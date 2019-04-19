@@ -102,6 +102,13 @@ public class EmkCheckEntity implements java.io.Serializable {
 	@Excel(name="状态",width=15)
 	private String state;
 
+	@Excel(name = "业务跟单员")
+	private String tracer;
+	private String tracerName;
+	@Excel(name = "生产跟单员")
+	private String developer;
+	private String developerName;
+
 	@Excel(name="审核意见")
 	private String leadAdvice;
 	@Excel(name="是否通过")
@@ -672,4 +679,39 @@ public class EmkCheckEntity implements java.io.Serializable {
 		this.isHg = isHg;
 	}
 
+	@Column(name = "TRACER", nullable = true, length = 32)
+	public String getTracer() {
+		return this.tracer;
+	}
+
+	public void setTracer(String tracer) {
+		this.tracer = tracer;
+	}
+
+	@Column(name = "TRACER_NAME", nullable = true, length = 32)
+	public String getTracerName() {
+		return this.tracerName;
+	}
+
+	public void setTracerName(String tracerName) {
+		this.tracerName = tracerName;
+	}
+
+	@Column(name = "DEVELOPER", nullable = true, length = 32)
+	public String getDeveloper() {
+		return this.developer;
+	}
+
+	public void setDeveloper(String developer) {
+		this.developer = developer;
+	}
+
+	@Column(name = "DEVELOPER_NAME", nullable = true, length = 32)
+	public String getDeveloperName() {
+		return this.developerName;
+	}
+
+	public void setDeveloperName(String developerName) {
+		this.developerName = developerName;
+	}
 }

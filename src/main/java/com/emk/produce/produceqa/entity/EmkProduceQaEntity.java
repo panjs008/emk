@@ -75,14 +75,35 @@ public class EmkProduceQaEntity implements Serializable {
     private String copyer;
     @Excel(name = "问题描述")
     private String qaDesc;
+    @Excel(name = "问题责任人")
+    private String qazrer;
+    @Excel(name = "发件人")
+    private String fjer;
+    @Excel(name = "业务审核")
+    private String ywsher;
+    @Excel(name = "业务审核ID")
+    private String ywsherId;
     @Excel(name = "经济损失")
     private String loss;
     @Excel(name = "解决方案")
     private String solve;
+    @Excel(name = "方案执行人")
+    private String solver;
+    @Excel(name = "方案执行人ID")
+    private String solverId;
+    @Excel(name = "方案批准人")
+    private String solverPzer;
+    @Excel(name = "方案批准人ID")
+    private String solverPzerId;
+
     @Excel(name = "相关抄送人意见")
     private String copyerAdvice;
     @Excel(name = "财务意见")
     private String cwAdvice;
+    @Excel(name = "财务批准人")
+    private String cwPzer;
+    @Excel(name = "财务批准人ID")
+    private String cwPzerId;
     @Excel(name = "总经理意见")
     private String zjlAdvice;
     @Excel(name = "生产问题函状态")
@@ -567,5 +588,95 @@ public class EmkProduceQaEntity implements Serializable {
 
     public void setCusName(String cusName) {
         this.cusName = cusName;
+    }
+
+    @Column(name = "qazrer", nullable = true, length = 32)
+    public String getQazrer() {
+        return qazrer;
+    }
+
+    public void setQazrer(String qazrer) {
+        this.qazrer = qazrer;
+    }
+
+    @Column(name = "fjer", nullable = true, length = 32)
+    public String getFjer() {
+        return fjer;
+    }
+
+    public void setFjer(String fjer) {
+        this.fjer = fjer;
+    }
+
+    @Column(name = "ywsher", nullable = true, length = 32)
+    public String getYwsher() {
+        return ywsher;
+    }
+
+    public void setYwsher(String ywsher) {
+        this.ywsher = ywsher;
+    }
+
+    @Column(name = "ywsher_id", nullable = true, length = 32)
+    public String getYwsherId() {
+        return ywsherId;
+    }
+
+    public void setYwsherId(String ywsherId) {
+        this.ywsherId = ywsherId;
+    }
+
+    @Column(name = "solver", nullable = true, length = 32)
+    public String getSolver() {
+        return solver;
+    }
+
+    public void setSolver(String solver) {
+        this.solver = solver;
+    }
+
+    @Column(name = "solver_id", nullable = true, length = 32)
+    public String getSolverId() {
+        return solverId;
+    }
+
+    public void setSolverId(String solverId) {
+        this.solverId = solverId;
+    }
+
+    @Column(name = "solver_pzer", nullable = true, length = 32)
+    public String getSolverPzer() {
+        return solverPzer;
+    }
+
+    public void setSolverPzer(String solverPzer) {
+        this.solverPzer = solverPzer;
+    }
+
+    @Column(name = "solver_pzer_id", nullable = true, length = 32)
+    public String getSolverPzerId() {
+        return solverPzerId;
+    }
+
+    public void setSolverPzerId(String solverPzerId) {
+        this.solverPzerId = solverPzerId;
+    }
+
+    @Column(name = "cw_pzer", nullable = true, length = 32)
+    public String getCwPzer() {
+        return cwPzer;
+    }
+
+    public void setCwPzer(String cwPzer) {
+        this.cwPzer = cwPzer;
+    }
+
+    @Column(name = "cw_pzer_id", nullable = true, length = 32)
+    public String getCwPzerId() {
+        return cwPzerId;
+    }
+
+    public void setCwPzerId(String cwPzerId) {
+        this.cwPzerId = cwPzerId;
     }
 }

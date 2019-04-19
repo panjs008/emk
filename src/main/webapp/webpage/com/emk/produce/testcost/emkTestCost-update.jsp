@@ -19,9 +19,44 @@
 </head>
 <body>
 <t:formvalid formid="formobj" dialog="true" usePlugin="password" layout="table" action="emkTestCostController.do?doUpdate" tiptype="1">
-	<input id="id" name="id" type="hidden" value="${emkTestCostPage.id }"/>
+	<input id="testCostId" name="testCostId" type="hidden" value="${emkTestCostPage.id }"/>
 	<table style="width: 100%;" cellpadding="0" cellspacing="1" class="formtable">
 		<tr>
+			<td align="right" >
+				<label class="Validform_label">
+					客户名称:
+				</label>
+			</td>
+			<td class="value" colspan="3">
+				<input id="cusName" name="cusName" readonly type="text" style="width: 150px" class="inputxt"  value="${emkTestCostPage.cusName }"  ignore="ignore" />
+				<t:choose  hiddenName="cusNum"  hiddenid="cusNum" url="ymkCustomController.do?select" name="ymkCustomList" width="700px" height="500px"
+						   icon="icon-search" title="选择客户" textname="cusName,businesseDeptName,businesseDeptId,businesser,businesserName,developer,developerName,tracer,tracerName,bz" isclear="true" isInit="true"></t:choose>
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">客户名称</label>
+			</td>
+		</tr>
+		<tr>
+			<td align="right" >
+				<label class="Validform_label">
+					客户代码:
+				</label>
+			</td>
+			<td class="value" >
+				<input id="cusNum" name="cusNum" readonly type="text" style="width: 150px" class="inputxt"  value="${emkTestCostPage.cusNum }"  ignore="ignore" />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">客户代码</label>
+			</td>
+			<%--<td align="right" >
+				<label class="Validform_label">
+					测试申请表单号:
+				</label>
+			</td>
+			<td class="value" >
+				<input id="testNo" name="testNo"  type="text" style="width: 150px"  value="${emkTestCostPage.testNo }" class="inputxt"  ignore="ignore" />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">测试申请表单号</label>
+			</td>
+--%>
 			<td align="right" >
 				<label class="Validform_label">
 					费用付款申请单号:
@@ -32,18 +67,92 @@
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">费用付款申请单号</label>
 			</td>
+		</tr>
+		<tr>
 			<td align="right" >
 				<label class="Validform_label">
-					测试申请单号:
+					业务部门:
+				</label>
+			</td>
+			<td class="value">
+				<input id="businesseDeptName" name="businesseDeptName" readonly type="text"  value="${emkTestCostPage.businesseDeptName }" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="businesseDeptId" name="businesseDeptId"  type="hidden"  value="${emkTestCostPage.businesseDeptId }" />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">业务部门</label>
+			</td>
+			<td align="right">
+				<label class="Validform_label">
+					测试机构名称:
+				</label>
+			</td>
+			<td class="value">
+				<t:dictSelect id="csjgdm" field="csjgdm" typeGroupCode="orgCode" datatype="*" defaultVal="${emkTestCostPage.csjgdm }" hasLabel="false" title="机构名称"></t:dictSelect>
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">测试机构名称</label>
+			</td>
+		</tr>
+
+		<tr>
+			<td align="right" >
+				<label class="Validform_label">
+					业务员:
 				</label>
 			</td>
 			<td class="value" >
-				<input id="testNo" name="testNo"  type="text" style="width: 150px"  value="${emkTestCostPage.testNo }" class="inputxt"  ignore="ignore" />
+				<select class="form-control select2" id="businesserId" datatype="*" >
+					<option value=''>请选择</option>
+				</select>
+				<input id="businesser" name="businesser" readonly type="hidden" style="width: 150px"  value="${emkTestCostPage.businesser }" class="inputxt"  ignore="ignore" />
+				<input id="businesserName" name="businesserName"  type="hidden"  value="${emkTestCostPage.businesserName }"/>
 				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">测试申请单号</label>
+				<label class="Validform_label" style="display: none;">业务员</label>
+			</td>
+
+			<td align="right" >
+				<label class="Validform_label">
+					总金额:
+				</label>
+			</td>
+			<td class="value" >
+				<input id="sumMoney" name="sumMoney"  datatype="d" type="text" style="width: 150px" value="${emkTestCostPage.sumMoney }" class="inputxt"  ignore="ignore" />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">总金额</label>
 			</td>
 		</tr>
 		<tr>
+			<td align="right" >
+				<label class="Validform_label">
+					业务跟单员:
+				</label>
+			</td>
+			<td class="value" colspan="3">
+				<select class="form-control select2" id="tracerId"  >
+					<option value=''>请选择</option>
+				</select>
+				<input id="tracer" name="tracer" readonly type="hidden" style="width: 150px"  value="${emkTestCostPage.tracer }" class="inputxt"  ignore="ignore" />
+				<input id="tracerName" name="tracerName"  type="hidden"  value="${emkTestCostPage.tracerName }" />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">业务员</label>
+			</td>
+			</tr>
+		<tr>
+			<td align="right" >
+				<label class="Validform_label">
+					生产跟单员:
+				</label>
+			</td>
+			<td class="value" colspan="3">
+				<select class="form-control select2" id="developerId"  >
+					<option value=''>请选择</option>
+				</select>
+				<input id="developer" name="developer" readonly type="hidden" style="width: 150px"  value="${emkTestCostPage.developer }" class="inputxt"  ignore="ignore" />
+				<input id="developerName" name="developerName"  type="hidden"  value="${emkTestCostPage.developerName }"/>
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">业务员</label>
+			</td>
+
+		</tr>
+		<%--<tr>
 			<td align="right" >
 				<label class="Validform_label">
 					生产合同号:
@@ -64,103 +173,10 @@
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">订单号</label>
 			</td>
-		</tr>
-		<tr>
-			<td align="right" style="width: 18%">
-				<label class="Validform_label">
-					业务部门:
-				</label>
-			</td>
-			<td class="value" style="width: 32%">
-				<input id="businesseDeptName" name="businesseDeptName" readonly type="text"  value="${emkTestCostPage.businesseDeptName }" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<input id="businesseDeptId" name="businesseDeptId"  type="hidden"  value="${emkTestCostPage.businesseDeptId }" />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">业务部门</label>
-			</td>
-			<td align="right" style="width: 18%">
-				<label class="Validform_label">
-					业务员:
-				</label>
-			</td>
-			<td class="value" style="width: 32%">
-				<select class="form-control select2" id="businesserId" datatype="*" >
-					<option value=''>请选择</option>
-				</select>
-				<input id="businesser" name="businesser" readonly type="hidden" style="width: 150px"  value="${emkTestCostPage.businesser }" class="inputxt"  ignore="ignore" />
-				<input id="businesserName" name="businesserName"  type="hidden"  value="${emkTestCostPage.businesserName }"/>
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">业务员</label>
-			</td>
-		</tr>
+		</tr>--%>
 
-		<tr>
+	<%--	<tr>
 
-			<td align="right" style="width: 18%">
-				<label class="Validform_label">
-					客户代码:
-				</label>
-			</td>
-			<td class="value" style="width: 32%">
-				<input id="cusNum" name="cusNum" readonly type="text" style="width: 150px" class="inputxt"  value="${emkTestCostPage.cusNum }"  ignore="ignore" />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">客户代码</label>
-			</td>
-			<td align="right" style="width: 18%">
-				<label class="Validform_label">
-					客户名称:
-				</label>
-			</td>
-			<td class="value" style="width: 32%">
-				<input id="cusName" name="cusName" readonly type="text" style="width: 150px" class="inputxt"  value="${emkTestCostPage.cusName }"  ignore="ignore" />
-				<t:choose  hiddenName="cusNum"  hiddenid="cusNum" url="ymkCustomController.do?select" name="ymkCustomList" width="700px" height="500px"
-						   icon="icon-search" title="选择客户" textname="cusName,businesseDeptName,businesseDeptId,businesser,businesserName,developer,developerName,tracer,tracerName,bz" isclear="true" isInit="true"></t:choose>
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">客户名称</label>
-			</td>
-		</tr>
-		<tr>
-			<td align="right" style="width: 18%">
-				<label class="Validform_label">
-					业务跟单员:
-				</label>
-			</td>
-			<td class="value" style="width: 32%">
-				<select class="form-control select2" id="tracerId"  >
-					<option value=''>请选择</option>
-				</select>
-				<input id="tracer" name="tracer" readonly type="hidden" style="width: 150px"  value="${emkTestCostPage.tracer }" class="inputxt"  ignore="ignore" />
-				<input id="tracerName" name="tracerName"  type="hidden"  value="${emkTestCostPage.tracerName }" />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">业务员</label>
-			</td>
-			<td align="right" style="width: 18%">
-				<label class="Validform_label">
-					生产跟单员:
-				</label>
-			</td>
-			<td class="value" style="width: 32%">
-				<select class="form-control select2" id="developerId"  >
-					<option value=''>请选择</option>
-				</select>
-				<input id="developer" name="developer" readonly type="hidden" style="width: 150px"  value="${emkTestCostPage.developer }" class="inputxt"  ignore="ignore" />
-				<input id="developerName" name="developerName"  type="hidden"  value="${emkTestCostPage.developerName }"/>
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">业务员</label>
-			</td>
-
-		</tr>
-
-		<tr>
-			<td align="right">
-				<label class="Validform_label">
-					测试机构名称:
-				</label>
-			</td>
-			<td class="value">
-				<t:dictSelect id="csjgdm" field="csjgdm" typeGroupCode="orgCode" datatype="*" defaultVal="${emkTestCostPage.csjgdm }" hasLabel="false" title="机构名称"></t:dictSelect>
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">测试机构名称</label>
-			</td>
 			<td align="right">
 				<label class="Validform_label">
 					款号:
@@ -185,9 +201,9 @@
 				<label class="Validform_label" style="display: none;">数量</label>
 			</td>
 
-		</tr>
+		</tr>--%>
 
-		<tr>
+		<%--<tr>
 			<td align="right">
 				<label class="Validform_label">
 					提交日期:
@@ -198,6 +214,8 @@
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">提交日期</label>
 			</td>
+			</tr>
+		<tr>
 			<td align="right">
 				<label class="Validform_label">
 					测试有效期:
@@ -208,8 +226,8 @@
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">测试有效期</label>
 			</td>
-		</tr>
-		<tr>
+		</tr>--%>
+		<%--<tr>
 			<td align="right">
 				<label class="Validform_label">
 					描述:
@@ -263,11 +281,14 @@
 		<tr>
 			<td colspan="4" id="instructionfile" class="value">
 			</td>
-		</tr>
-
+		</tr>--%>
+	</table>
+	<t:tabs id="testCostDetail" iframe="false"  tabPosition="top" fit="false">
+		<t:tab href="emkTestCostController.do?detailMxList&costId=${emkTestCostPage.id}" icon="icon-search" title="明细" id="detail"></t:tab>
+	</t:tabs>
+	<table style="width: 100%;margin-top:22px;" cellpadding="0" cellspacing="1" class="formtable">
 		<tr>
-
-			<td align="right">
+			<td align="right" width="23%">
 				<label class="Validform_label">
 					收款单位:
 				</label>
@@ -277,6 +298,8 @@
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">收款单位</label>
 			</td>
+			</tr>
+		<tr>
 			<td align="right">
 				<label class="Validform_label">
 					开户行:
@@ -299,6 +322,45 @@
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">账号</label>
 			</td>
+		</tr>
+		<tr>
+			<td align="right">
+				<label class="Validform_label">
+					电话:
+				</label>
+			</td>
+			<td class="value">
+				<input id="telphone" name="telphone"  type="text" style="width: 150px"  value="${emkTestCostPage.telphone }" class="inputxt"  />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">电话</label>
+			</td>
+		</tr>
+		<tr>
+			<td align="right">
+				<label class="Validform_label">
+					测试费付款状态:
+				</label>
+			</td>
+			<td class="value">
+				<input id="costState" name="costState"  type="text" style="width: 150px" class="inputxt"  value="${emkTestCostPage.costState }"  ignore="ignore" />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">测试费付款状态</label>
+			</td>
+		</tr>
+		<tr>
+			<td align="right">
+				<label class="Validform_label">
+					发票状态:
+				</label>
+			</td>
+			<td class="value">
+				<input id="fpState" name="fpState"  type="text" style="width: 150px" class="inputxt"  value="${emkTestCostPage.fpState }"  ignore="ignore" />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">发票状态</label>
+			</td>
+
+		</tr>
+		<tr>
 			<td align="right">
 				<label class="Validform_label">
 					发票号:
@@ -321,41 +383,10 @@
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">测试费用金额</label>
 			</td>
-			<td align="right">
-				<label class="Validform_label">
-					电话:
-				</label>
-			</td>
-			<td class="value">
-				<input id="telphone" name="telphone"  type="text" style="width: 150px"  value="${emkTestCostPage.telphone }" class="inputxt"  />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">电话</label>
-			</td>
+
 
 		</tr>
-		<tr>
 
-			<td align="right">
-				<label class="Validform_label">
-					发票状态:
-				</label>
-			</td>
-			<td class="value">
-				<input id="fpState" name="fpState"  type="text" style="width: 150px" class="inputxt"  value="${emkTestCostPage.fpState }"  ignore="ignore" />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">发票状态</label>
-			</td>
-			<td align="right">
-				<label class="Validform_label">
-					测试费付款状态:
-				</label>
-			</td>
-			<td class="value">
-				<input id="costState" name="costState"  type="text" style="width: 150px" class="inputxt"  value="${emkTestCostPage.costState }"  ignore="ignore" />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">测试费付款状态</label>
-			</td>
-		</tr>
 	</table>
 </t:formvalid>
 </body>

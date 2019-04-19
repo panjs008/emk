@@ -153,9 +153,9 @@ public class MailUtil {
 //					"hi,all,I am AnChao!111", "anchaodaren@126.com", 
 //					"anchaodaren", "*******************");
 			
-			sendEmail("smtp.163.com", "418799587@qq.com", "系统测试邮件", 
-					"hi,all,I am AnChao!111", "tjrzlm@163.com", 
-					"tjrzlm", "tj123456");
+			sendEmail("smtp.163.com", "245613376@qq.com", "系统测试邮件",
+					"hi,all,I am AnChao!111", "18649803708@163.com",
+					"18649803708", "pjs15006001335");
 //			PropertiesUtil util = new PropertiesUtil("sysConfig.properties");
 //			sendEmail(util.readProperty("mail.smtpHost"), "411944058@qq.com","系统测试邮件", 
 //					"hi,all,I am AnChao!nana", util.readProperty("mail.sender"), 

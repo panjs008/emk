@@ -146,7 +146,7 @@
                 </td>
                 <td align="left"><input id="brand${status.index}" nullmsg="请输入规格！" datatype="*" value="${poVal.brand}" errormsg="请输入规格" name="rkglMxList[${status.index}].brand" maxlength="100" type="text" value="0"
                                         style="width: 95%;"></td>
-                <td align="left"><input id="htTotal0" nullmsg="请输入数量！" datatype="*" value="${poVal.htTotal}" errormsg="请输入数量" name="rkglMxList[${status.index}].htTotal" maxlength="100" type="text" value="0"
+                <td align="left"><input id="htTotal0" nullmsg="请输入数量！" datatype="*" value="${poVal.htTotal}" errormsg="请输入整数" name="rkglMxList[${status.index}].htTotal" maxlength="100" type="text" value="0"
                                         style="width: 95%;"></td>
                 <td align="left"><input nullmsg="请输入采购数量！" id="total0" errormsg="请输入采购数量" value="${poVal.total}" name="rkglMxList[${status.index}].total" maxlength="100" type="text" value=""
                                         style="width: 95%;"></td>

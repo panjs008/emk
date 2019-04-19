@@ -91,7 +91,7 @@
                 </td>
                 <td align="left"><input id="brand0" nullmsg="请输入尺码！" datatype="*" value="${poVal.size}" errormsg="请输入尺码" name="orderMxList[${status.index}].size" maxlength="100" type="text" value="0"
                                         style="width: 80%;"></td>
-                <td align="left"><input id="signTotal0" nullmsg="请输入数量！" datatype="*" value="${poVal.total}" errormsg="请输入数量" name="orderMxList[${status.index}].signTotal" maxlength="100" type="text" value="0"
+                <td align="left"><input id="signTotal0" nullmsg="请输入数量！" datatype="*" value="${poVal.total}" errormsg="请输入整数" name="orderMxList[${status.index}].signTotal" maxlength="100" type="text" value="0"
                                         style="width: 80%;"></td>
                 <td align="left"><input id="signPrice00" nullmsg="请输入单价！"  value="${poVal.price}"  errormsg="请输入单价" name="orderMxList[${status.index}].signPrice" maxlength="100" type="text" value=""
                                         style="width: 80%;"></td>

@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.emk.bill.contract.entity.EmkContractEntity;
 import com.emk.bill.contract.service.EmkContractServiceI;
 import com.emk.bill.proorder.entity.EmkProOrderEntity;
+import com.emk.bill.proorderdetail.entity.EmkProOrderDetailEntity;
 import com.emk.bound.minstorage.entity.EmkMInStorageEntity;
 import com.emk.bound.minstoragedetail.entity.EmkMInStorageDetailEntity;
 import com.emk.storage.enquirydetail.entity.EmkEnquiryDetailEntity;
@@ -13,6 +14,7 @@ import com.emk.storage.storagelog.entity.EmkStorageLogEntity;
 import com.emk.util.DateUtil;
 import com.emk.util.FlowUtil;
 import com.emk.util.ParameterUtil;
+import com.emk.util.Utils;
 import com.emk.workorder.workorder.entity.EmkWorkOrderEntity;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -103,14 +105,28 @@ public class EmkContractController extends BaseController {
 
     @RequestMapping(params = "orderMxList")
     public ModelAndView orderMxList(HttpServletRequest request) {
-        List<Map<String, Object>> codeList = this.systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", "A03");
+        List<Map<String, Object>> codeList = systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", "A03");
         request.setAttribute("categoryEntityList", codeList);
         Map map = ParameterUtil.getParamMaps(request.getParameterMap());
         if ((map.get("proOrderId") != null) && (!map.get("proOrderId").equals(""))) {
-            List<EmkEnquiryDetailEntity> emkProOrderDetailEntities = this.systemService.findHql("from EmkEnquiryDetailEntity where enquiryId=?", map.get("proOrderId"));
+            List<EmkEnquiryDetailEntity> emkProOrderDetailEntities = systemService.findHql("from EmkEnquiryDetailEntity where enquiryId=?", map.get("proOrderId"));
             request.setAttribute("emkProOrderDetailEntities", emkProOrderDetailEntities);
         }
         return new ModelAndView("com/emk/bill/contract/orderMxList");
+    }
+
+    @RequestMapping(params = "detailMxList")
+    public ModelAndView detailMxList(HttpServletRequest request) {
+        Map map = ParameterUtil.getParamMaps(request.getParameterMap());
+        List<Map<String, Object>> list = systemService.findForJdbc("select typecode,typename from t_s_type t2 left join t_s_typegroup t1 on t1.ID=t2.typegroupid where typegroupcode='color'");
+        request.setAttribute("colorList", list);
+        list = systemService.findForJdbc("select typecode,typename from t_s_type t2 left join t_s_typegroup t1 on t1.ID=t2.typegroupid where typegroupcode='size'");
+        request.setAttribute("sizeList", list);
+        if (Utils.notEmpty(map.get("proOrderId"))) {
+            List<EmkProOrderDetailEntity> emkProOrderDetailEntities = systemService.findHql("from EmkProOrderDetailEntity where proOrderId=?", map.get("proOrderId"));
+            request.setAttribute("emkProOrderDetailEntities", emkProOrderDetailEntities);
+        }
+        return new ModelAndView("com/emk/bill/contract/detailMxList");
     }
 
     @RequestMapping(params = "datagrid")
@@ -127,7 +143,7 @@ public class EmkContractController extends BaseController {
 
 
         cq.add();
-        this.emkContractService.getDataGridReturn(cq, true);
+        emkContractService.getDataGridReturn(cq, true);
         TagUtil.datagrid(response, dataGrid);
     }
 
@@ -136,11 +152,11 @@ public class EmkContractController extends BaseController {
     public AjaxJson doDel(EmkContractEntity emkContract, HttpServletRequest request) {
         String message = null;
         AjaxJson j = new AjaxJson();
-        emkContract = (EmkContractEntity) this.systemService.getEntity(EmkContractEntity.class, emkContract.getId());
+        emkContract = systemService.getEntity(EmkContractEntity.class, emkContract.getId());
         message = "购销合同删除成功";
         try {
-            this.emkContractService.delete(emkContract);
-            this.systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
+            emkContractService.delete(emkContract);
+            systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
         } catch (Exception e) {
             e.printStackTrace();
             message = "购销合同删除失败";
@@ -158,12 +174,12 @@ public class EmkContractController extends BaseController {
         message = "购销合同删除成功";
         try {
             for (String id : ids.split(",")) {
-                EmkContractEntity emkContract = (EmkContractEntity) this.systemService.getEntity(EmkContractEntity.class, id);
+                EmkContractEntity emkContract = systemService.getEntity(EmkContractEntity.class, id);
 
-                this.systemService.executeSql("delete from emk_enquiry_detail where ENQUIRY_ID=?", id);
+                systemService.executeSql("delete from emk_enquiry_detail where ENQUIRY_ID=?", id);
 
-                this.emkContractService.delete(emkContract);
-                this.systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
+                emkContractService.delete(emkContract);
+                systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -181,8 +197,8 @@ public class EmkContractController extends BaseController {
         AjaxJson j = new AjaxJson();
         message = "购销合同添加成功";
         try {
-            this.emkContractService.save(emkContract);
-            this.systemService.addLog(message, Globals.Log_Type_INSERT, Globals.Log_Leavel_INFO);
+            emkContractService.save(emkContract);
+            systemService.addLog(message, Globals.Log_Type_INSERT, Globals.Log_Leavel_INFO);
         } catch (Exception e) {
             e.printStackTrace();
             message = "购销合同添加失败";
@@ -198,12 +214,39 @@ public class EmkContractController extends BaseController {
         String message = null;
         AjaxJson j = new AjaxJson();
         message = "购销合同更新成功";
-        EmkContractEntity t = (EmkContractEntity) this.emkContractService.get(EmkContractEntity.class, emkContract.getId());
+        Map<String, String> map = ParameterUtil.getParamMaps(request.getParameterMap());
+        EmkContractEntity t = emkContractService.get(EmkContractEntity.class, map.get("pactId"));
         try {
-            Map<String, String> map = ParameterUtil.getParamMaps(request.getParameterMap());
+            emkContract.setId(null);
             MyBeanUtils.copyBeanNotNull2Bean(emkContract, t);
-            this.emkContractService.saveOrUpdate(t);
-            this.systemService.executeSql("delete from emk_enquiry_detail where ENQUIRY_ID=?", t.getId());
+            emkContractService.saveOrUpdate(t);
+            //保存明细数据
+            String dataRows = (String) map.get("orderMxListIDSR");
+            if (Utils.notEmpty(dataRows)) {
+                systemService.executeSql("delete from emk_pro_order_detail where pro_order_id = ? ",t.getId());
+
+                int rows = Integer.parseInt(dataRows);
+                EmkProOrderDetailEntity proOrderDetailEntity = null;
+                for (int i = 0; i < rows; i++) {
+                    if (Utils.notEmpty(map.get("orderMxList["+i+"].color"))){
+                        proOrderDetailEntity = new EmkProOrderDetailEntity();
+                        proOrderDetailEntity.setProOrderId(t.getId());
+                        proOrderDetailEntity.setOrderNo(map.get("orderMxList["+i+"].orderNo00").toString());
+                        proOrderDetailEntity.setSampleNo(map.get("orderMxList["+i+"].sampleNo00").toString());
+                        proOrderDetailEntity.setSampleDesc(map.get("orderMxList["+i+"].sampleDesc00").toString());
+
+                        proOrderDetailEntity.setColor(map.get("orderMxList["+i+"].color").toString());
+                        proOrderDetailEntity.setSortDesc(String.valueOf(i+1));
+                        proOrderDetailEntity.setSize(map.get("orderMxList["+i+"].size00").toString());
+                        proOrderDetailEntity.setTotal(map.get("orderMxList["+i+"].signTotal00").toString());
+                        proOrderDetailEntity.setPrice(map.get("orderMxList["+i+"].price00").toString());
+                        proOrderDetailEntity.setSumMoney(map.get("orderMxList["+i+"].sumMoney00").toString());
+                        proOrderDetailEntity.setHqDate(map.get("orderMxList["+i+"].hqDate00").toString());
+                        systemService.save(proOrderDetailEntity);
+                    }
+                }
+            }
+           /* systemService.executeSql("delete from emk_enquiry_detail where ENQUIRY_ID=?", t.getId());
             String dataRows = (String) map.get("dataRowsVal");
             if ((dataRows != null) && (!dataRows.isEmpty())) {
                 int rows = Integer.parseInt(dataRows);
@@ -215,11 +258,11 @@ public class EmkContractController extends BaseController {
                         orderMxEntity.setSize((String) map.get("orderMxList[" + i + "].size"));
                         orderMxEntity.setTotal(Integer.valueOf(Integer.parseInt((String) map.get("orderMxList[" + i + "].signTotal"))));
                         orderMxEntity.setPrice(Double.valueOf(Double.parseDouble((String) map.get("orderMxList[" + i + "].signPrice"))));
-                        this.systemService.save(orderMxEntity);
+                        systemService.save(orderMxEntity);
                     }
                 }
-            }
-            this.systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
+            }*/
+            systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
         } catch (Exception e) {
             e.printStackTrace();
             message = "购销合同更新失败";
@@ -232,7 +275,7 @@ public class EmkContractController extends BaseController {
     @RequestMapping(params = "goAdd")
     public ModelAndView goAdd(EmkContractEntity emkContract, HttpServletRequest req) {
         if (StringUtil.isNotEmpty(emkContract.getId())) {
-            emkContract = (EmkContractEntity) this.emkContractService.getEntity(EmkContractEntity.class, emkContract.getId());
+            emkContract = emkContractService.getEntity(EmkContractEntity.class, emkContract.getId());
             req.setAttribute("emkContractPage", emkContract);
         }
         return new ModelAndView("com/emk/bill/contract/emkContract-add");
@@ -240,10 +283,10 @@ public class EmkContractController extends BaseController {
 
     @RequestMapping(params = "goUpdate")
     public ModelAndView goUpdate(EmkContractEntity emkContract, HttpServletRequest req) {
-        List<Map<String, Object>> codeList = this.systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", "A03");
+        List<Map<String, Object>> codeList = systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", "A03");
         req.setAttribute("categoryEntityList", codeList);
         if (StringUtil.isNotEmpty(emkContract.getId())) {
-            emkContract = (EmkContractEntity) this.emkContractService.getEntity(EmkContractEntity.class, emkContract.getId());
+            emkContract = emkContractService.getEntity(EmkContractEntity.class, emkContract.getId());
             req.setAttribute("emkContractPage", emkContract);
         }
         return new ModelAndView("com/emk/bill/contract/emkContract-update");
@@ -251,10 +294,10 @@ public class EmkContractController extends BaseController {
 
     @RequestMapping(params = "goUpdate2")
     public ModelAndView goUpdate2(EmkContractEntity emkContract, HttpServletRequest req) {
-        List<Map<String, Object>> codeList = this.systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", "A03");
+        List<Map<String, Object>> codeList = systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", "A03");
         req.setAttribute("categoryEntityList", codeList);
         if (StringUtil.isNotEmpty(emkContract.getId())) {
-            emkContract = (EmkContractEntity) this.emkContractService.getEntity(EmkContractEntity.class, emkContract.getId());
+            emkContract = emkContractService.getEntity(EmkContractEntity.class, emkContract.getId());
             req.setAttribute("emkContractPage", emkContract);
         }
         return new ModelAndView("com/emk/bill/contract/emkContract-update2");
@@ -270,7 +313,7 @@ public class EmkContractController extends BaseController {
     public String exportXls(EmkContractEntity emkContract, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid, ModelMap modelMap) {
         CriteriaQuery cq = new CriteriaQuery(EmkContractEntity.class, dataGrid);
         HqlGenerateUtil.installHql(cq, emkContract, request.getParameterMap());
-        List<EmkContractEntity> emkContracts = this.emkContractService.getListByCriteriaQuery(cq, Boolean.valueOf(false));
+        List<EmkContractEntity> emkContracts = emkContractService.getListByCriteriaQuery(cq, Boolean.valueOf(false));
         modelMap.put("fileName", "购销合同");
         modelMap.put("entity", EmkContractEntity.class);
         modelMap.put("params", new ExportParams("购销合同列表", "导出人:" + ResourceUtil.getSessionUser().getRealName(), "导出信息"));
@@ -294,7 +337,7 @@ public class EmkContractController extends BaseController {
     @ResponseBody
     @ApiOperation(value = "购销合同列表信息", produces = "application/json", httpMethod = "GET")
     public ResponseMessage<List<EmkContractEntity>> list() {
-        List<EmkContractEntity> listEmkContracts = this.emkContractService.getList(EmkContractEntity.class);
+        List<EmkContractEntity> listEmkContracts = emkContractService.getList(EmkContractEntity.class);
         return Result.success(listEmkContracts);
     }
 
@@ -302,7 +345,7 @@ public class EmkContractController extends BaseController {
     @ResponseBody
     @ApiOperation(value = "根据ID获取购销合同信息", notes = "根据ID获取购销合同信息", httpMethod = "GET", produces = "application/json")
     public ResponseMessage<?> get(@ApiParam(required = true, name = "id", value = "ID") @PathVariable("id") String id) {
-        EmkContractEntity task = (EmkContractEntity) this.emkContractService.get(EmkContractEntity.class, id);
+        EmkContractEntity task = emkContractService.get(EmkContractEntity.class, id);
         if (task == null) {
             return Result.error("根据ID获取购销合同信息为空");
         }
@@ -313,12 +356,12 @@ public class EmkContractController extends BaseController {
     @ResponseBody
     @ApiOperation("创建购销合同")
     public ResponseMessage<?> create(@ApiParam(name = "购销合同对象") @RequestBody EmkContractEntity emkContract, UriComponentsBuilder uriBuilder) {
-        Set<ConstraintViolation<EmkContractEntity>> failures = this.validator.validate(emkContract, new Class[0]);
+        Set<ConstraintViolation<EmkContractEntity>> failures = validator.validate(emkContract, new Class[0]);
         if (!failures.isEmpty()) {
             return Result.error(JSONArray.toJSONString(BeanValidators.extractPropertyAndMessage(failures)));
         }
         try {
-            this.emkContractService.save(emkContract);
+            emkContractService.save(emkContract);
         } catch (Exception e) {
             e.printStackTrace();
             return Result.error("购销合同信息保存失败");
@@ -330,12 +373,12 @@ public class EmkContractController extends BaseController {
     @ResponseBody
     @ApiOperation(value = "更新购销合同", notes = "更新购销合同")
     public ResponseMessage<?> update(@ApiParam(name = "购销合同对象") @RequestBody EmkContractEntity emkContract) {
-        Set<ConstraintViolation<EmkContractEntity>> failures = this.validator.validate(emkContract, new Class[0]);
+        Set<ConstraintViolation<EmkContractEntity>> failures = validator.validate(emkContract, new Class[0]);
         if (!failures.isEmpty()) {
             return Result.error(JSONArray.toJSONString(BeanValidators.extractPropertyAndMessage(failures)));
         }
         try {
-            this.emkContractService.saveOrUpdate(emkContract);
+            emkContractService.saveOrUpdate(emkContract);
         } catch (Exception e) {
             e.printStackTrace();
             return Result.error("更新购销合同信息失败");
@@ -352,7 +395,7 @@ public class EmkContractController extends BaseController {
             return Result.error("ID不能为空");
         }
         try {
-            this.emkContractService.deleteEntityById(EmkContractEntity.class, id);
+            emkContractService.deleteEntityById(EmkContractEntity.class, id);
         } catch (Exception e) {
             e.printStackTrace();
             return Result.error("购销合同删除失败");

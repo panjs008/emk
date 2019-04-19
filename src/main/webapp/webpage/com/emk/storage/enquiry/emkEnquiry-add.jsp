@@ -34,8 +34,7 @@
 			$("#sizeImageUrl").val(d.attributes.url);
 			$("#sizeImage").val(d.attributes.name);
 			$("#sizeImageId").html("[<a href=\"javascript:findDetail('"+d.attributes.url+"')\">"+d.attributes.name+"</a>]");
-
-			$("#uploadimg2").attr('src',d.attributes.url);
+			//$("#uploadimg2").attr('src',d.attributes.url);
 
 		}
 		function uploadSuccess3(d,file,response){
@@ -43,8 +42,7 @@
 			$("#dgrImageUrl").val(d.attributes.url);
 			$("#dgrImage").val(d.attributes.name);
 			$("#dgrImageId").html("[<a href=\"javascript:findDetail('"+d.attributes.url+"')\">"+d.attributes.name+"</a>]");
-
-			$("#uploadimg3").attr('src',d.attributes.url);
+			//$("#uploadimg3").attr('src',d.attributes.url);
 		}
 
 		function showPriceDiv(isShow){
@@ -145,30 +143,27 @@
 			</td>
 		</tr>
 		<tr>
-			<td align="right" style="width: 18%">
+			<td align="right">
 				<label class="Validform_label">
-					客户代码:
+					意向大货交期:
 				</label>
 			</td>
-			<td class="value" style="width: 32%">
-				<input id="cusNum" name="cusNum" readonly type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+			<td class="value">
+				<input id="ysDate" name="ysDate" readonly onClick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'kdDate\');}',onpicked:setEndTime})"  type="text" style="width: 150px" class="Wdate"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">客户代码</label>
+				<label class="Validform_label" style="display: none;">意向大货交期</label>
 			</td>
-			<td align="right" rowspan="6" style="width: 18%">
+			<td align="right">
 				<label class="Validform_label">
-					图片:
+					距交期剩余天数:
 				</label>
 			</td>
-			<td class="value" rowspan="6" style="width: 32%" valign="middle" align="center">
-				<input id="customSample" name="customSample" type="hidden" />
-				<img id="uploadimg0" src="${emkEnquiryPage.customSampleUrl eq null ? 'images/bjlogo.png':emkEnquiryPage.customSampleUrl}" width="200" height="200">
-				<t:upload name="instruction0" id="instruction0" dialog="false" extend="*.jpg;*.png;*.gif;*.ico;*.dwg" buttonText="添加文件" queueID="instructionfile" view="false" auto="true" uploader="systemController.do?saveFiles"  onUploadSuccess="uploadSuccess0" >
-				</t:upload>
-				<span id="customSampleId"></span>
-				<input id="customSampleUrl" name="customSampleUrl" type="hidden" />
+			<td class="value">
+				<input id="levelDays" name="levelDays" readonly type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">距交期剩余天数</label>
 			</td>
-			</tr>
+		</tr>
 		<tr>
 			<td align="right" style="width: 18%">
 				<label class="Validform_label">
@@ -181,6 +176,32 @@
 						   icon="icon-search" title="选择客户" textname="cusName,businesseDeptName,businesseDeptId,businesser,businesserName,tracer,tracerName,developer,developerName,bz" isclear="true" isInit="true"></t:choose>
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">客户名称</label>
+			</td>
+
+			<td align="right" rowspan="6" style="width: 18%">
+				<label class="Validform_label">
+					图片:
+				</label>
+			</td>
+			<td class="value" rowspan="6" style="width: 32%" valign="middle" align="center">
+				<input id="customSample" name="customSample" type="hidden" />
+				<img id="uploadimg0" onclick="findDetail('${emkEnquiryPage.customSampleUrl }')" src="${emkEnquiryPage.customSampleUrl eq null ? 'images/bjlogo.png':emkEnquiryPage.customSampleUrl}" width="200" height="200">
+				<t:upload name="instruction0" id="instruction0" dialog="false" extend="*.jpg;*.png;*.gif;*.ico;*.dwg" buttonText="添加文件" queueID="instructionfile" view="false" auto="true" uploader="systemController.do?saveFiles"  onUploadSuccess="uploadSuccess0" >
+				</t:upload>
+				<span id="customSampleId"></span>
+				<input id="customSampleUrl" name="customSampleUrl" type="hidden" />
+			</td>
+			</tr>
+		<tr>
+			<td align="right" style="width: 18%">
+				<label class="Validform_label">
+					客户代码:
+				</label>
+			</td>
+			<td class="value" style="width: 32%">
+				<input id="cusNum" name="cusNum" readonly type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">客户代码</label>
 			</td>
 		</tr>
 
@@ -247,39 +268,7 @@
 		<t:tabs id="enquiryDetail" iframe="false"  tabPosition="top" fit="false">
 			<t:tab href="emkEnquiryController.do?orderMxList" icon="icon-search" title="明细" id="detail"></t:tab>
 		</t:tabs>
-		<!-- 添加明细模版-->
-		<table style="width:100%;display: none;border: 1px;" cellpadding="0" cellspacing="2" border="0">
-			<tbody id="add_jeecgOrderProduct_table_template">
-			<tr>
-				<td align="center"><input style="width: 40px;" type="checkbox" name="ck" />
-				<td align="center">
-					<select name="orderMxList[#index#].color" style="width: 86%;" nullmsg="请输入颜色！" errormsg="请输入颜色" datatype="*">
-						<c:forEach items="${colorList}" var="category">
-							<option value="${category.typecode}">${category.typename}</option>
-						</c:forEach>
-					</select>
-				</td>
-				<td align="center">
-					<select name="orderMxList[#index#].colorNum" style="width: 86%;" nullmsg="请输入色号！" errormsg="请输入色号" datatype="*">
-						<c:forEach items="${colorNumList}" var="category">
-							<option value="${category.typecode}">${category.typename}</option>
-						</c:forEach>
-					</select>
-					</td>
-				<td align="center"><input id="signTotal00" nullmsg="请输入数量！"  errormsg="请输入数量" name="orderMxList[#index#].signTotal" maxlength="100" type="text" value=""
-										style="width: 86%;" ignore="ignore"></td>
-				<td align="center"><input id="signTotal01" nullmsg="请输入数量！"  errormsg="请输入数量" name="orderMxList[#index#].signTotal01" maxlength="100" type="text" value=""
-										style="width: 86%;" ignore="ignore"></td>
-				<td align="center"><input id="signTotal02" nullmsg="请输入数量！"  errormsg="请输入数量" name="orderMxList[#index#].signTotal02" maxlength="100" type="text" value=""
-										style="width: 86%;" ignore="ignore"></td>
-				<td align="center"><input id="signTotal03" nullmsg="请输入数量！"  errormsg="请输入数量" name="orderMxList[#index#].signTotal03" maxlength="100" type="text" value=""
-										style="width: 86%;" ignore="ignore"></td>
-				<td align="center"><input id="signTotal04" nullmsg="请输入数量！"  errormsg="请输入数量" name="orderMxList[#index#].signTotal04" maxlength="100" type="text" value=""
-										style="width: 86%;" ignore="ignore"></td>
-			</tr>
-			</tbody>
 
-		</table>
 
 		<table style="width: 100%;margin-top:22px;" cellpadding="0" cellspacing="1" class="formtable">
 		<%--<tr height="36">
@@ -303,7 +292,7 @@
 					是否有原样:
 				</label>
 			</td>
-			<td class="value" style="width: 32%">
+			<td class="value" style="width: 32%" colspan="3">
 				<input name="isHaveOld" type="radio" datatype="*" <c:if test="${emkEnquiryPage.isHaveOld eq '0'}">checked="true"</c:if> value="0">
 				是
 				&nbsp;&nbsp;<input name="isHaveOld" type="radio" datatype="*"  <c:if test="${emkEnquiryPage.isHaveOld eq '1'}">checked="true"</c:if> value="1">
@@ -311,19 +300,7 @@
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">是否有原样</label>
 			</td>
-			<td align="right" style="width: 18%">
-				<label class="Validform_label">
-					是否有设计稿:
-				</label>
-			</td>
-			<td class="value" style="width: 32%">
-				<input name="isHaveDgr" type="radio" datatype="*" <c:if test="${emkEnquiryPage.isHaveDgr eq '0'}">checked="true"</c:if> value="0">
-				是
-				&nbsp;&nbsp;<input name="isHaveDgr"  type="radio" datatype="*"  <c:if test="${emkEnquiryPage.isHaveDgr eq '1'}">checked="true"</c:if> value="1">
-				否
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">是否有设计稿</label>
-			</td>
+
 
 		</tr>
 
@@ -333,32 +310,49 @@
 					客户原样:
 				</label>
 			</td>
-			<td class="value" >
+			<td class="value" colspan="3">
 				<input id="oldImage" name="oldImage" type="hidden" />
-				<img id="uploadimg" src="${emkEnquiryPage.oldImageUrl eq null ? 'images/bjlogo.png':emkEnquiryPage.oldImageUrl}" width="150" height="150">
+				<img id="uploadimg" onclick="findDetail('${emkEnquiryPage.oldImageUrl }')" src="${emkEnquiryPage.oldImageUrl eq null ? 'images/bjlogo.png':emkEnquiryPage.oldImageUrl}" width="150" height="150">
 				<t:upload name="instruction" id="instruction" dialog="false" extend="*.jpg;*.png;*.gif;*.ico;*.dwg" buttonText="添加文件" queueID="instructionfile2" view="false" auto="true" uploader="systemController.do?saveFiles"  onUploadSuccess="uploadSuccess" >
 				</t:upload>
 				<span id="oldImageId"></span>
 				<input id="oldImageUrl" name="oldImageUrl" type="hidden" />
 			</td>
 
-			<td align="right">
-				<label class="Validform_label">
-					设计稿:
-				</label>
-			</td>
-			<td class="value">
-				<input id="dgrImage" name="dgrImage" type="hidden" />
-				<img id="uploadimg3" src="${emkEnquiryPage.dgrImageUrl eq null ? 'images/bjlogo.png':emkEnquiryPage.dgrImageUrl}" width="150" height="150">
-				<t:upload name="instruction3" id="instruction3" dialog="false" extend="*.jpg;*.png;*.gif;*.ico;*.dwg" buttonText="添加文件" queueID="instructionfile2" view="false" auto="true" uploader="systemController.do?saveFiles"  onUploadSuccess="uploadSuccess3" >
-				</t:upload>
-				<span id="dgrImageId"></span>
-				<input id="dgrImageUrl" name="dgrImageUrl" type="hidden" />
-			</td>
-
 		</tr>
+			<tr>
+				<td align="right" style="width: 18%">
+					<label class="Validform_label">
+						是否有设计稿:
+					</label>
+				</td>
+				<td class="value" style="width: 32%" colspan="3">
+					<input name="isHaveDgr" type="radio" datatype="*" <c:if test="${emkEnquiryPage.isHaveDgr eq '0'}">checked="true"</c:if> value="0">
+					是
+					&nbsp;&nbsp;<input name="isHaveDgr"  type="radio" datatype="*"  <c:if test="${emkEnquiryPage.isHaveDgr eq '1'}">checked="true"</c:if> value="1">
+					否
+					<span class="Validform_checktip"></span>
+					<label class="Validform_label" style="display: none;">是否有设计稿</label>
+				</td>
+				</tr>
+			<tr>
+				<td align="right" style="width: 18%">
+					<label class="Validform_label">
+						设计稿:
+					</label>
+				</td>
+				<td class="value" style="width: 32%">
+					<input id="dgrImage" name="dgrImage" type="hidden" />
+						<%--<img id="uploadimg3" src="${emkEnquiryPage.dgrImageUrl eq null ? 'images/bjlogo.png':emkEnquiryPage.dgrImageUrl}" width="150" height="150">--%>
+					<span id="dgrImageId"></span>
+					<input id="dgrImageUrl" name="dgrImageUrl" type="hidden" />
+				</td>
+				<td class="value" colspan="2">
+					<t:upload name="instruction3" id="instruction3" dialog="false" extend="*.jpg;*.png;*.gif;*.ico;*.dwg" buttonText="添加文件" queueID="instructionfile2" view="false" auto="true" uploader="systemController.do?saveFiles"  onUploadSuccess="uploadSuccess3" >
+					</t:upload>
+				</td>
+			</tr>
 		<tr height="36">
-
 			<td align="right">
 				<label class="Validform_label">
 					是否有尺寸表:
@@ -379,13 +373,15 @@
 					尺寸表:
 				</label>
 			</td>
-			<td class="value" colspan="3">
-				<img id="uploadimg2" src="${emkEnquiryPage.sizeImageUrl eq null ? 'images/bjlogo.png':emkEnquiryPage.sizeImageUrl}" width="150" height="150">
+			<td class="value">
+				<%--<img id="uploadimg2" src="${emkEnquiryPage.sizeImageUrl eq null ? 'images/bjlogo.png':emkEnquiryPage.sizeImageUrl}" width="150" height="150">--%>
+					<input id="sizeImageUrl" name="sizeImageUrl" type="hidden" />
+					<input id="sizeImage" name="sizeImage"type="hidden" style="width:60%" class="inputxt"  ignore="ignore" />
+					<span id="sizeImageId"></span>
+			</td>
+			<td class="value" colspan="2">
 				<t:upload name="instruction2" id="instruction2" dialog="false" extend="*.jpg;*.png;*.gif;*.ico;*.dwg" buttonText="添加文件" queueID="instructionfile2" view="false" auto="true" uploader="systemController.do?saveFiles"  onUploadSuccess="uploadSuccess2" >
 				</t:upload>
-				<span id="sizeImageId"></span>
-				<input id="sizeImageUrl" name="sizeImageUrl" type="hidden" />
-				<input id="sizeImage" name="sizeImage" type="hidden" />
 			</td>
 		</tr>
 
@@ -463,28 +459,7 @@
 				</table>
 			</td>
 		</tr>
-		<tr height="36">
-			<td align="right">
-				<label class="Validform_label">
-					意向大货交期:
-				</label>
-			</td>
-			<td class="value">
-				<input id="ysDate" name="ysDate" readonly onClick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'kdDate\');}',onpicked:setEndTime})"  type="text" style="width: 150px" class="Wdate"  ignore="ignore" />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">意向大货交期</label>
-			</td>
-			<td align="right">
-				<label class="Validform_label">
-					距交期剩余天数:
-				</label>
-			</td>
-			<td class="value">
-				<input id="levelDays" name="levelDays" readonly type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">距交期剩余天数</label>
-			</td>
-		</tr>
+
 		<tr>
 			<td align="right">
 				<label class="Validform_label">

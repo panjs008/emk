@@ -13,6 +13,7 @@ import java.util.concurrent.Executors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.emk.util.Utils;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -79,6 +80,38 @@ public class NoticeController extends BaseController{
 	public AjaxJson getNoticeList(Integer isRead,HttpServletRequest req) {
 		AjaxJson j = new AjaxJson();
 		try {
+			j.setObj("0");
+			Map countMap = new HashMap();
+			countMap.put("countNum2","0");
+			TSUser user = ResourceUtil.getSessionUser();
+			StringBuilder sql = new StringBuilder();
+			Map count2 = systemService.findOneForJdbc("SELECT IFNULL(COUNT(0),0) counts FROM t_s_sms a WHERE a.es_receiver=? ",user.getUserName());
+			countMap.put("countNum1",count2.get("counts"));
+
+			if(user.getUserKey().equals("业务经理")){
+				sql.append(" SELECT IFNULL(COUNT(0),0) counts FROM emk_approval a WHERE (a.type=0 AND a.status=1) ");
+				Map count1 = systemService.findOneForJdbc(sql.toString());
+				countMap.put("countNum2",count1.get("counts"));
+			}
+
+			if(user.getUserKey().equals("技术经理")){
+				sql.append(" SELECT IFNULL(COUNT(0),0) counts FROM emk_approval a WHERE (a.type=0 AND a.status=3) ");
+				Map count1 = systemService.findOneForJdbc(sql.toString());
+				countMap.put("countNum2",count1.get("counts"));
+			}
+
+			j.setObj(countMap);
+		} catch (Exception e) {
+			j.setSuccess(false);
+			e.printStackTrace();
+		}
+		return j;
+	}
+	/*@RequestMapping(params = "getNoticeList")
+	@ResponseBody
+	public AjaxJson getNoticeList(Integer isRead,HttpServletRequest req) {
+		AjaxJson j = new AjaxJson();
+		try {
 			TSUser user = ResourceUtil.getSessionUser();
 
 			String sql = "SELECT notice.*,noticeRead.is_read as is_read FROM t_s_notice notice "
@@ -127,7 +160,7 @@ public class NoticeController extends BaseController{
 			e.printStackTrace();
 		}
 		return j;
-	}
+	}*/
 	
 	/**
 	 * 通知公告列表（阅读）

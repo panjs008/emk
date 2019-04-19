@@ -27,14 +27,14 @@
 
       <t:dgFunOpt funname="queryDetail2(id,materialNo)" title="缝制辅料" urlclass="ace_button" urlfont="fa-list-alt"></t:dgFunOpt>
       <%--<t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkMaterialRequiredController.do?goAdd&type=1&winTitle=录入缝制采购需求单" funname="add" height="600" width="1000"></t:dgToolBar>--%>
-      <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkMaterialRequiredController.do?goUpdate&type=1&winTitle=编辑缝制采购需求单" funname="update" height="600" width="1000"></t:dgToolBar>
+      <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkMaterialRequiredController.do?goUpdate&type=1&winTitle=编辑缝制采购需求单" funname="update" height="600" width="1200"></t:dgToolBar>
       <t:dgToolBar title="删除" operationCode="delete"  icon="fa fa-remove" url="emkMaterialRequiredController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
       <t:dgToolBar title="导出" operationCode="exp" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
 
   </t:datagrid>
   </div>
  </div>
-<div data-options="region:'east',
+<%--<div data-options="region:'east',
 	title:'订单明细',
 	collapsed:true,
 	split:true,
@@ -46,7 +46,7 @@
 	    li_east = 0;
 	}"
      style="width: 500px; overflow: hidden;" id="eastPanel">
-    <div class="easyui-panel" style="padding:0px;border:0px" fit="true" border="false" id="proDetialListpanel"></div>
+    <div class="easyui-panel" style="padding:0px;border:0px" fit="true" border="false" id="proDetialListpanel"></div>--%>
  <script src = "webpage/com/emk/bill/materialrequired/emkMaterialRequiredList.js"></script>		
  <script type="text/javascript">
  $(document).ready(function(){

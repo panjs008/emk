@@ -19,8 +19,8 @@
       <t:dgCol title="客户代码"  field="cusNum"  queryMode="single"  width="60"></t:dgCol>
       <t:dgCol title="客户名称"  field="cusName"  queryMode="single"  width="145"></t:dgCol>
       <t:dgCol title="款号"  field="sampleNo"  queryMode="single"  width="80"></t:dgCol>
-       <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkInvoicesController.do?goAdd&winTitle=录入发票单" funname="add" height="600" width="1000"></t:dgToolBar>
-       <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkInvoicesController.do?goUpdate&winTitle=编辑发票单" funname="update" height="600" width="1000"></t:dgToolBar>
+       <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkInvoicesController.do?goAdd&winTitle=录入发票单" funname="add" height="600" width="1200"></t:dgToolBar>
+       <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkInvoicesController.do?goUpdate&winTitle=编辑发票单" funname="update" height="600" width="1200"></t:dgToolBar>
        <t:dgToolBar title="删除" operationCode="delete"  icon="fa fa-remove" url="emkInvoicesController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
   </t:datagrid>
   </div>

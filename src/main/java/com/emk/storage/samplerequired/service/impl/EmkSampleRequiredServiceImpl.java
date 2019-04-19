@@ -94,8 +94,6 @@ public class EmkSampleRequiredServiceImpl
         map.put("businesse_dept_name", t.getBusinesseDeptName());
         map.put("businesse_dept_id", t.getBusinesseDeptId());
 
-        map.put("ran_required", t.getRanRequired());
-        map.put("feng_required", t.getFengRequired());
         map.put("state", t.getState());
         map.put("sample_to", t.getSampleTo());
         map.put("recevier", t.getRecevier());
@@ -103,10 +101,7 @@ public class EmkSampleRequiredServiceImpl
         map.put("sender", t.getSender());
         map.put("send_total", t.getSendTotal());
         map.put("level_total", t.getLevelTotal());
-        map.put("check_advice", t.getCheckAdvice());
-        map.put("bu_advice", t.getBuAdvice());
-        map.put("feng_advice", t.getFengAdvice());
-        map.put("jq_advice", t.getJqAdvice());
+
         map.put("remark", t.getRemark());
         return map;
     }
@@ -148,8 +143,6 @@ public class EmkSampleRequiredServiceImpl
         sql = sql.replace("#{businesse_dept_name}", String.valueOf(t.getBusinesseDeptName()));
         sql = sql.replace("#{businesse_dept_id}", String.valueOf(t.getBusinesseDeptId()));
 
-        sql = sql.replace("#{ran_required}", String.valueOf(t.getRanRequired()));
-        sql = sql.replace("#{feng_required}", String.valueOf(t.getFengRequired()));
         sql = sql.replace("#{state}", String.valueOf(t.getState()));
         sql = sql.replace("#{sample_to}", String.valueOf(t.getSampleTo()));
         sql = sql.replace("#{recevier}", String.valueOf(t.getRecevier()));
@@ -157,10 +150,6 @@ public class EmkSampleRequiredServiceImpl
         sql = sql.replace("#{sender}", String.valueOf(t.getSender()));
         sql = sql.replace("#{send_total}", String.valueOf(t.getSendTotal()));
         sql = sql.replace("#{level_total}", String.valueOf(t.getLevelTotal()));
-        sql = sql.replace("#{check_advice}", String.valueOf(t.getCheckAdvice()));
-        sql = sql.replace("#{bu_advice}", String.valueOf(t.getBuAdvice()));
-        sql = sql.replace("#{feng_advice}", String.valueOf(t.getFengAdvice()));
-        sql = sql.replace("#{jq_advice}", String.valueOf(t.getJqAdvice()));
         sql = sql.replace("#{remark}", String.valueOf(t.getRemark()));
         sql = sql.replace("#{UUID}", UUID.randomUUID().toString());
         return sql;

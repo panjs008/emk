@@ -15,6 +15,12 @@ import org.jeecgframework.poi.excel.annotation.Excel;
 @Table(name = "emk_leave_factory", schema = "")
 public class EmkLeaveFactoryEntity
         implements Serializable {
+    @Excel(name = "主键")
+    private String id;
+    private String createName;
+    private String createBy;
+    private Date createDate;
+    private String sysOrgCode;
     @Excel(name = "业务员")
     private String businesser;
     private String businesserName;
@@ -27,35 +33,6 @@ public class EmkLeaveFactoryEntity
     @Excel(name = "生产跟单员")
     private String developer;
     private String developerName;
-    @Excel(name = "工艺种类")
-    private String gyzl;
-    private String proType;
-    @Excel(name = "款式大类")
-    private String proTypeName;
-    @Excel(name = "款号")
-    private String sampleNo;
-    @Excel(name = "描述")
-    private String sampleNoDesc;
-    @Excel(name = "数量")
-    private Integer total;
-    @Excel(name = "总箱数")
-    private Integer sumBoxTotal;
-    @Excel(name = "总体积")
-    private Double sumBoxVolume;
-    @Excel(name = "总净重")
-    private Double sumBoxJz;
-    @Excel(name = "总毛重")
-    private Double sumBoxMao;
-    @Excel(name = "主键")
-    private String id;
-    private String createName;
-    private String createBy;
-    private Date createDate;
-    private String sysOrgCode;
-    @Excel(name = "订单号")
-    private String orderNo;
-    @Excel(name = "生产合同号")
-    private String produceNum;
     @Excel(name = "出货通知单号")
     private String outForumNo;
     @Excel(name = "离厂通知单号")
@@ -76,6 +53,56 @@ public class EmkLeaveFactoryEntity
     private String cwyer;
     @Excel(name = "订舱通知单号")
     private String cargoNo;
+
+
+
+    @Id
+    @GeneratedValue(generator = "paymentableGenerator")
+    @GenericGenerator(name = "paymentableGenerator", strategy = "uuid")
+    @Column(name = "ID", nullable = true, length = 32)
+    public String getId() {
+        return this.id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    @Column(name = "CREATE_NAME", nullable = true, length = 32)
+    public String getCreateName() {
+        return this.createName;
+    }
+
+    public void setCreateName(String createName) {
+        this.createName = createName;
+    }
+
+    @Column(name = "CREATE_BY", nullable = true, length = 32)
+    public String getCreateBy() {
+        return this.createBy;
+    }
+
+    public void setCreateBy(String createBy) {
+        this.createBy = createBy;
+    }
+
+    @Column(name = "CREATE_DATE", nullable = true, length = 32)
+    public Date getCreateDate() {
+        return this.createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
+
+    @Column(name = "SYS_ORG_CODE", nullable = true, length = 32)
+    public String getSysOrgCode() {
+        return this.sysOrgCode;
+    }
+
+    public void setSysOrgCode(String sysOrgCode) {
+        this.sysOrgCode = sysOrgCode;
+    }
 
     @Column(name = "BUSINESSER", nullable = true, length = 32)
     public String getBusinesser() {
@@ -147,162 +174,6 @@ public class EmkLeaveFactoryEntity
 
     public void setDeveloperName(String developerName) {
         this.developerName = developerName;
-    }
-
-    @Column(name = "GYZL", nullable = true, length = 32)
-    public String getGyzl() {
-        return this.gyzl;
-    }
-
-    public void setGyzl(String gyzl) {
-        this.gyzl = gyzl;
-    }
-
-    @Column(name = "PRO_TYPE", nullable = true, length = 32)
-    public String getProType() {
-        return this.proType;
-    }
-
-    public void setProType(String proType) {
-        this.proType = proType;
-    }
-
-    @Column(name = "PRO_TYPE_NAME", nullable = true, length = 32)
-    public String getProTypeName() {
-        return this.proTypeName;
-    }
-
-    public void setProTypeName(String proTypeName) {
-        this.proTypeName = proTypeName;
-    }
-
-    @Column(name = "SAMPLE_NO", nullable = true, length = 32)
-    public String getSampleNo() {
-        return this.sampleNo;
-    }
-
-    public void setSampleNo(String sampleNo) {
-        this.sampleNo = sampleNo;
-    }
-
-    @Column(name = "SAMPLE_NO_DESC", nullable = true, length = 32)
-    public String getSampleNoDesc() {
-        return this.sampleNoDesc;
-    }
-
-    public void setSampleNoDesc(String sampleNoDesc) {
-        this.sampleNoDesc = sampleNoDesc;
-    }
-
-    @Column(name = "TOTAL", nullable = true, length = 32)
-    public Integer getTotal() {
-        return this.total;
-    }
-
-    public void setTotal(Integer total) {
-        this.total = total;
-    }
-
-    @Column(name = "SUM_BOX_TOTAL", nullable = true, length = 32)
-    public Integer getSumBoxTotal() {
-        return this.sumBoxTotal;
-    }
-
-    public void setSumBoxTotal(Integer sumBoxTotal) {
-        this.sumBoxTotal = sumBoxTotal;
-    }
-
-    @Column(name = "SUM_BOX_VOLUME", nullable = true, scale = 2, length = 32)
-    public Double getSumBoxVolume() {
-        return this.sumBoxVolume;
-    }
-
-    public void setSumBoxVolume(Double sumBoxVolume) {
-        this.sumBoxVolume = sumBoxVolume;
-    }
-
-    @Column(name = "SUM_BOX_JZ", nullable = true, scale = 2, length = 32)
-    public Double getSumBoxJz() {
-        return this.sumBoxJz;
-    }
-
-    public void setSumBoxJz(Double sumBoxJz) {
-        this.sumBoxJz = sumBoxJz;
-    }
-
-    @Column(name = "SUM_BOX_MAO", nullable = true, scale = 2, length = 32)
-    public Double getSumBoxMao() {
-        return this.sumBoxMao;
-    }
-
-    public void setSumBoxMao(Double sumBoxMao) {
-        this.sumBoxMao = sumBoxMao;
-    }
-
-    @Id
-    @GeneratedValue(generator = "paymentableGenerator")
-    @GenericGenerator(name = "paymentableGenerator", strategy = "uuid")
-    @Column(name = "ID", nullable = true, length = 32)
-    public String getId() {
-        return this.id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    @Column(name = "CREATE_NAME", nullable = true, length = 32)
-    public String getCreateName() {
-        return this.createName;
-    }
-
-    public void setCreateName(String createName) {
-        this.createName = createName;
-    }
-
-    @Column(name = "CREATE_BY", nullable = true, length = 32)
-    public String getCreateBy() {
-        return this.createBy;
-    }
-
-    public void setCreateBy(String createBy) {
-        this.createBy = createBy;
-    }
-
-    @Column(name = "CREATE_DATE", nullable = true, length = 32)
-    public Date getCreateDate() {
-        return this.createDate;
-    }
-
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
-    }
-
-    @Column(name = "SYS_ORG_CODE", nullable = true, length = 32)
-    public String getSysOrgCode() {
-        return this.sysOrgCode;
-    }
-
-    public void setSysOrgCode(String sysOrgCode) {
-        this.sysOrgCode = sysOrgCode;
-    }
-
-    @Column(name = "ORDER_NO", nullable = true, length = 32)
-    public String getOrderNo() {
-        return this.orderNo;
-    }
-
-    public void setOrderNo(String orderNo) {
-        this.orderNo = orderNo;
-    }
-
-    @Column(name = "PRODUCE_NUM", nullable = true, length = 32)
-    public String getProduceNum() {
-        return this.produceNum;
-    }
-
-    public void setProduceNum(String produceNum) {
-        this.produceNum = produceNum;
     }
 
     @Column(name = "OUT_FORUM_NO", nullable = true, length = 32)

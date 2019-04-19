@@ -108,9 +108,6 @@ public class EmkSizeCheckEntity implements java.io.Serializable {
 	/**尺码范围*/
 	@Excel(name="尺码范围",width=15)
 	private String size;
-	/**总数量*/
-	@Excel(name="总数量",width=15)
-	private String total;
 	/**总箱数*/
 	@Excel(name="总箱数",width=15)
 	private String boxTotal;
@@ -123,18 +120,10 @@ public class EmkSizeCheckEntity implements java.io.Serializable {
 	/**检查日期*/
 	@Excel(name="检查日期",width=15)
 	private String checkDate;
-	/**测量部位A*/
-	@Excel(name="测量部位A",width=15)
-	private String clbwa;
 	/**尺码 */
 	@Excel(name="尺码 ",width=15)
 	private String chima;
-	/**测量部位A标准尺*/
-	@Excel(name="测量部位A标准尺",width=15)
-	private String clbwabzc;
-	/**样衣1尺寸*/
-	@Excel(name="样衣1尺寸",width=15)
-	private String yycc;
+
 	/**抽检结果*/
 	@Excel(name="抽检结果",width=15)
 	private String checkResult;
@@ -145,6 +134,19 @@ public class EmkSizeCheckEntity implements java.io.Serializable {
 	@Excel(name="报告日期",width=15)
 	private String kdDate;
 
+	@Excel(name="出货日期",width=15)
+	private String outDate;
+	@Excel(name="样品日期",width=15)
+	private String ypDate;
+	@Excel(name="样品尺码",width=15)
+	private String ypSize;
+	@Excel(name="订单数量",width=15)
+	private String orderTotal;
+	@Excel(name="样品数量",width=15)
+	private String ypTotal;
+	@Excel(name="样品类型",width=15)
+	private String ypType;
+
 	@Excel(name="审核意见")
 	private String leadAdvice;
 	@Excel(name="是否通过")
@@ -153,6 +155,8 @@ public class EmkSizeCheckEntity implements java.io.Serializable {
 	@Excel(name="审核人")
 	private String leader;
 	private String state;
+
+	private String qualityCheckId;
 	
 	/**
 	 *方法: 取得java.lang.String
@@ -650,23 +654,7 @@ public class EmkSizeCheckEntity implements java.io.Serializable {
 	public void setSize(String size){
 		this.size = size;
 	}
-	/**
-	 *方法: 取得java.lang.String
-	 *@return: java.lang.String  总数量
-	 */
 
-	@Column(name ="TOTAL",nullable=true,length=32)
-	public String getTotal(){
-		return this.total;
-	}
-
-	/**
-	 *方法: 设置java.lang.String
-	 *@param: java.lang.String  总数量
-	 */
-	public void setTotal(String total){
-		this.total = total;
-	}
 	/**
 	 *方法: 取得java.lang.String
 	 *@return: java.lang.String  总箱数
@@ -735,23 +723,7 @@ public class EmkSizeCheckEntity implements java.io.Serializable {
 	public void setCheckDate(String checkDate){
 		this.checkDate = checkDate;
 	}
-	/**
-	 *方法: 取得java.lang.String
-	 *@return: java.lang.String  测量部位A
-	 */
 
-	@Column(name ="CLBWA",nullable=true,length=32)
-	public String getClbwa(){
-		return this.clbwa;
-	}
-
-	/**
-	 *方法: 设置java.lang.String
-	 *@param: java.lang.String  测量部位A
-	 */
-	public void setClbwa(String clbwa){
-		this.clbwa = clbwa;
-	}
 	/**
 	 *方法: 取得java.lang.String
 	 *@return: java.lang.String  尺码 
@@ -769,40 +741,7 @@ public class EmkSizeCheckEntity implements java.io.Serializable {
 	public void setChima(String chima){
 		this.chima = chima;
 	}
-	/**
-	 *方法: 取得java.lang.String
-	 *@return: java.lang.String  测量部位A标准尺
-	 */
 
-	@Column(name ="CLBWABZC",nullable=true,length=32)
-	public String getClbwabzc(){
-		return this.clbwabzc;
-	}
-
-	/**
-	 *方法: 设置java.lang.String
-	 *@param: java.lang.String  测量部位A标准尺
-	 */
-	public void setClbwabzc(String clbwabzc){
-		this.clbwabzc = clbwabzc;
-	}
-	/**
-	 *方法: 取得java.lang.String
-	 *@return: java.lang.String  样衣1尺寸
-	 */
-
-	@Column(name ="YYCC",nullable=true,length=32)
-	public String getYycc(){
-		return this.yycc;
-	}
-
-	/**
-	 *方法: 设置java.lang.String
-	 *@param: java.lang.String  样衣1尺寸
-	 */
-	public void setYycc(String yycc){
-		this.yycc = yycc;
-	}
 	/**
 	 *方法: 取得java.lang.String
 	 *@return: java.lang.String  抽检结果
@@ -906,5 +845,68 @@ public class EmkSizeCheckEntity implements java.io.Serializable {
 
 	public void setState(String state) {
 		this.state = state;
+	}
+
+	@Column(name ="out_date",nullable=true,length=32)
+	public String getOutDate() {
+		return outDate;
+	}
+
+	public void setOutDate(String outDate) {
+		this.outDate = outDate;
+	}
+
+	@Column(name ="yp_date",nullable=true,length=32)
+	public String getYpDate() {
+		return ypDate;
+	}
+
+	public void setYpDate(String ypDate) {
+		this.ypDate = ypDate;
+	}
+
+	@Column(name ="yp_size",nullable=true,length=32)
+	public String getYpSize() {
+		return ypSize;
+	}
+
+	public void setYpSize(String ypSize) {
+		this.ypSize = ypSize;
+	}
+
+	@Column(name ="order_total",nullable=true,length=32)
+	public String getOrderTotal() {
+		return orderTotal;
+	}
+
+	public void setOrderTotal(String orderTotal) {
+		this.orderTotal = orderTotal;
+	}
+
+	@Column(name ="yp_total",nullable=true,length=32)
+	public String getYpTotal() {
+		return ypTotal;
+	}
+
+	public void setYpTotal(String ypTotal) {
+		this.ypTotal = ypTotal;
+	}
+
+	@Column(name ="yp_type",nullable=true,length=32)
+	public String getYpType() {
+		return ypType;
+	}
+
+	public void setYpType(String ypType) {
+		this.ypType = ypType;
+	}
+
+	@Column(name ="quality_check_id",nullable=true,length=32)
+	public String getQualityCheckId() {
+		return qualityCheckId;
+	}
+
+	public void setQualityCheckId(String qualityCheckId) {
+		this.qualityCheckId = qualityCheckId;
 	}
 }

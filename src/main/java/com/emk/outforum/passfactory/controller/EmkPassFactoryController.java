@@ -1,4 +1,5 @@
 package com.emk.outforum.passfactory.controller;
+import com.emk.outforum.passfactory.entity.EmkPassFactoryDetailEntity;
 import com.emk.outforum.passfactory.entity.EmkPassFactoryEntity;
 import com.emk.outforum.passfactory.service.EmkPassFactoryServiceI;
 import java.util.ArrayList;
@@ -7,6 +8,9 @@ import java.text.SimpleDateFormat;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.emk.outforum.shipexpenses.entity.EmkShipExpensesDetailEntity;
+import com.emk.util.ParameterUtil;
+import com.emk.util.Utils;
 import org.apache.log4j.Logger;
 import org.jeecgframework.web.system.pojo.base.TSUser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -109,6 +113,16 @@ public class EmkPassFactoryController extends BaseController {
 	@RequestMapping(params = "list")
 	public ModelAndView list(HttpServletRequest request) {
 		return new ModelAndView("com/emk/outforum/passfactory/emkPassFactoryList");
+	}
+
+	@RequestMapping(params = "detailMxList")
+	public ModelAndView detailMxList(HttpServletRequest request) {
+		Map map = ParameterUtil.getParamMaps(request.getParameterMap());
+		if (Utils.notEmpty(map.get("passId"))) {
+			List<EmkPassFactoryDetailEntity> emkPassFactoryDetailEntities = systemService.findHql("from EmkPassFactoryDetailEntity where passId=?", map.get("passId"));
+			request.setAttribute("emkPassFactoryDetailEntities", emkPassFactoryDetailEntities);
+		}
+		return new ModelAndView("com/emk/outforum/passfactory/detailMxList");
 	}
 
 	/**
@@ -231,10 +245,55 @@ public class EmkPassFactoryController extends BaseController {
 		String message = null;
 		AjaxJson j = new AjaxJson();
 		message = "离厂放行单更新成功";
-		EmkPassFactoryEntity t = emkPassFactoryService.get(EmkPassFactoryEntity.class, emkPassFactory.getId());
+		Map<String,String> map = ParameterUtil.getParamMaps(request.getParameterMap());
+		EmkPassFactoryEntity t = emkPassFactoryService.get(EmkPassFactoryEntity.class, map.get("passId"));
 		try {
+			emkPassFactory.setId(null);
 			MyBeanUtils.copyBeanNotNull2Bean(emkPassFactory, t);
 			emkPassFactoryService.saveOrUpdate(t);
+
+			String dataRows = (String) map.get("orderMxListIDSR");
+			if (Utils.notEmpty(dataRows)) {
+				systemService.executeSql("delete from emk_pass_factory_detail where pass_id = ?",t.getId());
+
+				int rows = Integer.parseInt(dataRows);
+				for (int i = 0; i < rows; i++) {
+					EmkPassFactoryDetailEntity emkPassFactoryDetailEntity = new EmkPassFactoryDetailEntity();
+					if (Utils.notEmpty(map.get("orderMxList["+i+"].cargoNo00"))) {
+						emkPassFactoryDetailEntity.setCargoNo(map.get("orderMxList["+i+"].cargoNo00"));
+						emkPassFactoryDetailEntity.setOutFourmNo(map.get("orderMxList["+i+"].outForumNo00"));
+						emkPassFactoryDetailEntity.setLevealFactoryNo(map.get("orderMxList["+i+"].levealFactoryNo00"));
+						emkPassFactoryDetailEntity.setLevealDate(map.get("orderMxList["+i+"].levealDate00"));
+
+						emkPassFactoryDetailEntity.setGysCode(map.get("orderMxList["+i+"].gysCode00"));
+						emkPassFactoryDetailEntity.setHtNum(map.get("orderMxList["+i+"].produceHtNum00"));
+						emkPassFactoryDetailEntity.setOrderNo(map.get("orderMxList["+i+"].orderNo00"));
+						emkPassFactoryDetailEntity.setSampleNo(map.get("orderMxList["+i+"].sampleNo00"));
+						emkPassFactoryDetailEntity.setSampleNoDesc(map.get("orderMxList["+i+"].sampleDesc00"));
+						emkPassFactoryDetailEntity.setTotal(map.get("orderMxList["+i+"].signTotal00"));
+
+						emkPassFactoryDetailEntity.setOrderNo(map.get("orderMxList["+i+"].orderNo00"));
+						emkPassFactoryDetailEntity.setSampleNo(map.get("orderMxList["+i+"].sampleNo00"));
+						emkPassFactoryDetailEntity.setSampleNoDesc(map.get("orderMxList["+i+"].sampleDesc00"));
+						emkPassFactoryDetailEntity.setTotal(map.get("orderMxList["+i+"].signTotal00"));
+
+						if(Utils.notEmpty(map.get("orderMxList["+i+"].atotalBox00"))){
+							emkPassFactoryDetailEntity.setSumBoxTotal(Integer.parseInt(map.get("orderMxList["+i+"].atotalBox00")));
+						}
+						if(Utils.notEmpty(map.get("orderMxList["+i+"].asumVolume00"))){
+							emkPassFactoryDetailEntity.setSumBoxVolume(Double.parseDouble(map.get("orderMxList["+i+"].asumVolume00")));
+						}
+						if(Utils.notEmpty(map.get("orderMxList["+i+"].asumWeightMao00"))){
+							emkPassFactoryDetailEntity.setSumBoxMao(Double.parseDouble(map.get("orderMxList["+i+"].asumWeightMao00")));
+						}
+						if(Utils.notEmpty(map.get("orderMxList["+i+"].asumWeightJz00"))){
+							emkPassFactoryDetailEntity.setSumBoxJz(Double.parseDouble(map.get("orderMxList["+i+"].asumWeightJz00")));
+						}
+						emkPassFactoryDetailEntity.setPassId(t.getId());
+						systemService.save(emkPassFactoryDetailEntity);
+					}
+				}
+			}
 			systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
 		} catch (Exception e) {
 			e.printStackTrace();

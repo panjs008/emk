@@ -30,6 +30,16 @@ import org.jeecgframework.poi.excel.annotation.Excel;
 @Table(name = "emk_pass_factory", schema = "")
 @SuppressWarnings("serial")
 public class EmkPassFactoryEntity implements java.io.Serializable {
+	/**主键*/
+	private String id;
+	/**创建人名称*/
+	private String createName;
+	/**创建人登录名称*/
+	private String createBy;
+	/**创建日期*/
+	private Date createDate;
+	/**所属部门*/
+	private String sysOrgCode;
 	/**业务员*/
 	@Excel(name="业务员",width=15)
 	private String businesser;
@@ -50,71 +60,20 @@ public class EmkPassFactoryEntity implements java.io.Serializable {
 	private String developer;
 	/**生产跟单员ID*/
 	private String developerName;
-	/**款号*/
-	@Excel(name="款号",width=15)
-	private String sampleNo;
-	/**描述*/
-	@Excel(name="描述",width=15)
-	private String sampleNoDesc;
-	/**主键*/
-	private String id;
-	/**创建人名称*/
-	private String createName;
-	/**创建人登录名称*/
-	private String createBy;
-	/**创建日期*/
-	private Date createDate;
-	/**所属部门*/
-	private String sysOrgCode;
-	/**出货通知单号*/
-	@Excel(name="出货通知单号",width=15)
-	private String outFourmNo;
-	/**订舱通知单号*/
-	@Excel(name="订舱通知单号",width=15)
-	private String cargoNo;
-	/**离厂放行条号*/
-	@Excel(name="离厂放行条号",width=15)
-	private String levealFactoryNo;
-	/**订单号*/
-	@Excel(name="订单号",width=15)
-	private String orderNo;
-	/**船务员*/
-	@Excel(name="船务员",width=15)
-	private String cwer;
-	/**提交订舱日期*/
-	@Excel(name="提交订舱日期",width=15)
+
+	/**提交日期*/
+	@Excel(name="提交日期",width=15)
 	private String cargoDate;
-	/**离厂日期*/
-	@Excel(name="离厂日期",width=15)
-	private String levealDate;
-	/**总箱数*/
-	@Excel(name="总箱数",width=15)
-	private Integer sumBox;
+
 	/**客户代码*/
 	@Excel(name="客户代码",width=15)
 	private String cusNum;
 	/**客户名称*/
 	@Excel(name="客户名称",width=15)
 	private String cusName;
-	/**运输单位名称*/
-	@Excel(name="运输单位名称",width=15)
-	private String ysdwName;
-	/**运输单位代码*/
-	@Excel(name="运输单位代码",width=15)
-	private String ysdwCode;
-	/**司机姓名*/
-	@Excel(name="司机姓名",width=15)
-	private String driver;
-	/**司机电话*/
-	@Excel(name="司机电话",width=15)
-	private String drverTel;
-	/**车牌*/
-	@Excel(name="车牌",width=15)
-	private String driverNum;
-	/**离厂通知单状态*/
-	@Excel(name="离厂通知单状态",width=15)
-	private String state;
-	
+	/**船务员*/
+	@Excel(name="船务员",width=15)
+	private String cwyer;
 	/**
 	 *方法: 取得java.lang.String
 	 *@return: java.lang.String  业务员
@@ -251,40 +210,7 @@ public class EmkPassFactoryEntity implements java.io.Serializable {
 	public void setDeveloperName(String developerName){
 		this.developerName = developerName;
 	}
-	/**
-	 *方法: 取得java.lang.String
-	 *@return: java.lang.String  款号
-	 */
 
-	@Column(name ="SAMPLE_NO",nullable=true,length=32)
-	public String getSampleNo(){
-		return this.sampleNo;
-	}
-
-	/**
-	 *方法: 设置java.lang.String
-	 *@param: java.lang.String  款号
-	 */
-	public void setSampleNo(String sampleNo){
-		this.sampleNo = sampleNo;
-	}
-	/**
-	 *方法: 取得java.lang.String
-	 *@return: java.lang.String  描述
-	 */
-
-	@Column(name ="SAMPLE_NO_DESC",nullable=true,length=32)
-	public String getSampleNoDesc(){
-		return this.sampleNoDesc;
-	}
-
-	/**
-	 *方法: 设置java.lang.String
-	 *@param: java.lang.String  描述
-	 */
-	public void setSampleNoDesc(String sampleNoDesc){
-		this.sampleNoDesc = sampleNoDesc;
-	}
 	/**
 	 *方法: 取得java.lang.String
 	 *@return: java.lang.String  主键
@@ -373,91 +299,7 @@ public class EmkPassFactoryEntity implements java.io.Serializable {
 	public void setSysOrgCode(String sysOrgCode){
 		this.sysOrgCode = sysOrgCode;
 	}
-	/**
-	 *方法: 取得java.lang.String
-	 *@return: java.lang.String  出货通知单号
-	 */
 
-	@Column(name ="OUT_FOURM_NO",nullable=true,length=32)
-	public String getOutFourmNo(){
-		return this.outFourmNo;
-	}
-
-	/**
-	 *方法: 设置java.lang.String
-	 *@param: java.lang.String  出货通知单号
-	 */
-	public void setOutFourmNo(String outFourmNo){
-		this.outFourmNo = outFourmNo;
-	}
-	/**
-	 *方法: 取得java.lang.String
-	 *@return: java.lang.String  订舱通知单号
-	 */
-
-	@Column(name ="CARGO_NO",nullable=true,length=32)
-	public String getCargoNo(){
-		return this.cargoNo;
-	}
-
-	/**
-	 *方法: 设置java.lang.String
-	 *@param: java.lang.String  订舱通知单号
-	 */
-	public void setCargoNo(String cargoNo){
-		this.cargoNo = cargoNo;
-	}
-	/**
-	 *方法: 取得java.lang.String
-	 *@return: java.lang.String  离厂放行条号
-	 */
-
-	@Column(name ="LEVEAL_FACTORY_NO",nullable=true,length=32)
-	public String getLevealFactoryNo(){
-		return this.levealFactoryNo;
-	}
-
-	/**
-	 *方法: 设置java.lang.String
-	 *@param: java.lang.String  离厂放行条号
-	 */
-	public void setLevealFactoryNo(String levealFactoryNo){
-		this.levealFactoryNo = levealFactoryNo;
-	}
-	/**
-	 *方法: 取得java.lang.String
-	 *@return: java.lang.String  订单号
-	 */
-
-	@Column(name ="ORDER_NO",nullable=true,length=32)
-	public String getOrderNo(){
-		return this.orderNo;
-	}
-
-	/**
-	 *方法: 设置java.lang.String
-	 *@param: java.lang.String  订单号
-	 */
-	public void setOrderNo(String orderNo){
-		this.orderNo = orderNo;
-	}
-	/**
-	 *方法: 取得java.lang.String
-	 *@return: java.lang.String  船务员
-	 */
-
-	@Column(name ="CWER",nullable=true,length=32)
-	public String getCwer(){
-		return this.cwer;
-	}
-
-	/**
-	 *方法: 设置java.lang.String
-	 *@param: java.lang.String  船务员
-	 */
-	public void setCwer(String cwer){
-		this.cwer = cwer;
-	}
 	/**
 	 *方法: 取得java.lang.String
 	 *@return: java.lang.String  提交订舱日期
@@ -475,40 +317,7 @@ public class EmkPassFactoryEntity implements java.io.Serializable {
 	public void setCargoDate(String cargoDate){
 		this.cargoDate = cargoDate;
 	}
-	/**
-	 *方法: 取得java.lang.String
-	 *@return: java.lang.String  离厂日期
-	 */
 
-	@Column(name ="LEVEAL_DATE",nullable=true,length=32)
-	public String getLevealDate(){
-		return this.levealDate;
-	}
-
-	/**
-	 *方法: 设置java.lang.String
-	 *@param: java.lang.String  离厂日期
-	 */
-	public void setLevealDate(String levealDate){
-		this.levealDate = levealDate;
-	}
-	/**
-	 *方法: 取得java.lang.Integer
-	 *@return: java.lang.Integer  总箱数
-	 */
-
-	@Column(name ="SUM_BOX",nullable=true,length=32)
-	public Integer getSumBox(){
-		return this.sumBox;
-	}
-
-	/**
-	 *方法: 设置java.lang.Integer
-	 *@param: java.lang.Integer  总箱数
-	 */
-	public void setSumBox(Integer sumBox){
-		this.sumBox = sumBox;
-	}
 	/**
 	 *方法: 取得java.lang.String
 	 *@return: java.lang.String  客户代码
@@ -543,106 +352,22 @@ public class EmkPassFactoryEntity implements java.io.Serializable {
 	public void setCusName(String cusName){
 		this.cusName = cusName;
 	}
+
 	/**
 	 *方法: 取得java.lang.String
-	 *@return: java.lang.String  运输单位名称
+	 *@return: java.lang.String  船务员
 	 */
 
-	@Column(name ="YSDW_NAME",nullable=true,length=32)
-	public String getYsdwName(){
-		return this.ysdwName;
+	@Column(name ="CWYER",nullable=true,length=32)
+	public String getCwyer(){
+		return this.cwyer;
 	}
 
 	/**
 	 *方法: 设置java.lang.String
-	 *@param: java.lang.String  运输单位名称
+	 *@param: java.lang.String  船务员
 	 */
-	public void setYsdwName(String ysdwName){
-		this.ysdwName = ysdwName;
-	}
-	/**
-	 *方法: 取得java.lang.String
-	 *@return: java.lang.String  运输单位代码
-	 */
-
-	@Column(name ="YSDW_CODE",nullable=true,length=32)
-	public String getYsdwCode(){
-		return this.ysdwCode;
-	}
-
-	/**
-	 *方法: 设置java.lang.String
-	 *@param: java.lang.String  运输单位代码
-	 */
-	public void setYsdwCode(String ysdwCode){
-		this.ysdwCode = ysdwCode;
-	}
-	/**
-	 *方法: 取得java.lang.String
-	 *@return: java.lang.String  司机姓名
-	 */
-
-	@Column(name ="DRIVER",nullable=true,length=32)
-	public String getDriver(){
-		return this.driver;
-	}
-
-	/**
-	 *方法: 设置java.lang.String
-	 *@param: java.lang.String  司机姓名
-	 */
-	public void setDriver(String driver){
-		this.driver = driver;
-	}
-	/**
-	 *方法: 取得java.lang.String
-	 *@return: java.lang.String  司机电话
-	 */
-
-	@Column(name ="DRVER_TEL",nullable=true,length=32)
-	public String getDrverTel(){
-		return this.drverTel;
-	}
-
-	/**
-	 *方法: 设置java.lang.String
-	 *@param: java.lang.String  司机电话
-	 */
-	public void setDrverTel(String drverTel){
-		this.drverTel = drverTel;
-	}
-	/**
-	 *方法: 取得java.lang.String
-	 *@return: java.lang.String  车牌
-	 */
-
-	@Column(name ="DRIVER_NUM",nullable=true,length=32)
-	public String getDriverNum(){
-		return this.driverNum;
-	}
-
-	/**
-	 *方法: 设置java.lang.String
-	 *@param: java.lang.String  车牌
-	 */
-	public void setDriverNum(String driverNum){
-		this.driverNum = driverNum;
-	}
-	/**
-	 *方法: 取得java.lang.String
-	 *@return: java.lang.String  离厂通知单状态
-	 */
-
-	@Column(name ="STATE",nullable=true,length=32)
-	public String getState(){
-		return this.state;
-	}
-
-	/**
-	 *方法: 设置java.lang.String
-	 *@param: java.lang.String  离厂通知单状态
-	 */
-	public void setState(String state){
-		this.state = state;
+	public void setCwyer(String cwyer){
+		this.cwyer = cwyer;
 	}
 }

@@ -9,7 +9,7 @@
    <t:dgCol title="创建人登录名称"  field="createBy"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="创建日期"  field="createDate"  formatter="yyyy-MM-dd"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="所属部门"  field="sysOrgCode"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
-      <t:dgCol title="操作" field="opt" width="227" frozenColumn="true"></t:dgCol>
+      <t:dgCol title="操作" field="opt" width="100" frozenColumn="true"></t:dgCol>
 
       <t:dgCol title="状态"  field="state"  formatterjs="formatColor"  queryMode="single"  dictionary="bpm_status"  width="60"></t:dgCol>
    <t:dgCol title="订单号"  field="orderNo"  queryMode="single"  width="110"></t:dgCol>
@@ -25,16 +25,17 @@
       <t:dgCol title="款式大类"  field="proTypeName"  queryMode="single"  width="70"></t:dgCol>
       <%--<t:dgCol title="总数量"  field="sumTotal"  queryMode="single"  width="60"></t:dgCol>
       <t:dgCol title="总金额"  field="sumMoney"  queryMode="single"  width="60"></t:dgCol>--%>
-      <t:dgFunOpt funname="queryDetail1(id,orderNo,state)" title="明细" urlStyle="background-color:#ec4758;" urlclass="ace_button"></t:dgFunOpt>
-      <t:dgFunOpt funname="queryDetail2(id,orderNo,state)" title="主辅料" urlclass="ace_button" ></t:dgFunOpt>
-      <t:dgFunOpt funname="queryDetail3(id,orderNo,state)" title="条码" urlStyle="background-color:#ec4758;" urlclass="ace_button" ></t:dgFunOpt>
-      <t:dgFunOpt funname="queryDetail4(id,orderNo,state)" title="包装" urlStyle="background-color:#18a689;" urlclass="ace_button" ></t:dgFunOpt>
-      <t:dgFunOpt funname="queryDetail5(id,orderNo,state)" title="纸箱" urlStyle="background-color:#ec4758;" urlclass="ace_button" ></t:dgFunOpt>
+      <%--<t:dgFunOpt funname="queryDetail1(id,orderNo,state)" title="明细" urlStyle="background-color:#ec4758;" urlclass="ace_button"></t:dgFunOpt>--%>
+      <%--<t:dgFunOpt funname="queryDetail2(id,orderNo,state)" title="主辅料" urlclass="ace_button" ></t:dgFunOpt>--%>
+      <%--<t:dgFunOpt funname="queryDetail3(id,orderNo,state)" title="条码" urlStyle="background-color:#ec4758;" urlclass="ace_button" ></t:dgFunOpt>--%>
+      <%--<t:dgFunOpt funname="queryDetail4(id,orderNo,state)" title="包装" urlStyle="background-color:#18a689;" urlclass="ace_button" ></t:dgFunOpt>--%>
+      <%--<t:dgFunOpt funname="queryDetail5(id,orderNo,state)" title="纸箱" urlStyle="background-color:#ec4758;" urlclass="ace_button" ></t:dgFunOpt>--%>
+      <t:dgFunOpt funname="goToProcess(id,createBy,processName,state,state1,state2,state3)" title="流程进度" operationCode="process" urlclass="ace_button"  urlStyle="background-color:#ec4758;" urlfont="fa-tasks"></t:dgFunOpt>
 
       <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkProOrderController.do?goAdd&winTitle=录入订单" funname="add" height="600" width="1000"></t:dgToolBar>
       <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkProOrderController.do?goUpdate&winTitle=编辑订单" funname="update" height="600" width="1000"></t:dgToolBar>
       <t:dgToolBar title="提交" operationCode="submit" icon="fa fa-arrow-circle-up" funname="doSubmitV"></t:dgToolBar>
-      <t:dgToolBar title="流程进度" operationCode="process" icon="fa fa-plus" funname="goToProcess"></t:dgToolBar>
+      <%--<t:dgToolBar title="流程进度" operationCode="process" icon="fa fa-plus" funname="goToProcess"></t:dgToolBar>--%>
 
       <%--<t:dgToolBar title="审核" icon="fa fa-plus" funname="doSubmitV" height="600" width="1000"></t:dgToolBar>--%>
       <t:dgToolBar title="删除" operationCode="delete"  icon="fa fa-remove" url="emkProOrderController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
@@ -44,19 +45,7 @@
   </t:datagrid>
   </div>
  </div>
-<div data-options="region:'east',
-	title:'订单明细',
-	collapsed:true,
-	split:true,
-	border:false,
-	onExpand : function(){
-		li_east = 1;
-	},
-	onCollapse : function() {
-	    li_east = 0;
-	}"
-     style="width: 500px; overflow: hidden;" id="eastPanel">
-    <div class="easyui-panel" style="padding:0px;border:0px" fit="true" border="false" id="proDetialListpanel"></div>
+
  <script src = "webpage/com/emk/bill/proorder/emkProOrderList.js"></script>		
  <script type="text/javascript">
  $(document).ready(function(){

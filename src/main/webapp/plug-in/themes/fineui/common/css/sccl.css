@@ -76,7 +76,7 @@ a cite{font-style: normal; *cursor:pointer;}
 /* 布局风格 */
 .layout-admin{margin: 0 auto;font-size: 14px;}
 .layout-header{position:relative; border-bottom: 0px solid #33AECC;height:62.4px;background-color:#33AECC;z-index:1000;}
-.layout-side{position: fixed;display: block;top: 62.4px;bottom:0px;left:0px; width: 200px;overflow-x: hidden;background-color: #393D49;color: #c2c2c2;z-index:999;}
+.layout-side{position: fixed;display: block;top: 61.4px;bottom:0px;left:0px; width: 200px;overflow-x: hidden;background-color: #393D49;color: #c2c2c2;z-index:999;}
 .layout-side::-webkit-scrollbar{width: 0px; height: 10px;}
 .layout-main{position: absolute;top:62.4px;right:0;bottom: 30px;left:200px;width:auto;overflow:hidden;overflow-y: auto;background-color: #fff;z-index:998;}
 .layout-main-tab{height: 28px;line-height: 28px;overflow: hidden;position: relative;

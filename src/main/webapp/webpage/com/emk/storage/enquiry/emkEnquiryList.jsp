@@ -29,7 +29,7 @@
    <t:dgCol title="数量"  field="sumTotal"  queryMode="single"  width="60"></t:dgCol>
    <%--<t:dgCol title="币种"  field="bz"  queryMode="single"  width="50"></t:dgCol>
    <t:dgCol title="总金额"  field="sumMoney"  queryMode="single"  width="60"></t:dgCol>--%>
-      <t:dgCol title="意向订单状态"  field="state" formatterjs="formatColor"  queryMode="single"  width="100"></t:dgCol>
+      <t:dgCol title="意向订单状态"  field="state" formatterjs="formatColor"  queryMode="single"  width="120"></t:dgCol>
       <t:dgCol title=""  field="state1" hidden="true"  queryMode="single"  width="100"></t:dgCol>
       <t:dgCol title=""  field="state2" hidden="true"  queryMode="single"  width="100"></t:dgCol>
       <t:dgCol title=""  field="state3" hidden="true"  queryMode="single"  width="100"></t:dgCol>
@@ -71,16 +71,71 @@
  });
  function formatColor(val,row){
      if(row.state=="1"){
-         return '<span style="color:	#FF0000;">处理中</span>';
+         return '<span style="color:	#0000FF;">已提交</span>';
      }else if(row.state=="2"){
-         return '<span style="color:	#0000FF;">完成</span>';
+         return '<span style="color:	#00FF00;">完成</span>';
+     }else if(row.state=="3"){
+         return '<span style="color:	#0000FF;">业务经理通过</span>';
+     }else if(row.state=="4"){
+         return '<span style="color:	#FF0000;">回退业务经理</span>';
+     }else if(row.state=="5"){
+         return '<span style="color:	#0000FF;">技术经理通过</span>';
+     }else if(row.state=="6"){
+         return '<span style="color:	#0000FF;">回退技术经理</span>';
+     }else if(row.state=="7"){
+         return '<span style="color:	#0000FF;">染色部经理通过</span>';
+     }else if(row.state=="8"){
+         return '<span style="color:	#0000FF;">回退染色部经理</span>';
+     }else if(row.state=="9"){
+         return '<span style="color:	#0000FF;">缝制部经理通过</span>';
+     }else if(row.state=="10"){
+         return '<span style="color:	#0000FF;">回退缝制部经理</span>';
+     }else if(row.state=="11"){
+         return '<span style="color:	#0000FF;">烫标整烫组长通过</span>';
+     }else if(row.state=="12"){
+         return '<span style="color:	#0000FF;">回退烫标整烫组长</span>';
+     }else if(row.state=="13"){
+         return '<span style="color:	#0000FF;">包装组长通过</span>';
+     }else if(row.state=="14"){
+         return '<span style="color:	#0000FF;">回退包装组长</span>';
+     }else if(row.state=="15"){
+         return '<span style="color:	#0000FF;">采购部经理通过</span>';
+     }else if(row.state=="16"){
+         return '<span style="color:	#0000FF;">回退采购部经理</span>';
+     }else if(row.state=="17"){
+         return '<span style="color:	#0000FF;">生产计划部通过</span>';
+     }else if(row.state=="18"){
+         return '<span style="color:	#0000FF;">回退生产计划部</span>';
+     }else if(row.state=="19"){
+         return '<span style="color:	#0000FF;">生产总负责人通过</span>';
+     }else if(row.state=="20"){
+         return '<span style="color:	#0000FF;">报价</span>';
+     }else if(row.state=="21"){
+         return '<span style="color:	#0000FF;">回退业务员</span>';
+     }else if(row.state=="22"){
+         return '<span style="color:	#0000FF;">技术员通过</span>';
+     }else if(row.state=="23"){
+         return '<span style="color:	#0000FF;">回退技术员</span>';
+     }else if(row.state=="24"){
+         return '<span style="color:	#0000FF;">采购员通过</span>';
+     }else if(row.state=="25"){
+         return '<span style="color:	#0000FF;">财务通过</span>';
+     }else if(row.state=="26"){
+         return '<span style="color:	#0000FF;">财务经理通过</span>';
+     }else if(row.state=="27"){
+         return '<span style="color:	#0000FF;">回退财务</span>';
+     }else if(row.state=="30"){
+         return '<span style="color:	#0000FF;">价格确认</span>';
+     }else if(row.state=="31"){
+         return '<span style="color:	#0000FF;">打样</span>';
+     }else if(row.state=="33"){
+         return '<span style="color:	#0000FF;">生产跟单员通过</span>';
      }else{
          return '创建';
      }
  }
 
  function goToProcess(id,createBy,processName,state,state1,state2,state3){
-
      var height =window.top.document.body.offsetHeight*0.85;
      /*var rowsData = $('#emkEnquiryList').datagrid('getSelections');
      if (!rowsData || rowsData.length == 0) {
@@ -95,42 +150,47 @@
          }
      }
      if(createBy == "${CUR_USER.userName}"){
-         if(state == '0'){
-             createwindow("流程进度--当前环节：业务部审核", "flowController.do?goProcess&node="+node+"&processUrl=com/emk/storage/enquiry/emkEnquiry-process&id=" + id, 1150, height);
+         if(state == '0' || state=='19'){
+             createwindow("流程进度--当前环节：业务部审核", "flowController.do?goProcess&node="+node+"&processUrl=com/emk/storage/enquiry/emkEnquiry-process&id=" + id, 1280, height);
          }else {
-             createdetailwindow("流程进度--当前环节：" + processNameVal, "flowController.do?goProcess&node="+node+"&processUrl=com/emk/storage/enquiry/emkEnquiry-process&id=" + id, 1155, height);
+             createdetailwindow("流程进度--当前环节：" + processNameVal, "flowController.do?goProcess&node="+node+"&processUrl=com/emk/storage/enquiry/emkEnquiry-process&id=" + id, 1280, height);
          }
      }else{
          if(state == '2'){
-             createdetailwindow('流程进度--当前环节：完成' , 'flowController.do?goProcess&processUrl=com/emk/storage/enquiry/emkEnquiry-process&id=' + id, 1155, height);
+             createdetailwindow('流程进度--当前环节：完成' , 'flowController.do?goProcess&processUrl=com/emk/storage/enquiry/emkEnquiry-process&id=' + id, 1280, height);
          }else{
-             if(state == '1') {
-                 if("${ROLE.rolecode}" == "ywjl"){
-                     if(state1 == "0"){
-                         createdetailwindow('流程进度--当前环节：业务部审核' , 'flowController.do?goProcess&processUrl=com/emk/storage/enquiry/emkEnquiry-process&id=' + id, 1150, height);
-                     }else{
-                         createwindow("流程进度--当前环节：业务部审核", "flowController.do?goProcess&node="+node+"&processUrl=com/emk/storage/enquiry/emkEnquiry-process&id=" + id, 1150, height);
-                     }
-                 }
-                 if("${ROLE.rolecode}" == "jsjl"){
-                     if(state2 == "0"){
-                         createdetailwindow('流程进度--当前环节：技术部审核' , 'flowController.do?goProcess&processUrl=com/emk/storage/enquiry/emkEnquiry-process&id=' + id, 1150, height);
-                     }else{
-                         createwindow("流程进度--当前环节：技术部审核", "flowController.do?goProcess&node="+node+"&processUrl=com/emk/storage/enquiry/emkEnquiry-process&id=" + id, 1150, height);
-                     }
-                 }
-                 if("${ROLE.rolecode}" == "scjl"){
-                     if(state3 == "0"){
-                         createdetailwindow('流程进度--当前环节：生产部审核' , 'flowController.do?goProcess&processUrl=com/emk/storage/enquiry/emkEnquiry-process&id=' + id, 1150, height);
-                     }else{
-                         createwindow("流程进度--当前环节：生产部审核", "flowController.do?goProcess&node="+node+"&processUrl=com/emk/storage/enquiry/emkEnquiry-process&id=" + id, 1150, height);
-                     }
-                 }
+             if((state == '1' || state == '4') && "${ROLE.rolecode}" == "ywjl" || (state == '3' || state == '6') && "${ROLE.rolecode}" == "jsjl"
+                     || (state == '5' || state == '8') && "${ROLE.rolecode}" == "rsjl" || (state == '7' || state == '10') && "${ROLE.rolecode}" == "fzjl"
+                     || (state == '9' || state == '12') && "${ROLE.rolecode}" == "btztzz" || (state == '11' || state == '14') && "${ROLE.rolecode}" == "bzzz"
+                     || (state == '13' || state == '16') && "${ROLE.rolecode}" == "cgjl" || (state == '15' || state == '18') && "${ROLE.rolecode}" == "scjjbjl"
+                     || (state == '17' || state == '20') && "${ROLE.rolecode}" == "sczfr") {
+                 createwindow("流程进度--当前环节：" + processNameVal, "flowController.do?goProcess&node="+node+"&processUrl=com/emk/storage/enquiry/emkEnquiry-process&id=" + id, 1280, height);
              }else{
-                 createdetailwindow('流程进度--当前环节：业务部审核' , 'flowController.do?goProcess&processUrl=com/emk/storage/enquiry/emkEnquiry-process&id=' + id, 1150, height);
+                 createdetailwindow('流程进度--当前环节：' + processNameVal , 'flowController.do?goProcess&processUrl=com/emk/storage/enquiry/emkEnquiry-process&id=' + id, 1280, height);
              }
          }
      }
+     /*if(createBy == "${CUR_USER.userName}"){
+         if(state == '0'){
+             createwindow("流程进度--当前环节：业务部审核", "flowController.do?goProcess&node="+node+"&processUrl=com/emk/storage/enquiry/emkEnquiry-process&id=" + id, 1280, height);
+         }else {
+             createdetailwindow("流程进度--当前环节：" + processNameVal, "flowController.do?goProcess&node="+node+"&processUrl=com/emk/storage/enquiry/emkEnquiry-process&id=" + id, 1280, height);
+         }
+     }else{
+         if(state == '2'){
+             createdetailwindow('流程进度--当前环节：完成' , 'flowController.do?goProcess&processUrl=com/emk/storage/enquiry/emkEnquiry-process&id=' + id, 1280, height);
+         }else{
+             if((state == '1' || state == '4') && "${ROLE.rolecode}" == "ywjl") {
+                 createwindow("流程进度--当前环节：" + processNameVal, "flowController.do?goProcess&node="+node+"&processUrl=com/emk/storage/enquiry/emkEnquiry-process&id=" + id, 1280, height);
+             }else if(state == '3' && "${ROLE.rolecode}" == "jsjl"){
+                 createwindow("流程进度--当前环节：" + processNameVal, "flowController.do?goProcess&node="+node+"&processUrl=com/emk/storage/enquiry/emkEnquiry-process&id=" + id, 1280, height);
+             }else if(state == '5' && "${ROLE.rolecode}" == "scjl"){
+                 createwindow("流程进度--当前环节：" + processNameVal, "flowController.do?goProcess&node="+node+"&processUrl=com/emk/storage/enquiry/emkEnquiry-process&id=" + id, 1280, height);
+             }else{
+                 createdetailwindow('流程进度--当前环节：' + processNameVal , 'flowController.do?goProcess&processUrl=com/emk/storage/enquiry/emkEnquiry-process&id=' + id, 1280, height);
+             }
+         }
+     }*/
 
  }
  function queryDetail1(id,eNo,state){

@@ -27,9 +27,9 @@
       <t:dgFunOpt funname="goToProcess(id,createBy)" title="流程进度" operationCode="process" urlclass="ace_button"  urlStyle="background-color:#ec4758;" urlfont="fa-tasks"></t:dgFunOpt>
       <%--<t:dgFunOpt funname="queryDetail2(id,materialNo)" title="原料面料" urlclass="ace_button" urlfont="fa-list-alt"></t:dgFunOpt>--%>
       <%--<t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkContractController.do?goAdd&type=0&winTitle=录入购销合同同单" funname="add" height="600" width="1100"></t:dgToolBar>--%>
-      <t:dgToolBar title="查看" icon="fa fa-search" operationCode="look" url="emkContractController.do?goUpdate&winTitle=查看购销合同同单" funname="detail" height="600" width="1100"></t:dgToolBar>
+      <t:dgToolBar title="查看" icon="fa fa-search" operationCode="look" url="emkContractController.do?goUpdate&winTitle=查看购销合同同单" funname="detail" height="600" width="1350"></t:dgToolBar>
 
-      <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkContractController.do?goUpdate&type=0&winTitle=编辑购销合同同单" funname="update" height="600" width="1100"></t:dgToolBar>
+      <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkContractController.do?goUpdate&type=0&winTitle=编辑购销合同同单" funname="update" height="600" width="1350"></t:dgToolBar>
       <t:dgToolBar title="提交" operationCode="submit" icon="fa fa-arrow-circle-up" funname="doSubmitV"></t:dgToolBar>
       <t:dgToolBar title="删除" operationCode="delete"  icon="fa fa-remove" url="emkContractController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
       <t:dgToolBar title="导出" operationCode="exp" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
@@ -37,7 +37,7 @@
   </t:datagrid>
   </div>
  </div>
- <script src = "webpage/com/emk/bill/contract/emkContractList.js"></script>		
+ <script src = "webpage/com/emk/bill/contract/emkContractList.js"></script>
  <script type="text/javascript">
  $(document).ready(function(){
  });
@@ -109,7 +109,7 @@
          }
      });
  }
- 
+
 //导入
 function ImportXls() {
 	openuploadwin('Excel导入', 'emkContractController.do?upload', "emkContractList");

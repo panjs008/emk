@@ -30,23 +30,39 @@
 	<div id="content">
 
 		<ul class="list">
-			<c:forEach items="${taskList}" var="task" varStatus="status">
+			<li>
+				<div class="liwrap">
+					<div class="lileft">
+						<div class="date">
+							<span class="year">${createDate}</span>
+						</div>
+					</div>
+					<div class="point"><b></b></div>
+					<div class="liright">
+						<div class="histt"><a style="font-size: 14px;">样品材料采购单</a></div>
+						<div class="histt"><a style="font-size: 12px;">【${approvalEntity.createName}】发起样品材料采购单，单号：${approvalEntity.workNum}
+						</a></div>
+					</div>
+				</div>
+			</li>
+			<c:forEach items="${approvalDetailEntityList}" var="task" varStatus="status">
 				<li>
 					<div class="liwrap">
 						<div class="lileft">
 							<div class="date">
-								<span class="year">${task.startTime}</span>
+								<span class="year">${task.approveDate}</span>
 							</div>
 						</div>
 						<div class="point"><b></b></div>
 						<div class="liright">
-							<div class="histt"><a style="font-size: 14px;">${task.NAME_}</a></div>
-							<div class="histt"><a style="font-size: 12px;"><c:if test="${task.TASK_DEF_KEY_ eq 'accessoriesTask'}">【${task.workname}】发起缝制辅料开发单，单号：${emkAccessories.materialNo}</c:if>
-								<c:if test="${task.TASK_DEF_KEY_ eq 'checkTask'}">审核人【${emkAccessories.leader}】,处理意见：${emkAccessories.leadAdvice}</c:if>
-							</a></div>
+							<div class="histt"><a style="font-size: 14px;">${task.bpmName}</a></div>
+							<div class="histt"><a style="font-size: 12px;">
+								审核人【${task.createName}】，处理意见：${task.approveAdvice}
+							</div>
 						</div>
 					</div>
 				</li>
+
 			</c:forEach>
 		</ul>
 

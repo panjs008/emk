@@ -21,9 +21,9 @@
 				data: baseformArray,
 				success : function(data) {
 					var d = $.parseJSON(data);
+					var msg = d.msg;
+					tip(msg);
 					if (d.success) {
-						var msg = d.msg;
-						tip(msg);
 						W.document.location.reload(true);
 					}
 				}

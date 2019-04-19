@@ -1,4 +1,5 @@
 package com.emk.produce.testprogress.controller;
+import com.emk.produce.testcost.entity.EmkTestCostDetailEntity;
 import com.emk.produce.testprogress.entity.EmkTestProgressEntity;
 import com.emk.produce.testprogress.service.EmkTestProgressServiceI;
 
@@ -7,6 +8,8 @@ import java.text.SimpleDateFormat;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.emk.util.ParameterUtil;
+import com.emk.util.Utils;
 import org.apache.log4j.Logger;
 import org.apache.tools.ant.util.DateUtils;
 import org.jeecgframework.web.system.pojo.base.TSUser;
@@ -109,6 +112,19 @@ public class EmkTestProgressController extends BaseController {
 	public ModelAndView list(HttpServletRequest request) {
 		return new ModelAndView("com/emk/produce/testprogress/emkTestProgressList");
 	}
+
+	@RequestMapping(params = "detailMxList")
+	public ModelAndView detailMxList(HttpServletRequest request) {
+		Map map = ParameterUtil.getParamMaps(request.getParameterMap());
+		List<Map<String, Object>> list = systemService.findForJdbc("select typecode,typename from t_s_type t2 left join t_s_typegroup t1 on t1.ID=t2.typegroupid where typegroupcode='testtype'");
+		request.setAttribute("testTypeList", list);
+		if (Utils.notEmpty(map.get("costId"))) {
+			List<EmkTestCostDetailEntity> emkTestCostDetailEntities = systemService.findHql("from EmkTestCostDetailEntity where testCostId=?", map.get("costId"));
+			request.setAttribute("emkTestCostDetailEntities", emkTestCostDetailEntities);
+		}
+		return new ModelAndView("com/emk/produce/testprogress/detailMxList");
+	}
+
 
 	/**
 	 * easyui AJAX请求数据
@@ -230,10 +246,36 @@ public class EmkTestProgressController extends BaseController {
 		String message = null;
 		AjaxJson j = new AjaxJson();
 		message = "测试进度更新表更新成功";
-		EmkTestProgressEntity t = emkTestProgressService.get(EmkTestProgressEntity.class, emkTestProgress.getId());
+		Map<String,String> map = ParameterUtil.getParamMaps(request.getParameterMap());
+		EmkTestProgressEntity t = emkTestProgressService.get(EmkTestProgressEntity.class, map.get("testCostId"));
 		try {
+			emkTestProgress.setId(null);
 			MyBeanUtils.copyBeanNotNull2Bean(emkTestProgress, t);
 			emkTestProgressService.saveOrUpdate(t);
+			//保存明细数据
+			String dataRows = (String) map.get("orderMxListIDSR");
+			if (Utils.notEmpty(dataRows)) {
+				systemService.executeSql("delete from emk_test_cost_detail where test_cost_id = ? ",t.getId());
+
+				int rows = Integer.parseInt(dataRows);
+				EmkTestCostDetailEntity emkTestCostDetailEntity = null;
+				for (int i = 0; i < rows; i++) {
+					if (Utils.notEmpty(map.get("orderMxList["+i+"].testNo00"))){
+						emkTestCostDetailEntity = new EmkTestCostDetailEntity();
+						emkTestCostDetailEntity.setTestCostId(t.getId());
+						emkTestCostDetailEntity.setTestNo(map.get("orderMxList["+i+"].testNo00"));
+						emkTestCostDetailEntity.setOrderNo(map.get("orderMxList["+i+"].orderNo00"));
+						emkTestCostDetailEntity.setSampleNo(map.get("orderMxList["+i+"].sampleNo00"));
+						emkTestCostDetailEntity.setProduceNum(map.get("orderMxList["+i+"].produceNum00"));
+						emkTestCostDetailEntity.setTestType(map.get("orderMxList["+i+"].testType00"));
+						emkTestCostDetailEntity.setTestContent(map.get("orderMxList["+i+"].testContent00"));
+						emkTestCostDetailEntity.setTestResult(map.get("orderMxList["+i+"].testResult00"));
+						emkTestCostDetailEntity.setTestMoney(map.get("orderMxList["+i+"].testMoney00"));
+						systemService.save(emkTestCostDetailEntity);
+					}
+				}
+			}
+
 			systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
 		} catch (Exception e) {
 			e.printStackTrace();

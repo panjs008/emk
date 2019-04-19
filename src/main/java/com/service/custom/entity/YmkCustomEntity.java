@@ -64,6 +64,8 @@ public class YmkCustomEntity implements Serializable {
     private String mainContent;
     @Excel(name = "潜在业务量/年", width = 15)
     private String qzywl;
+    @Excel(name = "币种", width = 15)
+    private String bz;
     @Excel(name = "建立商业关系时间", width = 15)
     private String relationDate;
     @Excel(name = "国家", width = 15)
@@ -725,5 +727,14 @@ public class YmkCustomEntity implements Serializable {
 
     public void setYwlxr5Telphone(String ywlxr5Telphone) {
         this.ywlxr5Telphone = ywlxr5Telphone;
+    }
+
+    @Column(name = "bz", nullable = true, length = 32)
+    public String getBz() {
+        return bz;
+    }
+
+    public void setBz(String bz) {
+        this.bz = bz;
     }
 }

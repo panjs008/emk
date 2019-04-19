@@ -1,4 +1,6 @@
 package com.emk.produce.ssysycy.controller;
+import com.emk.bill.proorderdetail.entity.EmkProOrderDetailEntity;
+import com.emk.produce.ssysycy.entity.EmkSsysycyDetailEntity;
 import com.emk.produce.ssysycy.entity.EmkSsysycyEntity;
 import com.emk.produce.ssysycy.service.EmkSsysycyServiceI;
 
@@ -7,6 +9,9 @@ import java.text.SimpleDateFormat;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.emk.storage.sampledetail.entity.EmkSampleDetailEntity;
+import com.emk.util.ParameterUtil;
+import com.emk.util.Utils;
 import org.apache.log4j.Logger;
 import org.apache.tools.ant.util.DateUtils;
 import org.jeecgframework.web.system.pojo.base.TSUser;
@@ -108,6 +113,18 @@ public class EmkSsysycyController extends BaseController {
 	@RequestMapping(params = "list")
 	public ModelAndView list(HttpServletRequest request) {
 		return new ModelAndView("com/emk/produce/ssysycy/emkSsysycyList");
+	}
+
+	@RequestMapping(params = "detailMxList")
+	public ModelAndView detailMxList(HttpServletRequest request) {
+		Map map = ParameterUtil.getParamMaps(request.getParameterMap());
+		List<Map<String, Object>> list = systemService.findForJdbc("select typecode,typename from t_s_type t2 left join t_s_typegroup t1 on t1.ID=t2.typegroupid where typegroupcode='color'");
+		request.setAttribute("colorList", list);
+		if (Utils.notEmpty(map.get("ssyId"))) {
+			List<EmkSsysycyDetailEntity> emkSsysycyDetailEntities = systemService.findHql("from EmkSsysycyDetailEntity where ssyId=?", map.get("ssyId"));
+			request.setAttribute("emkSsysycyDetailEntities", emkSsysycyDetailEntities);
+		}
+		return new ModelAndView("com/emk/produce/ssysycy/detailMxList");
 	}
 
 	/**
@@ -230,10 +247,63 @@ public class EmkSsysycyController extends BaseController {
 		String message = null;
 		AjaxJson j = new AjaxJson();
 		message = "试身样色样船样进度更新成功";
-		EmkSsysycyEntity t = emkSsysycyService.get(EmkSsysycyEntity.class, emkSsysycy.getId());
+		Map<String, String> map = ParameterUtil.getParamMaps(request.getParameterMap());
+		EmkSsysycyEntity t = emkSsysycyService.get(EmkSsysycyEntity.class, map.get("ssyId"));
 		try {
+			emkSsysycy.setId(null);
 			MyBeanUtils.copyBeanNotNull2Bean(emkSsysycy, t);
 			emkSsysycyService.saveOrUpdate(t);
+			//保存明细数据
+			String dataRows = (String) map.get("orderMxListIDSR");
+			if (Utils.notEmpty(dataRows)) {
+				systemService.executeSql("delete from emk_ssysycy_detail where ssy_id = ? ",t.getId());
+
+				int rows = Integer.parseInt(dataRows);
+				EmkSsysycyDetailEntity emkSsysycyDetailEntity = null;
+				for (int i = 0; i < rows; i++) {
+					if (Utils.notEmpty(map.get("orderMxList["+i+"].orderNo00"))){
+						emkSsysycyDetailEntity = new EmkSsysycyDetailEntity();
+						emkSsysycyDetailEntity.setSsyId(t.getId());
+						emkSsysycyDetailEntity.setOrderNo(map.get("orderMxList["+i+"].orderNo00"));
+						emkSsysycyDetailEntity.setCusNum(map.get("orderMxList["+i+"].cusNum00"));
+						emkSsysycyDetailEntity.setProduceHtNum(map.get("orderMxList["+i+"].produceHtNum00"));
+						emkSsysycyDetailEntity.setGysCode(map.get("orderMxList["+i+"].gysCode00"));
+						emkSsysycyDetailEntity.setGyzl(map.get("orderMxList["+i+"].gyzl00"));
+						emkSsysycyDetailEntity.setProTypeName(map.get("orderMxList["+i+"].proTypeName00"));
+						emkSsysycyDetailEntity.setSampleNo(map.get("orderMxList["+i+"].sampleNo00"));
+						emkSsysycyDetailEntity.setSampleNoDesc(map.get("orderMxList["+i+"].sampleDesc00"));
+						emkSsysycyDetailEntity.setColor(map.get("orderMxList["+i+"].color"));
+						emkSsysycyDetailEntity.setSumTotal(map.get("orderMxList["+i+"].signTotal00"));
+						emkSsysycyDetailEntity.setSsyzt(map.get("orderMxList["+i+"].ssyzt00"));
+						emkSsysycyDetailEntity.setSsyDate(map.get("orderMxList["+i+"].ssyDate00"));
+						if(Utils.notEmpty(map.get("orderMxList["+i+"].leavelSsy00"))){
+							emkSsysycyDetailEntity.setLeavelSsy(Integer.parseInt(map.get("orderMxList["+i+"].leavelSsy00")));
+						}
+
+						emkSsysycyDetailEntity.setCqyzt(map.get("orderMxList["+i+"].cqyzt00"));
+						emkSsysycyDetailEntity.setCqyDate(map.get("orderMxList["+i+"].cqyDate00"));
+						if(Utils.notEmpty(map.get("orderMxList["+i+"].leavelCq00"))){
+							emkSsysycyDetailEntity.setLeavelCq(Integer.parseInt(map.get("orderMxList["+i+"].leavelCq00")));
+						}
+
+						emkSsysycyDetailEntity.setSyzt(map.get("orderMxList["+i+"].syzt00"));
+						emkSsysycyDetailEntity.setSyDate(map.get("orderMxList["+i+"].syDate00"));
+						if(Utils.notEmpty(map.get("orderMxList["+i+"].leavelSy00"))){
+							emkSsysycyDetailEntity.setLeavelSy(Integer.parseInt(map.get("orderMxList["+i+"].leavelSy00")));
+						}
+
+						emkSsysycyDetailEntity.setCyzt(map.get("orderMxList["+i+"].cyzt00"));
+						emkSsysycyDetailEntity.setCyDate(map.get("orderMxList["+i+"].cyDate00"));
+						if(Utils.notEmpty(map.get("orderMxList["+i+"].leavelCy00"))){
+							emkSsysycyDetailEntity.setLeavelCy(Integer.parseInt(map.get("orderMxList["+i+"].leavelCy00")));
+						}
+						emkSsysycyDetailEntity.setSortDesc(String.valueOf(i+1));
+						emkSsysycyDetailEntity.setOutDate(map.get("orderMxList["+i+"].outDate00"));
+
+						systemService.save(emkSsysycyDetailEntity);
+					}
+				}
+			}
 			systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
 		} catch (Exception e) {
 			e.printStackTrace();

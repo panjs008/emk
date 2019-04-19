@@ -71,8 +71,12 @@ public class EmkTestEntity implements Serializable {
     private String sendDate;
     @Excel(name = "测试报告收到日期")
     private String recevieDate;
+    @Excel(name = "测试报告号")
+    private String testNo;
     @Excel(name = "测试结果")
     private String testResult;
+    @Excel(name = "测试费用金额")
+    private String testMoney;
     @Excel(name = "测试费付款状态")
     private String testState;
     @Excel(name = "测试机构代码")
@@ -546,5 +550,22 @@ public class EmkTestEntity implements Serializable {
         this.isHg = isHg;
     }
 
+    @Column(name ="test_no",nullable=true,length=32)
+    public String getTestNo() {
+        return testNo;
+    }
+
+    public void setTestNo(String testNo) {
+        this.testNo = testNo;
+    }
+
+    @Column(name ="test_money",nullable=true,length=32)
+    public String getTestMoney() {
+        return testMoney;
+    }
+
+    public void setTestMoney(String testMoney) {
+        this.testMoney = testMoney;
+    }
 }
 

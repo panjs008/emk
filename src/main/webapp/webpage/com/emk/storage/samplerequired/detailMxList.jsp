@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@include file="/context/mytags.jsp"%>
 <script type="text/javascript">
-    var srflag = 0;
+    var srflag = ${fn:length(emkProOrderDetailEntities)};
     var currentFlag = 0;
 
 
@@ -13,9 +13,10 @@
     });
     $('#addBtnSR').bind('click', function(){
         srflag++;
+        $("#seqNum").html(srflag);
+
         var tr =  $("#add_jeecgOrderProduct_tableSR_template tr").clone();
         $("#add_jeecgOrderProduct_tableSR").append(tr);
-
         /*$("#add_jeecgOrderProduct_tableSR").find("[id='signPrice00']").attr("datatype","d");
          $("#add_jeecgOrderProduct_tableSR").find("[id='signPrice00']").attr("id","signPrice"+srflag);*/
         resetTrNum('add_jeecgOrderProduct_tableSR');
@@ -57,7 +58,8 @@
 <table style="width:100%;display: none;border: 1px;" cellpadding="0" cellspacing="2" border="0">
     <tbody id="add_jeecgOrderProduct_tableSR_template">
     <tr>
-        <td align="center"><input style="width: 40px;" type="checkbox" name="ck" />
+        <td align="center"><input style="width: 40px;" type="checkbox" name="ck" /></td>
+        <td align="center" width="40"><span id="seqNum"></span></td>
         <td align="center">
             <select name="orderMxList[#index#].color" style="width: 86%;" nullmsg="请输入颜色！" errormsg="请输入颜色" datatype="*">
                 <c:forEach items="${colorList}" var="category">
@@ -72,11 +74,33 @@
                 </c:forEach>
             </select>
         </td>
-        <td align="center"><input id="size00" nullmsg="请输入尺码！"  errormsg="请输入尺码" name="orderMxList[#index#].size00" maxlength="100" type="text" value=""
+        <%--<td align="center"><input id="size00" nullmsg="请输入尺码！"  errormsg="请输入尺码" name="orderMxList[#index#].size00" maxlength="100" type="text" value=""
                                   style="width: 86%;" ignore="ignore"></td>
-        <td align="center"><input id="signTotal00" nullmsg="请输入数量！"  errormsg="请输入数量" name="orderMxList[#index#].signTotal00" maxlength="100" type="text" value=""
+        <td align="center"><input id="signTotal00" nullmsg="请输入数量！"  errormsg="请输入整数" name="orderMxList[#index#].signTotal00" maxlength="100" type="text" value=""
+                                  style="width: 86%;" ignore="ignore"></td>--%>
+        <td align="center"><input id="totalA" nullmsg="请输入数量！" datatype="n"  errormsg="请输入整数" name="orderMxList[#index#].totalA" maxlength="100" type="text" value=""
                                   style="width: 86%;" ignore="ignore"></td>
-        <td align="center"><input id="sjTotal00" nullmsg="请输入数量！"  errormsg="请输入数量" name="orderMxList[#index#].sjTotal00" maxlength="100" type="text" value=""
+        <td align="center"><input id="totalB" nullmsg="请输入数量！"  datatype="n"  errormsg="请输入整数" name="orderMxList[#index#].totalB" maxlength="100" type="text" value=""
+                                  style="width: 86%;" ignore="ignore"></td>
+        <td align="center"><input id="totalC" nullmsg="请输入数量！"  datatype="n"  errormsg="请输入整数" name="orderMxList[#index#].totalC" maxlength="100" type="text" value=""
+                                  style="width: 86%;" ignore="ignore"></td>
+        <td align="center"><input id="totalD" nullmsg="请输入数量！"  datatype="n"  errormsg="请输入整数" name="orderMxList[#index#].totalD" maxlength="100" type="text" value=""
+                                  style="width: 86%;" ignore="ignore"></td>
+        <td align="center"><input id="totalE" nullmsg="请输入数量！"  datatype="n"  errormsg="请输入整数" name="orderMxList[#index#].totalE" maxlength="100" type="text" value=""
+                                  style="width: 86%;" ignore="ignore"></td>
+        <td align="center"><input id="totalF" nullmsg="请输入数量！"  datatype="n"  errormsg="请输入整数" name="orderMxList[#index#].totalF" maxlength="100" type="text" value=""
+                                  style="width: 86%;" ignore="ignore"></td>
+        <td align="center"><input id="totalG" nullmsg="请输入数量！"  datatype="n"  errormsg="请输入整数" name="orderMxList[#index#].totalG" maxlength="100" type="text" value=""
+                                  style="width: 86%;" ignore="ignore"></td>
+        <td align="center"><input id="totalH" nullmsg="请输入数量！"  datatype="n"  errormsg="请输入整数" name="orderMxList[#index#].totalH" maxlength="100" type="text" value=""
+                                  style="width: 86%;" ignore="ignore"></td>
+        <td align="center"><input id="totalI" nullmsg="请输入数量！"  datatype="n"  errormsg="请输入整数" name="orderMxList[#index#].totalI" maxlength="100" type="text" value=""
+                                  style="width: 86%;" ignore="ignore"></td>
+        <td align="center"><input id="totalJ" nullmsg="请输入数量！"  datatype="n"  errormsg="请输入整数" name="orderMxList[#index#].totalJ" maxlength="100" type="text" value=""
+                                  style="width: 86%;" ignore="ignore"></td>
+        <td align="center"><input id="totalK" nullmsg="请输入数量！"  datatype="n"  errormsg="请输入整数" name="orderMxList[#index#].totalK" maxlength="100" type="text" value=""
+                                  style="width: 86%;" ignore="ignore"></td>
+        <td align="center"><input id="sjTotal00" nullmsg="请输入数量！"  errormsg="请输入整数" name="orderMxList[#index#].sjTotal00" maxlength="100" type="text" value=""
                                   style="width: 86%;" ignore="ignore"></td>
 
     </tr>
@@ -87,23 +111,35 @@
 <%--<table border="0" cellpadding="2" cellspacing="0" id="jeecgOrderProduct_table">--%>
 <input id="orderMxListIDSR" type="hidden" name="orderMxListIDSR" value="${fn:length(emkProOrderDetailEntities)}"/>
 <div class="table-c">
-    <table id="mxtbSR" width="70%" border="0" cellspacing="0" cellpadding="0">
+    <table id="mxtbSR" width="100%" border="0" cellspacing="0" cellpadding="0">
         <tr bgcolor="#F8F8F8" style="height: 32px;" >
-            <td align="center"  width="40" >序号</td>
-            <td align="center"  width="90">颜色</td>
-            <td align="center"  width="90">色号</td>
-            <td align="center"  width="120">尺码</td>
-            <td align="center"  width="120">数量</td>
-            <td align="center"  width="120">实际打样数量</td>
-
+            <td align="center"  width="40" rowspan="2"><input type="checkbox" onclick="selectAll(this.checked)" /></td>
+            <td align="center" width="40" rowspan="2">序号</td>
+            <td align="center"  width="90" rowspan="2">颜色</td>
+            <td align="center"  width="90" rowspan="2">色号</td>
+            <td align="center"  width="400" colspan="11" >尺码</td>
+            <td align="center"  width="120" rowspan="2">实际打样数量</td>
         </tr>
-
+        <tr>
+            <td align="center" ><input  value="${emkSizePage.sizeA}" name="sizeA" maxlength="100" type="text" value="" style="width: 80%;" ignore="ignore"></td>
+            <td align="center" ><input  value="${emkSizePage.sizeB}" name="sizeB" maxlength="100" type="text" value="" style="width: 80%;" ignore="ignore"></td>
+            <td align="center" ><input  value="${emkSizePage.sizeC}" name="sizeC" maxlength="100" type="text" value="" style="width: 80%;" ignore="ignore"></td>
+            <td align="center" ><input  value="${emkSizePage.sizeD}" name="sizeD" maxlength="100" type="text" value="" style="width: 80%;" ignore="ignore"></td>
+            <td align="center" ><input  value="${emkSizePage.sizeE}" name="sizeE" maxlength="100" type="text" value="" style="width: 80%;" ignore="ignore"></td>
+            <td align="center" ><input  value="${emkSizePage.sizeF}" name="sizeF" maxlength="100" type="text" value="" style="width: 80%;" ignore="ignore"></td>
+            <td align="center" ><input  value="${emkSizePage.sizeG}" name="sizeG" maxlength="100" type="text" value="" style="width: 80%;" ignore="ignore"></td>
+            <td align="center" ><input  value="${emkSizePage.sizeH}" name="sizeH" maxlength="100" type="text" value="" style="width: 80%;" ignore="ignore"></td>
+            <td align="center" ><input  value="${emkSizePage.sizeI}" name="sizeI" maxlength="100" type="text" value="" style="width: 80%;" ignore="ignore"></td>
+            <td align="center" ><input  value="${emkSizePage.sizeJ}" name="sizeJ" maxlength="100" type="text" value="" style="width: 80%;" ignore="ignore"></td>
+            <td align="center" ><input  value="${emkSizePage.sizeK}" name="sizeK" maxlength="100" type="text" value="" style="width: 80%;" ignore="ignore"></td>
+        </tr>
         <tbody id="add_jeecgOrderProduct_tableSR">
         <c:if test="${fn:length(emkProOrderDetailEntities)  > 0 }">
             <c:forEach items="${emkProOrderDetailEntities}" var="poVal" varStatus="status">
                 <tr>
                     <td align="center"><input style="width: 40px;" type="checkbox" name="ck" value="${poVal.id}"/>
                     </td>
+                    <td align="center" width="40">${status.index+1}</td>
                     <td align="center">
                         <select name="orderMxList[${status.index}].color" style="width: 86%;" nullmsg="请输入颜色！" errormsg="请输入颜色" datatype="*">
                             <c:forEach items="${colorList}" var="category">
@@ -117,9 +153,27 @@
                                 <option value="${category.typecode}" ${category.typecode eq poVal.colorValue ? 'selected':''}>${category.typename}</option>
                             </c:forEach>
                         </select></td>
-                    <td align="center"><input  nullmsg="请输入尺码！"  errormsg="请输入尺码" value="${poVal.size}"name="orderMxList[${status.index}].size00" maxlength="100" type="text" value=""
+                    <td align="center"><input  nullmsg="请输入数量！"  datatype="n"  errormsg="请输入整数" value="${poVal.emkSizeTotalEntity.totalA}" name="orderMxList[${status.index}].totalA" maxlength="100" type="text" value=""
                                                style="width: 86%;" ignore="ignore"></td>
-                    <td align="center"><input  nullmsg="请输入数量！"  errormsg="请输入数量" value="${poVal.total}"name="orderMxList[${status.index}].signTotal00" maxlength="100" type="text" value=""
+                    <td align="center"><input  nullmsg="请输入数量！"  datatype="n"  errormsg="请输入整数"  value="${poVal.emkSizeTotalEntity.totalB}" name="orderMxList[${status.index}].totalB" maxlength="100" type="text" value=""
+                                               style="width: 86%;" ignore="ignore"></td>
+                    <td align="center"><input  nullmsg="请输入数量！"  datatype="n"  errormsg="请输入整数"  value="${poVal.emkSizeTotalEntity.totalC}" name="orderMxList[${status.index}].totalC" maxlength="100" type="text" value=""
+                                               style="width: 86%;" ignore="ignore"></td>
+                    <td align="center"><input nullmsg="请输入数量！"  datatype="n"  errormsg="请输入整数"  value="${poVal.emkSizeTotalEntity.totalD}" name="orderMxList[${status.index}].totalD" maxlength="100" type="text" value=""
+                                              style="width: 86%;" ignore="ignore"></td>
+                    <td align="center"><input nullmsg="请输入数量！"  datatype="n"  errormsg="请输入整数"  value="${poVal.emkSizeTotalEntity.totalE}" name="orderMxList[${status.index}].totalE" maxlength="100" type="text" value=""
+                                              style="width: 86%;" ignore="ignore"></td>
+                    <td align="center"><input  nullmsg="请输入数量！"  datatype="n"  errormsg="请输入整数"  value="${poVal.emkSizeTotalEntity.totalF}" name="orderMxList[${status.index}].totalF" maxlength="100" type="text" value=""
+                                               style="width: 86%;" ignore="ignore"></td>
+                    <td align="center"><input  nullmsg="请输入数量！"  datatype="n"  errormsg="请输入整数"  value="${poVal.emkSizeTotalEntity.totalG}" name="orderMxList[${status.index}].totalG" maxlength="100" type="text" value=""
+                                               style="width: 86%;" ignore="ignore"></td>
+                    <td align="center"><input  nullmsg="请输入数量！"  datatype="n"  errormsg="请输入整数"  value="${poVal.emkSizeTotalEntity.totalH}" name="orderMxList[${status.index}].totalH" maxlength="100" type="text" value=""
+                                               style="width: 86%;" ignore="ignore"></td>
+                    <td align="center"><input  nullmsg="请输入数量！"  datatype="n"  errormsg="请输入整数"  value="${poVal.emkSizeTotalEntity.totalI}" name="orderMxList[${status.index}].totalI" maxlength="100" type="text" value=""
+                                               style="width: 86%;" ignore="ignore"></td>
+                    <td align="center"><input  nullmsg="请输入数量！"  datatype="n"  errormsg="请输入整数"  value="${poVal.emkSizeTotalEntity.totalJ}" name="orderMxList[${status.index}].totalJ" maxlength="100" type="text" value=""
+                                               style="width: 86%;" ignore="ignore"></td>
+                    <td align="center"><input  nullmsg="请输入数量！"  datatype="n"  errormsg="请输入整数"  value="${poVal.emkSizeTotalEntity.totalK}" name="orderMxList[${status.index}].totalK" maxlength="100" type="text" value=""
                                                style="width: 86%;" ignore="ignore"></td>
                     <td align="center"><input  nullmsg="请输入实际打样数量！"  errormsg="请输入实际打样数量" value="${poVal.sjtotal}" name="orderMxList[${status.index}].sjTotal00" maxlength="100" type="text" value=""
                                                style="width: 86%;" ignore="ignore"></td>

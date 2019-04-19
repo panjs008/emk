@@ -1,10 +1,16 @@
 package com.emk.produce.packinglist.controller;
 
 import com.alibaba.fastjson.JSONArray;
+import com.emk.bill.proorderbox.entity.EmkProOrderBoxEntity;
+import com.emk.check.sizecheck.entity.EmkSizeEntity;
+import com.emk.check.sizecheck.entity.EmkSizeTotalEntity;
+import com.emk.produce.packinglist.entity.EmkPackingListDetailEntity;
 import com.emk.produce.packinglist.entity.EmkPackingListEntity;
 import com.emk.produce.packinglist.service.EmkPackingListServiceI;
+import com.emk.produce.testcost.entity.EmkTestCostDetailEntity;
 import com.emk.storage.enquirydetail.entity.EmkEnquiryDetailEntity;
 import com.emk.util.ParameterUtil;
+import com.emk.util.Utils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -58,9 +64,9 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.UriComponentsBuilder;
 
-@Api(value = "EmkPackingList", description = "装箱单", tags = {"emkPackingListController"})
+@Api(value = "EmkPackingList", description = "装箱单", tags = "emkPackingListController")
 @Controller
-@RequestMapping({"/emkPackingListController"})
+@RequestMapping("/emkPackingListController")
 public class EmkPackingListController extends BaseController {
     private static final Logger logger = Logger.getLogger(EmkPackingListController.class);
     @Autowired
@@ -70,24 +76,42 @@ public class EmkPackingListController extends BaseController {
     @Autowired
     private Validator validator;
 
-    @RequestMapping(params = {"list"})
+    @RequestMapping(params = "list")
     public ModelAndView list(HttpServletRequest request) {
         return new ModelAndView("com/emk/produce/packinglist/emkPackingListList");
     }
 
-    @RequestMapping(params = {"orderMxList"})
+    @RequestMapping(params = "orderMxList")
     public ModelAndView orderMxList(HttpServletRequest request) {
-        List<Map<String, Object>> codeList = this.systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", new Object[]{"A03"});
+        List<Map<String, Object>> codeList = systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", "A03");
         request.setAttribute("categoryEntityList", codeList);
         Map map = ParameterUtil.getParamMaps(request.getParameterMap());
         if ((map.get("proOrderId") != null) && (!map.get("proOrderId").equals(""))) {
-            List<EmkEnquiryDetailEntity> emkProOrderDetailEntities = this.systemService.findHql("from EmkEnquiryDetailEntity where enquiryId=?", new Object[]{map.get("proOrderId")});
+            List<EmkEnquiryDetailEntity> emkProOrderDetailEntities = systemService.findHql("from EmkEnquiryDetailEntity where enquiryId=?", map.get("proOrderId"));
             request.setAttribute("emkProOrderDetailEntities", emkProOrderDetailEntities);
         }
         return new ModelAndView("com/emk/produce/packinglist/orderMxList");
     }
 
-    @RequestMapping(params = {"datagrid"})
+    @RequestMapping(params = "detailMxList")
+    public ModelAndView detailMxList(HttpServletRequest request) {
+        Map map = ParameterUtil.getParamMaps(request.getParameterMap());
+        List<Map<String, Object>> list = systemService.findForJdbc("select typecode,typename from t_s_type t2 left join t_s_typegroup t1 on t1.ID=t2.typegroupid where typegroupcode='color'");
+        request.setAttribute("colorList", list);
+        list = systemService.findForJdbc("select typecode,typename from t_s_type t2 left join t_s_typegroup t1 on t1.ID=t2.typegroupid where typegroupcode='size'");
+        request.setAttribute("sizeList", list);
+
+        if (Utils.notEmpty(map.get("pactId"))) {
+            List<EmkPackingListDetailEntity> emkPackingListDetailEntities = systemService.findHql("from EmkPackingListDetailEntity where pactId=?", map.get("pactId"));
+            request.setAttribute("emkPackingListDetailEntities", emkPackingListDetailEntities);
+
+            EmkSizeEntity emkSizeEntity = systemService.findUniqueByProperty(EmkSizeEntity.class,"formId",map.get("pactId"));
+            request.setAttribute("emkSizePage", emkSizeEntity);
+        }
+        return new ModelAndView("com/emk/produce/packinglist/detailMxList");
+    }
+
+    @RequestMapping(params = "datagrid")
     public void datagrid(EmkPackingListEntity emkPackingList, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid) {
         CriteriaQuery cq = new CriteriaQuery(EmkPackingListEntity.class, dataGrid);
         TSUser user = (TSUser) request.getSession().getAttribute(ResourceUtil.LOCAL_CLINET_USER);
@@ -101,20 +125,20 @@ public class EmkPackingListController extends BaseController {
 
 
         cq.add();
-        this.emkPackingListService.getDataGridReturn(cq, true);
+        emkPackingListService.getDataGridReturn(cq, true);
         TagUtil.datagrid(response, dataGrid);
     }
 
-    @RequestMapping(params = {"doDel"})
+    @RequestMapping(params = "doDel")
     @ResponseBody
     public AjaxJson doDel(EmkPackingListEntity emkPackingList, HttpServletRequest request) {
         String message = null;
         AjaxJson j = new AjaxJson();
-        emkPackingList = (EmkPackingListEntity) this.systemService.getEntity(EmkPackingListEntity.class, emkPackingList.getId());
+        emkPackingList = systemService.getEntity(EmkPackingListEntity.class, emkPackingList.getId());
         message = "装箱单删除成功";
         try {
-            this.emkPackingListService.delete(emkPackingList);
-            this.systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
+            emkPackingListService.delete(emkPackingList);
+            systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
         } catch (Exception e) {
             e.printStackTrace();
             message = "装箱单删除失败";
@@ -124,7 +148,7 @@ public class EmkPackingListController extends BaseController {
         return j;
     }
 
-    @RequestMapping(params = {"doBatchDel"})
+    @RequestMapping(params = "doBatchDel")
     @ResponseBody
     public AjaxJson doBatchDel(String ids, HttpServletRequest request) {
         String message = null;
@@ -132,11 +156,11 @@ public class EmkPackingListController extends BaseController {
         message = "装箱单删除成功";
         try {
             for (String id : ids.split(",")) {
-                EmkPackingListEntity emkPackingList = (EmkPackingListEntity) this.systemService.getEntity(EmkPackingListEntity.class, id);
+                EmkPackingListEntity emkPackingList = systemService.getEntity(EmkPackingListEntity.class, id);
 
 
-                this.emkPackingListService.delete(emkPackingList);
-                this.systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
+                emkPackingListService.delete(emkPackingList);
+                systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -147,31 +171,73 @@ public class EmkPackingListController extends BaseController {
         return j;
     }
 
-    @RequestMapping(params = {"doAdd"})
+    @RequestMapping(params = "doAdd")
     @ResponseBody
-    public AjaxJson doAdd(EmkPackingListEntity emkPackingList, HttpServletRequest request) {
+    public AjaxJson doAdd(EmkPackingListEntity emkPackingList, EmkSizeEntity emkSize, HttpServletRequest request) {
         String message = null;
         AjaxJson j = new AjaxJson();
         message = "装箱单添加成功";
         try {
-            this.emkPackingListService.save(emkPackingList);
+            emkPackingListService.save(emkPackingList);
+            emkSize.setFormId(emkPackingList.getId());
+            systemService.save(emkSize);
             Map<String, String> map = ParameterUtil.getParamMaps(request.getParameterMap());
-            String dataRows = (String) map.get("dataRowsVal");
-            if ((dataRows != null) && (!dataRows.isEmpty())) {
+            String dataRows = (String) map.get("orderMxListIDSR");
+            if (Utils.notEmpty(dataRows)) {
+                EmkPackingListDetailEntity emkPackingListDetailEntity = null;
+                EmkSizeTotalEntity emkSizeTotalEntity = null;
                 int rows = Integer.parseInt(dataRows);
                 for (int i = 0; i < rows; i++) {
-                    EmkEnquiryDetailEntity orderMxEntity = new EmkEnquiryDetailEntity();
-                    if ((map.get("orderMxList[" + i + "].color") != null) && (!((String) map.get("orderMxList[" + i + "].color")).equals(""))) {
-                        orderMxEntity.setEnquiryId(emkPackingList.getId());
-                        orderMxEntity.setColor((String) map.get("orderMxList[" + i + "].color"));
-                        orderMxEntity.setSize((String) map.get("orderMxList[" + i + "].size"));
-                        orderMxEntity.setTotal(Integer.valueOf(Integer.parseInt((String) map.get("orderMxList[" + i + "].signTotal"))));
-                        orderMxEntity.setPrice(Double.valueOf(Double.parseDouble((String) map.get("orderMxList[" + i + "].signPrice"))));
-                        this.systemService.save(orderMxEntity);
+                    emkPackingListDetailEntity = new EmkPackingListDetailEntity();
+                    if (Utils.notEmpty(map.get("orderMxList["+i+"].orderNo00"))) {
+                        emkPackingListDetailEntity.setOrderNo(map.get("orderMxList["+i+"].orderNo00"));
+                        emkPackingListDetailEntity.setSampleNo(map.get("orderMxList["+i+"].sampleNo00"));
+                        emkPackingListDetailEntity.setSampleNoDesc(map.get("orderMxList["+i+"].sampleDesc00"));
+
+                        emkPackingListDetailEntity.setColor(map.get("orderMxList["+i+"].acolorName00"));
+                        emkPackingListDetailEntity.setSize(map.get("orderMxList["+i+"].asizeBox00"));
+                        emkPackingListDetailEntity.setTotal(map.get("orderMxList["+i+"].signTotal00"));
+
+                        emkPackingListDetailEntity.setChangdu(map.get("orderMxList["+i+"].alongVal00"));
+                        emkPackingListDetailEntity.setKuandu(map.get("orderMxList["+i+"].awidthVal00"));
+                        emkPackingListDetailEntity.setGaodu(map.get("orderMxList["+i+"].aheightVal00"));
+                        if(Utils.notEmpty(map.get("orderMxList["+i+"].atotalBox00"))){
+                            emkPackingListDetailEntity.setSumBoxTotal(Integer.parseInt(map.get("orderMxList["+i+"].atotalBox00")));
+                        }
+                        emkPackingListDetailEntity.setOneBoxMz(map.get("orderMxList["+i+"].aboxWeightMao00"));
+                        emkPackingListDetailEntity.setOneBoxJz(map.get("orderMxList["+i+"].aboxWeightJz00"));
+                        emkPackingListDetailEntity.setOneBoxVolume(map.get("orderMxList["+i+"].aboxVolume00"));
+
+                        if(Utils.notEmpty(map.get("orderMxList["+i+"].asumVolume00"))){
+                            emkPackingListDetailEntity.setSumBoxVolume(Double.parseDouble(map.get("orderMxList["+i+"].asumVolume00")));
+                        }
+                        if(Utils.notEmpty(map.get("orderMxList["+i+"].asumWeightMao00"))){
+                            emkPackingListDetailEntity.setSumBoxMao(Double.parseDouble(map.get("orderMxList["+i+"].asumWeightMao00")));
+                        }
+                        if(Utils.notEmpty(map.get("orderMxList["+i+"].asumWeightJz00"))){
+                            emkPackingListDetailEntity.setSumBoxJz(Double.parseDouble(map.get("orderMxList["+i+"].asumWeightJz00")));
+                        }
+                        emkPackingListDetailEntity.setPactId(emkPackingList.getId());
+                        systemService.save(emkPackingListDetailEntity);
+
+                        emkSizeTotalEntity = new EmkSizeTotalEntity();
+                        emkSizeTotalEntity.setTotalA(map.get("orderMxList["+i+"].totalA"));
+                        emkSizeTotalEntity.setTotalB(map.get("orderMxList["+i+"].totalB"));
+                        emkSizeTotalEntity.setTotalC(map.get("orderMxList["+i+"].totalC"));
+                        emkSizeTotalEntity.setTotalD(map.get("orderMxList["+i+"].totalD"));
+                        emkSizeTotalEntity.setTotalE(map.get("orderMxList["+i+"].totalE"));
+                        emkSizeTotalEntity.setTotalF(map.get("orderMxList["+i+"].totalF"));
+                        emkSizeTotalEntity.setTotalG(map.get("orderMxList["+i+"].totalG"));
+                        emkSizeTotalEntity.setTotalH(map.get("orderMxList["+i+"].totalH"));
+                        emkSizeTotalEntity.setTotalI(map.get("orderMxList["+i+"].totalI"));
+                        emkSizeTotalEntity.setTotalJ(map.get("orderMxList["+i+"].totalJ"));
+                        emkSizeTotalEntity.setTotalK(map.get("orderMxList["+i+"].totalK"));
+                        emkSizeTotalEntity.setpId(emkPackingListDetailEntity.getId());
+                        systemService.save(emkSizeTotalEntity);
                     }
                 }
             }
-            this.systemService.addLog(message, Globals.Log_Type_INSERT, Globals.Log_Leavel_INFO);
+            systemService.addLog(message, Globals.Log_Type_INSERT, Globals.Log_Leavel_INFO);
         } catch (Exception e) {
             e.printStackTrace();
             message = "装箱单添加失败";
@@ -181,17 +247,89 @@ public class EmkPackingListController extends BaseController {
         return j;
     }
 
-    @RequestMapping(params = {"doUpdate"})
+    @RequestMapping(params = "doUpdate")
     @ResponseBody
-    public AjaxJson doUpdate(EmkPackingListEntity emkPackingList, HttpServletRequest request) {
+    public AjaxJson doUpdate(EmkPackingListEntity emkPackingList, EmkSizeEntity emkSize, HttpServletRequest request) {
         String message = null;
         AjaxJson j = new AjaxJson();
         message = "装箱单更新成功";
-        EmkPackingListEntity t = (EmkPackingListEntity) this.emkPackingListService.get(EmkPackingListEntity.class, emkPackingList.getId());
+        Map<String,String> map = ParameterUtil.getParamMaps(request.getParameterMap());
+        EmkPackingListEntity t = emkPackingListService.get(EmkPackingListEntity.class, map.get("packId"));
+        EmkSizeEntity t2 = systemService.findUniqueByProperty(EmkSizeEntity.class,"formId",t.getId());
+
         try {
+            emkPackingList.setId(null);
             MyBeanUtils.copyBeanNotNull2Bean(emkPackingList, t);
-            this.emkPackingListService.saveOrUpdate(t);
-            this.systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
+            emkPackingListService.saveOrUpdate(t);
+
+            emkSize.setId(null);
+            if(Utils.notEmpty(t2)){
+                MyBeanUtils.copyBeanNotNull2Bean(emkSize, t2);
+                systemService.saveOrUpdate(t2);
+            }else{
+                t2 = new EmkSizeEntity();
+                MyBeanUtils.copyBeanNotNull2Bean(emkSize, t2);
+                t2.setFormId(t.getId());
+                systemService.save(t2);
+            }
+
+            String dataRows = (String) map.get("orderMxListIDSR");
+            if (Utils.notEmpty(dataRows)) {
+                systemService.executeSql("delete from emk_packing_list_detail where pact_id = ?",t.getId());
+                EmkPackingListDetailEntity emkPackingListDetailEntity = null;
+                EmkSizeTotalEntity emkSizeTotalEntity = null;
+                int rows = Integer.parseInt(dataRows);
+                for (int i = 0; i < rows; i++) {
+                    emkPackingListDetailEntity = new EmkPackingListDetailEntity();
+                    if (Utils.notEmpty(map.get("orderMxList["+i+"].orderNo00"))) {
+                        emkPackingListDetailEntity.setOrderNo(map.get("orderMxList["+i+"].orderNo00"));
+                        emkPackingListDetailEntity.setSampleNo(map.get("orderMxList["+i+"].sampleNo00"));
+                        emkPackingListDetailEntity.setSampleNoDesc(map.get("orderMxList["+i+"].sampleDesc00"));
+
+                        emkPackingListDetailEntity.setColor(map.get("orderMxList["+i+"].acolorName00"));
+                        emkPackingListDetailEntity.setSize(map.get("orderMxList["+i+"].asizeBox00"));
+                        emkPackingListDetailEntity.setTotal(map.get("orderMxList["+i+"].signTotal00"));
+
+                        emkPackingListDetailEntity.setChangdu(map.get("orderMxList["+i+"].alongVal00"));
+                        emkPackingListDetailEntity.setKuandu(map.get("orderMxList["+i+"].awidthVal00"));
+                        emkPackingListDetailEntity.setGaodu(map.get("orderMxList["+i+"].aheightVal00"));
+                        if(Utils.notEmpty(map.get("orderMxList["+i+"].atotalBox00"))){
+                            emkPackingListDetailEntity.setSumBoxTotal(Integer.parseInt(map.get("orderMxList["+i+"].atotalBox00")));
+                        }
+                        emkPackingListDetailEntity.setOneBoxMz(map.get("orderMxList["+i+"].aboxWeightMao00"));
+                        emkPackingListDetailEntity.setOneBoxJz(map.get("orderMxList["+i+"].aboxWeightJz00"));
+                        emkPackingListDetailEntity.setOneBoxVolume(map.get("orderMxList["+i+"].aboxVolume00"));
+
+                        if(Utils.notEmpty(map.get("orderMxList["+i+"].asumVolume00"))){
+                            emkPackingListDetailEntity.setSumBoxVolume(Double.parseDouble(map.get("orderMxList["+i+"].asumVolume00")));
+                        }
+                        if(Utils.notEmpty(map.get("orderMxList["+i+"].asumWeightMao00"))){
+                            emkPackingListDetailEntity.setSumBoxMao(Double.parseDouble(map.get("orderMxList["+i+"].asumWeightMao00")));
+                        }
+                        if(Utils.notEmpty(map.get("orderMxList["+i+"].asumWeightJz00"))){
+                            emkPackingListDetailEntity.setSumBoxJz(Double.parseDouble(map.get("orderMxList["+i+"].asumWeightJz00")));
+                        }
+                        emkPackingListDetailEntity.setPactId(t.getId());
+                        systemService.save(emkPackingListDetailEntity);
+
+                        emkSizeTotalEntity = new EmkSizeTotalEntity();
+                        emkSizeTotalEntity.setTotalA(map.get("orderMxList["+i+"].totalA"));
+                        emkSizeTotalEntity.setTotalB(map.get("orderMxList["+i+"].totalB"));
+                        emkSizeTotalEntity.setTotalC(map.get("orderMxList["+i+"].totalC"));
+                        emkSizeTotalEntity.setTotalD(map.get("orderMxList["+i+"].totalD"));
+                        emkSizeTotalEntity.setTotalE(map.get("orderMxList["+i+"].totalE"));
+                        emkSizeTotalEntity.setTotalF(map.get("orderMxList["+i+"].totalF"));
+                        emkSizeTotalEntity.setTotalG(map.get("orderMxList["+i+"].totalG"));
+                        emkSizeTotalEntity.setTotalH(map.get("orderMxList["+i+"].totalH"));
+                        emkSizeTotalEntity.setTotalI(map.get("orderMxList["+i+"].totalI"));
+                        emkSizeTotalEntity.setTotalJ(map.get("orderMxList["+i+"].totalJ"));
+                        emkSizeTotalEntity.setTotalK(map.get("orderMxList["+i+"].totalK"));
+                        emkSizeTotalEntity.setpId(emkPackingListDetailEntity.getId());
+                        systemService.save(emkSizeTotalEntity);
+                    }
+                }
+            }
+            systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
         } catch (Exception e) {
             e.printStackTrace();
             message = "装箱单更新失败";
@@ -201,39 +339,39 @@ public class EmkPackingListController extends BaseController {
         return j;
     }
 
-    @RequestMapping(params = {"goAdd"})
+    @RequestMapping(params = "goAdd")
     public ModelAndView goAdd(EmkPackingListEntity emkPackingList, HttpServletRequest req) {
-        List<Map<String, Object>> codeList = this.systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", new Object[]{"A03"});
+        List<Map<String, Object>> codeList = systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", "A03");
         req.setAttribute("categoryEntityList", codeList);
         if (StringUtil.isNotEmpty(emkPackingList.getId())) {
-            emkPackingList = (EmkPackingListEntity) this.emkPackingListService.getEntity(EmkPackingListEntity.class, emkPackingList.getId());
+            emkPackingList = emkPackingListService.getEntity(EmkPackingListEntity.class, emkPackingList.getId());
             req.setAttribute("emkPackingListPage", emkPackingList);
         }
         return new ModelAndView("com/emk/produce/packinglist/emkPackingList-add");
     }
 
-    @RequestMapping(params = {"goUpdate"})
+    @RequestMapping(params = "goUpdate")
     public ModelAndView goUpdate(EmkPackingListEntity emkPackingList, HttpServletRequest req) {
-        List<Map<String, Object>> codeList = this.systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", new Object[]{"A03"});
+        List<Map<String, Object>> codeList = systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", "A03");
         req.setAttribute("categoryEntityList", codeList);
         if (StringUtil.isNotEmpty(emkPackingList.getId())) {
-            emkPackingList = (EmkPackingListEntity) this.emkPackingListService.getEntity(EmkPackingListEntity.class, emkPackingList.getId());
+            emkPackingList = emkPackingListService.getEntity(EmkPackingListEntity.class, emkPackingList.getId());
             req.setAttribute("emkPackingListPage", emkPackingList);
         }
         return new ModelAndView("com/emk/produce/packinglist/emkPackingList-update");
     }
 
-    @RequestMapping(params = {"upload"})
+    @RequestMapping(params = "upload")
     public ModelAndView upload(HttpServletRequest req) {
         req.setAttribute("controller_name", "emkPackingListController");
         return new ModelAndView("common/upload/pub_excel_upload");
     }
 
-    @RequestMapping(params = {"exportXls"})
+    @RequestMapping(params = "exportXls")
     public String exportXls(EmkPackingListEntity emkPackingList, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid, ModelMap modelMap) {
         CriteriaQuery cq = new CriteriaQuery(EmkPackingListEntity.class, dataGrid);
         HqlGenerateUtil.installHql(cq, emkPackingList, request.getParameterMap());
-        List<EmkPackingListEntity> emkPackingLists = this.emkPackingListService.getListByCriteriaQuery(cq, Boolean.valueOf(false));
+        List<EmkPackingListEntity> emkPackingLists = emkPackingListService.getListByCriteriaQuery(cq, Boolean.valueOf(false));
         modelMap.put("fileName", "装箱单");
         modelMap.put("entity", EmkPackingListEntity.class);
         modelMap.put("params", new ExportParams("装箱单列表", "导出人:" + ResourceUtil.getSessionUser().getRealName(), "导出信息"));
@@ -242,7 +380,7 @@ public class EmkPackingListController extends BaseController {
         return "jeecgExcelView";
     }
 
-    @RequestMapping(params = {"exportXlsByT"})
+    @RequestMapping(params = "exportXlsByT")
     public String exportXlsByT(EmkPackingListEntity emkPackingList, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid, ModelMap modelMap) {
         modelMap.put("fileName", "装箱单");
         modelMap.put("entity", EmkPackingListEntity.class);
@@ -257,31 +395,31 @@ public class EmkPackingListController extends BaseController {
     @ResponseBody
     @ApiOperation(value = "装箱单列表信息", produces = "application/json", httpMethod = "GET")
     public ResponseMessage<List<EmkPackingListEntity>> list() {
-        List<EmkPackingListEntity> listEmkPackingLists = this.emkPackingListService.getList(EmkPackingListEntity.class);
+        List<EmkPackingListEntity> listEmkPackingLists = emkPackingListService.getList(EmkPackingListEntity.class);
         return Result.success(listEmkPackingLists);
     }
 
-    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.GET})
+    @RequestMapping(value = "/{id}", method = {org.springframework.web.bind.annotation.RequestMethod.GET})
     @ResponseBody
     @ApiOperation(value = "根据ID获取装箱单信息", notes = "根据ID获取装箱单信息", httpMethod = "GET", produces = "application/json")
     public ResponseMessage<?> get(@ApiParam(required = true, name = "id", value = "ID") @PathVariable("id") String id) {
-        EmkPackingListEntity task = (EmkPackingListEntity) this.emkPackingListService.get(EmkPackingListEntity.class, id);
+        EmkPackingListEntity task = emkPackingListService.get(EmkPackingListEntity.class, id);
         if (task == null) {
             return Result.error("根据ID获取装箱单信息为空");
         }
         return Result.success(task);
     }
 
-    @RequestMapping(method = {org.springframework.web.bind.annotation.RequestMethod.POST}, consumes = {"application/json"})
+    @RequestMapping(method = {org.springframework.web.bind.annotation.RequestMethod.POST}, consumes = "application/json")
     @ResponseBody
     @ApiOperation("创建装箱单")
     public ResponseMessage<?> create(@ApiParam(name = "装箱单对象") @RequestBody EmkPackingListEntity emkPackingList, UriComponentsBuilder uriBuilder) {
-        Set<ConstraintViolation<EmkPackingListEntity>> failures = this.validator.validate(emkPackingList, new Class[0]);
+        Set<ConstraintViolation<EmkPackingListEntity>> failures = validator.validate(emkPackingList, new Class[0]);
         if (!failures.isEmpty()) {
             return Result.error(JSONArray.toJSONString(BeanValidators.extractPropertyAndMessage(failures)));
         }
         try {
-            this.emkPackingListService.save(emkPackingList);
+            emkPackingListService.save(emkPackingList);
         } catch (Exception e) {
             e.printStackTrace();
             return Result.error("装箱单信息保存失败");
@@ -289,16 +427,16 @@ public class EmkPackingListController extends BaseController {
         return Result.success(emkPackingList);
     }
 
-    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.PUT}, consumes = {"application/json"})
+    @RequestMapping(value = "/{id}", method = {org.springframework.web.bind.annotation.RequestMethod.PUT}, consumes = "application/json")
     @ResponseBody
     @ApiOperation(value = "更新装箱单", notes = "更新装箱单")
     public ResponseMessage<?> update(@ApiParam(name = "装箱单对象") @RequestBody EmkPackingListEntity emkPackingList) {
-        Set<ConstraintViolation<EmkPackingListEntity>> failures = this.validator.validate(emkPackingList, new Class[0]);
+        Set<ConstraintViolation<EmkPackingListEntity>> failures = validator.validate(emkPackingList, new Class[0]);
         if (!failures.isEmpty()) {
             return Result.error(JSONArray.toJSONString(BeanValidators.extractPropertyAndMessage(failures)));
         }
         try {
-            this.emkPackingListService.saveOrUpdate(emkPackingList);
+            emkPackingListService.saveOrUpdate(emkPackingList);
         } catch (Exception e) {
             e.printStackTrace();
             return Result.error("更新装箱单信息失败");
@@ -306,7 +444,7 @@ public class EmkPackingListController extends BaseController {
         return Result.success("更新装箱单信息成功");
     }
 
-    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.DELETE})
+    @RequestMapping(value = "/{id}", method = {org.springframework.web.bind.annotation.RequestMethod.DELETE})
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ApiOperation("删除装箱单")
     public ResponseMessage<?> delete(@ApiParam(name = "id", value = "ID", required = true) @PathVariable("id") String id) {
@@ -315,7 +453,7 @@ public class EmkPackingListController extends BaseController {
             return Result.error("ID不能为空");
         }
         try {
-            this.emkPackingListService.deleteEntityById(EmkPackingListEntity.class, id);
+            emkPackingListService.deleteEntityById(EmkPackingListEntity.class, id);
         } catch (Exception e) {
             e.printStackTrace();
             return Result.error("装箱单删除失败");

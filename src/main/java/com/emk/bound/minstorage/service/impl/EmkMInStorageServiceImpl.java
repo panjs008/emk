@@ -94,10 +94,7 @@ public class EmkMInStorageServiceImpl extends CommonServiceImpl implements EmkMI
 		map.put("businesse_dept_id", t.getBusinesseDeptId());
 		map.put("developer", t.getDeveloper());
 		map.put("developer_name", t.getDeveloperName());
-		map.put("out_date", t.getOutDate());
 		map.put("kd_date", t.getKdDate());
-		map.put("ht_num", t.getHtNum());
-		map.put("yht_num", t.getYhtNum());
 		map.put("sample_no", t.getSampleNo());
 		map.put("gys", t.getGys());
 		map.put("gys_code", t.getGysCode());
@@ -134,10 +131,7 @@ public class EmkMInStorageServiceImpl extends CommonServiceImpl implements EmkMI
  		sql  = sql.replace("#{businesse_dept_id}",String.valueOf(t.getBusinesseDeptId()));
  		sql  = sql.replace("#{developer}",String.valueOf(t.getDeveloper()));
  		sql  = sql.replace("#{developer_name}",String.valueOf(t.getDeveloperName()));
- 		sql  = sql.replace("#{out_date}",String.valueOf(t.getOutDate()));
  		sql  = sql.replace("#{kd_date}",String.valueOf(t.getKdDate()));
- 		sql  = sql.replace("#{ht_num}",String.valueOf(t.getHtNum()));
- 		sql  = sql.replace("#{yht_num}",String.valueOf(t.getYhtNum()));
  		sql  = sql.replace("#{sample_no}",String.valueOf(t.getSampleNo()));
  		sql  = sql.replace("#{gys}",String.valueOf(t.getGys()));
  		sql  = sql.replace("#{gys_code}",String.valueOf(t.getGysCode()));

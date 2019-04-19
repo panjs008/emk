@@ -24,7 +24,7 @@
 	<input id="id" name="id" type="hidden" value="${emkProduceQaPage.id }"/>
 	<table style="width: 100%;" cellpadding="0" cellspacing="1" class="formtable">
 		<tr>
-			<td align="right" >
+			<td class="value"  align="right" colspan="5">
 				<label class="Validform_label">
 					生产问题函号:
 				</label>
@@ -34,6 +34,34 @@
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">生产问题函号</label>
 			</td>
+			</tr>
+		<tr>
+			<td class="value" align="right" colspan="5">
+				<label class="Validform_label">
+					发函日期:
+				</label>
+			</td>
+			<td class="value">
+				<input id="qaDate" name="qaDate" value="${emkProduceQaPage.qaDate }" readonly onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})"  type="text" style="width: 150px" class="Wdate"  ignore="ignore" />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">提交日期</label>
+			</td>
+		</tr>
+		<tr>
+			<td align="right" >
+				<label class="Validform_label">
+					客户名称:
+				</label>
+			</td>
+			<td class="value" colspan="5">
+				<input id="cusName" name="cusName" value="${emkProduceQaPage.cusName }" readonly type="text" style="width: 150px" class="inputxt"  datatype="*" />
+				<t:choose  hiddenName="cusNum"  hiddenid="cusNum" url="ymkCustomController.do?select" name="ymkCustomList" width="700px" height="500px"
+						   icon="icon-search" title="选择客户" textname="cusName,businesseDeptName,businesseDeptId,businesser,businesserName,developer,developerName,tracer,tracerName,bz" isclear="true" isInit="true"></t:choose>
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">客户名称</label>
+			</td>
+		</tr>
+		<tr>
 			<td align="right">
 				<label class="Validform_label">
 					款号:
@@ -44,9 +72,6 @@
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">款号</label>
 			</td>
-
-		</tr>
-		<tr>
 			<td align="right" >
 				<label class="Validform_label">
 					生产合同号:
@@ -59,6 +84,18 @@
 			</td>
 			<td align="right" >
 				<label class="Validform_label">
+					客户代码:
+				</label>
+			</td>
+			<td class="value" >
+				<input id="cusNum" name="cusNum" readonly value="${emkProduceQaPage.cusNum }" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">客户代码</label>
+			</td>
+		</tr>
+		<tr>
+			<td align="right" >
+				<label class="Validform_label">
 					订单号:
 				</label>
 			</td>
@@ -67,118 +104,6 @@
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">订单号</label>
 			</td>
-		</tr>
-		<tr>
-
-			<td align="right" style="width: 18%">
-				<label class="Validform_label">
-					客户代码:
-				</label>
-			</td>
-			<td class="value" style="width: 32%">
-				<input id="cusNum" name="cusNum" readonly value="${emkProduceQaPage.cusNum }" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">客户代码</label>
-			</td>
-			<td align="right" style="width: 18%">
-				<label class="Validform_label">
-					客户名称:
-				</label>
-			</td>
-			<td class="value" style="width: 32%">
-				<input id="cusName" name="cusName" value="${emkProduceQaPage.cusName }" readonly type="text" style="width: 150px" class="inputxt"  datatype="*" />
-				<t:choose  hiddenName="cusNum"  hiddenid="cusNum" url="ymkCustomController.do?select" name="ymkCustomList" width="700px" height="500px"
-						   icon="icon-search" title="选择客户" textname="cusName,businesseDeptName,businesseDeptId,businesser,businesserName,developer,developerName,tracer,tracerName,bz" isclear="true" isInit="true"></t:choose>
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">客户名称</label>
-			</td>
-		</tr>
-		<tr>
-			<td align="right" style="width: 18%">
-				<label class="Validform_label">
-					业务部门:
-				</label>
-			</td>
-			<td class="value" style="width: 32%">
-				<input id="businesseDeptName" value="${emkProduceQaPage.businesseDeptName }" name="businesseDeptName" readonly type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<input id="businesseDeptId" name="businesseDeptId"  value="${emkProduceQaPage.businesseDeptId }" type="hidden"  />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">业务部门</label>
-			</td>
-			<td align="right" style="width: 18%">
-				<label class="Validform_label">
-					业务员:
-				</label>
-			</td>
-			<td class="value" style="width: 32%">
-				<select class="form-control select2" id="businesserId" datatype="*" >
-					<option value=''>请选择</option>
-				</select>
-				<input id="businesser" name="businesser" value="${emkProduceQaPage.businesser }" readonly type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<input id="businesserName" name="businesserName"  value="${emkProduceQaPage.businesserName }" type="hidden"  />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">业务员</label>
-			</td>
-		</tr>
-
-
-		<tr>
-			<td align="right" style="width: 18%">
-				<label class="Validform_label">
-					业务跟单员:
-				</label>
-			</td>
-			<td class="value" style="width: 32%">
-				<select class="form-control select2" id="tracerId"  >
-					<option value=''>请选择</option>
-				</select>
-				<input id="tracer" name="tracer" value="${emkProduceQaPage.tracer }" readonly type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<input id="tracerName" name="tracerName" value="${emkProduceQaPage.tracerName }"  type="hidden"  />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">业务员</label>
-			</td>
-			<td align="right" style="width: 18%">
-				<label class="Validform_label">
-					生产跟单员:
-				</label>
-			</td>
-			<td class="value" style="width: 32%">
-				<select class="form-control select2" id="developerId"  >
-					<option value=''>请选择</option>
-				</select>
-				<input id="developer" name="developer" value="${emkProduceQaPage.developer }" readonly type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<input id="developerName" name="developerName"  value="${emkProduceQaPage.developerName }" type="hidden"  />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">业务员</label>
-			</td>
-
-		</tr>
-		<tr>
-			<td align="right">
-				<label class="Validform_label">
-					工艺类型:
-				</label>
-			</td>
-			<td class="value">
-				<t:dictSelect id="gyzl" field="gyzl" typeGroupCode="gylx" datatype="*" defaultVal="${emkProduceQaPage.gyzl }" hasLabel="false" title="工艺类型"></t:dictSelect>
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">工艺类型</label>
-			</td>
-			<td align="right">
-				<label class="Validform_label">
-					款式大类:
-				</label>
-			</td>
-			<td class="value">
-				<input id="proTypeTree" value="${emkProduceQaPage.proTypeName }" >
-				<input id="proTypeName" name="proTypeName" value="${emkProduceQaPage.proTypeName }"  datatype="*"  type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<input id="proType" name="proType" value="${emkProduceQaPage.proType }"  type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">款式大类</label>
-			</td>
-
-		</tr>
-		<tr>
 			<td align="right">
 				<label class="Validform_label">
 					供应商:
@@ -193,6 +118,55 @@
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">供应商</label>
 			</td>
+			<td align="right" >
+				<label class="Validform_label">
+					业务部门:
+				</label>
+			</td>
+			<td class="value" >
+				<input id="businesseDeptName" value="${emkProduceQaPage.businesseDeptName }" name="businesseDeptName" readonly type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="businesseDeptId" name="businesseDeptId"  value="${emkProduceQaPage.businesseDeptId }" type="hidden"  />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">业务部门</label>
+			</td>
+		</tr>
+		<tr>
+			<td align="right">
+				<label class="Validform_label">
+					描述:
+				</label>
+			</td>
+			<td class="value">
+				<input id="sampleNoDesc" name="sampleNoDesc" value="${emkProduceQaPage.sampleNoDesc }"  type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">描述</label>
+			</td>
+			<td align="right">
+				<label class="Validform_label">
+					工艺类型:
+				</label>
+			</td>
+			<td class="value">
+				<t:dictSelect id="gyzl" field="gyzl" typeGroupCode="gylx" datatype="*" defaultVal="${emkProduceQaPage.gyzl }" hasLabel="false" title="工艺类型"></t:dictSelect>
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">工艺类型</label>
+			</td>
+			<td align="right" >
+				<label class="Validform_label">
+					业务员:
+				</label>
+			</td>
+			<td class="value" >
+				<select class="form-control select2" id="businesserId" datatype="*" >
+					<option value=''>请选择</option>
+				</select>
+				<input id="businesser" name="businesser" value="${emkProduceQaPage.businesser }" readonly type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="businesserName" name="businesserName"  value="${emkProduceQaPage.businesserName }" type="hidden"  />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">业务员</label>
+			</td>
+		</tr>
+		<tr>
 			<td align="right">
 				<label class="Validform_label">
 					颜色:
@@ -203,32 +177,34 @@
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">颜色</label>
 			</td>
-		</tr>
-		<tr>
 			<td align="right">
 				<label class="Validform_label">
-					数量:
-				</label>
-			</td>
-			<td class="value" colspan="3">
-				<input id="sumTotal" name="sumTotal"  value="${emkProduceQaPage.sumTotal }"  type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">数量</label>
-			</td>
-
-		</tr>
-
-		<tr>
-			<td align="right">
-				<label class="Validform_label">
-					发函日期:
+					款式大类:
 				</label>
 			</td>
 			<td class="value">
-				<input id="qaDate" name="qaDate" value="${emkProduceQaPage.qaDate }" readonly onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})"  type="text" style="width: 150px" class="Wdate"  ignore="ignore" />
+				<input id="proTypeTree" value="${emkProduceQaPage.proTypeName }" >
+				<input id="proTypeName" name="proTypeName" value="${emkProduceQaPage.proTypeName }"  datatype="*"  type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="proType" name="proType" value="${emkProduceQaPage.proType }"  type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">提交日期</label>
+				<label class="Validform_label" style="display: none;">款式大类</label>
 			</td>
+			<td align="right" >
+				<label class="Validform_label">
+					业务跟单员:
+				</label>
+			</td>
+			<td class="value" >
+				<select class="form-control select2" id="tracerId"  >
+					<option value=''>请选择</option>
+				</select>
+				<input id="tracer" name="tracer" value="${emkProduceQaPage.tracer }" readonly type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="tracerName" name="tracerName" value="${emkProduceQaPage.tracerName }"  type="hidden"  />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">业务员</label>
+			</td>
+		</tr>
+		<tr>
 			<td align="right">
 				<label class="Validform_label">
 					出厂日期:
@@ -239,34 +215,40 @@
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">大货交期</label>
 			</td>
-		</tr>
-		<tr>
-			<td align="right">
+			<td class="value" colspan="2"></td>
+			<td align="right" >
 				<label class="Validform_label">
-					描述:
-				</label>
-			</td>
-			<td class="value" colspan="3">
-				<textarea  id="sampleNoDesc" style="width:95%;height:50px" class="inputxt" rows="3" name="sampleNoDesc">${emkProduceQaPage.sampleNoDesc }</textarea>
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">描述</label>
-			</td>
-		</tr>
-		<tr>
-
-			<td align="right">
-				<label class="Validform_label">
-					发函人:
+					生产跟单员:
 				</label>
 			</td>
 			<td class="value" >
-				<input id="sender" name="sender" type="text" value="${emkProduceQaPage.sender }" readonly style="width: 150px" class="inputxt" >
-				<input name="senderUserNames"   type="hidden" value="${emkProduceQaPage.senderUserNames }" id="senderUserNames" type="text"  />
-				<t:choose  hiddenName="senderUserNames"  hiddenid="userName" url="userController.do?userdept0" name="userList0" width="700px" height="500px"
-						   icon="icon-search" title="选择处理人" textname="sender,sendDeptName,sendDeptCode" isclear="true" isInit="true"></t:choose>
+				<select class="form-control select2" id="developerId"  >
+					<option value=''>请选择</option>
+				</select>
+				<input id="developer" name="developer" value="${emkProduceQaPage.developer }" readonly type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="developerName" name="developerName"  value="${emkProduceQaPage.developerName }" type="hidden"  />
 				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">发函人</label>
+				<label class="Validform_label" style="display: none;">业务员</label>
 			</td>
+		</tr>
+
+
+		<%--<tr>
+			<td align="right">
+				<label class="Validform_label">
+					数量:
+				</label>
+			</td>
+			<td class="value" colspan="3">
+				<input id="sumTotal" name="sumTotal"  value="${emkProduceQaPage.sumTotal }"  type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">数量</label>
+			</td>
+		</tr>--%>
+
+
+
+		<tr>
 			<td align="right">
 				<label class="Validform_label">
 					发函部门:
@@ -278,21 +260,22 @@
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">发函部门</label>
 			</td>
-		</tr>
-		<tr>
 			<td align="right">
 				<label class="Validform_label">
-					收函人:
+					发函人:
 				</label>
 			</td>
-			<td class="value" >
-				<input id="recevier" name="recevier" type="text" value="${emkProduceQaPage.recevier }" readonly style="width: 150px" class="inputxt" >
-				<input name="recevierUserNames"   type="hidden"  value="${emkProduceQaPage.recevierUserNames }" id="recevierUserNames" type="text"  />
-				<t:choose  hiddenName="recevierUserNames"  hiddenid="recevierUserNames" url="userController.do?userdept1" name="userList0" width="700px" height="500px"
-						   icon="icon-search" title="选择处理人" textname="recevier,recevieDeptName,recevieDeptCode" isclear="true" isInit="true"></t:choose>
+			<td class="value" colspan="3">
+				<input id="sender" name="sender" type="text" value="${emkProduceQaPage.sender }" readonly style="width: 60%" class="inputxt" >
+				<input name="senderUserNames"   type="hidden" value="${emkProduceQaPage.senderUserNames }" id="senderUserNames" type="text"  />
+				<t:choose  hiddenName="senderUserNames"  hiddenid="userName" url="userController.do?userdept0" name="userList0" width="700px" height="500px"
+						   icon="icon-search" title="选择处理人" textname="sender,sendDeptName,sendDeptCode" isclear="true" isInit="true"></t:choose>
 				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">收函人</label>
+				<label class="Validform_label" style="display: none;">发函人</label>
 			</td>
+
+		</tr>
+		<tr>
 			<td align="right">
 				<label class="Validform_label">
 					收函部门:
@@ -304,24 +287,22 @@
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">收函部门</label>
 			</td>
-
-
-		</tr>
-		<tr>
 			<td align="right">
 				<label class="Validform_label">
-					抄送收函人:
+					收函人:
 				</label>
 			</td>
-			<td class="value" >
-				<input id="copyer" name="copyer" type="text" readonly value="${emkProduceQaPage.copyer }" style="width: 150px" class="inputxt" >
-				<input name="copyerUserNames"   type="hidden" value="${emkProduceQaPage.copyerUserNames }" id="copyerUserNames" type="text"  />
-				<t:choose  hiddenName="copyerUserNames"  hiddenid="copyerUserNames" url="userController.do?userdept2" name="userList0" width="700px" height="500px"
-						   icon="icon-search" title="选择处理人" textname="copyer,copyDeptName,copyDeptCode" isclear="true" isInit="true"></t:choose>
+			<td class="value" colspan="3">
+				<input id="recevier" name="recevier" type="text" value="${emkProduceQaPage.recevier }" readonly style="width: 60%" class="inputxt" >
+				<input name="recevierUserNames"   type="hidden"  value="${emkProduceQaPage.recevierUserNames }" id="recevierUserNames" type="text"  />
+				<t:choose  hiddenName="recevierUserNames"  hiddenid="recevierUserNames" url="userController.do?userdept1" name="userList0" width="700px" height="500px"
+						   icon="icon-search" title="选择处理人" textname="recevier,recevieDeptName,recevieDeptCode" isclear="true" isInit="true"></t:choose>
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">收函人</label>
 			</td>
 
+		</tr>
+		<tr>
 			<td align="right">
 				<label class="Validform_label">
 					抄送部门:
@@ -333,7 +314,19 @@
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">收函部门</label>
 			</td>
-
+			<td align="right">
+				<label class="Validform_label">
+					抄送收函人:
+				</label>
+			</td>
+			<td class="value" colspan="3">
+				<input id="copyer" name="copyer" type="text" readonly value="${emkProduceQaPage.copyer }" style="width: 60%" class="inputxt" >
+				<input name="copyerUserNames"   type="hidden" value="${emkProduceQaPage.copyerUserNames }" id="copyerUserNames" type="text"  />
+				<t:choose  hiddenName="copyerUserNames"  hiddenid="copyerUserNames" url="userController.do?userdept2" name="userList0" width="700px" height="500px"
+						   icon="icon-search" title="选择处理人" textname="copyer,copyDeptName,copyDeptCode" isclear="true" isInit="true"></t:choose>
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">收函人</label>
+			</td>
 		</tr>
 		<tr>
 			<td align="right">
@@ -341,10 +334,47 @@
 					问题描述:
 				</label>
 			</td>
-			<td class="value" colspan="3">
-				<textarea  id="qaDesc" style="width:95%;height:50px" class="inputxt" rows="3" name="qaDesc">${emkProduceQaPage.qaDesc }</textarea>
+			<td class="value" colspan="5">
+				<textarea  id="qaDesc" style="width:95%;height:70px" class="inputxt" rows="5" name="qaDesc">${emkProduceQaPage.qaDesc }</textarea>
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">问题描述</label>
+			</td>
+		</tr>
+		<tr>
+			<td class="value" colspan="2"></td>
+			<td align="right">
+				<label class="Validform_label">
+					问题责任人:
+				</label>
+			</td>
+			<td class="value">
+				<input id="qazrer" name="qazrer" type="text" value="${emkProduceQaPage.qazrer }"  style="width: 150px" class="inputxt" >
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">问题责任人</label>
+			</td>
+			<td class="value" colspan="2"></td>
+		</tr>
+		<tr>
+			<td class="value" colspan="2"></td>
+			<td align="right">
+				<label class="Validform_label">
+					发件人:
+				</label>
+			</td>
+			<td class="value">
+				<input id="fjer" name="fjer" type="text" value="${emkProduceQaPage.fjer }"  style="width: 150px" class="inputxt" >
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">发件人</label>
+			</td>
+			<td align="right">
+				<label class="Validform_label">
+					业务审核:
+				</label>
+			</td>
+			<td class="value">
+				<input id="ywsher" name="ywsher" type="text" value="${emkProduceQaPage.ywsher }"  style="width: 150px" class="inputxt" >
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">业务审核</label>
 			</td>
 		</tr>
 		<tr>
@@ -353,8 +383,8 @@
 					经济损失:
 				</label>
 			</td>
-			<td class="value" colspan="3">
-				<textarea  id="loss" style="width:95%;height:50px" class="inputxt" rows="3" name="loss">${emkProduceQaPage.loss }</textarea>
+			<td class="value" colspan="5">
+				<textarea  id="loss" style="width:95%;height:70px" class="inputxt" rows="5" name="loss">${emkProduceQaPage.loss }</textarea>
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">经济损失</label>
 			</td>
@@ -365,10 +395,36 @@
 					解决方案:
 				</label>
 			</td>
-			<td class="value" colspan="3">
+			<td class="value" colspan="5">
 				<textarea  id="solve" style="width:95%;height:50px" class="inputxt" rows="3" name="solve">${emkProduceQaPage.solve }</textarea>
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">解决方案</label>
+			</td>
+		</tr>
+		<tr>
+			<td class="value" colspan="4"></td>
+			<td align="right">
+				<label class="Validform_label">
+					方案执行人:
+				</label>
+			</td>
+			<td class="value">
+				<input id="solver" name="solver" type="text" value="${emkProduceQaPage.solver }"  style="width: 150px" class="inputxt" >
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">方案执行人</label>
+			</td>
+		</tr>
+		<tr>
+			<td class="value" colspan="4"></td>
+			<td align="right">
+				<label class="Validform_label">
+					方案批准人:
+				</label>
+			</td>
+			<td class="value">
+				<input id="solverPzer" name="solverPzer" type="text" value="${emkProduceQaPage.solverPzer }"  style="width: 150px" class="inputxt" >
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">方案批准人</label>
 			</td>
 		</tr>
 		<tr>
@@ -377,7 +433,7 @@
 					相关抄送人意见:
 				</label>
 			</td>
-			<td class="value" colspan="3">
+			<td class="value" colspan="5">
 				<textarea  id="copyerAdvice" style="width:95%;height:50px" class="inputxt" rows="3" name="copyerAdvice">${emkProduceQaPage.copyerAdvice }</textarea>
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">相关抄送人意见</label>
@@ -389,10 +445,23 @@
 					财务意见:
 				</label>
 			</td>
-			<td class="value" colspan="3">
-				<textarea  id="cwAdvice" style="width:95%;height:50px" class="inputxt" rows="3" name="cwAdvice">${emkProduceQaPage.cwAdvice }</textarea>
+			<td class="value" colspan="5">
+				<textarea  id="cwAdvice" style="width:95%;height:70px" class="inputxt" rows="5" name="cwAdvice">${emkProduceQaPage.cwAdvice }</textarea>
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">财务意见</label>
+			</td>
+		</tr>
+		<tr>
+			<td class="value" colspan="4"></td>
+			<td align="right">
+				<label class="Validform_label">
+					财务批准人:
+				</label>
+			</td>
+			<td class="value">
+				<input id="cwPzer" name="cwPzer" type="text" value="${emkProduceQaPage.cwPzer }"  style="width: 150px" class="inputxt" >
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">财务批准人</label>
 			</td>
 		</tr>
 		<tr>
@@ -401,7 +470,7 @@
 					总经理意见:
 				</label>
 			</td>
-			<td class="value" colspan="3">
+			<td class="value" colspan="5">
 				<textarea  id="zjlAdvice" style="width:95%;height:50px" class="inputxt" rows="3" name="zjlAdvice">${emkProduceQaPage.zjlAdvice }</textarea>
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">总经理意见</label>
@@ -426,7 +495,7 @@
 					扫描件:
 				</label>
 			</td>
-			<td class="value">
+			<td class="value" colspan="3">
 				<input id="scanName" name="scanName" type="hidden" value="${emkProduceQaPage.scanName }" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<input id="scanUrl" name="scanUrl" type="hidden" value="${emkProduceQaPage.scanUrl }"/>
 				<span id="scanId"></span>
@@ -437,7 +506,7 @@
 
 		</tr>
 		<tr>
-			<td colspan="4" id="instructionfile" class="value">
+			<td colspan="6" id="instructionfile" class="value">
 			</td>
 		</tr>
 	</table>

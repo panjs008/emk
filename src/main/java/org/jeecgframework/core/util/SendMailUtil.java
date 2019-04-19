@@ -14,17 +14,28 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 /**
  * 
- * @author  张代浩
+ * @author
  *
  */
 public class SendMailUtil
 {
   //private static final String smtphost = "192.168.1.70";
-  private static final String from = "zhangdh@163.com";
-  private static final String fromName = "测试公司";
+  //163邮箱 授权码：pjs15259255664 ，qq邮箱授权码：nrdhboexmwgccbba
+  /*private static final String from = "18649803708@163.com";
+  private static final String fromName = "小潘科技";
   private static final String charSet = "utf-8";
-  private static final String username = "zhangdh@163.com";
-  private static final String password = "123456";
+  private static final String username = "18649803708@163.com";
+  private static final String password = "pjs15006001335";*/
+  /*	private static final String from = "15860450087@163.com";
+	private static final String fromName = "小潘科技";
+	private static final String charSet = "utf-8";
+	private static final String username = "15860450087@163.com";
+	private static final String password = "pjs15259255664";*/
+  private static final String from = "245613376@qq.com";
+	private static final String fromName = "小潘科技";
+	private static final String charSet = "utf-8";
+	private static final String username = "245613376@qq.com";
+	private static final String password = "nrdhboexmwgccbba";
 	private static Map<String, String> hostMap = new HashMap<String, String>();
 	static {
 		// 126
@@ -249,26 +260,28 @@ public class SendMailUtil
 
   public static void main(String[] args)
   {
-//	  HtmlEmail hemail = new HtmlEmail();
-//	    try {
-//	      hemail.setHostName("smtp.exmail.qq.com");
-//	      hemail.setCharset("utf-8");
-//	      hemail.addTo("fly.1206@qq.com");
-//	      hemail.setFrom("zhoujunfeng@et-bank.com", "周俊峰");
-//	      hemail.setAuthentication("zhoujunfeng@et-bank.com", "31415926@aa");
-//	      hemail.setSubject("sendemail test!");
-//	      hemail.setMsg("<a href=\"http://www.google.cn\">谷歌</a><br/>");
-//	      hemail.send();
-//	      org.jeecgframework.core.util.LogUtil.info("email send true!");
-//	    } catch (Exception e) {
-//	      e.printStackTrace();
-//	      org.jeecgframework.core.util.LogUtil.info("email send error!");
-//	    }
-	  Map<String, Object> map = new HashMap<String, Object>();
+	  HtmlEmail hemail = new HtmlEmail();
+	   /* try {
+	      hemail.setHostName("smtp.163.com");
+	      hemail.setCharset("utf-8");
+	      hemail.addTo("245613376@qq.com");
+	      hemail.setFrom("18649803708@163.com", "潘金顺");
+	      hemail.setAuthentication("18649803708@163.com", "pjs15006001335");
+	      hemail.setSubject("sendemail test!");
+	      hemail.setMsg("<a href=\"http://www.google.cn\">谷歌</a><br/>");
+	      hemail.send();
+	      org.jeecgframework.core.util.LogUtil.info("email send true!");
+	    } catch (Exception e) {
+	      e.printStackTrace();
+	      org.jeecgframework.core.util.LogUtil.info("email send error!");
+	    }*/
+	  SendMailUtil.sendCommonMail("169054731@qq.com","意向询盘订单审核","您有【admin】提交的意向询盘订单，单号：Y0000000001，请及时审核");
+
+	  /*Map<String, Object> map = new HashMap<String, Object>();
 	  map.put("subject", "测试标题");
 	  map.put("content", "测试 内容");
 	  String templatePath = "mailtemplate/test.ftl";
-	  sendFtlMail("test@et-bank.com", "sendemail test!",templatePath, map);
+	  sendFtlMail("test@et-bank.com", "sendemail test!",templatePath, map);*/
 	  
 //	  org.jeecgframework.core.util.LogUtil.info(getFileName("mailtemplate/test.ftl"));
   }

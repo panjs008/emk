@@ -96,18 +96,7 @@ public class EmkMInStorageEntity2 implements java.io.Serializable {
 	private String rker;
 	/**入库人ID*/
 	private String rkerId;
-	@Excel(name="审核意见")
-	private String leadAdvice;
-	@Excel(name="处理意见")
-	private String financeAdvice;
-	@Excel(name="是否通过")
-	private String isPass;
-	private String leadUserId;
-	@Excel(name="审核人")
-	private String leader;
-	private String financeUserId;
-	@Excel(name="财务处理人")
-	private String financer;
+
 	/**
 	 *方法: 取得java.lang.String
 	 *@return: java.lang.String  主键
@@ -620,83 +609,6 @@ public class EmkMInStorageEntity2 implements java.io.Serializable {
 	 */
 	public void setRkerId(String rkerId){
 		this.rkerId = rkerId;
-	}
-
-	@Column(name="LEAD_ADVICE", nullable=true, length=256)
-	public String getLeadAdvice()
-	{
-		return this.leadAdvice;
-	}
-
-	public void setLeadAdvice(String leadAdvice)
-	{
-		this.leadAdvice = leadAdvice;
-	}
-
-	@Column(name="FINANCE_ADVICE", nullable=true, length=256)
-	public String getFinanceAdvice()
-	{
-		return this.financeAdvice;
-	}
-
-	public void setFinanceAdvice(String financeAdvice)
-	{
-		this.financeAdvice = financeAdvice;
-	}
-
-	@Column(name="IS_PASS", nullable=true, length=32)
-	public String getIsPass()
-	{
-		return this.isPass;
-	}
-
-	public void setIsPass(String isPass)
-	{
-		this.isPass = isPass;
-	}
-
-	@Column(name="LEAD_USER_ID", nullable=true, length=32)
-	public String getLeadUserId()
-	{
-		return this.leadUserId;
-	}
-
-	public void setLeadUserId(String leadUserId)
-	{
-		this.leadUserId = leadUserId;
-	}
-
-	@Column(name="LEADER", nullable=true, length=32)
-	public String getLeader()
-	{
-		return this.leader;
-	}
-
-	public void setLeader(String leader)
-	{
-		this.leader = leader;
-	}
-
-	@Column(name="FINANCE_USER_ID", nullable=true, length=32)
-	public String getFinanceUserId()
-	{
-		return this.financeUserId;
-	}
-
-	public void setFinanceUserId(String financeUserId)
-	{
-		this.financeUserId = financeUserId;
-	}
-
-	@Column(name="FINANCER", nullable=true, length=32)
-	public String getFinancer()
-	{
-		return this.financer;
-	}
-
-	public void setFinancer(String financer)
-	{
-		this.financer = financer;
 	}
 
 }

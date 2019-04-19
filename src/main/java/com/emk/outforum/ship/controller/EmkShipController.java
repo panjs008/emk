@@ -1,4 +1,5 @@
 package com.emk.outforum.ship.controller;
+import com.emk.outforum.ship.entity.EmkShipDetailEntity;
 import com.emk.outforum.ship.entity.EmkShipEntity;
 import com.emk.outforum.ship.service.EmkShipServiceI;
 import java.util.ArrayList;
@@ -7,6 +8,9 @@ import java.text.SimpleDateFormat;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.emk.outforum.shipexpenses.entity.EmkShipExpensesDetailEntity;
+import com.emk.util.ParameterUtil;
+import com.emk.util.Utils;
 import org.apache.log4j.Logger;
 import org.jeecgframework.web.system.pojo.base.TSUser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -111,6 +115,16 @@ public class EmkShipController extends BaseController {
 		return new ModelAndView("com/emk/outforum/ship/emkShipList");
 	}
 
+	@RequestMapping(params = "detailMxList")
+	public ModelAndView detailMxList(HttpServletRequest request) {
+		Map map = ParameterUtil.getParamMaps(request.getParameterMap());
+		if (Utils.notEmpty(map.get("shipId"))) {
+			List<EmkShipDetailEntity> emkShipDetailEntities = systemService.findHql("from EmkShipDetailEntity where shipId=?", map.get("shipId"));
+			request.setAttribute("emkShipDetailEntities", emkShipDetailEntities);
+		}
+		return new ModelAndView("com/emk/outforum/ship/detailMxList");
+	}
+
 	/**
 	 * easyui AJAX请求数据
 	 * 
@@ -209,6 +223,39 @@ public class EmkShipController extends BaseController {
 		message = "客用船务文件添加成功";
 		try{
 			emkShipService.save(emkShip);
+			Map<String,String> map = ParameterUtil.getParamMaps(request.getParameterMap());
+			String dataRows = (String) map.get("orderMxListIDSR");
+			if (Utils.notEmpty(dataRows)) {
+				int rows = Integer.parseInt(dataRows);
+				for (int i = 0; i < rows; i++) {
+					EmkShipDetailEntity emkShipDetailEntity = new EmkShipDetailEntity();
+					if (Utils.notEmpty(map.get("orderMxList["+i+"].orderNo00"))) {
+						emkShipDetailEntity.setCargoNo(map.get("orderMxList["+i+"].cargoNo00"));
+						emkShipDetailEntity.setOutForumNo(map.get("orderMxList["+i+"].outForumNo00"));
+						emkShipDetailEntity.setLevealFactoryNo(map.get("orderMxList["+i+"].levealFactoryNo00"));
+						emkShipDetailEntity.setLevealDate(map.get("orderMxList["+i+"].levealDate00"));
+
+						emkShipDetailEntity.setGysCode(map.get("orderMxList["+i+"].gysCode00"));
+						emkShipDetailEntity.setHtNum(map.get("orderMxList["+i+"].produceHtNum00"));
+						emkShipDetailEntity.setOrderNo(map.get("orderMxList["+i+"].orderNo00"));
+						emkShipDetailEntity.setSampleNo(map.get("orderMxList["+i+"].sampleNo00"));
+						emkShipDetailEntity.setShipDesc(map.get("orderMxList["+i+"].sampleDesc00"));
+						if(Utils.notEmpty(map.get("orderMxList["+i+"].signTotal00"))){
+							emkShipDetailEntity.setTotal(Integer.parseInt(map.get("orderMxList["+i+"].signTotal00")));
+						}
+						emkShipDetailEntity.setSumBoxTotal(map.get("orderMxList["+i+"].atotalBox00"));
+						emkShipDetailEntity.setSumBoxVolume(map.get("orderMxList["+i+"].asumVolume00"));
+						emkShipDetailEntity.setSumBoxMao(map.get("orderMxList["+i+"].asumWeightMao00"));
+						emkShipDetailEntity.setSumBoxJz(map.get("orderMxList["+i+"].asumWeightJz00"));
+						emkShipDetailEntity.setTdNum(map.get("orderMxList["+i+"].tdNum00"));
+						emkShipDetailEntity.setTdState(map.get("orderMxList["+i+"].tdState00"));
+						emkShipDetailEntity.setFpNum(map.get("orderMxList["+i+"].fpNum00"));
+						emkShipDetailEntity.setBoxNum(map.get("orderMxList["+i+"].boxNum00"));
+						emkShipDetailEntity.setShipId(emkShip.getId());
+						systemService.save(emkShipDetailEntity);
+					}
+				}
+			}
 			systemService.addLog(message, Globals.Log_Type_INSERT, Globals.Log_Leavel_INFO);
 		}catch(Exception e){
 			e.printStackTrace();
@@ -231,10 +278,45 @@ public class EmkShipController extends BaseController {
 		String message = null;
 		AjaxJson j = new AjaxJson();
 		message = "客用船务文件更新成功";
-		EmkShipEntity t = emkShipService.get(EmkShipEntity.class, emkShip.getId());
+		Map<String,String> map = ParameterUtil.getParamMaps(request.getParameterMap());
+		EmkShipEntity t = emkShipService.get(EmkShipEntity.class, map.get("shipId"));
 		try {
+			emkShip.setId(null);
 			MyBeanUtils.copyBeanNotNull2Bean(emkShip, t);
 			emkShipService.saveOrUpdate(t);
+			String dataRows = (String) map.get("orderMxListIDSR");
+			if (Utils.notEmpty(dataRows)) {
+				systemService.executeSql("delete from emk_ship_detail where ship_id = ?",t.getId());
+				int rows = Integer.parseInt(dataRows);
+				for (int i = 0; i < rows; i++) {
+					EmkShipDetailEntity emkShipDetailEntity = new EmkShipDetailEntity();
+					if (Utils.notEmpty(map.get("orderMxList["+i+"].cargoNo00"))) {
+						emkShipDetailEntity.setCargoNo(map.get("orderMxList["+i+"].cargoNo00"));
+						emkShipDetailEntity.setOutForumNo(map.get("orderMxList["+i+"].outForumNo00"));
+						emkShipDetailEntity.setLevealFactoryNo(map.get("orderMxList["+i+"].levealFactoryNo00"));
+						emkShipDetailEntity.setLevealDate(map.get("orderMxList["+i+"].levealDate00"));
+
+						emkShipDetailEntity.setGysCode(map.get("orderMxList["+i+"].gysCode00"));
+						emkShipDetailEntity.setHtNum(map.get("orderMxList["+i+"].produceHtNum00"));
+						emkShipDetailEntity.setOrderNo(map.get("orderMxList["+i+"].orderNo00"));
+						emkShipDetailEntity.setSampleNo(map.get("orderMxList["+i+"].sampleNo00"));
+						emkShipDetailEntity.setShipDesc(map.get("orderMxList["+i+"].sampleDesc00"));
+						if(Utils.notEmpty(map.get("orderMxList["+i+"].signTotal00"))){
+							emkShipDetailEntity.setTotal(Integer.parseInt(map.get("orderMxList["+i+"].signTotal00")));
+						}
+						emkShipDetailEntity.setSumBoxTotal(map.get("orderMxList["+i+"].atotalBox00"));
+						emkShipDetailEntity.setSumBoxVolume(map.get("orderMxList["+i+"].asumVolume00"));
+						emkShipDetailEntity.setSumBoxMao(map.get("orderMxList["+i+"].asumWeightMao00"));
+						emkShipDetailEntity.setSumBoxJz(map.get("orderMxList["+i+"].asumWeightJz00"));
+						emkShipDetailEntity.setTdNum(map.get("orderMxList["+i+"].tdNum00"));
+						emkShipDetailEntity.setTdState(map.get("orderMxList["+i+"].tdState00"));
+						emkShipDetailEntity.setFpNum(map.get("orderMxList["+i+"].fpNum00"));
+						emkShipDetailEntity.setBoxNum(map.get("orderMxList["+i+"].boxNum00"));
+						emkShipDetailEntity.setShipId(t.getId());
+						systemService.save(emkShipDetailEntity);
+					}
+				}
+			}
 			systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
 		} catch (Exception e) {
 			e.printStackTrace();

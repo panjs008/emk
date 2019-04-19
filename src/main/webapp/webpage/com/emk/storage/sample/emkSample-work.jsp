@@ -20,16 +20,16 @@
 				<td align="right">
 					<label class="Validform_label">
 						是否同意:
+						<input name="isPass" type="radio" datatype="*" <c:if test="${emkSample.isPass eq '0'}">checked="true"</c:if> value="0">
+						是
+						<input name="isPass" type="radio" datatype="*"  <c:if test="${emkSample.isPass eq '1'}">checked="true"</c:if> value="1">
+						否
+						<span class="Validform_checktip"></span>
+						<label class="Validform_label" style="display: none;">是否同意</label>
+
 					</label>
 				</td>
-				<td class="value" colspan="3">
-					<input name="isPass" type="radio" datatype="*" <c:if test="${emkSample.isPass eq '0'}">checked="true"</c:if> value="0">
-					是
-					<input name="isPass" type="radio" datatype="*"  <c:if test="${emkSample.isPass eq '1'}">checked="true"</c:if> value="1">
-					否
-					<span class="Validform_checktip"></span>
-					<label class="Validform_label" style="display: none;">是否同意</label>
-				</td>
+				<td class="value" colspan="3"></td>
 			</tr>
 			<c:if test="${emkSample.type eq 'ss' || emkSample.type eq 'cq'}">
 				<tr id="chooseUser">

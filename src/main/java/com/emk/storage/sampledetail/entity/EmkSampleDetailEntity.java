@@ -2,12 +2,10 @@ package com.emk.storage.sampledetail.entity;
 
 import java.io.Serializable;
 import java.util.Date;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
+import com.emk.check.sizecheck.entity.EmkSizeTotalEntityE;
+import com.emk.check.sizecheck.entity.EmkSizeTotalEntityG;
 import org.hibernate.annotations.GenericGenerator;
 import org.jeecgframework.poi.excel.annotation.Excel;
 
@@ -71,6 +69,29 @@ public class EmkSampleDetailEntity implements Serializable {
     private String gysCode;
     @Excel(name = "入库状态")
     private String rkState;
+    @Excel(name = "总数量")
+    private String sumTotal;
+    @Excel(name = "总金额")
+    private String sumPrice;
+    @Excel(name = "总用量")
+    private String sumYongliang;
+    @Excel(name = "正式合同编号")
+    private String htNum;
+    @Excel(name = "采购需求单号")
+    private String cgxqdh;
+    @Excel(name = "采购合同号")
+    private String cghtbh;
+    @Excel(name = "订单号")
+    private String orderNum;
+    @Excel(name = "大货交期")
+    private String dhjqDate;
+    @Excel(name = "款号")
+    private String sampleNo;
+    @Excel(name = "描述")
+    private String sampleNoDesc;
+
+    private EmkSizeTotalEntityG emkSizeTotalEntity;
+
 
     @Id
     @GeneratedValue(generator = "paymentableGenerator")
@@ -352,5 +373,104 @@ public class EmkSampleDetailEntity implements Serializable {
 
     public void setChengf(String chengf) {
         this.chengf = chengf;
+    }
+
+    @Column(name = "sum_total", nullable = true, length = 32)
+    public String getSumTotal() {
+        return sumTotal;
+    }
+
+    public void setSumTotal(String sumTotal) {
+        this.sumTotal = sumTotal;
+    }
+
+    @Column(name = "sum_yongliang", nullable = true, length = 32)
+    public String getSumYongliang() {
+        return sumYongliang;
+    }
+
+    public void setSumYongliang(String sumYongliang) {
+        this.sumYongliang = sumYongliang;
+    }
+
+    @Column(name = "ht_num", nullable = true, length = 32)
+    public String getHtNum() {
+        return htNum;
+    }
+
+    public void setHtNum(String htNum) {
+        this.htNum = htNum;
+    }
+
+    @Column(name = "sum_price", nullable = true, length = 32)
+    public String getSumPrice() {
+        return sumPrice;
+    }
+
+    public void setSumPrice(String sumPrice) {
+        this.sumPrice = sumPrice;
+    }
+
+    @Column(name = "cgxqdh", nullable = true, length = 32)
+    public String getCgxqdh() {
+        return cgxqdh;
+    }
+
+    public void setCgxqdh(String cgxqdh) {
+        this.cgxqdh = cgxqdh;
+    }
+
+    @Column(name = "cghtbh", nullable = true, length = 32)
+    public String getCghtbh() {
+        return cghtbh;
+    }
+
+    public void setCghtbh(String cghtbh) {
+        this.cghtbh = cghtbh;
+    }
+
+    @Column(name = "SAMPLE_NO", nullable = true, length = 32)
+    public String getSampleNo() {
+        return this.sampleNo;
+    }
+
+    public void setSampleNo(String sampleNo) {
+        this.sampleNo = sampleNo;
+    }
+
+    @Column(name = "SAMPLE_NO_DESC", nullable = true, length = 256)
+    public String getSampleNoDesc() {
+        return this.sampleNoDesc;
+    }
+
+    public void setSampleNoDesc(String sampleNoDesc) {
+        this.sampleNoDesc = sampleNoDesc;
+    }
+
+    @Column(name = "order_num", nullable = true, length = 32)
+    public String getOrderNum() {
+        return this.orderNum;
+    }
+
+    public void setOrderNum(String orderNum) {
+        this.orderNum = orderNum;
+    }
+
+    @Column(name = "DHJQ_DATE", nullable = true, length = 32)
+    public String getDhjqDate() {
+        return this.dhjqDate;
+    }
+
+    public void setDhjqDate(String dhjqDate) {
+        this.dhjqDate = dhjqDate;
+    }
+
+    @OneToOne(mappedBy="emkSampleDetailEntity")
+    public EmkSizeTotalEntityG getEmkSizeTotalEntity() {
+        return emkSizeTotalEntity;
+    }
+
+    public void setEmkSizeTotalEntity(EmkSizeTotalEntityG emkSizeTotalEntity) {
+        this.emkSizeTotalEntity = emkSizeTotalEntity;
     }
 }

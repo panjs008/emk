@@ -10,6 +10,7 @@
       <t:dgCol title="创建日期"  field="createDate"  formatter="yyyy-MM-dd"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
       <t:dgCol title="所属部门"  field="sysOrgCode"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
       <t:dgCol title="操作" field="opt" frozenColumn="true"  width="100"></t:dgCol>
+      <t:dgCol title="当前流程节点"  field="processName"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
       <t:dgCol title="原料需求开发单号"  field="materialNo" queryMode="single" query="true"  width="120"></t:dgCol>
       <t:dgCol title="提交日期"  field="kdDate"  queryMode="single"  width="80"></t:dgCol>
       <t:dgCol title="交货日期"  field="dhjqDate"  queryMode="single"  width="80"></t:dgCol>
@@ -19,14 +20,15 @@
       <t:dgCol title="业务员"  field="businesserName"  queryMode="single"  width="70"></t:dgCol>
       <t:dgCol title="跟单员"  field="developer"  queryMode="single"  width="70"></t:dgCol>
       <t:dgCol title="采购员"  field="cger"  queryMode="single"  width="70"></t:dgCol>
-      <t:dgCol title="客户代码" query="true" field="cusNum"  queryMode="single"  width="70"></t:dgCol>
-      <t:dgCol title="客户名称" query="true" field="cusName"  queryMode="single"  width="150"></t:dgCol>
+      <t:dgCol title="客户代码" query="true" field="cusNum"  queryMode="single"  width="90"></t:dgCol>
+      <t:dgCol title="客户名称" query="true" field="cusName"  queryMode="single"  width="200"></t:dgCol>
       <t:dgCol title="款号"  field="sampleNo"  queryMode="single"  width="80"></t:dgCol>
       <t:dgCol title="工艺种类"  field="gyzl"  dictionary="gylx" queryMode="single"  width="70"></t:dgCol>
-      <t:dgCol title="款式大类"  field="proTypeName"  queryMode="single"  width="70"></t:dgCol>
-
-      <t:dgCol title="状态"  field="state" formatterjs="formatColor"  queryMode="single"  width="60"></t:dgCol>
-      <t:dgFunOpt funname="goToProcess(id,createBy)" title="流程进度" operationCode="process" urlclass="ace_button"  urlStyle="background-color:#ec4758;" urlfont="fa-tasks"></t:dgFunOpt>
+      <t:dgCol title="款式大类"  field="proTypeName"  queryMode="single"  width="80"></t:dgCol>
+      <t:dgCol title="来源"  field="formType" replace="手工创建_0,询盘单生成_1" queryMode="single"  width="80"></t:dgCol>
+      <t:dgCol title="状态"  field="state" formatterjs="formatColor"  queryMode="single"  width="100"></t:dgCol>
+      <t:dgFunOpt funname="goToProcess(id,createBy,processName,state)" title="流程进度" operationCode="process" urlclass="ace_button"  urlStyle="background-color:#ec4758;" urlfont="fa-tasks"></t:dgFunOpt>
+      <%--<t:dgFunOpt funname="goToProcess(id,createBy)" title="流程进度" operationCode="process" urlclass="ace_button"  urlStyle="background-color:#ec4758;" urlfont="fa-tasks"></t:dgFunOpt>--%>
       <%--<t:dgFunOpt funname="queryDetail(id,materialNo,state)" title="原料面料" urlclass="ace_button" urlfont="fa-list-alt"></t:dgFunOpt>--%>
       <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkMaterialController.do?goAdd&winTitle=录入原料需求开发单" funname="add" height="600" width="1200"></t:dgToolBar>
       <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkMaterialController.do?goUpdate&winTitle=编辑原料需求开发单" funname="update" height="600" width="1200"></t:dgToolBar>
@@ -47,43 +49,43 @@
 
  function formatColor(val,row){
      if(row.state=="1"){
-         return '<span style="color:	#FF0000;">处理中</span>';
+         return '<span style="color:	#0000FF;">已提交</span>';
      }else if(row.state=="2"){
-         return '<span style="color:	#0000FF;">完成</span>';
+         return '<span style="color:	#00FF00;">完成</span>';
+     }else if(row.state=="3"){
+         return '<span style="color:	#0000FF;">业务经理通过</span>';
+     }else if(row.state=="35"){
+         return '<span style="color:	#0000FF;">业务员通过</span>';
+     }else if(row.state=="24"){
+         return '<span style="color:	#0000FF;">采购员通过</span>';
+     }else if(row.state=="15" || row.state=="41"  || row.state=="42"){
+         return '<span style="color:	#0000FF;">采购经理通过</span>';
+     }else if(row.state=="37"){
+         return '<span style="color:	#0000FF;">采购员执行</span>';
+     }else if(row.state=="38"){
+         return '<span style="color:	#0000FF;">采购员进度</span>';
      }else{
          return '创建';
      }
  }
 
- function goToProcess(id,createBy){
+
+ function goToProcess(id,createBy,processName,state){
      var height =window.top.document.body.offsetHeight*0.85;
-
-     $.ajax({
-         url: "flowController.do?getCurrentProcess&tableName=emk_material&title=原料需求开发单&id=" + id,
-         type: 'post',
-         cache: false,
-         data: null,
-         success: function (data) {
-             var d = $.parseJSON(data);
-             if (d.success) {
-                 var msg = d.msg;
-                 if(createBy == "${CUR_USER.userName}"){
-                     createdetailwindow("流程进度--当前环节：" + msg, "flowController.do?goProcess&processUrl=com/emk/storage/material/emkMaterial-process&id=" + id, 1200, height);
-                 }else{
-                     if (msg == "完成") {
-                         createdetailwindow('流程进度--当前环节：' + msg, 'flowController.do?goProcess&processUrl=com/emk/storage/material/emkMaterial-process&id=' + id, 1200, height);
-                     } else {
-                         if("${ROLE.rolecode}" == "jsjl") {
-                             createwindow("流程进度--当前环节：" + msg, "flowController.do?goProcess&processUrl=com/emk/storage/material/emkMaterial-process&id=" + id, 1200, height);
-                         }else{
-                             createdetailwindow("流程进度--当前环节：" + msg, "flowController.do?goProcess&processUrl=com/emk/storage/material/emkMaterial-process&id=" + id, 1200, height);
-                         }
-                     }
-                 }
-
-             }
+     var processNameVal='',node='';
+     if(processName != null){
+         if(processName.indexOf('-') > 0){
+             processNameVal = processName.substring(0,processName.indexOf('-'));
+             node = processName.substring(processName.indexOf('-')+1);
          }
-     });
+     }
+     if(createBy == "${CUR_USER.userName}" || ${CUR_USER.userName eq 'admin'}){
+         if(state == '0'){
+             createwindow("流程进度--当前环节：原料面料需求开发申请单", "flowController.do?goProcess&node="+node+"&processUrl=com/emk/storage/material/emkMaterial-process&id=" + id, 1230, height);
+         }else {
+             createdetailwindow("流程进度--当前环节：" + processNameVal, "flowController.do?goProcess&node="+node+"&processUrl=com/emk/storage/material/emkMaterial-process&id=" + id, 1230, height);
+         }
+     }
  }
 
  function doSubmitV() {

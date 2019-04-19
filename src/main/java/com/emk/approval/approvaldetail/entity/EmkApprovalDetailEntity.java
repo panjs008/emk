@@ -78,6 +78,7 @@ public class EmkApprovalDetailEntity implements java.io.Serializable {
 	@Excel(name="流程环节名称",width=15)
 	private String bpmName;
 	private String bpmNode;
+	private String cusType;
 
 
 	/**
@@ -391,5 +392,14 @@ public class EmkApprovalDetailEntity implements java.io.Serializable {
 
 	public void setBpmNode(String bpmNode) {
 		this.bpmNode = bpmNode;
+	}
+
+	@Column(name ="cus_type",nullable=true,length=512)
+	public String getCusType() {
+		return cusType;
+	}
+
+	public void setCusType(String cusType) {
+		this.cusType = cusType;
 	}
 }

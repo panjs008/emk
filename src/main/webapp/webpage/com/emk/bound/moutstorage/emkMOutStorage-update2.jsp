@@ -232,7 +232,7 @@
 			</td>
 			<td align="left"><input id="brand00" nullmsg="请输入规格！"  errormsg="请输入规格" name="rkglMxList[#index#].brand" maxlength="100" type="text" value=""
 									style="width: 95%;"></td>
-			<td align="left"><input id="htTotal00" nullmsg="请输入数量！"  errormsg="请输入数量" name="rkglMxList[#index#].htTotal" maxlength="100" type="text" value=""
+			<td align="left"><input id="htTotal00" nullmsg="请输入数量！"  errormsg="请输入整数" name="rkglMxList[#index#].htTotal" maxlength="100" type="text" value=""
 									style="width: 95%;"></td>
 			<td align="left"><input id="totall00" nullmsg="请输入采购数量！"  errormsg="请输入采购数量" name="rkglMxList[#index#].total" maxlength="100" type="text" value=""
 									style="width: 95%;"></td>

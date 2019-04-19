@@ -1,4 +1,6 @@
 package com.emk.outforum.tdhdcost.controller;
+import com.emk.outforum.ship.entity.EmkShipDetailEntity;
+import com.emk.outforum.tdhdcost.entity.EmkTdhdCostDetailEntity;
 import com.emk.outforum.tdhdcost.entity.EmkTdhdCostEntity;
 import com.emk.outforum.tdhdcost.service.EmkTdhdCostServiceI;
 import java.util.ArrayList;
@@ -7,6 +9,8 @@ import java.text.SimpleDateFormat;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.emk.util.ParameterUtil;
+import com.emk.util.Utils;
 import org.apache.log4j.Logger;
 import org.jeecgframework.web.system.pojo.base.TSUser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -111,6 +115,16 @@ public class EmkTdhdCostController extends BaseController {
 		return new ModelAndView("com/emk/outforum/tdhdcost/emkTdhdCostList");
 	}
 
+	@RequestMapping(params = "detailMxList")
+	public ModelAndView detailMxList(HttpServletRequest request) {
+		Map map = ParameterUtil.getParamMaps(request.getParameterMap());
+		if (Utils.notEmpty(map.get("tdhdCostId"))) {
+			List<EmkTdhdCostDetailEntity> emkTdhdCostDetailEntities = systemService.findHql("from EmkTdhdCostDetailEntity where tdhdCostId=?", map.get("tdhdCostId"));
+			request.setAttribute("emkTdhdCostDetailEntities", emkTdhdCostDetailEntities);
+		}
+		return new ModelAndView("com/emk/outforum/tdhdcost/detailMxList");
+	}
+
 	/**
 	 * easyui AJAX请求数据
 	 * 
@@ -209,6 +223,39 @@ public class EmkTdhdCostController extends BaseController {
 		message = "提单货代费用添加成功";
 		try{
 			emkTdhdCostService.save(emkTdhdCost);
+			Map<String,String> map = ParameterUtil.getParamMaps(request.getParameterMap());
+			String dataRows = (String) map.get("orderMxListIDSR");
+			if (Utils.notEmpty(dataRows)) {
+				int rows = Integer.parseInt(dataRows);
+				for (int i = 0; i < rows; i++) {
+					EmkTdhdCostDetailEntity emkTdhdCostDetailEntity = new EmkTdhdCostDetailEntity();
+					if (Utils.notEmpty(map.get("orderMxList["+i+"].tdNum00"))) {
+						emkTdhdCostDetailEntity.setTdNum(map.get("orderMxList["+i+"].tdNum00"));
+						emkTdhdCostDetailEntity.setCargoNo(map.get("orderMxList["+i+"].cargoNo00"));
+						emkTdhdCostDetailEntity.setOutForumNo(map.get("orderMxList["+i+"].outForumNo00"));
+						emkTdhdCostDetailEntity.setLevealFactoryNo(map.get("orderMxList["+i+"].levealFactoryNo00"));
+						emkTdhdCostDetailEntity.setLevealDate(map.get("orderMxList["+i+"].levealDate00"));
+						emkTdhdCostDetailEntity.setHtNum(map.get("orderMxList["+i+"].produceHtNum00"));
+						emkTdhdCostDetailEntity.setOrderNo(map.get("orderMxList["+i+"].orderNo00"));
+
+						if(Utils.notEmpty(map.get("orderMxList["+i+"].atotalBox00"))){
+							emkTdhdCostDetailEntity.setSumBoxTotal(Integer.parseInt(map.get("orderMxList["+i+"].atotalBox00")));
+						}
+						if(Utils.notEmpty(map.get("orderMxList["+i+"].asumVolume00"))){
+							emkTdhdCostDetailEntity.setSumBoxVolume(Double.parseDouble(map.get("orderMxList["+i+"].asumVolume00")));
+						}
+						if(Utils.notEmpty(map.get("orderMxList["+i+"].asumWeightMao00"))){
+							emkTdhdCostDetailEntity.setSumBoxMao(Double.parseDouble(map.get("orderMxList["+i+"].asumWeightMao00")));
+						}
+						if(Utils.notEmpty(map.get("orderMxList["+i+"].asumWeightJz00"))){
+							emkTdhdCostDetailEntity.setSumBoxJz(Double.parseDouble(map.get("orderMxList["+i+"].asumWeightJz00")));
+						}
+						emkTdhdCostDetailEntity.setCost(map.get("orderMxList["+i+"].cost00"));
+						emkTdhdCostDetailEntity.setTdhdCostId(emkTdhdCost.getId());
+						systemService.save(emkTdhdCostDetailEntity);
+					}
+				}
+			}
 			systemService.addLog(message, Globals.Log_Type_INSERT, Globals.Log_Leavel_INFO);
 		}catch(Exception e){
 			e.printStackTrace();
@@ -231,10 +278,46 @@ public class EmkTdhdCostController extends BaseController {
 		String message = null;
 		AjaxJson j = new AjaxJson();
 		message = "提单货代费用更新成功";
-		EmkTdhdCostEntity t = emkTdhdCostService.get(EmkTdhdCostEntity.class, emkTdhdCost.getId());
+		Map<String,String> map = ParameterUtil.getParamMaps(request.getParameterMap());
+		EmkTdhdCostEntity t = emkTdhdCostService.get(EmkTdhdCostEntity.class, map.get("tdhdCostId"));
 		try {
+			emkTdhdCost.setId(null);
 			MyBeanUtils.copyBeanNotNull2Bean(emkTdhdCost, t);
 			emkTdhdCostService.saveOrUpdate(t);
+			String dataRows = (String) map.get("orderMxListIDSR");
+			if (Utils.notEmpty(dataRows)) {
+				systemService.executeSql("delete from emk_tdhd_cost_detail where tdhd_cost_id = ?",t.getId());
+				int rows = Integer.parseInt(dataRows);
+				for (int i = 0; i < rows; i++) {
+					EmkTdhdCostDetailEntity emkTdhdCostDetailEntity = new EmkTdhdCostDetailEntity();
+					if (Utils.notEmpty(map.get("orderMxList["+i+"].tdNum00"))) {
+						emkTdhdCostDetailEntity.setTdNum(map.get("orderMxList["+i+"].tdNum00"));
+						emkTdhdCostDetailEntity.setCargoNo(map.get("orderMxList["+i+"].cargoNo00"));
+						emkTdhdCostDetailEntity.setOutForumNo(map.get("orderMxList["+i+"].outForumNo00"));
+						emkTdhdCostDetailEntity.setLevealFactoryNo(map.get("orderMxList["+i+"].levealFactoryNo00"));
+						emkTdhdCostDetailEntity.setLevealDate(map.get("orderMxList["+i+"].levealDate00"));
+						emkTdhdCostDetailEntity.setHtNum(map.get("orderMxList["+i+"].produceHtNum00"));
+						emkTdhdCostDetailEntity.setOrderNo(map.get("orderMxList["+i+"].orderNo00"));
+
+						if(Utils.notEmpty(map.get("orderMxList["+i+"].atotalBox00"))){
+							emkTdhdCostDetailEntity.setSumBoxTotal(Integer.parseInt(map.get("orderMxList["+i+"].atotalBox00")));
+						}
+						if(Utils.notEmpty(map.get("orderMxList["+i+"].asumVolume00"))){
+							emkTdhdCostDetailEntity.setSumBoxVolume(Double.parseDouble(map.get("orderMxList["+i+"].asumVolume00")));
+						}
+						if(Utils.notEmpty(map.get("orderMxList["+i+"].asumWeightMao00"))){
+							emkTdhdCostDetailEntity.setSumBoxMao(Double.parseDouble(map.get("orderMxList["+i+"].asumWeightMao00")));
+						}
+						if(Utils.notEmpty(map.get("orderMxList["+i+"].asumWeightJz00"))){
+							emkTdhdCostDetailEntity.setSumBoxJz(Double.parseDouble(map.get("orderMxList["+i+"].asumWeightJz00")));
+						}
+						emkTdhdCostDetailEntity.setCost(map.get("orderMxList["+i+"].cost00"));
+						emkTdhdCostDetailEntity.setTdhdCostId(t.getId());
+						systemService.save(emkTdhdCostDetailEntity);
+					}
+				}
+			}
+
 			systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
 		} catch (Exception e) {
 			e.printStackTrace();

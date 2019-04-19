@@ -40,6 +40,11 @@ public class EmkMInStorageDetailEntity implements java.io.Serializable {
 	private Date createDate;
 	/**所属部门*/
 	private String sysOrgCode;
+	/**采购合同号*/
+	@Excel(name="采购合同号",width=15)
+	private String htNum;
+	@Excel(name="供应商代码",width=15)
+	private String gysCode;
 	/**品名*/
 	@Excel(name="品名",width=15)
 	private String proZnName;
@@ -70,6 +75,12 @@ public class EmkMInStorageDetailEntity implements java.io.Serializable {
 	/**单位*/
 	@Excel(name="单位",width=15)
 	private String unit;
+	/**入库日期*/
+	@Excel(name="入库日期",width=15)
+	private String kdDate;
+	/**出货日期*/
+	@Excel(name="出货日期",width=15)
+	private String outDate;
 	
 	/**
 	 *方法: 取得java.lang.String
@@ -328,5 +339,77 @@ public class EmkMInStorageDetailEntity implements java.io.Serializable {
 	 */
 	public void setUnit(String unit){
 		this.unit = unit;
+	}
+
+	/**
+	 *方法: 取得java.lang.String
+	 *@return: java.lang.String  采购合同号
+	 */
+
+	@Column(name ="HT_NUM",nullable=true,length=32)
+	public String getHtNum(){
+		return this.htNum;
+	}
+
+	/**
+	 *方法: 设置java.lang.String
+	 *@param: java.lang.String  采购合同号
+	 */
+	public void setHtNum(String htNum){
+		this.htNum = htNum;
+	}
+
+	/**
+	 *方法: 取得java.lang.String
+	 *@return: java.lang.String  供应商代码
+	 */
+
+	@Column(name ="GYS_CODE",nullable=true,length=32)
+	public String getGysCode(){
+		return this.gysCode;
+	}
+
+	/**
+	 *方法: 设置java.lang.String
+	 *@param: java.lang.String  供应商代码
+	 */
+	public void setGysCode(String gysCode){
+		this.gysCode = gysCode;
+	}
+
+	/**
+	 *方法: 取得java.lang.String
+	 *@return: java.lang.String  入库日期
+	 */
+
+	@Column(name ="KD_DATE",nullable=true,length=32)
+	public String getKdDate(){
+		return this.kdDate;
+	}
+
+	/**
+	 *方法: 设置java.lang.String
+	 *@param: java.lang.String  入库日期
+	 */
+	public void setKdDate(String kdDate){
+		this.kdDate = kdDate;
+	}
+
+	/**
+	 *方法: 取得java.lang.String
+	 *@return: java.lang.String  出货日期
+	 */
+
+	@Column(name ="OUT_DATE",nullable=true,length=32)
+	public String getOutDate(){
+		return this.outDate;
+	}
+
+	/**
+	 *方法: 设置java.lang.String
+	 *@param: java.lang.String  出货日期
+	 */
+	public void setOutDate(String outDate){
+		this.outDate = outDate;
 	}
 }

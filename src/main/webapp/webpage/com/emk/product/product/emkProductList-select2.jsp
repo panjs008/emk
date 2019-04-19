@@ -67,12 +67,7 @@
           <t:dgCol title="物料名称"  field="proZnName" query="true"  queryMode="single"  width="150"></t:dgCol>
           <%--<t:dgCol title="编号"  field="proNum" query="true"  queryMode="single"  width="80"></t:dgCol>--%>
 
-<%--<t:dgCol title="英文名称"  field="proEnName" hidden="true" queryMode="single"  width="120"></t:dgCol>--%>
-<%--<t:dgCol title="规格型号"  field="brand"  queryMode="single"  width="80"></t:dgCol>--%>
-          <t:dgCol title="比例"  field="precent"   queryMode="single"  width="50"></t:dgCol>
-          <t:dgCol title="单件用量"  field="yongliang"   queryMode="single"  width="70"></t:dgCol>
-
-          <t:dgCol title="规格"  field="brand"  queryMode="single"  width="60"></t:dgCol>
+          <t:dgCol title="规格"  field="brand"  queryMode="single"  width="120"></t:dgCol>
           <t:dgCol title="单位"  field="unit"  queryMode="single"  width="50"></t:dgCol>
 
 <%--<t:dgCol title="增值税率(%)"  field="zzVal"  queryMode="single"  width="80"></t:dgCol>--%>

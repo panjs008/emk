@@ -9,22 +9,27 @@
 
 </head>
 <body>
-<div id="timeDiv" title="流程时间轴" style="width:100%;height:360px;overflow:hidden" >
-	<iframe scrolling="no" id="processFrm" frameborder="0"  src="emkEnquiryController.do?goTime&id=${param.id}" width="100%" height="100%"></iframe>
-	</div>
+
+<div id="orderDiv" title="流程图" style="width:100%;height:300px;overflow:hidden" >
+	<iframe scrolling="no" id="processFrm" frameborder="0" style="margin-top: -8px;"  src="flowController.do?showProcess&id=${param.id}&tableName=emk_enquiry" width="100%" height="100%"></iframe>
+</div>
+<div id="timeDiv" title="流程时间轴" style="width:100%;height:300px;overflow:hidden" >
+	<iframe scrolling="no" id="timeFrm" frameborder="0"  src="emkEnquiryController.do?goTime&id=${param.id}" width="100%" height="100%"></iframe>
+</div>
 <t:formvalid formid="formobj" dialog="true" usePlugin="password" layout="table" action="emkEnquiryController.do?doSubmit"  tiptype="1" >
 	<input id="id" name="id" type="hidden" value="${param.id }"/>
-	<c:if test="${emkEnquiry.state eq 1 && ROLE.rolecode eq 'ywjl'}">
-		<input id="processNode" name="processNode" type="hidden" value="ywbCheckTask"/>
-	</c:if>
-	<c:if test="${emkEnquiry.state eq 1 && ROLE.rolecode eq 'jsjl'}">
-		<input id="processNode" name="processNode" type="hidden" value="jsbCheckTask"/>
-	</c:if>
-	<c:if test="${emkEnquiry.state eq 1 && ROLE.rolecode eq 'scjl'}">
-		<input id="processNode" name="processNode" type="hidden" value="scbCheckTask"/>
-	</c:if>
 	<table id="adviceTb" style="width: 100%;margin-top:2px;margin-bottom: 4px" cellpadding="0" cellspacing="1" class="formtable">
-		<c:if test="${emkEnquiry.state eq 1 && (param.node eq 'ywbCheckTask' || param.node eq 'jsbCheckTask'  || param.node eq 'scbCheckTask')}">
+		<c:if test="${((emkEnquiry.state eq 1 || emkEnquiry.state eq 4) && ROLE.rolecode eq 'ywjl' && param.node eq 'ywbCheckTask' )
+				|| ((emkEnquiry.state eq 3  || emkEnquiry.state eq 6 )&& param.node eq 'jsbCheckTask' && ROLE.rolecode eq 'jsjl')
+		 		|| ((emkEnquiry.state eq 5 || emkEnquiry.state eq 8) && param.node eq 'ranCheckTask' && ROLE.rolecode eq 'rsjl')
+		 		|| ((emkEnquiry.state eq 7 || emkEnquiry.state eq 10) && param.node eq 'fengCheckTask' && ROLE.rolecode eq 'fzjl')
+		 		|| ((emkEnquiry.state eq 9 || emkEnquiry.state eq 12) && param.node eq 'biaoTask' && ROLE.rolecode eq 'btztzz')
+		 		|| ((emkEnquiry.state eq 11 || emkEnquiry.state eq 14) && param.node eq 'baoTask' && ROLE.rolecode eq 'bzzz')
+		 		|| ((emkEnquiry.state eq 13 || emkEnquiry.state eq 16) && param.node eq 'caiTask' && ROLE.rolecode eq 'cgjl')
+		 		|| ((emkEnquiry.state eq 15 || emkEnquiry.state eq 18) && param.node eq 'scbCheckTask' && ROLE.rolecode eq 'scjjbjl')
+		 		|| ((emkEnquiry.state eq 17 || emkEnquiry.state eq 20) && param.node eq 'sczfzrpfTask' && ROLE.rolecode eq 'sczfr')
+		 		|| ((emkEnquiry.state eq 19 ) && param.node eq 'sczfzrpfTask' && ROLE.rolecode eq 'ywy')
+		 		|| ((emkEnquiry.state eq 30 ) && param.node eq 'jgqrTask' && ROLE.rolecode eq 'ywgdy') }">
 			<%--<c:set value="业务经理" var="userKey" scope="session"></c:set>--%>
 			<tr>
 				<td align="right">
@@ -41,93 +46,16 @@
 					<label class="Validform_label" style="display: none;">是否同意</label>
 				</td>
 			</tr>
-			<c:if test="${emkEnquiry.state ne 0 && (ROLE.rolecode eq 'ywjl' || ROLE.rolecode eq 'admin')}">
-				<tr>
-					<td align="right" width="150px" valign="middle">
-						<label class="Validform_label">
-							评估意见:
-						</label>
-					</td>
-					<td class="value" colspan="3"><textarea datatype="*" id="pgAdvice" style="width:90%;height:60px" class="inputxt" rows="5" name="pgAdvice"></textarea>
-					</td>
-				</tr>
-				<tr>
-					<td align="right" width="150px" valign="middle">
-						<label class="Validform_label">
-							包装部意见:
-						</label>
-					</td>
-					<td class="value" colspan="3"><textarea datatype="*" id="bzAdvice" style="width:90%;height:60px" class="inputxt" rows="5" name="bzAdvice"></textarea>
-					</td>
-				</tr>
-			</c:if>
-			<c:if test="${emkEnquiry.state eq 1  && ( ROLE.rolecode eq 'jsjl' ||  ROLE.rolecode eq 'admin')}">
-				<tr>
-					<td align="right" width="150px" valign="middle">
-						<label class="Validform_label">
-							技术部意见:
-						</label>
-					</td>
-					<td class="value" colspan="3"><textarea datatype="*" id="jsbAdvice" style="width:90%;height:60px" class="inputxt" rows="5" name="jsbAdvice"></textarea>
-					</td>
-				</tr>
-				<tr>
-					<td align="right" width="150px" valign="middle">
-						<label class="Validform_label">
-							染色部意见:
-						</label>
-					</td>
-					<td class="value" colspan="3"><textarea datatype="*" id="ranAdvice" style="width:90%;height:60px" class="inputxt" rows="5" name="ranAdvice"></textarea>
-					</td>
-				</tr>
-				<tr>
-					<td align="right" width="150px" valign="middle">
-						<label class="Validform_label">
-							缝制部意见:
-						</label>
-					</td>
-					<td class="value" colspan="3"><textarea datatype="*" id="fengAdvice" style="width:90%;height:60px" class="inputxt" rows="5" name="fengAdvice"></textarea>
-					</td>
-				</tr>
-				<tr>
-					<td align="right" width="150px" valign="middle">
-						<label class="Validform_label">
-							烫标整烫部意见:
-						</label>
-					</td>
-					<td class="value" colspan="3"><textarea datatype="*" id="biaoAdvice" style="width:90%;height:60px" class="inputxt" rows="5" name="biaoAdvice"></textarea>
-					</td>
-				</tr>
-			</c:if>
-			<c:if test="${emkEnquiry.state eq 1 && ROLE.rolecode eq 'scjl' }">
-				<tr>
-					<td align="right" width="150px" valign="middle">
-						<label class="Validform_label">
-							采购部意见:
-						</label>
-					</td>
-					<td class="value" colspan="3"><textarea datatype="*" id="caiAdvice" style="width:90%;height:60px" class="inputxt" rows="5" name="caiAdvice"></textarea>
-					</td>
-				</tr>
-				<tr>
-					<td align="right" width="150px" valign="middle">
-						<label class="Validform_label">
-							生产计划部意见:
-						</label>
-					</td>
-					<td class="value" colspan="3"><textarea datatype="*" id="scjhAdvice" style="width:90%;height:60px" class="inputxt" rows="5" name="scjhAdvice"></textarea>
-					</td>
-				</tr>
-				<tr>
-					<td align="right" width="150px" valign="middle">
-						<label class="Validform_label">
-							生产总负责人意见:
-						</label>
-					</td>
-					<td class="value" colspan="3"><textarea datatype="*" id="sczfAdvice" style="width:90%;height:60px" class="inputxt" rows="5" name="sczfAdvice"></textarea>
-					</td>
-				</tr>
-			</c:if>
+			<tr>
+				<td align="right" width="150px" valign="middle">
+					<label class="Validform_label">
+						处理意见:
+					</label>
+				</td>
+				<td class="value" colspan="3"><textarea datatype="*" id="advice" style="width:90%;height:60px" class="inputxt" rows="5" name="advice"></textarea>
+				</td>
+			</tr>
+
 
 			<%--<tr id="chooseUser">
 				<td align="right" width="150px" valign="middle">
@@ -143,7 +71,47 @@
 				</td>
 			</tr>--%>
 		</c:if>
-
+		<c:if test="${(emkEnquiry.state eq 19 && param.node eq 'replyCustomTask' )}">
+			<tr>
+				<td align="right">
+					<label class="Validform_label">
+						客户要求:
+					</label>
+				</td>
+				<td class="value" colspan="3">
+					<input name="cusType" type="radio" datatype="*" value="0">
+					需要打样&nbsp;&nbsp;
+					<input name="cusType" type="radio" datatype="*" value="1">
+					需要报价&nbsp;&nbsp;
+					<input name="cusType" type="radio" datatype="*" value="2">
+					需要打样报价
+					<span class="Validform_checktip"></span>
+					<label class="Validform_label" style="display: none;">客户要求</label>
+				</td>
+			</tr>
+			<tr id="chooseUser">
+				<td align="right" width="150px" valign="middle">
+					<label class="Validform_label">
+						指定业务员:
+					</label>
+				</td>
+				<td class="value" colspan="3">
+					<input id="realName" name="realName" type="text" readonly style="width: 150px" class="inputxt" >
+					<input name="userName"   type="hidden"  id="userName" type="text"  />
+					<t:choose  hiddenName="userName"  hiddenid="userName" url="userController.do?userSelectUserKey&userKey=业务员" name="userList1" width="700px" height="500px"
+							   icon="icon-search" title="选择处理人" textname="realName" isclear="true" isInit="true"></t:choose>
+				</td>
+			</tr>
+			<tr>
+				<td align="right" width="150px" valign="middle">
+					<label class="Validform_label">
+						处理意见:
+					</label>
+				</td>
+				<td class="value" colspan="3"><textarea datatype="*" id="ywadvice" style="width:90%;height:60px" class="inputxt" rows="5" name="ywadvice"></textarea>
+				</td>
+			</tr>
+		</c:if>
 
 </table>
 </t:formvalid>

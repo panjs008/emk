@@ -1,4 +1,6 @@
 package com.emk.bound.moutstorage.controller;
+import com.emk.approval.approval.entity.EmkApprovalEntity;
+import com.emk.approval.approvaldetail.entity.EmkApprovalDetailEntity;
 import com.emk.bound.minstorage.entity.EmkMInStorageEntity;
 import com.emk.bound.minstoragedetail.entity.EmkMInStorageDetailEntity;
 import com.emk.bound.moutstorage.entity.EmkMOutStorageEntity;
@@ -14,7 +16,9 @@ import javax.servlet.http.HttpServletResponse;
 import com.emk.storage.instorage.entity.EmkInStorageEntity;
 import com.emk.storage.storage.entity.EmkStorageEntity;
 import com.emk.storage.storagelog.entity.EmkStorageLogEntity;
+import com.emk.util.ApprovalUtil;
 import com.emk.util.ParameterUtil;
+import com.emk.util.Utils;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.*;
 import org.activiti.engine.history.HistoricActivityInstance;
@@ -162,11 +166,29 @@ public class EmkMOutStorageController extends BaseController {
 	@RequestMapping(params="emkMOutStorageDetailList")
 	public ModelAndView rkglMxList(HttpServletRequest request) {
 		Map map = ParameterUtil.getParamMaps(request.getParameterMap());
-		if ((map.get("inStorageId") != null) && (!map.get("inStorageId").equals(""))){
-			List<EmkMInStorageDetailEntity> rkglMxEntities = systemService.findHql("from EmkMInStorageDetailEntity where inStorageId=?", new Object[] { map.get("inStorageId") });
+		request.setAttribute("kdDate", DateUtils.format(new Date(), "yyyy-MM-dd"));
+		if (Utils.notEmpty(map.get("inStorageId"))){
+			List<EmkMInStorageDetailEntity> rkglMxEntities = systemService.findHql("from EmkMInStorageDetailEntity where inStorageId=?", map.get("inStorageId"));
 			request.setAttribute("rkglMxList", rkglMxEntities);
 		}
 		return new ModelAndView("com/emk/bound/moutstorage/emkMOutStorageDetailList");
+	}
+
+	@RequestMapping(params = "orderMxList")
+	public ModelAndView orderMxList(HttpServletRequest request) {
+		Map map = ParameterUtil.getParamMaps(request.getParameterMap());
+		if (Utils.notEmpty(map.get("inStorageId"))) {
+			List<EmkMInStorageDetailEntity> rkglMxEntities = systemService.findHql("from EmkMInStorageDetailEntity where inStorageId=?", map.get("inStorageId"));
+			request.setAttribute("rkglMxList", rkglMxEntities);
+		}
+		if(map.get("type").equals("0")){
+			return new ModelAndView("com/emk/bound/moutstorage/orderMxList");
+		}else if(map.get("type").equals("1")){
+			return new ModelAndView("com/emk/bound/moutstorage/orderMxList2");
+		}else if(map.get("type").equals("2")){
+			return new ModelAndView("com/emk/bound/moutstorage/orderMxList3");
+		}
+		return new ModelAndView("com/emk/bound/moutstorage/orderMxList");
 	}
 
 	/**
@@ -261,7 +283,7 @@ public class EmkMOutStorageController extends BaseController {
 	 */
 	@RequestMapping(params = "doAdd")
 	@ResponseBody
-	public AjaxJson doAdd(EmkMOutStorageEntity2 emkMOutStorage, HttpServletRequest request) {
+	public AjaxJson doAdd(EmkMOutStorageEntity emkMOutStorage, HttpServletRequest request) {
 		String message = null;
 		AjaxJson j = new AjaxJson();
 		message = "出库申请表添加成功";
@@ -274,23 +296,73 @@ public class EmkMOutStorageController extends BaseController {
 			emkMOutStorage.setLlerId(map.get("llerId"));
 			emkMOutStorageService.save(emkMOutStorage);
 
-
-			emkMOutStorageService.save(emkMOutStorage);
-			String dataRows = (String)map.get("dataRowsVal");
-			if ((dataRows != null) && (!dataRows.isEmpty())) {
+			String dataRows = map.get("orderMxListID");
+			dataRows = map.get("orderMxListID");
+			//保存原料面料数据
+			if (Utils.notEmpty(dataRows)) {
 				int rows = Integer.parseInt(dataRows);
 				for (int i = 0; i < rows; i++) {
-					EmkMInStorageDetailEntity rkglMxEntity = new EmkMInStorageDetailEntity();
-					if (map.get("rkglMxList["+i+"].proName") != null && !map.get("rkglMxList["+i+"].proName").isEmpty()) {
-						rkglMxEntity.setInStorageId(emkMOutStorage.getId());
-						rkglMxEntity.setProZnName((String)map.get("rkglMxList[" + i + "].proName"));
-						rkglMxEntity.setProNum((String)map.get("rkglMxList[" + i + "].proNum"));
-						rkglMxEntity.setBrand((String)map.get("rkglMxList[" + i + "].brand"));
-						rkglMxEntity.setTotal(map.get("rkglMxList[" + i + "].total"));
-						rkglMxEntity.setHtTotal(map.get("rkglMxList[" + i + "].htTotal"));
-						rkglMxEntity.setInTotal(map.get("rkglMxList[" + i + "].inTotal"));
-						rkglMxEntity.setActualTotal(map.get("rkglMxList[" + i + "].actualTotal"));
-						systemService.save(rkglMxEntity);
+					EmkMInStorageDetailEntity emkMInStorageDetailEntity = new EmkMInStorageDetailEntity();
+					if (Utils.notEmpty(map.get("orderMxList["+i+"].proZnName"))) {
+						emkMInStorageDetailEntity.setProZnName(map.get("orderMxList["+i+"].proZnName"));
+						emkMInStorageDetailEntity.setProNum(map.get("orderMxList["+i+"].proNum"));
+						emkMInStorageDetailEntity.setGysCode(map.get("orderMxList["+i+"].gysCode"));
+						emkMInStorageDetailEntity.setHtNum(map.get("orderMxList["+i+"].htNum"));
+						emkMInStorageDetailEntity.setBrand(map.get("orderMxList["+i+"].brand"));
+						emkMInStorageDetailEntity.setTotal(map.get("orderMxList["+i+"].total"));
+						emkMInStorageDetailEntity.setInTotal(map.get("orderMxList["+i+"].inTotal"));
+						emkMInStorageDetailEntity.setKdDate(map.get("orderMxList["+i+"].kdDate"));
+						emkMInStorageDetailEntity.setActualTotal(map.get("orderMxList["+i+"].actualTotal"));
+						emkMInStorageDetailEntity.setOutDate(map.get("orderMxList["+i+"].outDate"));
+						emkMInStorageDetailEntity.setInStorageId(emkMOutStorage.getId());
+						emkMInStorageDetailEntity.setType("0");
+						systemService.save(emkMInStorageDetailEntity);
+					}
+				}
+			}
+			dataRows = map.get("orderMxListID2");
+			//保存缝制辅料数据
+			if (Utils.notEmpty(dataRows)) {
+				int rows = Integer.parseInt(dataRows);
+				for (int i = 0; i < rows; i++) {
+					EmkMInStorageDetailEntity emkMInStorageDetailEntity = new EmkMInStorageDetailEntity();
+					if (Utils.notEmpty(map.get("orderMxList["+i+"].proZnName"))) {
+						emkMInStorageDetailEntity.setProZnName(map.get("orderMxList["+i+"].proZnName"));
+						emkMInStorageDetailEntity.setProNum(map.get("orderMxList["+i+"].proNum"));
+						emkMInStorageDetailEntity.setGysCode(map.get("orderMxList["+i+"].gysCode"));
+						emkMInStorageDetailEntity.setHtNum(map.get("orderMxList["+i+"].htNum"));
+						emkMInStorageDetailEntity.setBrand(map.get("orderMxList["+i+"].brand"));
+						emkMInStorageDetailEntity.setTotal(map.get("orderMxList["+i+"].total"));
+						emkMInStorageDetailEntity.setInTotal(map.get("orderMxList["+i+"].inTotal"));
+						emkMInStorageDetailEntity.setKdDate(map.get("orderMxList["+i+"].kdDate"));
+						emkMInStorageDetailEntity.setActualTotal(map.get("orderMxList["+i+"].actualTotal"));
+						emkMInStorageDetailEntity.setOutDate(map.get("orderMxList["+i+"].outDate"));
+						emkMInStorageDetailEntity.setInStorageId(emkMOutStorage.getId());
+						emkMInStorageDetailEntity.setType("1");
+						systemService.save(emkMInStorageDetailEntity);
+					}
+				}
+			}
+			dataRows = map.get("orderMxListID3");
+			//保存包装辅料数据
+			if (Utils.notEmpty(dataRows)) {
+				int rows = Integer.parseInt(dataRows);
+				for (int i = 0; i < rows; i++) {
+					EmkMInStorageDetailEntity emkMInStorageDetailEntity = new EmkMInStorageDetailEntity();
+					if (Utils.notEmpty(map.get("orderMxList["+i+"].proZnName"))) {
+						emkMInStorageDetailEntity.setProZnName(map.get("orderMxList["+i+"].proZnName"));
+						emkMInStorageDetailEntity.setProNum(map.get("orderMxList["+i+"].proNum"));
+						emkMInStorageDetailEntity.setGysCode(map.get("orderMxList["+i+"].gysCode"));
+						emkMInStorageDetailEntity.setHtNum(map.get("orderMxList["+i+"].htNum"));
+						emkMInStorageDetailEntity.setBrand(map.get("orderMxList["+i+"].brand"));
+						emkMInStorageDetailEntity.setTotal(map.get("orderMxList["+i+"].total"));
+						emkMInStorageDetailEntity.setInTotal(map.get("orderMxList["+i+"].inTotal"));
+						emkMInStorageDetailEntity.setKdDate(map.get("orderMxList["+i+"].kdDate"));
+						emkMInStorageDetailEntity.setActualTotal(map.get("orderMxList["+i+"].actualTotal"));
+						emkMInStorageDetailEntity.setOutDate(map.get("orderMxList["+i+"].outDate"));
+						emkMInStorageDetailEntity.setInStorageId(emkMOutStorage.getId());
+						emkMInStorageDetailEntity.setType("2");
+						systemService.save(emkMInStorageDetailEntity);
 					}
 				}
 			}
@@ -312,7 +384,7 @@ public class EmkMOutStorageController extends BaseController {
 	 */
 	@RequestMapping(params = "doUpdate")
 	@ResponseBody
-	public AjaxJson doUpdate(EmkMOutStorageEntity2 emkMOutStorage, HttpServletRequest request) {
+	public AjaxJson doUpdate(EmkMOutStorageEntity emkMOutStorage, HttpServletRequest request) {
 		String message = null;
 		AjaxJson j = new AjaxJson();
 		message = "出库申请表更新成功";
@@ -332,23 +404,78 @@ public class EmkMOutStorageController extends BaseController {
 			emkMOutStorage.setLlerId(map.get("senderUserNames"));
 			MyBeanUtils.copyBeanNotNull2Bean(emkMOutStorage, t);
 			emkMOutStorageService.saveOrUpdate(t);
-			systemService.executeSql("delete from emk_m_in_storage_detail where IN_STORAGE_ID=?", t.getId());
-
-			String dataRows = (String)map.get("dataRowsVal");
-			if ((dataRows != null) && (!dataRows.isEmpty())) {
+			String dataRows = map.get("orderMxListID");
+			dataRows = map.get("orderMxListID");
+			//保存原料面料数据
+			if (Utils.notEmpty(dataRows)) {
+				systemService.executeSql("delete from emk_m_in_storage_detail where in_storage_id = ? and type=0",t.getId());
 				int rows = Integer.parseInt(dataRows);
 				for (int i = 0; i < rows; i++) {
-					EmkMInStorageDetailEntity rkglMxEntity = new EmkMInStorageDetailEntity();
-					if (map.get("rkglMxList["+i+"].proName") != null && !map.get("rkglMxList["+i+"].proName").isEmpty()) {
-						rkglMxEntity.setInStorageId(t.getId());
-						rkglMxEntity.setProZnName((String)map.get("rkglMxList[" + i + "].proName"));
-						rkglMxEntity.setProNum((String)map.get("rkglMxList[" + i + "].proNum"));
-						rkglMxEntity.setBrand((String)map.get("rkglMxList[" + i + "].brand"));
-						rkglMxEntity.setTotal(map.get("rkglMxList[" + i + "].total"));
-						rkglMxEntity.setHtTotal(map.get("rkglMxList[" + i + "].htTotal"));
-						rkglMxEntity.setInTotal(map.get("rkglMxList[" + i + "].inTotal"));
-						rkglMxEntity.setActualTotal(map.get("rkglMxList[" + i + "].actualTotal"));
-						systemService.save(rkglMxEntity);
+					EmkMInStorageDetailEntity emkMInStorageDetailEntity = new EmkMInStorageDetailEntity();
+					if (Utils.notEmpty(map.get("orderMxList["+i+"].proZnName"))) {
+						emkMInStorageDetailEntity.setProZnName(map.get("orderMxList["+i+"].proZnName"));
+						emkMInStorageDetailEntity.setProNum(map.get("orderMxList["+i+"].proNum"));
+						emkMInStorageDetailEntity.setGysCode(map.get("orderMxList["+i+"].gysCode"));
+						emkMInStorageDetailEntity.setHtNum(map.get("orderMxList["+i+"].htNum"));
+						emkMInStorageDetailEntity.setBrand(map.get("orderMxList["+i+"].brand"));
+						emkMInStorageDetailEntity.setTotal(map.get("orderMxList["+i+"].total"));
+						emkMInStorageDetailEntity.setInTotal(map.get("orderMxList["+i+"].inTotal"));
+						emkMInStorageDetailEntity.setKdDate(map.get("orderMxList["+i+"].kdDate"));
+						emkMInStorageDetailEntity.setActualTotal(map.get("orderMxList["+i+"].actualTotal"));
+						emkMInStorageDetailEntity.setOutDate(map.get("orderMxList["+i+"].outDate"));
+						emkMInStorageDetailEntity.setInStorageId(t.getId());
+						emkMInStorageDetailEntity.setType("0");
+						systemService.save(emkMInStorageDetailEntity);
+					}
+				}
+			}
+			dataRows = map.get("orderMxListID2");
+			//保存缝制辅料数据
+			if (Utils.notEmpty(dataRows)) {
+				systemService.executeSql("delete from emk_m_in_storage_detail where in_storage_id = ? and type=1",t.getId());
+
+				int rows = Integer.parseInt(dataRows);
+				for (int i = 0; i < rows; i++) {
+					EmkMInStorageDetailEntity emkMInStorageDetailEntity = new EmkMInStorageDetailEntity();
+					if (Utils.notEmpty(map.get("orderMxList["+i+"].proZnName"))) {
+						emkMInStorageDetailEntity.setProZnName(map.get("orderMxList["+i+"].proZnName"));
+						emkMInStorageDetailEntity.setProNum(map.get("orderMxList["+i+"].proNum"));
+						emkMInStorageDetailEntity.setGysCode(map.get("orderMxList["+i+"].gysCode"));
+						emkMInStorageDetailEntity.setHtNum(map.get("orderMxList["+i+"].htNum"));
+						emkMInStorageDetailEntity.setBrand(map.get("orderMxList["+i+"].brand"));
+						emkMInStorageDetailEntity.setTotal(map.get("orderMxList["+i+"].total"));
+						emkMInStorageDetailEntity.setInTotal(map.get("orderMxList["+i+"].inTotal"));
+						emkMInStorageDetailEntity.setKdDate(map.get("orderMxList["+i+"].kdDate"));
+						emkMInStorageDetailEntity.setActualTotal(map.get("orderMxList["+i+"].actualTotal"));
+						emkMInStorageDetailEntity.setOutDate(map.get("orderMxList["+i+"].outDate"));
+						emkMInStorageDetailEntity.setInStorageId(t.getId());
+						emkMInStorageDetailEntity.setType("1");
+						systemService.save(emkMInStorageDetailEntity);
+					}
+				}
+			}
+			dataRows = map.get("orderMxListID3");
+			//保存包装辅料数据
+			if (Utils.notEmpty(dataRows)) {
+				systemService.executeSql("delete from emk_m_in_storage_detail where in_storage_id = ? and type=2",t.getId());
+
+				int rows = Integer.parseInt(dataRows);
+				for (int i = 0; i < rows; i++) {
+					EmkMInStorageDetailEntity emkMInStorageDetailEntity = new EmkMInStorageDetailEntity();
+					if (Utils.notEmpty(map.get("orderMxList["+i+"].proZnName"))) {
+						emkMInStorageDetailEntity.setProZnName(map.get("orderMxList["+i+"].proZnName"));
+						emkMInStorageDetailEntity.setProNum(map.get("orderMxList["+i+"].proNum"));
+						emkMInStorageDetailEntity.setGysCode(map.get("orderMxList["+i+"].gysCode"));
+						emkMInStorageDetailEntity.setHtNum(map.get("orderMxList["+i+"].htNum"));
+						emkMInStorageDetailEntity.setBrand(map.get("orderMxList["+i+"].brand"));
+						emkMInStorageDetailEntity.setTotal(map.get("orderMxList["+i+"].total"));
+						emkMInStorageDetailEntity.setInTotal(map.get("orderMxList["+i+"].inTotal"));
+						emkMInStorageDetailEntity.setKdDate(map.get("orderMxList["+i+"].kdDate"));
+						emkMInStorageDetailEntity.setActualTotal(map.get("orderMxList["+i+"].actualTotal"));
+						emkMInStorageDetailEntity.setOutDate(map.get("orderMxList["+i+"].outDate"));
+						emkMInStorageDetailEntity.setInStorageId(t.getId());
+						emkMInStorageDetailEntity.setType("2");
+						systemService.save(emkMInStorageDetailEntity);
 					}
 				}
 			}
@@ -375,6 +502,13 @@ public class EmkMOutStorageController extends BaseController {
 			emkMOutStorage = emkMOutStorageService.getEntity(EmkMOutStorageEntity.class, emkMOutStorage.getId());
 			req.setAttribute("emkMOutStoragePage", emkMOutStorage);
 		}
+		if(emkMOutStorage.getType().equals("0")){
+			req.setAttribute("pactTypeName", "原料面料");
+		}else if(emkMOutStorage.getType().equals("1")){
+			req.setAttribute("pactTypeName", "缝制辅料");
+		}else if(emkMOutStorage.getType().equals("2")){
+			req.setAttribute("pactTypeName", "包装辅料");
+		}
 		req.getSession().setAttribute("orderFinish", "");
 
 		return new ModelAndView("com/emk/bound/moutstorage/emkMOutStorage-add");
@@ -389,6 +523,14 @@ public class EmkMOutStorageController extends BaseController {
 		if (StringUtil.isNotEmpty(emkMOutStorage.getId())) {
 			emkMOutStorage = emkMOutStorageService.getEntity(EmkMOutStorageEntity.class, emkMOutStorage.getId());
 			req.setAttribute("emkMOutStoragePage", emkMOutStorage);
+
+			if(emkMOutStorage.getType().equals("0")){
+				req.setAttribute("pactTypeName", "原料面料");
+			}else if(emkMOutStorage.getType().equals("1")){
+				req.setAttribute("pactTypeName", "缝制辅料");
+			}else if(emkMOutStorage.getType().equals("2")){
+				req.setAttribute("pactTypeName", "包装辅料");
+			}
 		}
 		req.getSession().setAttribute("orderFinish", "");
 
@@ -574,7 +716,8 @@ public class EmkMOutStorageController extends BaseController {
 		try {
 			int flag = 0;
 			TSUser user = (TSUser)request.getSession().getAttribute("LOCAL_CLINET_USER");
-			Map map = ParameterUtil.getParamMaps(request.getParameterMap());
+			Map<String, String> map = ParameterUtil.getParamMaps(request.getParameterMap());
+
 			if ((emkMOutStorageEntity.getId() == null) || (emkMOutStorageEntity.getId().isEmpty())) {
 				for (String id : map.get("ids").toString().split(",")) {
 					EmkMOutStorageEntity outStorageEntity = systemService.getEntity(EmkMOutStorageEntity.class, id);
@@ -596,13 +739,30 @@ public class EmkMOutStorageController extends BaseController {
 					variables.put("inputUser", t.getId());
 					message = "操作成功";
 
+					EmkApprovalEntity b = systemService.findUniqueByProperty(EmkApprovalEntity.class,"formId",t.getId());
+					if(Utils.isEmpty(b)){
+						b = new EmkApprovalEntity();
+						EmkApprovalDetailEntity approvalDetailEntity = new EmkApprovalDetailEntity();
+						ApprovalUtil.saveApproval(b,6,t.getCkNo(),t.getId(),user);
+						systemService.save(b);
+						ApprovalUtil.saveApprovalDetail(approvalDetailEntity,b.getId(),"出库申请单","outstorageTask","提交",user);
+						systemService.save(approvalDetailEntity);
+					}
+
 					List<Task> task = taskService.createTaskQuery().taskAssignee(id).list();
+					TSUser makerUser = systemService.findUniqueByProperty(TSUser.class,"userName",t.getCreateBy());
+					TSUser bpmUser = null;
+					if (task.size() > 0) {
+						bpmUser = systemService.get(TSUser.class,b.getBpmSherId());
+					}else{
+						bpmUser = systemService.get(TSUser.class,b.getCommitId());
+					}
 					if (task.size() > 0) {
 						Task task1 = (Task)task.get(task.size() - 1);
 						if (task1.getTaskDefinitionKey().equals("outstorageTask")) {
 							taskService.complete(task1.getId(), variables);
 						}
-						if (task1.getTaskDefinitionKey().equals("checkTask")) {
+						/*if (task1.getTaskDefinitionKey().equals("checkTask")) {
 							t.setLeader(user.getRealName());
 							t.setLeadUserId(user.getId());
 							t.setLeadAdvice(emkMOutStorageEntity.getLeadAdvice());
@@ -620,7 +780,7 @@ public class EmkMOutStorageController extends BaseController {
 									Task taskH = (Task)taskList.get(taskList.size() - 1);
 									HistoricTaskInstance historicTaskInstance = hisTasks.get(hisTasks.size() - 2);
 									turnTransition(taskH.getId(), historicTaskInstance.getTaskDefinitionKey(), variables);
-									Map activityMap = systemService.findOneForJdbc("SELECT GROUP_CONCAT(t0.ID_) ids,GROUP_CONCAT(t0.TASK_ID_) taskids FROM act_hi_actinst t0 WHERE t0.ASSIGNEE_=? AND t0.ACT_ID_=? ORDER BY ID_ ASC", new Object[] { t.getId(), historicTaskInstance.getTaskDefinitionKey() });
+									Map activityMap = systemService.findOneForJdbc("SELECT GROUP_CONCAT(t0.ID_) ids,GROUP_CONCAT(t0.TASK_ID_) taskids FROM act_hi_actinst t0 WHERE t0.ASSIGNEE_=? AND t0.ACT_ID_=? ORDER BY ID_ ASC", t.getId(), historicTaskInstance.getTaskDefinitionKey() });
 									String[] activitIdArr = activityMap.get("ids").toString().split(",");
 									String[] taskIdArr = activityMap.get("taskids").toString().split(",");
 									systemService.executeSql("UPDATE act_hi_taskinst SET  NAME_=CONCAT('【驳回后】','',NAME_) WHERE ASSIGNEE_>=? AND ID_=?",t.getId(), taskIdArr[1]);
@@ -657,7 +817,7 @@ public class EmkMOutStorageController extends BaseController {
 
 							t.setState("2");
 							taskService.complete(task1.getId(), variables);
-						}
+						}*/
 					}else {
 						EmkStorageLogEntity storageLogEntity = new EmkStorageLogEntity();
 						List<EmkMInStorageDetailEntity> inStorageDetailEntityList = systemService.findHql("from EmkMInStorageDetailEntity where inStorageId=?",t.getId());
@@ -673,6 +833,13 @@ public class EmkMOutStorageController extends BaseController {
 						task = taskService.createTaskQuery().taskAssignee(id).list();
 						Task task1 = task.get(task.size() - 1);
 						taskService.complete(task1.getId(), variables);
+
+						bpmUser = systemService.get(TSUser.class,t.getApplerId());
+						saveSmsAndEmailForMany("业务经理","出库申请单【生产跟单员】","您有【"+b.getCreateName()+"】重新提交的出库申请单，单号："+b.getWorkNum()+"，请及时审核。",user.getUserName());
+						t.setState("1");
+						b.setStatus(1);
+						b.setBpmStatus("0");
+						b.setProcessName("出库申请单【仓管员】");
 					}
 					systemService.saveOrUpdate(t);
 				}
@@ -688,160 +855,6 @@ public class EmkMOutStorageController extends BaseController {
 		return j;
 	}
 
-	/**
-	 * 流程转向操作
-	 *
-	 * @param taskId
-	 *            当前任务ID
-	 * @param activityId
-	 *            目标节点任务ID
-	 * @param variables
-	 *            流程变量
-	 * @throws Exception
-	 */
-	private void turnTransition(String taskId, String activityId,
-								Map<String, Object> variables) throws Exception {
-		// 当前节点
-		ActivityImpl currActivity = findActivitiImpl(taskId, null);
-		// 清空当前流向
-		List<PvmTransition> oriPvmTransitionList = clearTransition(currActivity);
-		// 创建新流向
-		TransitionImpl newTransition = currActivity.createOutgoingTransition();
-		// 目标节点
-		ActivityImpl pointActivity = findActivitiImpl(taskId, activityId);
-		// 设置新流向的目标节点
-		newTransition.setDestination(pointActivity);
-		// 执行转向任务
-		taskService.complete(taskId, variables);
-		// 删除目标节点新流入
-		pointActivity.getIncomingTransitions().remove(newTransition);
-		// 还原以前流向
-		restoreTransition(currActivity, oriPvmTransitionList);
-	}
-
-	/**
-	 * 清空指定活动节点流向
-	 *
-	 * @param activityImpl
-	 *            活动节点
-	 * @return 节点流向集合
-	 */
-	private List<PvmTransition> clearTransition(ActivityImpl activityImpl) {
-		// 存储当前节点所有流向临时变量
-		List<PvmTransition> oriPvmTransitionList = new ArrayList<PvmTransition>();
-		// 获取当前节点所有流向，存储到临时变量，然后清空
-		List<PvmTransition> pvmTransitionList = activityImpl
-				.getOutgoingTransitions();
-		for (PvmTransition pvmTransition : pvmTransitionList) {
-			oriPvmTransitionList.add(pvmTransition);
-		}
-		pvmTransitionList.clear();
-
-		return oriPvmTransitionList;
-	}
-
-	/**
-	 * 还原指定活动节点流向
-	 *
-	 * @param activityImpl
-	 *            活动节点
-	 * @param oriPvmTransitionList
-	 *            原有节点流向集合
-	 */
-	private void restoreTransition(ActivityImpl activityImpl,
-								   List<PvmTransition> oriPvmTransitionList) {
-		// 清空现有流向
-		List<PvmTransition> pvmTransitionList = activityImpl
-				.getOutgoingTransitions();
-		pvmTransitionList.clear();
-		// 还原以前流向
-		for (PvmTransition pvmTransition : oriPvmTransitionList) {
-			pvmTransitionList.add(pvmTransition);
-		}
-	}
-
-	/**
-	 * 根据任务ID获取流程定义
-	 *
-	 * @param taskId
-	 *            任务ID
-	 * @return
-	 * @throws Exception
-	 */
-	private ProcessDefinitionEntity findProcessDefinitionEntityByTaskId(
-			String taskId) throws Exception {
-		// 取得流程定义
-		ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) ((RepositoryServiceImpl) repositoryService)
-				.getDeployedProcessDefinition(findTaskById(taskId)
-						.getProcessDefinitionId());
-
-		if (processDefinition == null) {
-			throw new Exception("流程定义未找到!");
-		}
-
-		return processDefinition;
-	}
-
-
-
-	/**
-	 * 根据任务ID和节点ID获取活动节点 <br>
-	 *
-	 * @param taskId
-	 *            任务ID
-	 * @param activityId
-	 *            活动节点ID <br>
-	 *            如果为null或""，则默认查询当前活动节点 <br>
-	 *            如果为"end"，则查询结束节点 <br>
-	 *
-	 * @return
-	 * @throws Exception
-	 */
-	private ActivityImpl findActivitiImpl(String taskId, String activityId)
-			throws Exception {
-		// 取得流程定义
-		ProcessDefinitionEntity processDefinition = findProcessDefinitionEntityByTaskId(taskId);
-
-		// 获取当前活动节点ID
-		if (activityId == null || activityId.isEmpty()) {
-			activityId = findTaskById(taskId).getTaskDefinitionKey();
-		}
-
-		// 根据流程定义，获取该流程实例的结束节点
-		if (activityId.toUpperCase().equals("END")) {
-			for (ActivityImpl activityImpl : processDefinition.getActivities()) {
-				List<PvmTransition> pvmTransitionList = activityImpl
-						.getOutgoingTransitions();
-				if (pvmTransitionList.isEmpty()) {
-					return activityImpl;
-				}
-			}
-		}
-
-		// 根据节点ID，获取对应的活动节点
-		ActivityImpl activityImpl = ((ProcessDefinitionImpl) processDefinition)
-				.findActivity(activityId);
-
-		return activityImpl;
-	}
-
-	/**
-	 * 根据任务ID获得任务实例
-	 *
-	 * @param taskId
-	 *            任务ID
-	 * @return
-	 * @throws Exception
-	 */
-	private TaskEntity findTaskById(String taskId) throws Exception {
-		TaskEntity task = (TaskEntity) taskService.createTaskQuery().taskId(
-				taskId).singleResult();
-		if (task == null) {
-			throw new Exception("任务实例未找到!");
-		}
-		return task;
-	}
-
 	@RequestMapping(params="goWork")
 	public ModelAndView goWork(EmkMOutStorageEntity emkMOutStorageEntity, HttpServletRequest req) {
 		if (StringUtil.isNotEmpty(emkMOutStorageEntity.getId())) {
@@ -853,123 +866,11 @@ public class EmkMOutStorageController extends BaseController {
 
 	@RequestMapping(params="goTime")
 	public ModelAndView goTime(EmkMOutStorageEntity emkMOutStorageEntity, HttpServletRequest req, DataGrid dataGrid) {
-		String sql = "";String countsql = "";
-		Map map = ParameterUtil.getParamMaps(req.getParameterMap());
-
-		sql = "SELECT DATE_FORMAT(t1.START_TIME_, '%Y-%m-%d %H:%i:%s') startTime,t1.*,CASE \n" +
-				" WHEN t1.TASK_DEF_KEY_='outstorageTask' THEN t2.create_name \n" +
-				" WHEN t1.TASK_DEF_KEY_='checkTask' THEN t2.leader \n" +
-				" WHEN t1.TASK_DEF_KEY_='cwTask' THEN t2.cl_user_name \n" +
-				" WHEN t1.TASK_DEF_KEY_='ckTask' THEN t2.ck_user_name \n ELSE ''\n" +
-
-				" END workname FROM act_hi_taskinst t1 \n" +
-				" LEFT JOIN emk_m_out_storage t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='" + map.get("id") + "' ";
-
-		countsql = " SELECT COUNT(1) FROM act_hi_taskinst t1 where ASSIGNEE_='" + map.get("id") + "' ";
-		if (dataGrid.getPage() == 1) {
-			sql = sql + " limit 0, " + dataGrid.getRows();
-		} else {
-			sql = sql + "limit " + (dataGrid.getPage() - 1) * dataGrid.getRows() + "," + dataGrid.getRows();
-		}
-		systemService.listAllByJdbc(dataGrid, sql, countsql);
-		req.setAttribute("taskList", dataGrid.getResults());
-		if (dataGrid.getResults().size() > 0) {
-			req.setAttribute("stepProcess", Integer.valueOf(dataGrid.getResults().size() - 1));
-		} else {
-			req.setAttribute("stepProcess", Integer.valueOf(0));
-		}
-		emkMOutStorageEntity = emkMOutStorageService.getEntity(EmkMOutStorageEntity.class, emkMOutStorageEntity.getId());
-		req.setAttribute("emkOutStorage", emkMOutStorageEntity);
+		EmkApprovalEntity approvalEntity = systemService.findUniqueByProperty(EmkApprovalEntity.class,"formId",emkMOutStorageEntity.getId());
+		List<EmkApprovalDetailEntity> approvalDetailEntityList = systemService.findHql("from EmkApprovalDetailEntity where approvalId=? order by approveDate asc",approvalEntity.getId());
+		req.setAttribute("approvalDetailEntityList", approvalDetailEntityList);
+		req.setAttribute("approvalEntity", approvalEntity);
+		req.setAttribute("createDate", org.jeecgframework.core.util.DateUtils.date2Str(approvalEntity.getCreateDate(), org.jeecgframework.core.util.DateUtils.datetimeFormat));
 		return new ModelAndView("com/emk/bound/moutstorage/time");
-
-	}
-
-	@RequestMapping(params="goProcess")
-	public ModelAndView goProcess(EmkMOutStorageEntity emkMOutStorageEntity, HttpServletRequest req) {
-		EmkMOutStorageEntity t = systemService.get(EmkMOutStorageEntity.class, emkMOutStorageEntity.getId());
-		List<Task> task = taskService.createTaskQuery().taskAssignee(t.getId()).list();
-		if (task.size() > 0) {
-			Task task1 = (Task)task.get(task.size() - 1);
-			req.getSession().setAttribute("orderPorcess", task1);
-			req.getSession().setAttribute("outFinish", "0");
-		}else if (t.getState().equals("4")) {
-			req.getSession().setAttribute("outFinish", "1");
-		}else {
-			req.getSession().setAttribute("outFinish", "0");
-			req.getSession().setAttribute("orderPorcess", null);
-		}
-		return new ModelAndView("com/emk/bound/moutstorage/emkMOutStorage-process");
-
-	}
-
-	@RequestMapping(params="process")
-	public ModelAndView process(EmkMOutStorageEntity emkMOutStorageEntity, HttpServletRequest req) {
-		return new ModelAndView("com/emk/bound/moutstorage/process");
-	}
-
-	@RequestMapping(params="getCurrentProcess")
-	@ResponseBody
-	public AjaxJson getCurrentProcess(EmkMOutStorageEntity emkMOutStorageEntity, HttpServletRequest request) {
-		String message = null;
-		AjaxJson j = new AjaxJson();
-		EmkMOutStorageEntity t = systemService.get(EmkMOutStorageEntity.class, emkMOutStorageEntity.getId());
-		List<Task> task = taskService.createTaskQuery().taskAssignee(t.getId()).list();
-		if (task.size() > 0) {
-			Task task1 = (Task)task.get(task.size() - 1);
-			j.setMsg(task1.getName());
-			request.getSession().setAttribute("orderPorcess", task1);
-			request.getSession().setAttribute("orderFinish", "0");
-		}else if (t.getState().equals("2")) {
-			j.setMsg("完成");
-			request.getSession().setAttribute("orderFinish", "1");
-		}else {
-			j.setMsg("出库申请单");
-			request.getSession().setAttribute("orderFinish", "0");
-			request.getSession().setAttribute("orderPorcess", null);
-		}
-		return j;
-	}
-
-	@RequestMapping(params="showProcess")
-	public void showProcess(HttpServletRequest req, HttpServletResponse response) throws Exception {
-		Map map = ParameterUtil.getParamMaps(req.getParameterMap());
-
-		List<Task> task = taskService.createTaskQuery().taskAssignee(map.get("id").toString()).list();
-		String processInstanceId = "";
-		EmkMOutStorageEntity t = emkMOutStorageService.get(EmkMOutStorageEntity.class, map.get("id").toString());
-		if (task.size() > 0) {
-			Task task1 = (Task)task.get(task.size() - 1);
-			processInstanceId = task1.getProcessInstanceId();
-		}else if (t.getState().equals("2")) {
-			Map hisPorcess = systemService.findOneForJdbc("SELECT PROC_INST_ID_ processid FROM act_hi_taskinst WHERE ASSIGNEE_=? LIMIT 0,1 ", new Object[] { map.get("id").toString() });
-			processInstanceId = String.valueOf(hisPorcess.get("processid"));
-		}
-		if (processInstanceId != null && !processInstanceId.isEmpty()) {
-			HistoricProcessInstance processInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
-
-			BpmnModel bpmnModel = repositoryService.getBpmnModel(processInstance.getProcessDefinitionId());
-			processEngineConfiguration = processEngine.getProcessEngineConfiguration();
-			Context.setProcessEngineConfiguration((ProcessEngineConfigurationImpl)processEngineConfiguration);
-
-			ProcessDiagramGenerator diagramGenerator = processEngineConfiguration.getProcessDiagramGenerator();
-			ProcessDefinitionEntity definitionEntity = (ProcessDefinitionEntity)repositoryService.getProcessDefinition(processInstance.getProcessDefinitionId());
-
-			List<HistoricActivityInstance> highLightedActivitList = historyService.createHistoricActivityInstanceQuery().processInstanceId(processInstanceId).list();
-
-			List<String> highLightedActivitis = new ArrayList();
-
-			List<String> highLightedFlows = ParameterUtil.getHighLightedFlows(definitionEntity, highLightedActivitList);
-			for (HistoricActivityInstance tempActivity : highLightedActivitList) {
-				String activityId = tempActivity.getActivityId();
-				highLightedActivitis.add(activityId);
-			}
-			InputStream imageStream = diagramGenerator.generateDiagram(bpmnModel, "png", highLightedActivitis, highLightedFlows, "宋体", "宋体", null, 1.0D);
-
-			byte[] b = new byte[1024];
-			int len;
-			while ((len = imageStream.read(b, 0, 1024)) != -1) {
-				response.getOutputStream().write(b, 0, len);
-			}
-		}
 	}
 }

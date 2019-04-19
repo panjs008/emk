@@ -11,14 +11,17 @@
 	<meta name="keywords" content="外贸跟单管理系统">
     <meta name="description" content="外贸跟单管理系统">
     <title>外贸跟单管理系统</title>
-    <link href="plug-in-ui/hplus/css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
+
+	<link href="plug-in-ui/hplus/css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
 	<link rel="stylesheet" href="plug-in/themes/fineui/common/css/sccl.css">
 	<link rel="stylesheet" type="text/css" href="plug-in/themes/fineui/common/skin/qingxin/skin.css" id="layout-skin"/>
 	<link rel="stylesheet" href="plug-in/themes/fineui/common/iconfont/iconfont.css">
 	<link rel="stylesheet" href="plug-in/themes/fineui/smart-menu/smartMenu.css">
+
+
 	<style>
 	.titlerow{
-		display:table; 
+		display:table;
 		width: 150px;
 		position: absolute;
 	    top: 50%;
@@ -35,9 +38,9 @@
 		vertical-align: middle;
 	    padding: 0;
     }
-    
+
     .searchbox{
-        border-radius: 0;    
+        border-radius: 0;
         color: #ddd;
 	    border-width: 1px;
 	    border-style: solid;
@@ -53,8 +56,8 @@
 	    display: inline-block;
 	    text-align: start;
 	    margin: 0em 0em 0em 0em;
-	    font: 12.6667px Arial;padding: 4px 6px;  
-	    width: 100%;    
+	    font: 12.6667px Arial;padding: 4px 6px;
+	    width: 100%;
 	    box-sizing: border-box;
     }
     .searchbox-focus{color: #fff;}
@@ -63,7 +66,7 @@
      background-color:rgba(255, 255, 255, 0.10);
     }
    .ui-iconss-focus i{
-   	 color: #fff; 
+   	 color: #fff;
    	 font-size:17px;
    }
     .ui-iconss{
@@ -81,7 +84,7 @@
 	    text-rendering: auto;
 	    -webkit-font-smoothing: antialiased;
 	    -moz-osx-font-smoothing: grayscale;
-	    text-indent: 0;    
+	    text-indent: 0;
     }
     .iconssdiv{
 	    position: absolute;
@@ -102,7 +105,7 @@
    		 padding:0 15px;
    		 left:-15px;
 		}
-		
+
 		.colorgray{color:#888;font-size:16px !important;}
 		.content-tab.active .colorgray{color:#007465}
 		.f-tabstrip-header-inkbar{
@@ -122,9 +125,24 @@
 			 background-color: #ddd;
 		}
 		/*.ccrame{
-		 transition:all 1s ease-out 
-		
+		 transition:all 1s ease-out
+
 		}*/
+		.label {
+			display: inline;
+			padding: .2em .6em .3em;
+			font-size: 75%;
+			font-weight: 700;
+			line-height: 1;
+			color: #fff;
+			text-align: center;
+			white-space: nowrap;
+			vertical-align: baseline;
+			border-radius: .45em;
+		}
+		.label-warning {
+			background-color: #f0ad4e;
+		}
 	</style>
 </head>
 <body style="overflow-y:hidden;">
@@ -133,7 +151,7 @@
 		<!-- top -->
 		<header class="layout-header" >
 			<span class="header-logo"><img src="images/logo.jpg" style="width:55px; height: 55px;display:inline-block;border-radius:20px"/></span>
-			
+
 			<%--<div class="titlerow" >
 				<div class="titlecell">
 					<input id="searchbox" placeholder="请输入搜索关键字" class="searchbox" style="padding-right: 23px;border:0">
@@ -144,7 +162,15 @@
 				</div>
 			</div>--%>
 			<ul class="header-bar">
-			
+				<li class="header-bar-nav personInfo" onclick="goAllMessage();">
+					<i class="fa fa-envelope"></i>
+					<span class="label label-warning" id="warnId"><lable class="count">0</lable></span>
+				</li>
+
+				<li class="header-bar-nav personInfo" onclick="javascript:dbTab();">
+					<i class="fa fa-bell"></i><span class="label label-warning" ><lable class="count2">0</lable></span>
+				</li>
+
 			<%--<li class="header-bar-nav personInfo" style="cursor:pointer;">
 				<i class="icon-font">&#xe751;</i>&nbsp;
 				<span>控制面板</span>
@@ -166,21 +192,6 @@
 					</a>
 				</li>
 				<li class="header-bar-nav">
-					<a href="javascript:waitTab();" title="待受理工单">
-						<i class="fa fa-arrow-circle-right"></i><span class="bigger-110 no-text-shadow">待受理工单</span>
-					</a>
-				</li>
-				<li class="header-bar-nav">
-					<a href="javascript:dpTab();" title="待派工单">
-						<i class="fa fa-edit"></i><span class="bigger-110 no-text-shadow">待派工单</span>
-					</a>
-				</li>
-				<li class="header-bar-nav">
-					<a href="javascript:dbTab();" title="待办工单">
-						<i class="fa fa-arrow-circle-left"></i><span class="bigger-110 no-text-shadow">待办工单</span>
-					</a>
-				</li>
-				<li class="header-bar-nav">
 					<a href="javascript:ybTab();" title="已办工单">
 						<i class="fa fa-search"></i><span class="bigger-110 no-text-shadow">已办工单</span>
 					</a>
@@ -190,8 +201,8 @@
 					<i class="icon-font">&#xe615;</i>&nbsp;风格切换
 				</a>
 			</li>--%>
-				
-				
+
+
 			<li class="header-bar-nav personInfo">
 				<a href="javascript:;" id="personInfo">
 					<span>
@@ -200,7 +211,7 @@
 						<i class="icon-font adminIcon" style="margin-right:5px;">&#xe607;</i>
 					</span>
 				</a>
-				
+
 				<ul class="header-dropdown-menu" style="padding-right:4px">
 					<li>
 						<a href="javascript:openwindow('个人信息','userController.do?userinfo')">
@@ -219,25 +230,25 @@
 						</a>
 					</li>
 				</ul>
-				
+
 			</li>
 		</ul>
 	</header>
-		
+
 		<!-- 左侧菜单 -->
 		<aside class="layout-side">
 			<ul class="side-menu">
 				<t:menu style="fineui" menuFun="${menuMap}"></t:menu>
 			</ul>
 		</aside>
-		
+
 		<!-- 切换左侧菜单栏 -->
 	<!-- 	<div class="layout-side-arrow">
 			<div class="layout-side-arrow-icon">
 				<i class="icon-font">&#xe60e;</i>
 			</div>
 		</div> -->
-		
+
 		<!-- 右侧home -->
 		<section class="layout-main">
 			<div class="layout-main-tab" >
@@ -249,42 +260,16 @@
                         <span class="fa fa-home colorgray"></span>首页</a>
                     </div>
                 </nav>
-                 
+
                 <button id="activeTabToolRefresh" class="tab-btn mytabbtn" style="right:30px;" title="刷新本页"><i class="icon-font" style="font-size:16px;">&#xe60b;</i></button>
                 <button class="tab-btn btn-right"><i class="icon-font">&#xe629;</i></button>
 			</div>
 			<div class="layout-main-body" style="margin:0;overflow-y: hidden;">
-				<%--<c:choose>
-					<c:when test="${ROLE.rolecode eq 'cgjl' || ROLE.rolecode eq 'cgy' }">
-						<iframe class="body-iframe" name="iframe0" width="100%" height="100%"
-								src="emkMaterialContractController.do?list" frameborder="0" data-id="home.html" seamless></iframe>
-					</c:when>
-					<c:when test="${ROLE.rolecode eq 'jsjl' || ROLE.rolecode eq 'jsy' }">
-						<iframe class="body-iframe" name="iframe0" width="100%" height="100%"
-								src="emkMaterialController.do?list" frameborder="0" data-id="home.html" seamless></iframe>
-					</c:when>
-					<c:when test="${ROLE.rolecode eq 'cwjl' || ROLE.rolecode eq 'cw' }">
-						<iframe class="body-iframe" name="iframe0" width="100%" height="100%"
-								src="emkContractController.do?list" frameborder="0" data-id="home.html" seamless></iframe>
-					</c:when>
-					<c:when test="${ROLE.rolecode eq 'zjjl' }">
-						<iframe class="body-iframe" name="iframe0" width="100%" height="100%"
-								src="emkCheckController.do?list" frameborder="0" data-id="home.html" seamless></iframe>
-					</c:when>
-					<c:when test="${ROLE.rolecode eq 'zjy' }">
-						<iframe class="body-iframe" name="iframe0" width="100%" height="100%"
-								src="emkQualityCheckController.do?list" frameborder="0" data-id="home.html" seamless></iframe>
-					</c:when>
-					<c:otherwise>
-						<iframe class="body-iframe" name="iframe0" width="100%" height="100%"
-								src="emkWorkOrderController.do?list" frameborder="0" data-id="home.html" seamless></iframe>
-					</c:otherwise>
-				</c:choose>--%>
 				<iframe class="body-iframe" name="iframe0" width="100%" height="100%"
-						src="emkWorkOrderController.do?list" frameborder="0" data-id="home.html" seamless></iframe>
+						src="emkApprovalController.do?list" frameborder="0" data-id="home.html" seamless></iframe>
 			</div>
 		</section>
-		
+
 	</div>
 
 	</div>
@@ -292,29 +277,22 @@
 
 	<script type="text/javascript" src="plug-in/themes/fineui/common/lib/jquery-1.9.0.min.js"></script>
 	<script type="text/javascript" src="plug-in/themes/fineui/common/js/sccl.js"></script>
+	<script type="text/javascript" src="plug-in/tools/count.js"></script>
+
 	<script type="text/javascript" src="plug-in/themes/fineui/common/js/sccl-util.js"></script>
 	<t:base type="tools"></t:base>
 	<script type="text/javascript" src="plug-in/themes/fineui/smart-menu/jquery-smartMenu.js"></script>
 	<script src="plug-in/jquery-plugs/storage/jquery.storageapi.min.js"></script>
 	<script type="text/javascript">
+		var t,n,count = 0;
 	function logout(){
 		location.href="loginController.do?logout";
 	}
-	function goToAdd(){
-		createwindow("新建工单" , "uRepairController.do?goAdd" , 1000, 500);
-	}
-	function waitTab(){
-		addOneTab('待受理工单', 'uRepairController.do?waitList&status=1');
-	}
-	function dpTab(){
-		addOneTab('待派工单', 'uRepairController.do?dpList&status=2');
-	}
-	function dbTab(){
-		addOneTab('待办工单', 'uRepairController.do?dfpList&status=3');
-	}
-	function ybTab(){
-		addOneTab('已办工单', 'uRepairController.do?finishList');
-	}
+
+		function dbTab(){
+			addOneTab('待审核工单', 'emkApprovalController.do?list');
+		}
+
 	function isMobile() {
 		var userAgentInfo = navigator.userAgent;
 		var mobileAgents = [ "Android", "iPhone", "SymbianOS", "Windows Phone", "iPad","iPod"];
@@ -337,7 +315,42 @@
 
 		return mobile_flag;
 	}
+
+		function goAllMessage(){
+			var addurl = "tSSmsController.do?tSSms";
+			createdetailwindow("消息", addurl, 900, 400);
+		}
+
+	function getNoticeList(){
+		var url = "noticeController.do?getNoticeList";
+		$.ajax({
+			url: url,
+			type: "GET",
+			dataType: "JSON",
+			async: false,
+			success: function (data) {
+				if (data.success) {
+					//$("#warnId").html(data.obj);
+					$(function(){
+						$(".count").numberRock({
+							lastNumber:data.obj.countNum1,
+							duration:2000,
+							easing:'swing',  //慢快慢
+						});
+						$(".count2").numberRock({
+							lastNumber:data.obj.countNum2,
+							duration:2000,
+							easing:'swing',  //慢快慢
+						});
+					});
+				}
+			}
+		});
+	}
 	$(function(){
+		getNoticeList();
+		t = setInterval("getNoticeList()", 30000);//30秒执行一次
+
 		//刷新本页面
 		//window.location.href = "uRepairController.do?mRepair";
 		if(isMobile()){
@@ -369,7 +382,7 @@
 		});
 		$("body").css("height",document.documentElement.clientHeight);
 	});
-	
+
 	$(".personInfo").hover(function(){
 	    $(this).find(".adminIcon").html("&#xe504;");
 	    $(this).children(".header-dropdown-menu").css("width",$(this).width()-5);

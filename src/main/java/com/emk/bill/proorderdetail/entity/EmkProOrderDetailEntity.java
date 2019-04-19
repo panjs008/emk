@@ -2,12 +2,9 @@ package com.emk.bill.proorderdetail.entity;
 
 import java.io.Serializable;
 import java.util.Date;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
+import com.emk.check.sizecheck.entity.EmkSizeTotalEntityD;
 import org.hibernate.annotations.GenericGenerator;
 import org.jeecgframework.poi.excel.annotation.Excel;
 
@@ -21,8 +18,12 @@ public class EmkProOrderDetailEntity implements Serializable {
     private String sysOrgCode;
     @Excel(name = "订单ID")
     private String proOrderId;
+    @Excel(name = "订单号")
+    private String orderNo;
     @Excel(name = "款号")
     private String sampleNo;
+    @Excel(name = "描述")
+    private String sampleDesc;
     @Excel(name = "数量")
     private String total;
     @Excel(name = "尺码")
@@ -41,6 +42,27 @@ public class EmkProOrderDetailEntity implements Serializable {
     private String brand;
     @Excel(name = "单位")
     private String unit;
+    private String sortDesc;
+
+    @Excel(name = "金额")
+    private String sumPrice;
+    @Excel(name = "总数量")
+    private String sumTotal;
+    @Excel(name = "总金额")
+    private String sumMoney;
+    @Excel(name = "货期")
+    private String hqDate;
+
+    @Excel(name = "总箱数")
+    private String sumBox;
+    @Excel(name = "总体积")
+    private String sumVol;
+    @Excel(name = "总毛重")
+    private String sumMao;
+    @Excel(name = "总净重")
+    private String sumJz;
+
+    private EmkSizeTotalEntityD emkSizeTotalEntity;
 
     @Id
     @GeneratedValue(generator = "paymentableGenerator")
@@ -187,5 +209,113 @@ public class EmkProOrderDetailEntity implements Serializable {
 
     public void setUnit(String unit) {
         this.unit = unit;
+    }
+
+    @Column(name = "sort_desc", nullable = true, length = 12)
+    public String getSortDesc() {
+        return sortDesc;
+    }
+
+    public void setSortDesc(String sortDesc) {
+        this.sortDesc = sortDesc;
+    }
+
+    @Column(name = "sum_total", nullable = true, length = 12)
+    public String getSumTotal() {
+        return sumTotal;
+    }
+
+    public void setSumTotal(String sumTotal) {
+        this.sumTotal = sumTotal;
+    }
+
+    @Column(name = "order_no", nullable = true, length = 12)
+    public String getOrderNo() {
+        return orderNo;
+    }
+
+    public void setOrderNo(String orderNo) {
+        this.orderNo = orderNo;
+    }
+
+    @Column(name = "sample_desc", nullable = true, length = 12)
+    public String getSampleDesc() {
+        return sampleDesc;
+    }
+
+    public void setSampleDesc(String sampleDesc) {
+        this.sampleDesc = sampleDesc;
+    }
+
+    @Column(name = "sum_money", nullable = true, length = 12)
+    public String getSumMoney() {
+        return sumMoney;
+    }
+
+    public void setSumMoney(String sumMoney) {
+        this.sumMoney = sumMoney;
+    }
+
+    @Column(name = "hq_date", nullable = true, length = 12)
+    public String getHqDate() {
+        return hqDate;
+    }
+
+    public void setHqDate(String hqDate) {
+        this.hqDate = hqDate;
+    }
+
+    @Column(name = "sum_price", nullable = true, length = 12)
+    public String getSumPrice() {
+        return sumPrice;
+    }
+
+    public void setSumPrice(String sumPrice) {
+        this.sumPrice = sumPrice;
+    }
+
+    @Column(name = "sum_box", nullable = true, length = 12)
+    public String getSumBox() {
+        return sumBox;
+    }
+
+    public void setSumBox(String sumBox) {
+        this.sumBox = sumBox;
+    }
+
+    @Column(name = "sum_vol", nullable = true, length = 12)
+    public String getSumVol() {
+        return sumVol;
+    }
+
+    public void setSumVol(String sumVol) {
+        this.sumVol = sumVol;
+    }
+
+    @Column(name = "sum_mao", nullable = true, length = 12)
+    public String getSumMao() {
+        return sumMao;
+    }
+
+    public void setSumMao(String sumMao) {
+        this.sumMao = sumMao;
+    }
+
+    @Column(name = "sum_jz", nullable = true, length = 12)
+    public String getSumJz() {
+        return sumJz;
+    }
+
+    public void setSumJz(String sumJz) {
+        this.sumJz = sumJz;
+    }
+
+    @OneToOne(mappedBy="emkProOrderDetailEntity")
+    public EmkSizeTotalEntityD getEmkSizeTotalEntity() {
+        return emkSizeTotalEntity;
+    }
+
+    public void setEmkSizeTotalEntity(EmkSizeTotalEntityD emkSizeTotalEntity) {
+        this.emkSizeTotalEntity = emkSizeTotalEntity;
     }
 }

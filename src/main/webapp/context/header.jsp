@@ -62,7 +62,7 @@
             $.each(data.obj, function (i, item) {
                 control.append("<option value='" + item.realName + ","+item.userName +"'>&nbsp;" + item.realName + "</option>");
             });
-            if(type ==1){
+            if(type ==1 && categoryId !='' && categoryId != null && categoryId!= 'undefined,undefined'){
                 $("#"+ctrlName).select2('val',categoryId);
             }
         });

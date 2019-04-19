@@ -157,6 +157,10 @@ public class EmkPriceEntity implements Serializable {
     @Excel(name = "测试说明")
     private String testDesc;
 
+    private String processName;
+    private String formType;
+
+
     @Column(name = "bjsm", nullable = true, length = 20)
     public String getBjsm() {
         return bjsm;
@@ -187,7 +191,6 @@ public class EmkPriceEntity implements Serializable {
         this.id = id;
     }
 
-    @Formula("(select p.NAME_ from act_ru_task p where p.ASSIGNEE_ = id)")
     @Column(name = "CREATE_NAME", nullable = true, length = 50)
     public String getCreateName() {
         return this.createName;
@@ -816,5 +819,24 @@ public class EmkPriceEntity implements Serializable {
 
     public void setTargetJw(Double targetJw) {
         this.targetJw = targetJw;
+    }
+
+    @Formula("(select CONCAT(p.NAME_,'-',p.TASK_DEF_KEY_) from act_ru_task p where p.ASSIGNEE_ = id limit 0,1)")
+    @Column(name = "process_name", nullable = true, length = 32)
+    public String getProcessName() {
+        return processName;
+    }
+
+    public void setProcessName(String processName) {
+        this.processName = processName;
+    }
+
+    @Column(name = "form_type", nullable = true, length = 32)
+    public String getFormType() {
+        return formType;
+    }
+
+    public void setFormType(String formType) {
+        this.formType = formType;
     }
 }

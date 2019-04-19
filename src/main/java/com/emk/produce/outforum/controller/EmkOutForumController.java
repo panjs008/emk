@@ -2,12 +2,14 @@ package com.emk.produce.outforum.controller;
 
 import com.alibaba.fastjson.JSONArray;
 import com.emk.bill.contract.entity.EmkContractEntity;
+import com.emk.bill.proorderdetail.entity.EmkProOrderDetailEntity;
 import com.emk.produce.outforum.entity.EmkOutForumEntity;
 import com.emk.produce.outforum.service.EmkOutForumServiceI;
 import com.emk.storage.enquirydetail.entity.EmkEnquiryDetailEntity;
 import com.emk.storage.price.entity.EmkPriceEntity;
 import com.emk.util.FlowUtil;
 import com.emk.util.ParameterUtil;
+import com.emk.util.Utils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -90,16 +92,18 @@ public class EmkOutForumController extends BaseController {
         return new ModelAndView("com/emk/produce/outforum/emkOutForumList");
     }
 
-    @RequestMapping(params = "orderMxList")
-    public ModelAndView orderMxList(HttpServletRequest request) {
-        List<Map<String, Object>> codeList = systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", "A03");
-        request.setAttribute("categoryEntityList", codeList);
+    @RequestMapping(params = "detailMxList")
+    public ModelAndView detailMxList(HttpServletRequest request) {
         Map map = ParameterUtil.getParamMaps(request.getParameterMap());
-        if ((map.get("proOrderId") != null) && (!map.get("proOrderId").equals(""))) {
-            List<EmkEnquiryDetailEntity> emkProOrderDetailEntities = systemService.findHql("from EmkEnquiryDetailEntity where enquiryId=?", map.get("proOrderId"));
+        List<Map<String, Object>> list = systemService.findForJdbc("select typecode,typename from t_s_type t2 left join t_s_typegroup t1 on t1.ID=t2.typegroupid where typegroupcode='color'");
+        request.setAttribute("colorList", list);
+        list = systemService.findForJdbc("select typecode,typename from t_s_type t2 left join t_s_typegroup t1 on t1.ID=t2.typegroupid where typegroupcode='size'");
+        request.setAttribute("sizeList", list);
+        if (Utils.notEmpty(map.get("outForumId"))) {
+            List<EmkProOrderDetailEntity> emkProOrderDetailEntities = systemService.findHql("from EmkProOrderDetailEntity where proOrderId=?", map.get("outForumId"));
             request.setAttribute("emkProOrderDetailEntities", emkProOrderDetailEntities);
         }
-        return new ModelAndView("com/emk/produce/outforum/orderMxList");
+        return new ModelAndView("com/emk/produce/outforum/detailMxList");
     }
 
     @RequestMapping(params = "datagrid")
@@ -171,21 +175,29 @@ public class EmkOutForumController extends BaseController {
             TSUser user = (TSUser) request.getSession().getAttribute("LOCAL_CLINET_USER");
             Map<String, String> map = ParameterUtil.getParamMaps(request.getParameterMap());
             Map orderNum = systemService.findOneForJdbc("select CAST(ifnull(max(right(OUT_FORUM_NO, 3)),0)+1 AS signed) orderNum from emk_out_forum");
-            //Map orderNum = systemService.findOneForJdbc("select count(0)+1 orderNum from emk_out_forum where sys_org_code=?", new Object[]{user.getCurrentDepart().getOrgCode()});
             emkOutForum.setOutForumNo("CH" + DateUtils.format(new Date(), "yyMMdd") + String.format("%03d", Integer.parseInt(orderNum.get("orderNum").toString())));
             emkOutForumService.save(emkOutForum);
-            String dataRows = map.get("dataRowsVal");
-            if ((dataRows != null) && (!dataRows.isEmpty())) {
+            //保存明细数据
+            String dataRows = (String) map.get("orderMxListIDSR");
+            if (Utils.notEmpty(dataRows)) {
                 int rows = Integer.parseInt(dataRows);
+                EmkProOrderDetailEntity proOrderDetailEntity = null;
                 for (int i = 0; i < rows; i++) {
-                    EmkEnquiryDetailEntity orderMxEntity = new EmkEnquiryDetailEntity();
-                    if ((map.get("orderMxList[" + i + "].color") != null) && (!(map.get("orderMxList[" + i + "].color")).equals(""))) {
-                        orderMxEntity.setEnquiryId(emkOutForum.getId());
-                        orderMxEntity.setColor(map.get("orderMxList[" + i + "].color"));
-                        orderMxEntity.setSize(map.get("orderMxList[" + i + "].size"));
-                        orderMxEntity.setTotal(Integer.parseInt(map.get("orderMxList[" + i + "].signTotal")));
-                        orderMxEntity.setPrice(Double.parseDouble(map.get("orderMxList[" + i + "].signPrice")));
-                        systemService.save(orderMxEntity);
+                    if (Utils.notEmpty(map.get("orderMxList["+i+"].orderNo00"))){
+                        proOrderDetailEntity = new EmkProOrderDetailEntity();
+                        proOrderDetailEntity.setProOrderId(emkOutForum.getId());
+                        proOrderDetailEntity.setOrderNo(map.get("orderMxList["+i+"].orderNo00").toString());
+                        proOrderDetailEntity.setSampleNo(map.get("orderMxList["+i+"].sampleNo00").toString());
+                        proOrderDetailEntity.setSampleDesc(map.get("orderMxList["+i+"].sampleDesc00").toString());
+                        proOrderDetailEntity.setColor(map.get("orderMxList["+i+"].color").toString());
+                        proOrderDetailEntity.setSortDesc(String.valueOf(i+1));
+                        proOrderDetailEntity.setSize(map.get("orderMxList["+i+"].size00").toString());
+                        proOrderDetailEntity.setPrice(map.get("orderMxList["+i+"].price00").toString());
+                        proOrderDetailEntity.setSumPrice(map.get("orderMxList["+i+"].sumPrice00").toString());
+                        proOrderDetailEntity.setSumMoney(map.get("orderMxList["+i+"].sumMoney00").toString());
+                        proOrderDetailEntity.setSumTotal(map.get("orderMxList["+i+"].sumTotal00").toString());
+                        proOrderDetailEntity.setTotal(map.get("orderMxList["+i+"].signTotal00").toString());
+                        systemService.save(proOrderDetailEntity);
                     }
                 }
             }
@@ -205,25 +217,37 @@ public class EmkOutForumController extends BaseController {
         String message = null;
         AjaxJson j = new AjaxJson();
         message = "出货通知单更新成功";
-        EmkOutForumEntity t = emkOutForumService.get(EmkOutForumEntity.class, emkOutForum.getId());
+        Map<String, String> map = ParameterUtil.getParamMaps(request.getParameterMap());
+
+        EmkOutForumEntity t = emkOutForumService.get(EmkOutForumEntity.class, map.get("outForumId"));
         try {
+            emkOutForum.setId(null);
             MyBeanUtils.copyBeanNotNull2Bean(emkOutForum, t);
             emkOutForumService.saveOrUpdate(t);
 
-            Map<String, String> map = ParameterUtil.getParamMaps(request.getParameterMap());
-            systemService.executeSql("delete from emk_enquiry_detail where ENQUIRY_ID=?", new Object[]{t.getId()});
-            String dataRows = map.get("dataRowsVal");
-            if ((dataRows != null) && (!dataRows.isEmpty())) {
+            //保存明细数据
+            String dataRows = (String) map.get("orderMxListIDSR");
+            if (Utils.notEmpty(dataRows)) {
+                systemService.executeSql("delete from emk_pro_order_detail where pro_order_id = ? ",t.getId());
+
                 int rows = Integer.parseInt(dataRows);
+                EmkProOrderDetailEntity proOrderDetailEntity = null;
                 for (int i = 0; i < rows; i++) {
-                    EmkEnquiryDetailEntity orderMxEntity = new EmkEnquiryDetailEntity();
-                    if ((map.get("orderMxList[" + i + "].color") != null) && (!(map.get("orderMxList[" + i + "].color")).equals(""))) {
-                        orderMxEntity.setEnquiryId(t.getId());
-                        orderMxEntity.setColor(map.get("orderMxList[" + i + "].color"));
-                        orderMxEntity.setSize(map.get("orderMxList[" + i + "].size"));
-                        orderMxEntity.setTotal(Integer.parseInt(map.get("orderMxList[" + i + "].signTotal")));
-                        orderMxEntity.setPrice(Double.parseDouble(map.get("orderMxList[" + i + "].signPrice")));
-                        systemService.save(orderMxEntity);
+                    if (Utils.notEmpty(map.get("orderMxList["+i+"].orderNo00"))){
+                        proOrderDetailEntity = new EmkProOrderDetailEntity();
+                        proOrderDetailEntity.setProOrderId(t.getId());
+                        proOrderDetailEntity.setOrderNo(map.get("orderMxList["+i+"].orderNo00").toString());
+                        proOrderDetailEntity.setSampleNo(map.get("orderMxList["+i+"].sampleNo00").toString());
+                        proOrderDetailEntity.setSampleDesc(map.get("orderMxList["+i+"].sampleDesc00").toString());
+                        proOrderDetailEntity.setColor(map.get("orderMxList["+i+"].color").toString());
+                        proOrderDetailEntity.setSortDesc(String.valueOf(i+1));
+                        proOrderDetailEntity.setSize(map.get("orderMxList["+i+"].size00").toString());
+                        proOrderDetailEntity.setPrice(map.get("orderMxList["+i+"].price00").toString());
+                        proOrderDetailEntity.setSumPrice(map.get("orderMxList["+i+"].sumPrice00").toString());
+                        proOrderDetailEntity.setSumMoney(map.get("orderMxList["+i+"].sumMoney00").toString());
+                        proOrderDetailEntity.setSumTotal(map.get("orderMxList["+i+"].sumTotal00").toString());
+                        proOrderDetailEntity.setTotal(map.get("orderMxList["+i+"].signTotal00").toString());
+                        systemService.save(proOrderDetailEntity);
                     }
                 }
             }

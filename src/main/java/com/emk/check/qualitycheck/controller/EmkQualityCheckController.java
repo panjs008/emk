@@ -1,18 +1,24 @@
 package com.emk.check.qualitycheck.controller;
 import com.emk.bill.proorder.entity.EmkProOrderEntity;
 import com.emk.check.qualitycheck.entity.EmkQualityCheckEntity;
+import com.emk.check.qualitycheck.entity.EmkQualityImageEntity;
 import com.emk.check.qualitycheck.service.EmkQualityCheckServiceI;
 
+import java.text.DecimalFormat;
 import java.util.*;
 import java.text.SimpleDateFormat;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.emk.check.sizecheck.entity.EmkSizeCheckDetailEntity;
+import com.emk.check.sizecheck.entity.EmkSizeCheckEntity;
+import com.emk.check.sizecheck.entity.EmkSizeEntity;
+import com.emk.produce.invoices.entity.EmkInvoicesDetailEntity;
 import com.emk.produce.outforum.entity.EmkOutForumEntity;
 import com.emk.storage.enquirydetail.entity.EmkEnquiryDetailEntity;
 import com.emk.storage.price.entity.EmkPriceEntity;
-import com.emk.util.FlowUtil;
-import com.emk.util.ParameterUtil;
+import com.emk.storage.sample.entity.EmkSampleEntity;
+import com.emk.util.*;
 import com.emk.workorder.workorder.entity.EmkWorkOrderEntity;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.ProcessEngine;
@@ -130,11 +136,11 @@ public class EmkQualityCheckController extends BaseController {
 	}
 	@RequestMapping(params = "orderMxList")
 	public ModelAndView orderMxList(HttpServletRequest request) {
-		List<Map<String, Object>> codeList = this.systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", "A03");
+		List<Map<String, Object>> codeList = systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", "A03");
 		request.setAttribute("categoryEntityList", codeList);
 		Map map = ParameterUtil.getParamMaps(request.getParameterMap());
 		if ((map.get("proOrderId") != null) && (!map.get("proOrderId").equals(""))) {
-			List<EmkEnquiryDetailEntity> emkProOrderDetailEntities = this.systemService.findHql("from EmkEnquiryDetailEntity where enquiryId=?", new Object[]{map.get("proOrderId")});
+			List<EmkEnquiryDetailEntity> emkProOrderDetailEntities = systemService.findHql("from EmkEnquiryDetailEntity where enquiryId=?", map.get("proOrderId"));
 			request.setAttribute("emkProOrderDetailEntities", emkProOrderDetailEntities);
 		}
 		return new ModelAndView("com/emk/check/qualitycheck/orderMxList");
@@ -166,7 +172,7 @@ public class EmkQualityCheckController extends BaseController {
 			throw new BusinessException(e.getMessage());
 		}
 		cq.add();
-		this.emkQualityCheckService.getDataGridReturn(cq, true);
+		emkQualityCheckService.getDataGridReturn(cq, true);
 		TagUtil.datagrid(response, dataGrid);
 	}
 	
@@ -208,7 +214,19 @@ public class EmkQualityCheckController extends BaseController {
 		try{
 			for(String id:ids.split(",")){
 				EmkQualityCheckEntity emkQualityCheck = systemService.getEntity(EmkQualityCheckEntity.class, id);
-				this.systemService.executeSql("delete from emk_enquiry_detail where ENQUIRY_ID=?",id);
+				List<EmkQualityImageEntity> emkQualityImageEntities = systemService.findHql("from EmkQualityImageEntity where qualityId=?",id);
+				for(EmkQualityImageEntity emkQualityImageEntity : emkQualityImageEntities){
+					WebFileUtils.delete( request.getRealPath("/")+emkQualityImageEntity.getImageUrl());
+					systemService.delete(emkQualityImageEntity);
+				}
+
+				EmkSizeCheckEntity t = systemService.findUniqueByProperty(EmkSizeCheckEntity.class,"qualityCheckId",id);
+				if(Utils.notEmpty(t)){
+					systemService.executeSql("delete from emk_size_total where FIND_IN_SET(p_id,(SELECT GROUP_CONCAT(id) FROM emk_size_detail where size_check_id=?))", t.getId());
+					systemService.executeSql("delete from emk_size_detail where size_check_id=?", t.getId());
+					systemService.executeSql("delete from emk_size where form_id=?", t.getId());
+					systemService.delete(t);
+				}
 				emkQualityCheckService.delete(emkQualityCheck);
 				systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
 			}
@@ -234,28 +252,32 @@ public class EmkQualityCheckController extends BaseController {
 		String message = null;
 		AjaxJson j = new AjaxJson();
 		message = "质量检查表添加成功";
+		Map<String, String> map = ParameterUtil.getParamMaps(request.getParameterMap());
 		try{
-			EmkWorkOrderEntity workOrderEntity = systemService.findUniqueByProperty(EmkWorkOrderEntity.class,"workNo",emkQualityCheck.getWorkNo());
+			/*EmkWorkOrderEntity workOrderEntity = systemService.findUniqueByProperty(EmkWorkOrderEntity.class,"workNo",emkQualityCheck.getWorkNo());
 			if(workOrderEntity == null){
 				j.setSuccess(false);
 				j.setMsg("您输入的工单号有误，请核准后在提交");
 				return j;
-			}
+			}*/
 			emkQualityCheck.setState("0");
 			emkQualityCheckService.save(emkQualityCheck);
-			Map<String, String> map = ParameterUtil.getParamMaps(request.getParameterMap());
-			String dataRows = (String) map.get("dataRowsVal");
-			if ((dataRows != null) && (!dataRows.isEmpty())) {
-				int rows = Integer.parseInt(dataRows);
-				for (int i = 0; i < rows; i++) {
-					EmkEnquiryDetailEntity orderMxEntity = new EmkEnquiryDetailEntity();
-					if ((map.get("orderMxList[" + i + "].color") != null) && (!((String) map.get("orderMxList[" + i + "].color")).equals(""))) {
-						orderMxEntity.setEnquiryId(emkQualityCheck.getId());
-						orderMxEntity.setColor((String) map.get("orderMxList[" + i + "].color"));
-						orderMxEntity.setSize((String) map.get("orderMxList[" + i + "].size"));
-						orderMxEntity.setTotal(Integer.valueOf(Integer.parseInt((String) map.get("orderMxList[" + i + "].signTotal"))));
-						this.systemService.save(orderMxEntity);
-					}
+			j.setObj(emkQualityCheck.getId());
+			TSUser user = (TSUser) request.getSession().getAttribute(ResourceUtil.LOCAL_CLINET_USER);
+			EmkQualityImageEntity emkQualityImageEntity = null;
+			for(int i=1 ; i<=9 ; i++){
+				String imageNmae = map.get("imageName"+i);
+				String imageUrl = map.get("imageUrl"+i);
+
+				if(Utils.notEmpty(imageUrl)){
+					emkQualityImageEntity = new EmkQualityImageEntity();
+					emkQualityImageEntity.setUploadId(user.getId());
+					emkQualityImageEntity.setUploadTime(DateUtil.getCurrentTimeString(null));
+					emkQualityImageEntity.setQualityId(emkQualityCheck.getId());
+					emkQualityImageEntity.setSortDesc(String.valueOf(i-1));
+					emkQualityImageEntity.setImageName(imageNmae);
+					emkQualityImageEntity.setImageUrl(imageUrl);
+					systemService.save(emkQualityImageEntity);
 				}
 			}
 			/*if(emkQualityCheck.getCyjg().equals("0")){
@@ -300,20 +322,22 @@ public class EmkQualityCheckController extends BaseController {
 			}*/
 			emkQualityCheckService.saveOrUpdate(t);
 			Map<String, String> map = ParameterUtil.getParamMaps(request.getParameterMap());
-			this.systemService.executeSql("delete from emk_enquiry_detail where ENQUIRY_ID=?", new Object[]{t.getId()});
+			systemService.executeSql("delete from emk_quality_check_image where quality_id=?", t.getId());
+			TSUser user = (TSUser) request.getSession().getAttribute(ResourceUtil.LOCAL_CLINET_USER);
+			EmkQualityImageEntity emkQualityImageEntity = null;
+			for(int i=1 ; i<=9 ; i++){
+				String imageNmae = map.get("imageName"+i);
+				String imageUrl = map.get("imageUrl"+i);
 
-			String dataRows = (String) map.get("dataRowsVal");
-			if ((dataRows != null) && (!dataRows.isEmpty())) {
-				int rows = Integer.parseInt(dataRows);
-				for (int i = 0; i < rows; i++) {
-					EmkEnquiryDetailEntity orderMxEntity = new EmkEnquiryDetailEntity();
-					if ((map.get("orderMxList[" + i + "].color") != null) && (!((String) map.get("orderMxList[" + i + "].color")).equals(""))) {
-						orderMxEntity.setEnquiryId(t.getId());
-						orderMxEntity.setColor((String) map.get("orderMxList[" + i + "].color"));
-						orderMxEntity.setSize((String) map.get("orderMxList[" + i + "].size"));
-						orderMxEntity.setTotal(Integer.valueOf(Integer.parseInt((String) map.get("orderMxList[" + i + "].signTotal"))));
-						this.systemService.save(orderMxEntity);
-					}
+				if(Utils.notEmpty(imageUrl)){
+					emkQualityImageEntity = new EmkQualityImageEntity();
+					emkQualityImageEntity.setUploadId(user.getId());
+					emkQualityImageEntity.setUploadTime(DateUtil.getCurrentTimeString(null));
+					emkQualityImageEntity.setQualityId(emkQualityCheck.getId());
+					emkQualityImageEntity.setSortDesc(String.valueOf(i-1));
+					emkQualityImageEntity.setImageName(imageNmae);
+					emkQualityImageEntity.setImageUrl(imageUrl);
+					systemService.save(emkQualityImageEntity);
 				}
 			}
 			systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
@@ -325,7 +349,50 @@ public class EmkQualityCheckController extends BaseController {
 		j.setMsg(message);
 		return j;
 	}
-	
+
+	@RequestMapping(params = "goTab")
+	public ModelAndView goBtn(EmkQualityCheckEntity emkQualityCheck, HttpServletRequest req) {
+		return new ModelAndView("com/emk/check/qualitycheck/emkQualityCheck-tab");
+	}
+	@RequestMapping(params = "goBase")
+	public ModelAndView goBase(EmkQualityCheckEntity emkQualityCheck, HttpServletRequest req) {
+		req.setAttribute("kdDate", DateUtils.format(new Date(), "yyyy-MM-dd"));
+		/*List<Map<String, Object>> codeList = systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", "A03");
+		req.setAttribute("categoryEntityList", codeList);*/
+		TSUser user = (TSUser) req.getSession().getAttribute("LOCAL_CLINET_USER");
+		Map orderNum = systemService.findOneForJdbc("select count(0)+1 orderNum from emk_quality_check where sys_org_code=?", user.getCurrentDepart().getOrgCode());
+		req.setAttribute("qualityCheckNum","ZLJC" + DateUtils.format(new Date(), "yyMMdd") + String.format("%04d", Integer.parseInt(orderNum.get("orderNum").toString())));
+		if (StringUtil.isNotEmpty(emkQualityCheck.getId())) {
+			emkQualityCheck = emkQualityCheckService.getEntity(EmkQualityCheckEntity.class, emkQualityCheck.getId());
+			req.setAttribute("emkQualityCheckPage", emkQualityCheck);
+			try {
+				Map countMap = MyBeanUtils.culBeanCounts(emkQualityCheck);
+				req.setAttribute("countMap", countMap);
+				double a=0,b=0;
+				a = Double.parseDouble(countMap.get("finishColums").toString());
+				b = Double.parseDouble(countMap.get("Colums").toString());
+				DecimalFormat df = new DecimalFormat("#.00");
+				req.setAttribute("recent", df.format(a*100/b));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return new ModelAndView("com/emk/check/qualitycheck/emkQualityCheck-base");
+	}
+
+	/**
+	 * 图片页面跳转
+	 *
+	 * @return
+	 */
+	@RequestMapping(params = "goImage")
+	public ModelAndView goImage(EmkQualityCheckEntity emkQualityCheck, HttpServletRequest req) {
+		if (StringUtil.isNotEmpty(emkQualityCheck.getId())) {
+			List<EmkQualityImageEntity> emkQualityImageEntities = systemService.findHql("from EmkQualityImageEntity where qualityId=?",emkQualityCheck.getId());
+			req.setAttribute("emkQualityImageEntities", emkQualityImageEntities);
+		}
+		return new ModelAndView("com/emk/check/qualitycheck/emkQualityCheck-image");
+	}
 
 	/**
 	 * 质量检查表新增页面跳转
@@ -334,13 +401,7 @@ public class EmkQualityCheckController extends BaseController {
 	 */
 	@RequestMapping(params = "goAdd")
 	public ModelAndView goAdd(EmkQualityCheckEntity emkQualityCheck, HttpServletRequest req) {
-		req.setAttribute("kdDate", DateUtils.format(new Date(), "yyyy-MM-dd"));
 
-		List<Map<String, Object>> codeList = this.systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", new Object[]{"A03"});
-		req.setAttribute("categoryEntityList", codeList);
-		TSUser user = (TSUser) req.getSession().getAttribute("LOCAL_CLINET_USER");
-		Map orderNum = this.systemService.findOneForJdbc("select count(0)+1 orderNum from emk_quality_check where sys_org_code=?", new Object[]{user.getCurrentDepart().getOrgCode()});
-		req.setAttribute("qualityCheckNum","ZLJC" + DateUtils.format(new Date(), "yyMMdd") + String.format("%04d", new Object[]{Integer.valueOf(Integer.parseInt(orderNum.get("orderNum").toString()))}));
 		if (StringUtil.isNotEmpty(emkQualityCheck.getId())) {
 			emkQualityCheck = emkQualityCheckService.getEntity(EmkQualityCheckEntity.class, emkQualityCheck.getId());
 			req.setAttribute("emkQualityCheckPage", emkQualityCheck);
@@ -354,8 +415,8 @@ public class EmkQualityCheckController extends BaseController {
 	 */
 	@RequestMapping(params = "goUpdate")
 	public ModelAndView goUpdate(EmkQualityCheckEntity emkQualityCheck, HttpServletRequest req) {
-		List<Map<String, Object>> codeList = this.systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", new Object[]{"A03"});
-		req.setAttribute("categoryEntityList", codeList);
+		/*List<Map<String, Object>> codeList = systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", "A03");
+		req.setAttribute("categoryEntityList", codeList);*/
 		if (StringUtil.isNotEmpty(emkQualityCheck.getId())) {
 			emkQualityCheck = emkQualityCheckService.getEntity(EmkQualityCheckEntity.class, emkQualityCheck.getId());
 			req.setAttribute("emkQualityCheckPage", emkQualityCheck);
@@ -364,7 +425,7 @@ public class EmkQualityCheckController extends BaseController {
 	}
 	@RequestMapping(params = "goUpdate2")
 	public ModelAndView goUpdate2(EmkQualityCheckEntity emkQualityCheck, HttpServletRequest req) {
-		List<Map<String, Object>> codeList = this.systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", new Object[]{"A03"});
+		List<Map<String, Object>> codeList = systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", "A03");
 		req.setAttribute("categoryEntityList", codeList);
 		if (StringUtil.isNotEmpty(emkQualityCheck.getId())) {
 			emkQualityCheck = emkQualityCheckService.getEntity(EmkQualityCheckEntity.class, emkQualityCheck.getId());
@@ -395,7 +456,7 @@ public class EmkQualityCheckController extends BaseController {
 			, DataGrid dataGrid,ModelMap modelMap) {
 		CriteriaQuery cq = new CriteriaQuery(EmkQualityCheckEntity.class, dataGrid);
 		org.jeecgframework.core.extend.hqlsearch.HqlGenerateUtil.installHql(cq, emkQualityCheck, request.getParameterMap());
-		List<EmkQualityCheckEntity> emkQualityChecks = this.emkQualityCheckService.getListByCriteriaQuery(cq,false);
+		List<EmkQualityCheckEntity> emkQualityChecks = emkQualityCheckService.getListByCriteriaQuery(cq,false);
 		modelMap.put(NormalExcelConstants.FILE_NAME,"质量检查表");
 		modelMap.put(NormalExcelConstants.CLASS,EmkQualityCheckEntity.class);
 		modelMap.put(NormalExcelConstants.PARAMS,new ExportParams("质量检查表列表", "导出人:"+ResourceUtil.getSessionUser().getRealName(),

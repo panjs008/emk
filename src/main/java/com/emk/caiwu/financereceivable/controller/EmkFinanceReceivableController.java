@@ -7,11 +7,14 @@ import java.text.SimpleDateFormat;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.emk.outforum.tdhdcost.entity.EmkTdhdCostDetailEntity;
+import com.emk.produce.invoices.entity.EmkInvoicesDetailEntity;
 import com.emk.storage.enquiry.entity.EmkEnquiryEntity;
 import com.emk.storage.enquirydetail.entity.EmkEnquiryDetailEntity;
 import com.emk.util.DateUtil;
 import com.emk.util.FlowUtil;
 import com.emk.util.ParameterUtil;
+import com.emk.util.Utils;
 import com.emk.workorder.workorder.entity.EmkWorkOrderEntity;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.ProcessEngine;
@@ -135,6 +138,31 @@ public class EmkFinanceReceivableController extends BaseController {
 		return new ModelAndView("com/emk/caiwu/financereceivable/emkFinanceReceivableList1");
 	}
 
+	@RequestMapping(params = "detailMxList2")
+	public ModelAndView detailMxList2(HttpServletRequest request) {
+		Map map = ParameterUtil.getParamMaps(request.getParameterMap());
+		if (Utils.notEmpty(map.get("rId"))) {
+			List<EmkTdhdCostDetailEntity> emkTdhdCostDetailEntities = systemService.findHql("from EmkTdhdCostDetailEntity where tdhdCostId=?", map.get("rId"));
+			request.setAttribute("emkTdhdCostDetailEntities", emkTdhdCostDetailEntities);
+		}
+		return new ModelAndView("com/emk/caiwu/financereceivable/detailMxList2");
+	}
+
+	@RequestMapping(params = "detailMxList1")
+	public ModelAndView detailMxList1(HttpServletRequest request) {
+		Map map = ParameterUtil.getParamMaps(request.getParameterMap());
+		List<Map<String, Object>> list = systemService.findForJdbc("select typecode,typename from t_s_type t2 left join t_s_typegroup t1 on t1.ID=t2.typegroupid where typegroupcode='color'");
+		request.setAttribute("colorList", list);
+		list = systemService.findForJdbc("select typecode,typename from t_s_type t2 left join t_s_typegroup t1 on t1.ID=t2.typegroupid where typegroupcode='size'");
+		request.setAttribute("sizeList", list);
+		if (Utils.notEmpty(map.get("rId"))) {
+			List<EmkInvoicesDetailEntity> emkInvoicesDetailEntities = systemService.findHql("from EmkInvoicesDetailEntity where invoicesId=?", map.get("rId"));
+			request.setAttribute("emkInvoicesDetailEntities", emkInvoicesDetailEntities);
+		}
+		return new ModelAndView("com/emk/caiwu/financereceivable/detailMxList1");
+
+	}
+
 	@RequestMapping(params = "orderMxList")
 	public ModelAndView orderMxList(HttpServletRequest request) {
 		List<Map<String, Object>> codeList = this.systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", "A03");
@@ -251,18 +279,59 @@ public class EmkFinanceReceivableController extends BaseController {
 			emkFinanceReceivable.setState("0");
 			emkFinanceReceivableService.save(emkFinanceReceivable);
 			Map<String, String> map = ParameterUtil.getParamMaps(request.getParameterMap());
-			String dataRows = (String) map.get("dataRowsVal");
-			if ((dataRows != null) && (!dataRows.isEmpty())) {
+			String dataRows = (String) map.get("orderMxListIDSR2");
+			if (Utils.notEmpty(dataRows)) {
 				int rows = Integer.parseInt(dataRows);
 				for (int i = 0; i < rows; i++) {
-					EmkEnquiryDetailEntity orderMxEntity = new EmkEnquiryDetailEntity();
-					if ((map.get("orderMxList[" + i + "].color") != null) && (!((String) map.get("orderMxList[" + i + "].color")).equals(""))) {
-						orderMxEntity.setEnquiryId(emkFinanceReceivable.getId());
-						orderMxEntity.setColor((String) map.get("orderMxList[" + i + "].color"));
-						orderMxEntity.setSize((String) map.get("orderMxList[" + i + "].size"));
-						orderMxEntity.setTotal(Integer.valueOf(Integer.parseInt((String) map.get("orderMxList[" + i + "].signTotal"))));
-						orderMxEntity.setPrice(Double.valueOf(Double.parseDouble((String) map.get("orderMxList[" + i + "].signPrice"))));
-						this.systemService.save(orderMxEntity);
+					EmkInvoicesDetailEntity emkInvoicesDetailEntity = new EmkInvoicesDetailEntity();
+					if (Utils.notEmpty(map.get("orderMxList["+i+"].orderNo00"))) {
+						emkInvoicesDetailEntity.setOrderNo(map.get("orderMxList["+i+"].orderNo00"));
+						emkInvoicesDetailEntity.setSampleNo(map.get("orderMxList["+i+"].sampleNo00"));
+						emkInvoicesDetailEntity.setSampleNoDesc(map.get("orderMxList["+i+"].sampleDesc00"));
+
+						emkInvoicesDetailEntity.setColor(map.get("orderMxList["+i+"].acolorName00"));
+						emkInvoicesDetailEntity.setSize(map.get("orderMxList["+i+"].asizeBox00"));
+
+						if(Utils.notEmpty(map.get("orderMxList["+i+"].signTotal00"))){
+							emkInvoicesDetailEntity.setTotal(Integer.parseInt(map.get("orderMxList["+i+"].signTotal00")));
+						}
+						if(Utils.notEmpty(map.get("orderMxList["+i+"].signPrice"))) {
+							emkInvoicesDetailEntity.setPrice(Double.parseDouble(map.get("orderMxList["+i+"].signPrice")));
+						}
+						emkInvoicesDetailEntity.setSumMoney(map.get("orderMxList["+i+"].sumMoney"));
+
+						emkInvoicesDetailEntity.setInvoicesId(emkFinanceReceivable.getId());
+						systemService.save(emkInvoicesDetailEntity);
+					}
+				}
+			}
+
+			dataRows = (String) map.get("orderMxListIDSR");
+			if (Utils.notEmpty(dataRows)) {
+				int rows = Integer.parseInt(dataRows);
+				for (int i = 0; i < rows; i++) {
+					EmkTdhdCostDetailEntity emkTdhdCostDetailEntity = new EmkTdhdCostDetailEntity();
+					if (Utils.notEmpty(map.get("orderMxList["+i+"].tdNum00"))) {
+						emkTdhdCostDetailEntity.setTdNum(map.get("orderMxList["+i+"].tdNum00"));
+						emkTdhdCostDetailEntity.setCargoNo(map.get("orderMxList["+i+"].cargoNo00"));
+						emkTdhdCostDetailEntity.setOutForumNo(map.get("orderMxList["+i+"].outForumNo00"));
+						emkTdhdCostDetailEntity.setOrderNo(map.get("orderMxList["+i+"].order2No00"));
+
+						if(Utils.notEmpty(map.get("orderMxList["+i+"].atotalBox00"))){
+							emkTdhdCostDetailEntity.setSumBoxTotal(Integer.parseInt(map.get("orderMxList["+i+"].atotalBox00")));
+						}
+						if(Utils.notEmpty(map.get("orderMxList["+i+"].asumVolume00"))){
+							emkTdhdCostDetailEntity.setSumBoxVolume(Double.parseDouble(map.get("orderMxList["+i+"].asumVolume00")));
+						}
+						if(Utils.notEmpty(map.get("orderMxList["+i+"].asumWeightMao00"))){
+							emkTdhdCostDetailEntity.setSumBoxMao(Double.parseDouble(map.get("orderMxList["+i+"].asumWeightMao00")));
+						}
+						if(Utils.notEmpty(map.get("orderMxList["+i+"].asumWeightJz00"))){
+							emkTdhdCostDetailEntity.setSumBoxJz(Double.parseDouble(map.get("orderMxList["+i+"].asumWeightJz00")));
+						}
+						emkTdhdCostDetailEntity.setCost(map.get("orderMxList["+i+"].cost00"));
+						emkTdhdCostDetailEntity.setTdhdCostId(emkFinanceReceivable.getId());
+						systemService.save(emkTdhdCostDetailEntity);
 					}
 				}
 			}
@@ -292,24 +361,68 @@ public class EmkFinanceReceivableController extends BaseController {
 		String message = null;
 		AjaxJson j = new AjaxJson();
 		message = "应收通知单更新成功";
-		EmkFinanceReceivableEntity t = emkFinanceReceivableService.get(EmkFinanceReceivableEntity.class, emkFinanceReceivable.getId());
+		Map<String, String> map = ParameterUtil.getParamMaps(request.getParameterMap());
+		EmkFinanceReceivableEntity t = emkFinanceReceivableService.get(EmkFinanceReceivableEntity.class, map.get("finaceId"));
 		try {
+			emkFinanceReceivable.setId(null);
 			MyBeanUtils.copyBeanNotNull2Bean(emkFinanceReceivable, t);
 			emkFinanceReceivableService.saveOrUpdate(t);
-			Map<String, String> map = ParameterUtil.getParamMaps(request.getParameterMap());
-			this.systemService.executeSql("delete from emk_enquiry_detail where ENQUIRY_ID=?", new Object[]{t.getId()});
-			String dataRows = (String) map.get("dataRowsVal");
-			if ((dataRows != null) && (!dataRows.isEmpty())) {
+			String dataRows = (String) map.get("orderMxListIDSR2");
+			if (Utils.notEmpty(dataRows)) {
+				systemService.executeSql("delete from emk_invoices_detail where invoices_id = ?",t.getId());
 				int rows = Integer.parseInt(dataRows);
 				for (int i = 0; i < rows; i++) {
-					EmkEnquiryDetailEntity orderMxEntity = new EmkEnquiryDetailEntity();
-					if ((map.get("orderMxList[" + i + "].color") != null) && (!((String) map.get("orderMxList[" + i + "].color")).equals(""))) {
-						orderMxEntity.setEnquiryId(t.getId());
-						orderMxEntity.setColor((String) map.get("orderMxList[" + i + "].color"));
-						orderMxEntity.setSize((String) map.get("orderMxList[" + i + "].size"));
-						orderMxEntity.setTotal(Integer.valueOf(Integer.parseInt((String) map.get("orderMxList[" + i + "].signTotal"))));
-						orderMxEntity.setPrice(Double.valueOf(Double.parseDouble((String) map.get("orderMxList[" + i + "].signPrice"))));
-						this.systemService.save(orderMxEntity);
+					EmkInvoicesDetailEntity emkInvoicesDetailEntity = new EmkInvoicesDetailEntity();
+					if (Utils.notEmpty(map.get("orderMxList["+i+"].orderNo00"))) {
+						emkInvoicesDetailEntity.setOrderNo(map.get("orderMxList["+i+"].orderNo00"));
+						emkInvoicesDetailEntity.setSampleNo(map.get("orderMxList["+i+"].sampleNo00"));
+						emkInvoicesDetailEntity.setSampleNoDesc(map.get("orderMxList["+i+"].sampleDesc00"));
+
+						emkInvoicesDetailEntity.setColor(map.get("orderMxList["+i+"].acolorName00"));
+						emkInvoicesDetailEntity.setSize(map.get("orderMxList["+i+"].asizeBox00"));
+
+						if(Utils.notEmpty(map.get("orderMxList["+i+"].signTotal00"))){
+							emkInvoicesDetailEntity.setTotal(Integer.parseInt(map.get("orderMxList["+i+"].signTotal00")));
+						}
+						if(Utils.notEmpty(map.get("orderMxList["+i+"].signPrice"))) {
+							emkInvoicesDetailEntity.setPrice(Double.parseDouble(map.get("orderMxList["+i+"].signPrice")));
+						}
+						emkInvoicesDetailEntity.setSumMoney(map.get("orderMxList["+i+"].sumMoney"));
+
+						emkInvoicesDetailEntity.setInvoicesId(t.getId());
+						systemService.save(emkInvoicesDetailEntity);
+					}
+				}
+			}
+
+			dataRows = (String) map.get("orderMxListIDSR");
+			if (Utils.notEmpty(dataRows)) {
+				systemService.executeSql("delete from emk_tdhd_cost_detail where tdhd_cost_id = ?",t.getId());
+
+				int rows = Integer.parseInt(dataRows);
+				for (int i = 0; i < rows; i++) {
+					EmkTdhdCostDetailEntity emkTdhdCostDetailEntity = new EmkTdhdCostDetailEntity();
+					if (Utils.notEmpty(map.get("orderMxList["+i+"].tdNum00"))) {
+						emkTdhdCostDetailEntity.setTdNum(map.get("orderMxList["+i+"].tdNum00"));
+						emkTdhdCostDetailEntity.setCargoNo(map.get("orderMxList["+i+"].cargoNo00"));
+						emkTdhdCostDetailEntity.setOutForumNo(map.get("orderMxList["+i+"].outForumNo00"));
+						emkTdhdCostDetailEntity.setOrderNo(map.get("orderMxList["+i+"].order2No00"));
+
+						if(Utils.notEmpty(map.get("orderMxList["+i+"].atotalBox00"))){
+							emkTdhdCostDetailEntity.setSumBoxTotal(Integer.parseInt(map.get("orderMxList["+i+"].atotalBox00")));
+						}
+						if(Utils.notEmpty(map.get("orderMxList["+i+"].asumVolume00"))){
+							emkTdhdCostDetailEntity.setSumBoxVolume(Double.parseDouble(map.get("orderMxList["+i+"].asumVolume00")));
+						}
+						if(Utils.notEmpty(map.get("orderMxList["+i+"].asumWeightMao00"))){
+							emkTdhdCostDetailEntity.setSumBoxMao(Double.parseDouble(map.get("orderMxList["+i+"].asumWeightMao00")));
+						}
+						if(Utils.notEmpty(map.get("orderMxList["+i+"].asumWeightJz00"))){
+							emkTdhdCostDetailEntity.setSumBoxJz(Double.parseDouble(map.get("orderMxList["+i+"].asumWeightJz00")));
+						}
+						emkTdhdCostDetailEntity.setCost(map.get("orderMxList["+i+"].cost00"));
+						emkTdhdCostDetailEntity.setTdhdCostId(t.getId());
+						systemService.save(emkTdhdCostDetailEntity);
 					}
 				}
 			}

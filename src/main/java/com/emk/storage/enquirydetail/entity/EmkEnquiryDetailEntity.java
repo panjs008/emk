@@ -2,12 +2,9 @@ package com.emk.storage.enquirydetail.entity;
 
 import java.io.Serializable;
 import java.util.Date;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
+import com.emk.check.sizecheck.entity.EmkSizeTotalEntityE;
 import org.hibernate.annotations.GenericGenerator;
 import org.jeecgframework.poi.excel.annotation.Excel;
 
@@ -39,6 +36,9 @@ public class EmkEnquiryDetailEntity
     private String sortDesc;
     @Excel(name = "实际数量")
     private Integer sjtotal;
+
+    private EmkSizeTotalEntityE emkSizeTotalEntity;
+
 
     @Id
     @GeneratedValue(generator = "paymentableGenerator")
@@ -176,5 +176,14 @@ public class EmkEnquiryDetailEntity
 
     public void setSjtotal(Integer sjtotal) {
         this.sjtotal = sjtotal;
+    }
+
+    @OneToOne(mappedBy="emkEnquiryDetailEntity")
+    public EmkSizeTotalEntityE getEmkSizeTotalEntity() {
+        return emkSizeTotalEntity;
+    }
+
+    public void setEmkSizeTotalEntity(EmkSizeTotalEntityE emkSizeTotalEntity) {
+        this.emkSizeTotalEntity = emkSizeTotalEntity;
     }
 }

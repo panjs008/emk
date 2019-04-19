@@ -64,7 +64,7 @@
             width:'auto',
             fixFooter:false
         });
-        <c:if test="${param.sampleId eq null || param.sampleId eq ''}">
+        <c:if test="${param.sampleId eq null || param.sampleId eq '' || fn:length(sampleContentEntities) eq 0}">
             $('#addBtnContent').click();
         </c:if>
     });
@@ -84,8 +84,8 @@
     <tbody id="add_jeecgOrderProduct_tableContent_templateContent">
     <tr>
         <td align="center" width="2%"><input style="width: 40px;" type="checkbox" name="ck" />
-        <td align="right" width="15%"><span id="seqNum"></span>
-        <td align="center" width="83%"><input id="content00" nullmsg="请输入数量！"  errormsg="请输入数量" name="orderMxList[#index#].content00" maxlength="100" type="text" value=""
+        <td align="right" width="15%"><span id="seqNum"></span></td>
+        <td align="center" width="83%"><input id="content00" nullmsg="请输入数量！"  errormsg="请输入整数" name="orderMxList[#index#].content00" maxlength="100" type="text" value=""
                                   style="width: 98%;" ignore="ignore"></td>
 
     </tr>
@@ -102,7 +102,7 @@
                     </td>
                     <td align="right" width="15%">${status.index+1}&nbsp;&nbsp;&nbsp;
                     </td>
-                    <td align="center" width="83%"><input  nullmsg="请输入数量！"  errormsg="请输入数量" value="${poVal.content}" name="orderMxList[${status.index}].content00" maxlength="100" type="text" value=""
+                    <td align="center" width="83%"><input  nullmsg="请输入数量！"  errormsg="请输入整数" value="${poVal.content}" name="orderMxList[${status.index}].content00" maxlength="100" type="text" value=""
                                               style="width: 98%;" ignore="ignore"></td>
 
                 </tr>
@@ -114,7 +114,7 @@
             </td>
             <td align="right">所用机台尺寸：
             </td>
-            <td align="center"><input   value="${emkSamplePage.syjtcc}"name="syjtcc" maxlength="100" type="text" value=""
+            <td align="center"><input   value="${emkSamplePage.syjtcc}" name="syjtcc" maxlength="100" type="text" value=""
                                        style="width: 98%;" ignore="ignore"></td>
         </tr>
         <tr>

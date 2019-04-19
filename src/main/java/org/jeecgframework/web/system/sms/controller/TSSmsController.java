@@ -24,6 +24,7 @@ import org.jeecgframework.core.util.MyBeanUtils;
 import org.jeecgframework.core.util.ResourceUtil;
 import org.jeecgframework.core.util.StringUtil;
 import org.jeecgframework.tag.core.easyui.TagUtil;
+import org.jeecgframework.web.system.pojo.base.TSUser;
 import org.jeecgframework.web.system.sms.entity.TSSmsEntity;
 import org.jeecgframework.web.system.sms.service.TSSmsServiceI;
 import org.jeecgframework.web.system.service.SystemService;
@@ -85,6 +86,8 @@ public class TSSmsController extends BaseController {
 		org.jeecgframework.core.extend.hqlsearch.HqlGenerateUtil.installHql(cq, tSSms, request.getParameterMap());
 		try{
 		//自定义追加查询条件
+			TSUser user = ResourceUtil.getSessionUser();
+			cq.eq("esReceiver",user.getUserName());
 		}catch (Exception e) {
 			throw new BusinessException(e.getMessage());
 		}
@@ -424,14 +427,14 @@ public class TSSmsController extends BaseController {
 	@RequestMapping(params = "getSysInfos")
 	public ModelAndView getSysInfos(HttpServletRequest request) {
 		
-		//1. 取得系统当前登录人ID
+		/*//1. 取得系统当前登录人ID
 		String curUser = ResourceUtil.getSessionUser().getUserName();
 		//2.查询当前登录人的消息类型为"3",并且在查询的节点之后一个小时内的信息
 		//当前时间
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		String curDate = sdf.format(new Date());
 		List<TSSmsEntity> list = this.tSSmsService.getMsgsList(curUser,curDate);
-		request.setAttribute("smsList", list);
+		request.setAttribute("smsList", list);*/
 		
 		return new ModelAndView("system/sms/tSSmsDetailList");
 	}

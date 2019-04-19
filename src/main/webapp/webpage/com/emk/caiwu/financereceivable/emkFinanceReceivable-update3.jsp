@@ -380,7 +380,7 @@
 			<td align="left">
 				<input id="size00" nullmsg="请输入尺码！"  errormsg="请输入尺码" name="orderMxList[#index#].size" maxlength="100" type="text" value=""
 					   style="width: 80%;"></td>
-			<td align="left"><input id="signTotal00" nullmsg="请输入数量！"  errormsg="请输入数量" name="orderMxList[#index#].signTotal" maxlength="100" type="text" value=""
+			<td align="left"><input id="signTotal00" nullmsg="请输入数量！"  errormsg="请输入整数" name="orderMxList[#index#].signTotal" maxlength="100" type="text" value=""
 									style="width: 80%;"></td>
 			<td align="left"><input id="signPrice00" nullmsg="请输入单价！"  errormsg="请输入单价" name="orderMxList[#index#].signPrice" maxlength="100" type="text" value=""
 									style="width: 80%;"></td>

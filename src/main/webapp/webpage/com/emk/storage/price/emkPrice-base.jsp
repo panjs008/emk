@@ -33,7 +33,7 @@
 			$("#sizeImage").val(d.attributes.name);
 			$("#sizeImageId").html("[<a href=\"javascript:findDetail('"+d.attributes.url+"')\">"+d.attributes.name+"</a>]");
 
-			$("#uploadimg2").attr('src',d.attributes.url);
+			//$("#uploadimg2").attr('src',d.attributes.url);
 
 		}
 		function uploadSuccess3(d,file,response){
@@ -42,7 +42,7 @@
 			$("#dgrImage").val(d.attributes.name);
 			$("#dgrImageId").html("[<a href=\"javascript:findDetail('"+d.attributes.url+"')\">"+d.attributes.name+"</a>]");
 
-			$("#uploadimg3").attr('src',d.attributes.url);
+			//$("#uploadimg3").attr('src',d.attributes.url);
 		}
 
 		function showPriceDiv(isShow){
@@ -59,6 +59,11 @@
 			}else{
 				$("#dgrImageDiv").css("display","none");
 			}
+		}
+
+		function setLimitTime() {
+			var d1  =  $("#kdDate").val();
+			$("#limitDate").val(dateAddDays(d1,60));
 		}
 
 	</script>
@@ -154,7 +159,7 @@
 					<label class="Validform_label" style="display: none;">业务部门</label>
 				</td>
 
-				<td class="value"  rowspan="4">
+				<td class="value"  rowspan="5">
 					<input id="customSample" name="customSample" type="hidden" value="${emkPricePage.customSample }"/>
 					<img id="uploadimg0" src="${emkPricePage.customSampleUrl eq null || emkPricePage.customSampleUrl eq ''  ? 'images/bjlogo.png':emkPricePage.customSampleUrl}" width="120" height="120">
 					<t:upload name="instruction0" id="instruction0" dialog="false" extend="*.jpg;*.png;*.gif;*.ico;*.dwg" buttonText="添加文件" queueID="instructionfile" view="false" auto="true" uploader="systemController.do?saveFiles"  onUploadSuccess="uploadSuccess0" >
@@ -172,7 +177,7 @@
 					</label>
 				</td>
 				<td class="value">
-					<input id="kdDate" name="kdDate" readonly value="${emkPricePage.kdDate ne null ? emkPricePage.kdDate:kdDate}" onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})"  type="text" style="width: 100px" class="Wdate"  ignore="ignore" />
+					<input id="kdDate" name="kdDate" readonly value="${emkPricePage.kdDate ne null ? emkPricePage.kdDate:kdDate}" onClick="WdatePicker({dateFmt:'yyyy-MM-dd',onpicked:setLimitTime})"  type="text" style="width: 100px" class="Wdate"  ignore="ignore" />
 					<span class="Validform_checktip"></span>
 					<label class="Validform_label" style="display: none;">报价日期</label>
 				</td>
@@ -182,7 +187,7 @@
 					</label>
 				</td>
 				<td class="value">
-					<input id="limitDate" name="limitDate" readonly value="${emkPricePage.limitDate }" onClick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'kdDate\');}'})" type="text" style="width: 100px" class="Wdate"  ignore="ignore" />
+					<input id="limitDate" name="limitDate" readonly value="${emkPricePage.limitDate }" onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})"  type="text" style="width: 100px" class="Wdate"  ignore="ignore" />
 					<span class="Validform_checktip"></span>
 					<label class="Validform_label" style="display: none;">报价有效期</label>
 				</td>
@@ -290,7 +295,11 @@
 					<span class="Validform_checktip"></span>
 					<label class="Validform_label" style="display: none;">报价说明</label>
 				</td>
-
+			</tr>
+			<tr>
+				<td class="value" colspan="10">
+					&nbsp;
+				</td>
 
 			</tr>
 			<tr>
@@ -307,7 +316,7 @@
 					<span class="Validform_checktip"></span>
 					<label class="Validform_label" style="display: none;">是否有原样</label>
 				</td>
-				<td class="value">
+				<td class="value" colspan="9">
 					<input id="oldImage" name="oldImage" type="hidden" value="${emkPricePage.oldImage }"/>
 					<img id="uploadimg" src="${emkPricePage.oldImageUrl eq null || emkPricePage.oldImageUrl eq '' ? 'images/bjlogo.png':emkPricePage.oldImageUrl}" width="120" height="120">
 					<t:upload name="instruction" id="instruction" dialog="false" extend="*.jpg;*.png;*.gif;*.ico;*.dwg" buttonText="添加文件" queueID="instructionfile" view="false" auto="true" uploader="systemController.do?saveFiles"  onUploadSuccess="uploadSuccess" >
@@ -316,6 +325,8 @@
 					<span id="oldImageId"></span>
 					<input id="oldImageUrl" name="oldImageUrl" type="hidden" value="${emkPricePage.oldImageUrl }"/>
 				</td>
+				</tr>
+			<tr>
 				<td align="right">
 					<label class="Validform_label">
 						是否有设计稿:
@@ -331,6 +342,20 @@
 				</td>
 				<td class="value">
 					<input id="dgrImage" name="dgrImage" type="hidden" value="${emkPricePage.dgrImage }"/>
+					<input id="dgrImageUrl" name="dgrImageUrl" type="hidden" value="${emkPricePage.dgrImageUrl }"/>
+						<span id="dgrImageId">
+							<c:if test="${emkPricePage.dgrImageUrl ne null && emkPricePage.dgrImageUrl ne ''}">[<a href="javascript:findDetail('${emkPricePage.dgrImageUrl }')">${emkPricePage.dgrImage }</a>]</c:if>
+						</span>
+				</td>
+				<td class="value" colspan="8">
+					<t:upload name="instruction3" id="instruction3" dialog="false" extend="*.jpg;*.png;*.gif;*.ico;*.dwg" buttonText="添加文件" queueID="instructionfile" view="false" auto="true" uploader="systemController.do?saveFiles"  onUploadSuccess="uploadSuccess3" >
+					</t:upload>
+				</td>
+				</tr>
+
+			<tr>
+				<%--<td class="value">
+					<input id="dgrImage" name="dgrImage" type="hidden" value="${emkPricePage.dgrImage }"/>
 					<img id="uploadimg3" src="${emkPricePage.dgrImageUrl eq null || emkPricePage.dgrImageUrl eq ''  ? 'images/bjlogo.png':emkPricePage.dgrImageUrl}" width="120" height="120">
 					<t:upload name="instruction3" id="instruction3" dialog="false" extend="*.jpg;*.png;*.gif;*.ico;*.dwg" buttonText="添加文件" queueID="instructionfile" view="false" auto="true" uploader="systemController.do?saveFiles"  onUploadSuccess="uploadSuccess3" >
 					</t:upload>
@@ -338,7 +363,7 @@
 
 					<span id="dgrImageId"></span>
 					<input id="dgrImageUrl" name="dgrImageUrl" type="hidden" value="${emkPricePage.dgrImageUrl }" />
-				</td>
+				</td>--%>
 				<td align="right">
 					<label class="Validform_label">
 						是否有尺寸表:
@@ -352,7 +377,18 @@
 					<span class="Validform_checktip"></span>
 					<label class="Validform_label" style="display: none;">是否有尺寸表</label>
 				</td>
-				<td class="value" colspan="3">
+					<td class="value">
+						<input id="sizeImageUrl" name="sizeImageUrl" type="hidden" value="${emkPricePage.sizeImageUrl }"/>
+						<input id="sizeImage" name="sizeImage" type="hidden" value="${emkPricePage.sizeImage }" />
+					<span id="sizeImageId">
+						<c:if test="${emkPricePage.sizeImageUrl ne null && emkPricePage.sizeImageUrl ne ''}">[<a href="javascript:findDetail('${emkPricePage.sizeImageUrl }')">${emkPricePage.sizeImage }</a>]</c:if>
+					</span>
+					</td>
+					<td class="value" colspan="8">
+						<t:upload name="instruction2" id="instruction2" dialog="false" extend="*.jpg;*.png;*.gif;*.ico;*.dwg" buttonText="添加文件" queueID="instructionfile" view="false" auto="true" uploader="systemController.do?saveFiles"  onUploadSuccess="uploadSuccess2" >
+						</t:upload>
+					</td>
+				<%--<td class="value" colspan="3">
 					<img id="uploadimg2" src="${emkPricePage.sizeImageUrl eq null || emkPricePage.sizeImageUrl eq '' ? 'images/bjlogo.png':emkPricePage.sizeImageUrl}" width="120" height="120">
 					<t:upload name="instruction2" id="instruction2" dialog="false" extend="*.jpg;*.png;*.gif;*.ico;*.dwg" buttonText="添加文件" queueID="instructionfile" view="false" auto="true" uploader="systemController.do?saveFiles"  onUploadSuccess="uploadSuccess2" >
 					</t:upload>
@@ -361,7 +397,7 @@
 					<span id="sizeImageId"></span>
 					<input id="sizeImageUrl" name="sizeImageUrl" type="hidden" value="${emkPricePage.sizeImageUrl }"/>
 					<input id="sizeImage" name="sizeImage" type="hidden" value="${emkPricePage.sizeImage }"/>
-				</td>
+				</td>--%>
 			</tr>
 
 

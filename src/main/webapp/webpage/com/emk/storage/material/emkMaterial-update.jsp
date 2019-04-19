@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>样品单</title>
+	<title>样品需求开发单</title>
 	<t:base type="jquery,easyui,tools,DatePicker"></t:base>
 	<%@include file="/context/header2.jsp"%>
 

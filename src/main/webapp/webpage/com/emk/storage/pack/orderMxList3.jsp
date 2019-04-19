@@ -67,7 +67,7 @@
             width:'auto',
             fixFooter:false
         });
-        <c:if test="${param.priceId eq null || param.priceId eq ''}">
+        <c:if test="${param.sampleId eq null || param.sampleId eq ''}">
         $('#addBtn3').click();
         </c:if>
     });
@@ -117,57 +117,49 @@
                icon="icon-search" title="选择面料" textname="id,proNum,proType,proTypeName,proZnName,precent,brand,unit,yongliang,sunhaoPrecent,chengben" isclear="true" isInit="true"></t:choose>
 </div>
 <div style="padding: 3px; height: 25px; width:100%;margin-bottom:4px " class="datagrid-toolbar"><a id="addBtn3" href="#"></a> <a id="delBtn3" href="#"></a></div>
-<%--<table border="0" cellpadding="2" cellspacing="0" id="jeecgOrderProduct_table">--%>
-<form id="bzfrm">
-    <input id="orderMxListID3" type="hidden" name="orderMxListID3" value="${fn:length(emkSampleDetailEntities2)}"/>
+<input id="orderMxListID3" type="hidden" name="orderMxListID3" value="${fn:length(emkSampleDetailEntities)}"/>
 
-    <div class="table-c">
-        <table id="mxtb3" width="100%" border="0" cellspacing="0" cellpadding="0">
-            <tr bgcolor="#F8F8F8" style="height: 32px;" >
-                <td align="center"  width="40">序号</td>
-                <td align="center"  width="150">包装辅料名称</td>
-                <td align="center"  width="150">包装辅料代码</td>
-                <td align="center"  width="150">供应商代码</td>
-                <td align="center"  width="150">成分</td>
-                <td align="center"  width="150">克重</td>
-                <td align="center"  width="150">规格</td>
-                <td align="center"  width="150">目标价位</td>
-                <td align="center"  width="150">预计数量</td>
-            </tr>
-            <tbody id="add_jeecgOrderProduct_table3">
-            <c:if test="${fn:length(emkSampleDetailEntities2)  > 0 }">
-                <c:forEach items="${emkSampleDetailEntities2}" var="poVal" varStatus="status">
-                    <tr>
-                        <td align="center"><input style="width: 40px;" type="checkbox" name="ck" value="${poVal.id}"/>
-                        <td align="center"><input  nullmsg="请输入包装辅料名称！"  errormsg="请输入包装辅料名称" value="${poVal.proZnName}" name="orderMxList[${status.index}].cproZnName" maxlength="100" type="text" value=""
-                                                   style="width: 86%;" ignore="ignore"></td>
-                        <td align="center"><input  nullmsg="请输入包装辅料代码！"  errormsg="请输入包装辅料代码" value="${poVal.proNum}" name="orderMxList[${status.index}].cproNum" maxlength="100" type="text" value=""
-                                                   style="width: 86%;" ignore="ignore"></td>
-                        <td align="center"><input  nullmsg="请输入供应商代码！"  errormsg="请输入供应商代码"  value="${poVal.gysCode}" name="orderMxList[${status.index}].cgysCode" maxlength="100" type="text" value=""
-                                                   style="width: 86%;" ignore="ignore"></td>
-                        <td align="center"><input nullmsg="请输入成分！"  errormsg="请输入成分" value="${poVal.chengf}" name="orderMxList[${status.index}].cchengf" maxlength="100" type="text" value=""
-                                                  style="width: 86%;" ignore="ignore"></td>
-                        <td align="center"><input  nullmsg="请输入克重！"  errormsg="请输入克重" value="${poVal.weight}" name="orderMxList[${status.index}].cweight" maxlength="100" type="text" value=""
-                                                  style="width: 86%;" ignore="ignore"></td>
-                        <td align="center"><input  nullmsg="请输入规格！"  errormsg="请输入规格" value="${poVal.brand}" name="orderMxList[${status.index}].cbrand" maxlength="100" type="text" value=""
-                                                   style="width: 86%;" ignore="ignore"></td>
+<div class="table-c">
+    <table id="mxtb3" width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr bgcolor="#F8F8F8" style="height: 32px;" >
+            <td align="center"  width="40">序号</td>
+            <td align="center"  width="150">包装辅料名称</td>
+            <td align="center"  width="150">包装辅料代码</td>
+            <td align="center"  width="150">供应商代码</td>
+            <td align="center"  width="150">成分</td>
+            <td align="center"  width="150">克重</td>
+            <td align="center"  width="150">规格</td>
+            <td align="center"  width="150">目标价位</td>
+            <td align="center"  width="150">预计数量</td>
+        </tr>
+        <tbody id="add_jeecgOrderProduct_table3">
+        <c:if test="${fn:length(emkSampleDetailEntities)  > 0 }">
+            <c:forEach items="${emkSampleDetailEntities}" var="poVal" varStatus="status">
+                <tr>
+                    <td align="center"><input style="width: 40px;" type="checkbox" name="ck" value="${poVal.id}"/>
+                    <td align="center"><input  nullmsg="请输入包装辅料名称！"  errormsg="请输入包装辅料名称" value="${poVal.proZnName}" name="orderMxList[${status.index}].cproZnName" maxlength="100" type="text" value=""
+                                               style="width: 86%;" ignore="ignore"></td>
+                    <td align="center"><input  nullmsg="请输入包装辅料代码！"  errormsg="请输入包装辅料代码" value="${poVal.proNum}" name="orderMxList[${status.index}].cproNum" maxlength="100" type="text" value=""
+                                               style="width: 86%;" ignore="ignore"></td>
+                    <td align="center"><input  nullmsg="请输入供应商代码！"  errormsg="请输入供应商代码"  value="${poVal.gysCode}" name="orderMxList[${status.index}].cgysCode" maxlength="100" type="text" value=""
+                                               style="width: 86%;" ignore="ignore"></td>
+                    <td align="center"><input nullmsg="请输入成分！"  errormsg="请输入成分" value="${poVal.chengf}" name="orderMxList[${status.index}].cchengf" maxlength="100" type="text" value=""
+                                              style="width: 86%;" ignore="ignore"></td>
+                    <td align="center"><input  nullmsg="请输入克重！"  errormsg="请输入克重" value="${poVal.weight}" name="orderMxList[${status.index}].cweight" maxlength="100" type="text" value=""
+                                               style="width: 86%;" ignore="ignore"></td>
+                    <td align="center"><input  nullmsg="请输入规格！"  errormsg="请输入规格" value="${poVal.brand}" name="orderMxList[${status.index}].cbrand" maxlength="100" type="text" value=""
+                                               style="width: 86%;" ignore="ignore"></td>
 
-                        <td align="center"><input  nullmsg="请输入目标价位！"  datatype="d" errormsg="请输入目标价位" value="${poVal.signPrice}" name="orderMxList[${status.index}].csignPrice" maxlength="100" type="text" value=""
-                                                   style="width: 86%;" ignore="ignore"></td>
-                        <td align="center"><input  nullmsg="请输入预计数量！" datatype="d" errormsg="请输入预计数量" value="${poVal.signTotal}"  name="orderMxList[${status.index}].csignTotal" maxlength="100" type="text" value=""
-                                                  style="width: 86%;" ignore="ignore"></td>
-
-
-
-
-                    </tr>
-
-                </c:forEach>
-            </c:if>
-            </tbody>
-        </table>
-    </div>
-</form>
+                    <td align="center"><input  nullmsg="请输入目标价位！"  datatype="d" errormsg="请输入目标价位" value="${poVal.signPrice}" name="orderMxList[${status.index}].csignPrice" maxlength="100" type="text" value=""
+                                               style="width: 86%;" ignore="ignore"></td>
+                    <td align="center"><input  nullmsg="请输入预计数量！" datatype="d" errormsg="请输入预计数量" value="${poVal.signTotal}"  name="orderMxList[${status.index}].csignTotal" maxlength="100" type="text" value=""
+                                               style="width: 86%;" ignore="ignore"></td>
+                </tr>
+            </c:forEach>
+        </c:if>
+        </tbody>
+    </table>
+</div>
 <script type="text/javascript">
     function productLook3(indexFlag){
         currentFlag3 = indexFlag;

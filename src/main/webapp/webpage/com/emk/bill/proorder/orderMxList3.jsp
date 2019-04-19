@@ -1,8 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@include file="/context/mytags.jsp"%>
 <script type="text/javascript">
-    var flag3 = 0;
-    var currentFlag3 = 0;
+    var flag3 = ${fn:length(emkSampleDetailEntities2)};
+    var currentFlag3 = ${fn:length(emkSampleDetailEntities2)};
 
 
     $('#addBtn3').linkbutton({
@@ -12,7 +12,6 @@
         iconCls: 'icon-remove'
     });
     $('#addBtn3').bind('click', function(){
-        flag3++;
        /* if(flag3>1 || ${param.proOrderId ne null}){
             $("html,body").animate({scrollTop:400},1);
         }*/
@@ -32,6 +31,9 @@
         resetTrNum('add_jeecgOrderProduct_table3');
         $("#cproZnName"+flag3).attr("onclick","productLook3("+flag3+")");
         $("#orderMxListID3").val($("#mxtb3").find("tr").length-1);
+
+        flag3++;
+
     });
     $('#delBtn3').bind('click', function(){
         var chk_value =[];
@@ -68,7 +70,7 @@
             width:'auto',
             fixFooter:false
         });
-        <c:if test="${param.priceId eq null || param.priceId eq ''}">
+        <c:if test="${param.proOrderId eq null || param.proOrderId eq ''}">
             $('#addBtn3').click();
         </c:if>
     });
@@ -87,17 +89,23 @@
                                   style="width: 86%;" ignore="ignore"></td>
         <td align="center"><input id="cproNum00" nullmsg="请输入包装辅料代码！"  errormsg="请输入包装辅料代码" name="orderMxList[#index#].cproNum" maxlength="100" type="text" value=""
                                   style="width: 86%;" ignore="ignore"></td>
-        <td align="center"><input id="ccbrand00" nullmsg="请输入比例！"  errormsg="请输入比例" name="orderMxList[#index#].cbrand" maxlength="100" type="text" value=""
+        <td align="center"><input id="cgysCode00" nullmsg="请输入包装辅料供应商代码！"  errormsg="请输入包装辅料供应商代码" name="orderMxList[#index#].cgysCode" maxlength="100" type="text" value=""
+                                  style="width: 86%;" ignore="ignore"></td>
+        <td align="center"><input id="bbrand00" nullmsg="请输入规格！"   errormsg="请输入规格" name="orderMxList[#index#].bbrand" maxlength="100" type="text" value=""
                                   style="width: 86%;" ignore="ignore"></td>
         <td align="center"><input id="cyongliang00" nullmsg="请输入单件用量！"  errormsg="请输入单件用量" name="orderMxList[#index#].cyongliang" maxlength="100" type="text" value=""
-                                  style="width: 86%;" ignore="ignore"></td>
-        <td align="center"><input id="cgysCode00" nullmsg="请输入供应商！"  errormsg="请输入供应商" name="orderMxList[#index#].cgysCode" maxlength="100" type="text" value=""
                                   style="width: 86%;" ignore="ignore"></td>
         <td align="center"><input id="csignPrice00" nullmsg="请输入价格！" datatype="d" errormsg="请输入价格" name="orderMxList[#index#].csignPrice" maxlength="100" type="text" value=""
                                   style="width: 86%;" ignore="ignore"></td>
         <td align="center"><input id="csunhaoPrecent00" nullmsg="请输入损耗率！" datatype="d" errormsg="请输入损耗率" name="orderMxList[#index#].csunhaoPrecent" maxlength="100" type="text" value=""
                                   style="width: 86%;" ignore="ignore"></td>
+        <td align="center"><input id="csumYongliang00" nullmsg="请输入总用量！"   errormsg="请输入总用量" name="orderMxList[#index#].csumYongliang" maxlength="100" type="text" value=""
+                                  style="width: 86%;" ignore="ignore"></td>
         <td align="center"><input id="cchengben00" nullmsg="请输入成本！" datatype="d" errormsg="请输入成本" name="orderMxList[#index#].cchengben" maxlength="100" type="text" value=""
+                                  style="width: 86%;" ignore="ignore"></td>
+        <td align="center"><input id="cposition00" nullmsg="请输入位置！"   errormsg="请输入位置" name="orderMxList[#index#].cposition" maxlength="100" type="text" value=""
+                                  style="width: 86%;" ignore="ignore"></td>
+        <td align="center"><input id="crkState00" nullmsg="请输入入库状态！"   errormsg="请输入总用量" name="orderMxList[#index#].crkState" maxlength="100" type="text" value=""
                                   style="width: 86%;" ignore="ignore"></td>
     </tr>
     </tbody>
@@ -127,33 +135,41 @@
                 <td align="center"  width="40">序号</td>
                 <td align="center"  width="150">包装辅料名称</td>
                 <td align="center"  width="150">包装辅料代码</td>
-                <td align="center"  width="150">包装辅料规格</td>
+                <td align="center"  width="150">规格</td>
                 <td align="center"  width="150">单件用量</td>
-                <td align="center"  width="150">供应商</td>
                 <td align="center"  width="150">价格</td>
                 <td align="center"  width="150">损耗率</td>
+                <td align="center"  width="150">总用量</td>
                 <td align="center"  width="150">成本</td>
+                <td align="center"  width="150">位置</td>
+                <td align="center"  width="150">入库状态</td>
             </tr>
             <tbody id="add_jeecgOrderProduct_table3">
             <c:if test="${fn:length(emkSampleDetailEntities2)  > 0 }">
                 <c:forEach items="${emkSampleDetailEntities2}" var="poVal" varStatus="status">
                     <tr>
                         <td align="center"><input style="width: 40px;" type="checkbox" name="ck" value="${poVal.id}"/>
-                        <td align="center"><input  nullmsg="请输入包装辅料名称！"  errormsg="请输入包装辅料名称" value="${poVal.proZnName}" name="orderMxList[${status.index}].cproZnName" maxlength="100" type="text" value=""
+                        <td align="center"><input  nullmsg="请输入包装辅料名称！"  id="cproZnName${status.index}" onclick="productLook3(${status.index});" errormsg="请输入包装辅料名称" value="${poVal.proZnName}" name="orderMxList[${status.index}].cproZnName" maxlength="100" type="text" value=""
                                                    style="width: 86%;" ignore="ignore"></td>
-                        <td align="center"><input  nullmsg="请输入包装辅料代码！"  errormsg="请输入包装辅料代码" value="${poVal.proNum}"name="orderMxList[${status.index}].cproNum" maxlength="100" type="text" value=""
+                        <td align="center"><input  nullmsg="请输入包装辅料代码！"  errormsg="请输入包装辅料代码" id="cproNum${status.index}" value="${poVal.proNum}" name="orderMxList[${status.index}].cproNum" maxlength="100" type="text" value=""
                                                    style="width: 86%;" ignore="ignore"></td>
-                        <td align="center"><input  nullmsg="请输入包装辅料规格！"  errormsg="请输入包装辅料规格" value="${poVal.brand}" name="orderMxList[${status.index}].cbrand" maxlength="100" type="text" value=""
+                        <td align="center"><input  nullmsg="请输入包装辅料供应商代码！"  errormsg="请输入包装辅料供应商代码"  value="${poVal.gysCode}" name="orderMxList[${status.index}].cgysCode" maxlength="100" type="text" value=""
                                                    style="width: 86%;" ignore="ignore"></td>
-                        <td align="center"><input  nullmsg="请输入单件用量！"  errormsg="请输入单件用量" value="${poVal.yongliang}" name="orderMxList[${status.index}].cyongliang" maxlength="100" type="text" value=""
+                        <td align="center"><input  nullmsg="请输入规格！"  errormsg="请输入规格" id="cbrand${status.index}" value="${poVal.brand}" name="orderMxList[${status.index}].cbrand" maxlength="100" type="text" value=""
                                                    style="width: 86%;" ignore="ignore"></td>
-                        <td align="center"><input  nullmsg="请输入供应商！"  errormsg="请输入供应商"  value="${poVal.gysCode}"name="orderMxList[${status.index}].cgysCode" maxlength="100" type="text" value=""
+                        <td align="center"><input  nullmsg="请输入单件用量！"  errormsg="请输入单件用量" id="cyongliang${status.index}" value="${poVal.yongliang}" name="orderMxList[${status.index}].cyongliang" maxlength="100" type="text" value=""
                                                    style="width: 86%;" ignore="ignore"></td>
                         <td align="center"><input  nullmsg="请输入价格！"  datatype="d" errormsg="请输入价格" value="${poVal.signPrice}" name="orderMxList[${status.index}].csignPrice" maxlength="100" type="text" value=""
                                                    style="width: 86%;" ignore="ignore"></td>
-                        <td align="center"><input  nullmsg="请输入损耗率！" datatype="d" errormsg="请输入损耗率" value="${poVal.sunhaoPrecent}" name="orderMxList[${status.index}].csunhaoPrecent" maxlength="100" type="text" value=""
+                        <td align="center"><input  nullmsg="请输入损耗率！" datatype="d" id="csunhaoPrecent${status.index}" errormsg="请输入损耗率" value="${poVal.sunhaoPrecent}" name="orderMxList[${status.index}].csunhaoPrecent" maxlength="100" type="text" value=""
                                                    style="width: 86%;" ignore="ignore"></td>
-                        <td align="center"><input  nullmsg="请输入成本！" datatype="d"  errormsg="请输入成本" value="${poVal.chengben}" name="orderMxList[${status.index}].cchengben" maxlength="100" type="text" value=""
+                        <td align="center"><input  nullmsg="请输入总用量！"  errormsg="请输入总用量" value="${poVal.sumYongliang}" name="orderMxList[${status.index}].csumYongliang00" maxlength="100" type="text" value=""
+                                                   style="width: 86%;" ignore="ignore"></td>
+                        <td align="center"><input  nullmsg="请输入成本！" datatype="d"  id="cchengben${status.index}" errormsg="请输入成本" value="${poVal.chengben}" name="orderMxList[${status.index}].cchengben" maxlength="100" type="text" value=""
+                                                   style="width: 86%;" ignore="ignore"></td>
+                        <td align="center"><input  nullmsg="请输入位置！"  errormsg="请输入位置" value="${poVal.position}" name="orderMxList[${status.index}].cposition" maxlength="100" type="text" value=""
+                                                   style="width: 86%;" ignore="ignore"></td>
+                        <td align="center"><input  nullmsg="请输入入库状态！"  errormsg="请输入入库状态" value="${poVal.rkState}" name="orderMxList[${status.index}].crkState" maxlength="100" type="text" value=""
                                                    style="width: 86%;" ignore="ignore"></td>
                     </tr>
 

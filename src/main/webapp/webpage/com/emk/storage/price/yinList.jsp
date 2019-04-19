@@ -37,7 +37,7 @@
             width:'auto',
             fixFooter:false
         });
-        <c:if test="${param.priceId eq null || param.priceId eq ''}">
+        <c:if test="${param.priceId eq null || param.priceId eq '' || fn:length(emkSampleYinEntities) eq 0}">
             $('#addBtnyin').click();
         </c:if>
     });
@@ -92,7 +92,7 @@
                                     <option value="${category.typecode}" ${category.typecode eq poVal.gyzy ? 'selected':''}>${category.typename}</option>
                                 </c:forEach>
                             </select>
-                           <%-- <input  nullmsg="请输入印花工艺种类！"  errormsg="请输入印花工艺种类" value="${poVal.gyzy}"name="orderMxList[${status.index}].yhzl" maxlength="100" type="text" value=""
+                           <%-- <input  nullmsg="请输入印花工艺种类！"  errormsg="请输入印花工艺种类" value="${poVal.gyzy}" name="orderMxList[${status.index}].yhzl" maxlength="100" type="text" value=""
                                                    style="width: 86%;" ignore="ignore">--%></td>
                         <td align="center"><input  nullmsg="请输入印花大小！"  errormsg="请输入印花大小" value="${poVal.size}" name="orderMxList[${status.index}].yhdx" maxlength="100" type="text" value=""
                                                    style="width: 86%;" ignore="ignore"></td>

@@ -62,6 +62,8 @@ public class EmkOutForumEntity implements Serializable {
     private String outForumNo;
     @Excel(name = "提交日期")
     private String kdDate;
+    @Excel(name = "出货日期")
+    private String outDate;
     @Excel(name = "订舱通知单号")
     private String cargoNo;
     @Excel(name = "离厂放行条号")
@@ -575,5 +577,14 @@ public class EmkOutForumEntity implements Serializable {
 
     public void setState(String state) {
         this.state = state;
+    }
+
+    @Column(name = "out_date", nullable = true, length = 32)
+    public String getOutDate() {
+        return outDate;
+    }
+
+    public void setOutDate(String outDate) {
+        this.outDate = outDate;
     }
 }

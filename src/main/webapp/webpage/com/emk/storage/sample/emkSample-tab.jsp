@@ -24,6 +24,49 @@
 				});
 			});
 		}
+
+		function toDecimal(x) {
+			if(!x){
+				return x;
+			}
+			var result = parseFloat(x);
+			if (isNaN(result)) {
+				return x;
+			}
+			result = Math.round(x * 100) / 100;
+			return result;
+		}
+		function selectAll(selectStatus){//传入参数（全选框的选中状态）
+			//根据name属性获取到单选框的input，使用each方法循环设置所有单选框的选中状态
+			if(selectStatus){
+				$("input[name='ck']").each(function(i,n){
+					n.checked = true;
+				});
+			}else{
+				$("input[name='ck']").each(function(i,n){
+					n.checked = false;
+				});
+			}
+		}
+		function setYongliang(ii){
+			if($("#base").contents().find("#gyzl").val() == 'wufeng'){
+				var yongliangV = toDecimal((parseFloat($("#sunhaoPrecent"+ii).val())+1)*parseFloat($('#precent'+ii).val())/100);
+				$("#yongliang"+ii).val(yongliangV);
+			}
+		}
+
+		function setPrice(ii){
+			var chengbenV = toDecimal((parseFloat($("#sunhaoPrecent"+ii).val())+1)*parseFloat($('#yongliang'+ii).val()))*parseFloat($('#signPrice'+ii).val());
+			$("#chengben"+ii).val(toDecimal(chengbenV));
+		}
+		function setPrice2(ii){
+			var chengbenV = toDecimal((parseFloat($("#bsunhaoPrecent"+ii).val())+1)*parseFloat($('#byongliang'+ii).val()))*parseFloat($('#bsignPrice'+ii).val());
+			$("#bchengben"+ii).val(toDecimal(chengbenV));
+		}
+		function setPrice3(ii){
+			var chengbenV = toDecimal((parseFloat($("#csunhaoPrecent"+ii).val())+1)*parseFloat($('#cyongliang'+ii).val()))*parseFloat($('#csignPrice'+ii).val());
+			$("#cchengben"+ii).val(toDecimal(chengbenV));
+		}
 	</script>
 </head>
 

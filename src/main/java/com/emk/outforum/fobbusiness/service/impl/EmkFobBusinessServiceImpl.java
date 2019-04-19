@@ -84,31 +84,14 @@ public class EmkFobBusinessServiceImpl extends CommonServiceImpl implements EmkF
 		map.put("businesse_dept_id", t.getBusinesseDeptId());
 		map.put("developer", t.getDeveloper());
 		map.put("developer_name", t.getDeveloperName());
-		map.put("gyzl", t.getGyzl());
-		map.put("pro_type", t.getProType());
-		map.put("pro_type_name", t.getProTypeName());
-		map.put("sample_no", t.getSampleNo());
-		map.put("sample_no_desc", t.getSampleNoDesc());
-		map.put("bz", t.getBz());
+
 		map.put("id", t.getId());
 		map.put("create_name", t.getCreateName());
 		map.put("create_by", t.getCreateBy());
 		map.put("create_date", t.getCreateDate());
 		map.put("sys_org_code", t.getSysOrgCode());
-		map.put("gys", t.getGys());
-		map.put("gys_code", t.getGysCode());
-		map.put("sum_money", t.getSumMoney());
-		map.put("sum_box", t.getSumBox());
-		map.put("out_fourm_no", t.getOutFourmNo());
-		map.put("cargo_no", t.getCargoNo());
-		map.put("leveal_factory_no", t.getLevealFactoryNo());
-		map.put("cargo_state", t.getCargoState());
-		map.put("leveal_state", t.getLevealState());
-		map.put("ht_num", t.getHtNum());
-		map.put("order_no", t.getOrderNo());
+
 		map.put("cwer", t.getCwer());
-		map.put("cus_num", t.getCusNum());
-		map.put("cus_name", t.getCusName());
 		return map;
 	}
  	
@@ -127,31 +110,15 @@ public class EmkFobBusinessServiceImpl extends CommonServiceImpl implements EmkF
  		sql  = sql.replace("#{businesse_dept_id}",String.valueOf(t.getBusinesseDeptId()));
  		sql  = sql.replace("#{developer}",String.valueOf(t.getDeveloper()));
  		sql  = sql.replace("#{developer_name}",String.valueOf(t.getDeveloperName()));
- 		sql  = sql.replace("#{gyzl}",String.valueOf(t.getGyzl()));
- 		sql  = sql.replace("#{pro_type}",String.valueOf(t.getProType()));
- 		sql  = sql.replace("#{pro_type_name}",String.valueOf(t.getProTypeName()));
- 		sql  = sql.replace("#{sample_no}",String.valueOf(t.getSampleNo()));
- 		sql  = sql.replace("#{sample_no_desc}",String.valueOf(t.getSampleNoDesc()));
- 		sql  = sql.replace("#{bz}",String.valueOf(t.getBz()));
+
  		sql  = sql.replace("#{id}",String.valueOf(t.getId()));
  		sql  = sql.replace("#{create_name}",String.valueOf(t.getCreateName()));
  		sql  = sql.replace("#{create_by}",String.valueOf(t.getCreateBy()));
  		sql  = sql.replace("#{create_date}",String.valueOf(t.getCreateDate()));
  		sql  = sql.replace("#{sys_org_code}",String.valueOf(t.getSysOrgCode()));
- 		sql  = sql.replace("#{gys}",String.valueOf(t.getGys()));
- 		sql  = sql.replace("#{gys_code}",String.valueOf(t.getGysCode()));
- 		sql  = sql.replace("#{sum_money}",String.valueOf(t.getSumMoney()));
- 		sql  = sql.replace("#{sum_box}",String.valueOf(t.getSumBox()));
- 		sql  = sql.replace("#{out_fourm_no}",String.valueOf(t.getOutFourmNo()));
- 		sql  = sql.replace("#{cargo_no}",String.valueOf(t.getCargoNo()));
- 		sql  = sql.replace("#{leveal_factory_no}",String.valueOf(t.getLevealFactoryNo()));
- 		sql  = sql.replace("#{cargo_state}",String.valueOf(t.getCargoState()));
- 		sql  = sql.replace("#{leveal_state}",String.valueOf(t.getLevealState()));
- 		sql  = sql.replace("#{ht_num}",String.valueOf(t.getHtNum()));
- 		sql  = sql.replace("#{order_no}",String.valueOf(t.getOrderNo()));
+
  		sql  = sql.replace("#{cwer}",String.valueOf(t.getCwer()));
- 		sql  = sql.replace("#{cus_num}",String.valueOf(t.getCusNum()));
- 		sql  = sql.replace("#{cus_name}",String.valueOf(t.getCusName()));
+
  		sql  = sql.replace("#{UUID}",UUID.randomUUID().toString());
  		return sql;
  	}

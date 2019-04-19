@@ -86,36 +86,14 @@ public class EmkSsysycyServiceImpl extends CommonServiceImpl implements EmkSsysy
 		map.put("cus_num", t.getCusNum());
 		map.put("businesser_name", t.getBusinesserName());
 		map.put("cus_name", t.getCusName());
-		map.put("gyzl", t.getGyzl());
-		map.put("pro_type", t.getProType());
-		map.put("pro_type_name", t.getProTypeName());
-		map.put("sample_no", t.getSampleNo());
-		map.put("sample_no_desc", t.getSampleNoDesc());
+
 		map.put("businesse_dept_name", t.getBusinesseDeptName());
 		map.put("businesse_dept_id", t.getBusinesseDeptId());
 		map.put("developer", t.getDeveloper());
 		map.put("developer_name", t.getDeveloperName());
 		map.put("tracer", t.getTracer());
 		map.put("tracer_name", t.getTracerName());
-		map.put("sum_total", t.getSumTotal());
-		map.put("produce_ht_num", t.getProduceHtNum());
-		map.put("order_no", t.getOrderNo());
-		map.put("out_date", t.getOutDate());
-		map.put("gys", t.getGys());
-		map.put("gys_code", t.getGysCode());
-		map.put("color", t.getColor());
-		map.put("ssyzt", t.getSsyzt());
-		map.put("ssy_date", t.getSsyDate());
-		map.put("leavel_ssy", t.getLeavelSsy());
-		map.put("cqyzt", t.getCqyzt());
-		map.put("cqy_date", t.getCqyDate());
-		map.put("leavel_cq", t.getLeavelCq());
-		map.put("syzt", t.getSyzt());
-		map.put("sy_date", t.getSyDate());
-		map.put("leavel_sy", t.getLeavelSy());
-		map.put("cyzt", t.getCyzt());
-		map.put("cy_date", t.getCyDate());
-		map.put("leavel_cy", t.getLeavelCy());
+
 		return map;
 	}
  	
@@ -136,36 +114,14 @@ public class EmkSsysycyServiceImpl extends CommonServiceImpl implements EmkSsysy
  		sql  = sql.replace("#{cus_num}",String.valueOf(t.getCusNum()));
  		sql  = sql.replace("#{businesser_name}",String.valueOf(t.getBusinesserName()));
  		sql  = sql.replace("#{cus_name}",String.valueOf(t.getCusName()));
- 		sql  = sql.replace("#{gyzl}",String.valueOf(t.getGyzl()));
- 		sql  = sql.replace("#{pro_type}",String.valueOf(t.getProType()));
- 		sql  = sql.replace("#{pro_type_name}",String.valueOf(t.getProTypeName()));
- 		sql  = sql.replace("#{sample_no}",String.valueOf(t.getSampleNo()));
- 		sql  = sql.replace("#{sample_no_desc}",String.valueOf(t.getSampleNoDesc()));
+
  		sql  = sql.replace("#{businesse_dept_name}",String.valueOf(t.getBusinesseDeptName()));
  		sql  = sql.replace("#{businesse_dept_id}",String.valueOf(t.getBusinesseDeptId()));
  		sql  = sql.replace("#{developer}",String.valueOf(t.getDeveloper()));
  		sql  = sql.replace("#{developer_name}",String.valueOf(t.getDeveloperName()));
  		sql  = sql.replace("#{tracer}",String.valueOf(t.getTracer()));
  		sql  = sql.replace("#{tracer_name}",String.valueOf(t.getTracerName()));
- 		sql  = sql.replace("#{sum_total}",String.valueOf(t.getSumTotal()));
- 		sql  = sql.replace("#{produce_ht_num}",String.valueOf(t.getProduceHtNum()));
- 		sql  = sql.replace("#{order_no}",String.valueOf(t.getOrderNo()));
- 		sql  = sql.replace("#{out_date}",String.valueOf(t.getOutDate()));
- 		sql  = sql.replace("#{gys}",String.valueOf(t.getGys()));
- 		sql  = sql.replace("#{gys_code}",String.valueOf(t.getGysCode()));
- 		sql  = sql.replace("#{color}",String.valueOf(t.getColor()));
- 		sql  = sql.replace("#{ssyzt}",String.valueOf(t.getSsyzt()));
- 		sql  = sql.replace("#{ssy_date}",String.valueOf(t.getSsyDate()));
- 		sql  = sql.replace("#{leavel_ssy}",String.valueOf(t.getLeavelSsy()));
- 		sql  = sql.replace("#{cqyzt}",String.valueOf(t.getCqyzt()));
- 		sql  = sql.replace("#{cqy_date}",String.valueOf(t.getCqyDate()));
- 		sql  = sql.replace("#{leavel_cq}",String.valueOf(t.getLeavelCq()));
- 		sql  = sql.replace("#{syzt}",String.valueOf(t.getSyzt()));
- 		sql  = sql.replace("#{sy_date}",String.valueOf(t.getSyDate()));
- 		sql  = sql.replace("#{leavel_sy}",String.valueOf(t.getLeavelSy()));
- 		sql  = sql.replace("#{cyzt}",String.valueOf(t.getCyzt()));
- 		sql  = sql.replace("#{cy_date}",String.valueOf(t.getCyDate()));
- 		sql  = sql.replace("#{leavel_cy}",String.valueOf(t.getLeavelCy()));
+
  		sql  = sql.replace("#{UUID}",UUID.randomUUID().toString());
  		return sql;
  	}

@@ -1,4 +1,5 @@
 package com.emk.outforum.fobbusiness.controller;
+import com.emk.outforum.fobbusiness.entity.EmkFobBusinessDetailEntity;
 import com.emk.outforum.fobbusiness.entity.EmkFobBusinessEntity;
 import com.emk.outforum.fobbusiness.service.EmkFobBusinessServiceI;
 import java.util.ArrayList;
@@ -7,6 +8,9 @@ import java.text.SimpleDateFormat;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.emk.outforum.tdhdcost.entity.EmkTdhdCostDetailEntity;
+import com.emk.util.ParameterUtil;
+import com.emk.util.Utils;
 import org.apache.log4j.Logger;
 import org.jeecgframework.web.system.pojo.base.TSUser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -111,6 +115,16 @@ public class EmkFobBusinessController extends BaseController {
 		return new ModelAndView("com/emk/outforum/fobbusiness/emkFobBusinessList");
 	}
 
+	@RequestMapping(params = "detailMxList")
+	public ModelAndView detailMxList(HttpServletRequest request) {
+		Map map = ParameterUtil.getParamMaps(request.getParameterMap());
+		if (Utils.notEmpty(map.get("fobId"))) {
+			List<EmkFobBusinessDetailEntity> emkFobBusinessDetailEntities = systemService.findHql("from EmkFobBusinessDetailEntity where fobId=?", map.get("fobId"));
+			request.setAttribute("emkFobBusinessDetailEntities", emkFobBusinessDetailEntities);
+		}
+		return new ModelAndView("com/emk/outforum/fobbusiness/detailMxList");
+	}
+
 	/**
 	 * easyui AJAX请求数据
 	 * 
@@ -209,6 +223,56 @@ public class EmkFobBusinessController extends BaseController {
 		message = "订舱通知单号添加成功";
 		try{
 			emkFobBusinessService.save(emkFobBusiness);
+			Map<String,String> map = ParameterUtil.getParamMaps(request.getParameterMap());
+			String dataRows = (String) map.get("orderMxListIDSR");
+			if (Utils.notEmpty(dataRows)) {
+				int rows = Integer.parseInt(dataRows);
+				for (int i = 0; i < rows; i++) {
+					EmkFobBusinessDetailEntity emkFobBusinessDetailEntity = new EmkFobBusinessDetailEntity();
+					if (Utils.notEmpty(map.get("orderMxList["+i+"].cusNum00"))) {
+						emkFobBusinessDetailEntity.setCusNum(map.get("orderMxList["+i+"].cusNum00"));
+						emkFobBusinessDetailEntity.setOrderNo(map.get("orderMxList["+i+"].orderNo00"));
+						emkFobBusinessDetailEntity.setSampleNo(map.get("orderMxList["+i+"].sampleNo00"));
+						emkFobBusinessDetailEntity.setSampleNoDesc(map.get("orderMxList["+i+"].sampleDesc00"));
+						if(Utils.notEmpty(map.get("orderMxList["+i+"].signTotal00"))){
+							emkFobBusinessDetailEntity.setTotal(Integer.parseInt(map.get("orderMxList["+i+"].signTotal00")));
+						}
+						emkFobBusinessDetailEntity.setPrice(map.get("orderMxList["+i+"].price00"));
+						if(Utils.notEmpty(map.get("orderMxList["+i+"].sumMoney00"))){
+							emkFobBusinessDetailEntity.setSumMoney(Double.parseDouble(map.get("orderMxList["+i+"].sumMoney00")));
+
+						}
+						emkFobBusinessDetailEntity.setFactoryCode(map.get("orderMxList["+i+"].factoryCode00"));
+						emkFobBusinessDetailEntity.setJqDate(map.get("orderMxList["+i+"].jqDate00"));
+						emkFobBusinessDetailEntity.setCargoState(map.get("orderMxList["+i+"].cargoState00"));
+						emkFobBusinessDetailEntity.setOutDate(map.get("orderMxList["+i+"].outDate00"));
+
+
+						emkFobBusinessDetailEntity.setCargoNo(map.get("orderMxList["+i+"].cargoNo00"));
+						emkFobBusinessDetailEntity.setOutFourmNo(map.get("orderMxList["+i+"].outForumNo00"));
+						emkFobBusinessDetailEntity.setLevealFactoryNo(map.get("orderMxList["+i+"].levealFactoryNo00"));
+						emkFobBusinessDetailEntity.setLevealDate(map.get("orderMxList["+i+"].levealDate00"));
+
+						emkFobBusinessDetailEntity.setTdNum(map.get("orderMxList["+i+"].tdNum00"));
+						emkFobBusinessDetailEntity.setTdState(map.get("orderMxList["+i+"].tdState00"));
+						emkFobBusinessDetailEntity.setStartPlace(map.get("orderMxList["+i+"].startPlace00"));
+						emkFobBusinessDetailEntity.setEndPlace(map.get("orderMxList["+i+"].endPlace00"));
+						emkFobBusinessDetailEntity.setHdCode(map.get("orderMxList["+i+"].hdCode00"));
+						emkFobBusinessDetailEntity.setChCost(map.get("orderMxList["+i+"].chCost00"));
+						emkFobBusinessDetailEntity.setChState(map.get("orderMxList["+i+"].chState00"));
+						emkFobBusinessDetailEntity.setYsEntCode(map.get("orderMxList["+i+"].ysEntCode00"));
+						emkFobBusinessDetailEntity.setYsEntCost(map.get("orderMxList["+i+"].ysEntCost00"));
+						emkFobBusinessDetailEntity.setYsState(map.get("orderMxList["+i+"].ysState00"));
+						emkFobBusinessDetailEntity.setBgd(map.get("orderMxList["+i+"].bgd00"));
+						emkFobBusinessDetailEntity.setFxt(map.get("orderMxList["+i+"].fxt00"));
+						emkFobBusinessDetailEntity.setFpNum(map.get("orderMxList["+i+"].fpNum00"));
+						emkFobBusinessDetailEntity.setZxd(map.get("orderMxList["+i+"].boxNum00"));
+
+						emkFobBusinessDetailEntity.setFobId(emkFobBusiness.getId());
+						systemService.save(emkFobBusinessDetailEntity);
+					}
+				}
+			}
 			systemService.addLog(message, Globals.Log_Type_INSERT, Globals.Log_Leavel_INFO);
 		}catch(Exception e){
 			e.printStackTrace();
@@ -231,10 +295,62 @@ public class EmkFobBusinessController extends BaseController {
 		String message = null;
 		AjaxJson j = new AjaxJson();
 		message = "订舱通知单号更新成功";
-		EmkFobBusinessEntity t = emkFobBusinessService.get(EmkFobBusinessEntity.class, emkFobBusiness.getId());
+		Map<String,String> map = ParameterUtil.getParamMaps(request.getParameterMap());
+		EmkFobBusinessEntity t = emkFobBusinessService.get(EmkFobBusinessEntity.class, map.get("fobId"));
 		try {
+			emkFobBusiness.setId(null);
 			MyBeanUtils.copyBeanNotNull2Bean(emkFobBusiness, t);
 			emkFobBusinessService.saveOrUpdate(t);
+			String dataRows = (String) map.get("orderMxListIDSR");
+			if (Utils.notEmpty(dataRows)) {
+				systemService.executeSql("delete from emk_fob_business_detail where fob_id = ?",t.getId());
+				int rows = Integer.parseInt(dataRows);
+				for (int i = 0; i < rows; i++) {
+					EmkFobBusinessDetailEntity emkFobBusinessDetailEntity = new EmkFobBusinessDetailEntity();
+					if (Utils.notEmpty(map.get("orderMxList["+i+"].cusNum00"))) {
+						emkFobBusinessDetailEntity.setCusNum(map.get("orderMxList["+i+"].cusNum00"));
+						emkFobBusinessDetailEntity.setOrderNo(map.get("orderMxList["+i+"].orderNo00"));
+						emkFobBusinessDetailEntity.setSampleNo(map.get("orderMxList["+i+"].sampleNo00"));
+						emkFobBusinessDetailEntity.setSampleNoDesc(map.get("orderMxList["+i+"].sampleDesc00"));
+						if(Utils.notEmpty(map.get("orderMxList["+i+"].signTotal00"))){
+							emkFobBusinessDetailEntity.setTotal(Integer.parseInt(map.get("orderMxList["+i+"].signTotal00")));
+						}
+						emkFobBusinessDetailEntity.setPrice(map.get("orderMxList["+i+"].price00"));
+						if(Utils.notEmpty(map.get("orderMxList["+i+"].sumMoney00"))){
+							emkFobBusinessDetailEntity.setSumMoney(Double.parseDouble(map.get("orderMxList["+i+"].sumMoney00")));
+
+						}
+						emkFobBusinessDetailEntity.setFactoryCode(map.get("orderMxList["+i+"].factoryCode00"));
+						emkFobBusinessDetailEntity.setJqDate(map.get("orderMxList["+i+"].jqDate00"));
+						emkFobBusinessDetailEntity.setCargoState(map.get("orderMxList["+i+"].cargoState00"));
+						emkFobBusinessDetailEntity.setOutDate(map.get("orderMxList["+i+"].outDate00"));
+
+
+						emkFobBusinessDetailEntity.setCargoNo(map.get("orderMxList["+i+"].cargoNo00"));
+						emkFobBusinessDetailEntity.setOutFourmNo(map.get("orderMxList["+i+"].outForumNo00"));
+						emkFobBusinessDetailEntity.setLevealFactoryNo(map.get("orderMxList["+i+"].levealFactoryNo00"));
+						emkFobBusinessDetailEntity.setLevealDate(map.get("orderMxList["+i+"].levealDate00"));
+
+						emkFobBusinessDetailEntity.setTdNum(map.get("orderMxList["+i+"].tdNum00"));
+						emkFobBusinessDetailEntity.setTdState(map.get("orderMxList["+i+"].tdState00"));
+						emkFobBusinessDetailEntity.setStartPlace(map.get("orderMxList["+i+"].startPlace00"));
+						emkFobBusinessDetailEntity.setEndPlace(map.get("orderMxList["+i+"].endPlace00"));
+						emkFobBusinessDetailEntity.setHdCode(map.get("orderMxList["+i+"].hdCode00"));
+						emkFobBusinessDetailEntity.setChCost(map.get("orderMxList["+i+"].chCost00"));
+						emkFobBusinessDetailEntity.setChState(map.get("orderMxList["+i+"].chState00"));
+						emkFobBusinessDetailEntity.setYsEntCode(map.get("orderMxList["+i+"].ysEntCode00"));
+						emkFobBusinessDetailEntity.setYsEntCost(map.get("orderMxList["+i+"].ysEntCost00"));
+						emkFobBusinessDetailEntity.setYsState(map.get("orderMxList["+i+"].ysState00"));
+						emkFobBusinessDetailEntity.setBgd(map.get("orderMxList["+i+"].bgd00"));
+						emkFobBusinessDetailEntity.setFxt(map.get("orderMxList["+i+"].fxt00"));
+						emkFobBusinessDetailEntity.setFpNum(map.get("orderMxList["+i+"].fpNum00"));
+						emkFobBusinessDetailEntity.setZxd(map.get("orderMxList["+i+"].boxNum00"));
+
+						emkFobBusinessDetailEntity.setFobId(t.getId());
+						systemService.save(emkFobBusinessDetailEntity);
+					}
+				}
+			}
 			systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -1,9 +1,11 @@
 package com.emk.produce.leavefactory.controller;
 
 import com.alibaba.fastjson.JSONArray;
+import com.emk.bill.proorderdetail.entity.EmkProOrderDetailEntity;
 import com.emk.produce.leavefactory.entity.EmkLeaveFactoryEntity;
 import com.emk.produce.leavefactory.service.EmkLeaveFactoryServiceI;
 import com.emk.util.ParameterUtil;
+import com.emk.util.Utils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -61,9 +63,9 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.UriComponentsBuilder;
 
-@Api(value = "EmkLeaveFactory", description = "离厂通知单", tags = {"emkLeaveFactoryController"})
+@Api(value = "EmkLeaveFactory", description = "离厂通知单", tags = "emkLeaveFactoryController")
 @Controller
-@RequestMapping({"/emkLeaveFactoryController"})
+@RequestMapping("/emkLeaveFactoryController")
 public class EmkLeaveFactoryController extends BaseController {
     private static final Logger logger = Logger.getLogger(EmkLeaveFactoryController.class);
     @Autowired
@@ -73,12 +75,22 @@ public class EmkLeaveFactoryController extends BaseController {
     @Autowired
     private Validator validator;
 
-    @RequestMapping(params = {"list"})
+    @RequestMapping(params = "list")
     public ModelAndView list(HttpServletRequest request) {
         return new ModelAndView("com/emk/produce/leavefactory/emkLeaveFactoryList");
     }
 
-    @RequestMapping(params = {"datagrid"})
+    @RequestMapping(params = "detailMxList")
+    public ModelAndView detailMxList(HttpServletRequest request) {
+        Map map = ParameterUtil.getParamMaps(request.getParameterMap());
+        if (Utils.notEmpty(map.get("levalFactoryId"))) {
+            List<EmkProOrderDetailEntity> emkProOrderDetailEntities = systemService.findHql("from EmkProOrderDetailEntity where proOrderId=?", map.get("levalFactoryId"));
+            request.setAttribute("emkProOrderDetailEntities", emkProOrderDetailEntities);
+        }
+        return new ModelAndView("com/emk/produce/leavefactory/detailMxList");
+    }
+
+    @RequestMapping(params = "datagrid")
     public void datagrid(EmkLeaveFactoryEntity emkLeaveFactory, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid) {
         CriteriaQuery cq = new CriteriaQuery(EmkLeaveFactoryEntity.class, dataGrid);
         TSUser user = (TSUser) request.getSession().getAttribute(ResourceUtil.LOCAL_CLINET_USER);
@@ -92,20 +104,20 @@ public class EmkLeaveFactoryController extends BaseController {
 
 
         cq.add();
-        this.emkLeaveFactoryService.getDataGridReturn(cq, true);
+        emkLeaveFactoryService.getDataGridReturn(cq, true);
         TagUtil.datagrid(response, dataGrid);
     }
 
-    @RequestMapping(params = {"doDel"})
+    @RequestMapping(params = "doDel")
     @ResponseBody
     public AjaxJson doDel(EmkLeaveFactoryEntity emkLeaveFactory, HttpServletRequest request) {
         String message = null;
         AjaxJson j = new AjaxJson();
-        emkLeaveFactory = (EmkLeaveFactoryEntity) this.systemService.getEntity(EmkLeaveFactoryEntity.class, emkLeaveFactory.getId());
+        emkLeaveFactory = systemService.getEntity(EmkLeaveFactoryEntity.class, emkLeaveFactory.getId());
         message = "离厂通知单删除成功";
         try {
-            this.emkLeaveFactoryService.delete(emkLeaveFactory);
-            this.systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
+            emkLeaveFactoryService.delete(emkLeaveFactory);
+            systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
         } catch (Exception e) {
             e.printStackTrace();
             message = "离厂通知单删除失败";
@@ -115,7 +127,7 @@ public class EmkLeaveFactoryController extends BaseController {
         return j;
     }
 
-    @RequestMapping(params = {"doBatchDel"})
+    @RequestMapping(params = "doBatchDel")
     @ResponseBody
     public AjaxJson doBatchDel(String ids, HttpServletRequest request) {
         String message = null;
@@ -123,11 +135,11 @@ public class EmkLeaveFactoryController extends BaseController {
         message = "离厂通知单删除成功";
         try {
             for (String id : ids.split(",")) {
-                EmkLeaveFactoryEntity emkLeaveFactory = (EmkLeaveFactoryEntity) this.systemService.getEntity(EmkLeaveFactoryEntity.class, id);
+                EmkLeaveFactoryEntity emkLeaveFactory = systemService.getEntity(EmkLeaveFactoryEntity.class, id);
 
 
-                this.emkLeaveFactoryService.delete(emkLeaveFactory);
-                this.systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
+                emkLeaveFactoryService.delete(emkLeaveFactory);
+                systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -138,7 +150,7 @@ public class EmkLeaveFactoryController extends BaseController {
         return j;
     }
 
-    @RequestMapping(params = {"doAdd"})
+    @RequestMapping(params = "doAdd")
     @ResponseBody
     public AjaxJson doAdd(EmkLeaveFactoryEntity emkLeaveFactory, HttpServletRequest request) {
         String message = null;
@@ -147,11 +159,11 @@ public class EmkLeaveFactoryController extends BaseController {
         try {
             TSUser user = (TSUser) request.getSession().getAttribute("LOCAL_CLINET_USER");
             Map<String, String> map = ParameterUtil.getParamMaps(request.getParameterMap());
-            Map orderNum = this.systemService.findOneForJdbc("select CAST(ifnull(max(right(LEAVE_FACTORY_NO, 3)),0)+1 AS signed) orderNum from emk_leave_factory");
-            //Map orderNum = this.systemService.findOneForJdbc("select count(0)+1 orderNum from emk_leave_factory where sys_org_code=?", new Object[]{user.getCurrentDepart().getOrgCode()});
+            Map orderNum = systemService.findOneForJdbc("select CAST(ifnull(max(right(LEAVE_FACTORY_NO, 3)),0)+1 AS signed) orderNum from emk_leave_factory");
+            //Map orderNum = systemService.findOneForJdbc("select count(0)+1 orderNum from emk_leave_factory where sys_org_code=?", new Object[]{user.getCurrentDepart().getOrgCode()});
             emkLeaveFactory.setLeaveFactoryNo("L" + DateUtils.format(new Date(), "yyMMdd") + String.format("%03d", Integer.parseInt(orderNum.get("orderNum").toString())));
-            this.emkLeaveFactoryService.save(emkLeaveFactory);
-            this.systemService.addLog(message, Globals.Log_Type_INSERT, Globals.Log_Leavel_INFO);
+            emkLeaveFactoryService.save(emkLeaveFactory);
+            systemService.addLog(message, Globals.Log_Type_INSERT, Globals.Log_Leavel_INFO);
         } catch (Exception e) {
             e.printStackTrace();
             message = "离厂通知单添加失败";
@@ -161,17 +173,43 @@ public class EmkLeaveFactoryController extends BaseController {
         return j;
     }
 
-    @RequestMapping(params = {"doUpdate"})
+    @RequestMapping(params = "doUpdate")
     @ResponseBody
     public AjaxJson doUpdate(EmkLeaveFactoryEntity emkLeaveFactory, HttpServletRequest request) {
         String message = null;
         AjaxJson j = new AjaxJson();
         message = "离厂通知单更新成功";
-        EmkLeaveFactoryEntity t = (EmkLeaveFactoryEntity) this.emkLeaveFactoryService.get(EmkLeaveFactoryEntity.class, emkLeaveFactory.getId());
+        Map<String, String> map = ParameterUtil.getParamMaps(request.getParameterMap());
+        EmkLeaveFactoryEntity t = emkLeaveFactoryService.get(EmkLeaveFactoryEntity.class, map.get("levalFactoryId"));
         try {
+            emkLeaveFactory.setId(null);
             MyBeanUtils.copyBeanNotNull2Bean(emkLeaveFactory, t);
-            this.emkLeaveFactoryService.saveOrUpdate(t);
-            this.systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
+            emkLeaveFactoryService.saveOrUpdate(t);
+
+            //保存明细数据
+            String dataRows = (String) map.get("orderMxListIDSR");
+            if (Utils.notEmpty(dataRows)) {
+                systemService.executeSql("delete from emk_pro_order_detail where pro_order_id = ? ",t.getId());
+
+                int rows = Integer.parseInt(dataRows);
+                EmkProOrderDetailEntity proOrderDetailEntity = null;
+                for (int i = 0; i < rows; i++) {
+                    if (Utils.notEmpty(map.get("orderMxList["+i+"].orderNo00"))){
+                        proOrderDetailEntity = new EmkProOrderDetailEntity();
+                        proOrderDetailEntity.setProOrderId(t.getId());
+                        proOrderDetailEntity.setOrderNo(map.get("orderMxList["+i+"].orderNo00").toString());
+                        proOrderDetailEntity.setSampleNo(map.get("orderMxList["+i+"].sampleNo00").toString());
+                        proOrderDetailEntity.setSampleDesc(map.get("orderMxList["+i+"].sampleDesc00").toString());
+                        proOrderDetailEntity.setSumBox(map.get("orderMxList["+i+"].sumBox00").toString());
+                        proOrderDetailEntity.setSortDesc(String.valueOf(i+1));
+                        proOrderDetailEntity.setSumVol(map.get("orderMxList["+i+"].sumVol00").toString());
+                        proOrderDetailEntity.setSumMao(map.get("orderMxList["+i+"].sumMao00").toString());
+                        proOrderDetailEntity.setSumJz(map.get("orderMxList["+i+"].sumJz00").toString());
+                        systemService.save(proOrderDetailEntity);
+                    }
+                }
+            }
+            systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
         } catch (Exception e) {
             e.printStackTrace();
             message = "离厂通知单更新失败";
@@ -181,36 +219,36 @@ public class EmkLeaveFactoryController extends BaseController {
         return j;
     }
 
-    @RequestMapping(params = {"goAdd"})
+    @RequestMapping(params = "goAdd")
     public ModelAndView goAdd(EmkLeaveFactoryEntity emkLeaveFactory, HttpServletRequest req) {
         req.setAttribute("kdDate", DateUtils.format(new Date(), "yyyy-MM-dd"));
         if (StringUtil.isNotEmpty(emkLeaveFactory.getId())) {
-            emkLeaveFactory = (EmkLeaveFactoryEntity) this.emkLeaveFactoryService.getEntity(EmkLeaveFactoryEntity.class, emkLeaveFactory.getId());
+            emkLeaveFactory = emkLeaveFactoryService.getEntity(EmkLeaveFactoryEntity.class, emkLeaveFactory.getId());
             req.setAttribute("emkLeaveFactoryPage", emkLeaveFactory);
         }
         return new ModelAndView("com/emk/produce/leavefactory/emkLeaveFactory-add");
     }
 
-    @RequestMapping(params = {"goUpdate"})
+    @RequestMapping(params = "goUpdate")
     public ModelAndView goUpdate(EmkLeaveFactoryEntity emkLeaveFactory, HttpServletRequest req) {
         if (StringUtil.isNotEmpty(emkLeaveFactory.getId())) {
-            emkLeaveFactory = (EmkLeaveFactoryEntity) this.emkLeaveFactoryService.getEntity(EmkLeaveFactoryEntity.class, emkLeaveFactory.getId());
+            emkLeaveFactory = emkLeaveFactoryService.getEntity(EmkLeaveFactoryEntity.class, emkLeaveFactory.getId());
             req.setAttribute("emkLeaveFactoryPage", emkLeaveFactory);
         }
         return new ModelAndView("com/emk/produce/leavefactory/emkLeaveFactory-update");
     }
 
-    @RequestMapping(params = {"upload"})
+    @RequestMapping(params = "upload")
     public ModelAndView upload(HttpServletRequest req) {
         req.setAttribute("controller_name", "emkLeaveFactoryController");
         return new ModelAndView("common/upload/pub_excel_upload");
     }
 
-    @RequestMapping(params = {"exportXls"})
+    @RequestMapping(params = "exportXls")
     public String exportXls(EmkLeaveFactoryEntity emkLeaveFactory, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid, ModelMap modelMap) {
         CriteriaQuery cq = new CriteriaQuery(EmkLeaveFactoryEntity.class, dataGrid);
         HqlGenerateUtil.installHql(cq, emkLeaveFactory, request.getParameterMap());
-        List<EmkLeaveFactoryEntity> emkLeaveFactorys = this.emkLeaveFactoryService.getListByCriteriaQuery(cq, Boolean.valueOf(false));
+        List<EmkLeaveFactoryEntity> emkLeaveFactorys = emkLeaveFactoryService.getListByCriteriaQuery(cq, Boolean.valueOf(false));
         modelMap.put("fileName", "离厂通知单");
         modelMap.put("entity", EmkLeaveFactoryEntity.class);
         modelMap.put("params", new ExportParams("离厂通知单列表", "导出人:" + ResourceUtil.getSessionUser().getRealName(), "导出信息"));
@@ -219,7 +257,7 @@ public class EmkLeaveFactoryController extends BaseController {
         return "jeecgExcelView";
     }
 
-    @RequestMapping(params = {"exportXlsByT"})
+    @RequestMapping(params = "exportXlsByT")
     public String exportXlsByT(EmkLeaveFactoryEntity emkLeaveFactory, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid, ModelMap modelMap) {
         modelMap.put("fileName", "离厂通知单");
         modelMap.put("entity", EmkLeaveFactoryEntity.class);
@@ -233,31 +271,31 @@ public class EmkLeaveFactoryController extends BaseController {
     @ResponseBody
     @ApiOperation(value = "离厂通知单列表信息", produces = "application/json", httpMethod = "GET")
     public ResponseMessage<List<EmkLeaveFactoryEntity>> list() {
-        List<EmkLeaveFactoryEntity> listEmkLeaveFactorys = this.emkLeaveFactoryService.getList(EmkLeaveFactoryEntity.class);
+        List<EmkLeaveFactoryEntity> listEmkLeaveFactorys = emkLeaveFactoryService.getList(EmkLeaveFactoryEntity.class);
         return Result.success(listEmkLeaveFactorys);
     }
 
-    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.GET})
+    @RequestMapping(value = "/{id}", method = {org.springframework.web.bind.annotation.RequestMethod.GET})
     @ResponseBody
     @ApiOperation(value = "根据ID获取离厂通知单信息", notes = "根据ID获取离厂通知单信息", httpMethod = "GET", produces = "application/json")
     public ResponseMessage<?> get(@ApiParam(required = true, name = "id", value = "ID") @PathVariable("id") String id) {
-        EmkLeaveFactoryEntity task = (EmkLeaveFactoryEntity) this.emkLeaveFactoryService.get(EmkLeaveFactoryEntity.class, id);
+        EmkLeaveFactoryEntity task = emkLeaveFactoryService.get(EmkLeaveFactoryEntity.class, id);
         if (task == null) {
             return Result.error("根据ID获取离厂通知单信息为空");
         }
         return Result.success(task);
     }
 
-    @RequestMapping(method = {org.springframework.web.bind.annotation.RequestMethod.POST}, consumes = {"application/json"})
+    @RequestMapping(method = {org.springframework.web.bind.annotation.RequestMethod.POST}, consumes = "application/json")
     @ResponseBody
     @ApiOperation("创建离厂通知单")
     public ResponseMessage<?> create(@ApiParam(name = "离厂通知单对象") @RequestBody EmkLeaveFactoryEntity emkLeaveFactory, UriComponentsBuilder uriBuilder) {
-        Set<ConstraintViolation<EmkLeaveFactoryEntity>> failures = this.validator.validate(emkLeaveFactory, new Class[0]);
+        Set<ConstraintViolation<EmkLeaveFactoryEntity>> failures = validator.validate(emkLeaveFactory, new Class[0]);
         if (!failures.isEmpty()) {
             return Result.error(JSONArray.toJSONString(BeanValidators.extractPropertyAndMessage(failures)));
         }
         try {
-            this.emkLeaveFactoryService.save(emkLeaveFactory);
+            emkLeaveFactoryService.save(emkLeaveFactory);
         } catch (Exception e) {
             e.printStackTrace();
             return Result.error("离厂通知单信息保存失败");
@@ -265,16 +303,16 @@ public class EmkLeaveFactoryController extends BaseController {
         return Result.success(emkLeaveFactory);
     }
 
-    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.PUT}, consumes = {"application/json"})
+    @RequestMapping(value = "/{id}", method = {org.springframework.web.bind.annotation.RequestMethod.PUT}, consumes = "application/json")
     @ResponseBody
     @ApiOperation(value = "更新离厂通知单", notes = "更新离厂通知单")
     public ResponseMessage<?> update(@ApiParam(name = "离厂通知单对象") @RequestBody EmkLeaveFactoryEntity emkLeaveFactory) {
-        Set<ConstraintViolation<EmkLeaveFactoryEntity>> failures = this.validator.validate(emkLeaveFactory, new Class[0]);
+        Set<ConstraintViolation<EmkLeaveFactoryEntity>> failures = validator.validate(emkLeaveFactory, new Class[0]);
         if (!failures.isEmpty()) {
             return Result.error(JSONArray.toJSONString(BeanValidators.extractPropertyAndMessage(failures)));
         }
         try {
-            this.emkLeaveFactoryService.saveOrUpdate(emkLeaveFactory);
+            emkLeaveFactoryService.saveOrUpdate(emkLeaveFactory);
         } catch (Exception e) {
             e.printStackTrace();
             return Result.error("更新离厂通知单信息失败");
@@ -282,7 +320,7 @@ public class EmkLeaveFactoryController extends BaseController {
         return Result.success("更新离厂通知单信息成功");
     }
 
-    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.DELETE})
+    @RequestMapping(value = "/{id}", method = {org.springframework.web.bind.annotation.RequestMethod.DELETE})
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ApiOperation("删除离厂通知单")
     public ResponseMessage<?> delete(@ApiParam(name = "id", value = "ID", required = true) @PathVariable("id") String id) {
@@ -291,7 +329,7 @@ public class EmkLeaveFactoryController extends BaseController {
             return Result.error("ID不能为空");
         }
         try {
-            this.emkLeaveFactoryService.deleteEntityById(EmkLeaveFactoryEntity.class, id);
+            emkLeaveFactoryService.deleteEntityById(EmkLeaveFactoryEntity.class, id);
         } catch (Exception e) {
             e.printStackTrace();
             return Result.error("离厂通知单删除失败");

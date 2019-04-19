@@ -15,6 +15,7 @@ import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
 import org.activiti.engine.impl.pvm.process.TransitionImpl;
 import org.jeecgframework.web.system.pojo.base.TSUser;
 import org.jeecgframework.web.system.service.SystemService;
+import org.jeecgframework.web.system.sms.entity.TSSmsEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -33,16 +34,17 @@ public class ApprovalUtil {
      * @return
      * @throws Exception
      */
-    public static  EmkApprovalDetailEntity saveApprovalDetail(String id, TSUser user, EmkApprovalEntity b) throws Exception {
+    public static  EmkApprovalDetailEntity saveApprovalDetail(String id, TSUser user, EmkApprovalEntity b,String advice) throws Exception {
         EmkApprovalDetailEntity approvalDetail = new EmkApprovalDetailEntity();
         approvalDetail.setApprovalId(id);
         approvalDetail.setApproveUserId(user.getId());
         approvalDetail.setApproveDate(DateUtil.getCurrentTimeString(null));
         approvalDetail.setApproveStatus(0);
-
+        approvalDetail.setApproveAdvice(advice);
         b.setBpmSher(user.getRealName());
         b.setBpmSherId(user.getId());
         b.setBpmDate(DateUtil.getCurrentTimeString(null));
+        b.setBpmStatus("0");
         return approvalDetail;
     }
 
@@ -60,6 +62,20 @@ public class ApprovalUtil {
         approvalEntity.setStatus(0);
         approvalEntity.setWorkNum(workNum);
         approvalEntity.setFormId(formId);
+    }
+    /**
+     * 保存发送信息记录表
+     *
+     * @param  approvalEntity 发送信息记录表对象，title 标题，content 内容，receviceUser 接收用户，sendUser 发送用户
+     * @return
+     * @throws Exception
+     */
+    public static void saveSms(TSSmsEntity smsEntity,String title,String content,String receviceUser,String sendUser) throws Exception {
+        smsEntity.setEsReceiver(receviceUser);
+        smsEntity.setEsTitle(title);
+        smsEntity.setEsSender(sendUser);
+        smsEntity.setEsStatus("0");
+        smsEntity.setEsContent(content);
     }
 
     /**

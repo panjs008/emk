@@ -30,11 +30,9 @@
 <body>
 <t:tabs id="proOrderDetail"  iframe="false" tabPosition="top" width="100%" heigth="${param.hVal}"  fit="true">
 	<t:tab iframe="emkProOrderController.do?goBase&id=${param.id}"  width="100%" heigth="${param.hVal2}"   icon="fa fa-calendar" title="基本信息" id="base"></t:tab>
-	<t:tab href="emkProOrderController.do?goPb&priceId=${param.id}"   width="100%" icon="fa fa-cube" title="坯布" id="pbdetail"></t:tab>
-	<t:tab href="emkProOrderController.do?orderMxList&priceId=${param.id}"   width="100%" icon="fa fa-flask" title="原料面料" id="detail"></t:tab>
-	<t:tab href="emkProOrderController.do?orderMxList2&priceId=${param.id}"   width="100%" icon="fa fa-cut" title="缝制辅料" id="fengdetail"></t:tab>
-	<t:tab href="emkProOrderController.do?orderMxList3&priceId=${param.id}"   width="100%" icon="fa fa-cube" title="包装辅料" id="bzdetail"></t:tab>
-
+	<t:tab href="emkProOrderController.do?orderMxList&proOrderId=${param.id}"   width="100%" icon="fa fa-flask" title="原料面料" id="detail"></t:tab>
+	<t:tab href="emkProOrderController.do?orderMxList2&proOrderId=${param.id}"   width="100%" icon="fa fa-cut" title="缝制辅料" id="fengdetail"></t:tab>
+	<t:tab href="emkProOrderController.do?orderMxList3&proOrderId=${param.id}"   width="100%" icon="fa fa-cube" title="包装辅料" id="bzdetail"></t:tab>
 </t:tabs>
 
 </body>

@@ -30,20 +30,22 @@
 		<tr>
 			<td align="right" >
 				<label class="Validform_label">
-					会议记录编号:
+					产前会议记录表编号:
 				</label>
 			</td>
-			<td class="value" >
+			<td class="value" colspan="3">
 				<input id="meetingNo" name="meetingNo" value="${emkMeetingPage.meetingNo }"  type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">会议记录编号</label>
+				<label class="Validform_label" style="display: none;">产前会议记录表编号</label>
 			</td>
+			</tr>
+		<tr>
 			<td align="right">
 				<label class="Validform_label">
 					会议时间:
 				</label>
 			</td>
-			<td class="value">
+			<td class="value" colspan="3">
 				<input id="meetingDate" name="meetingDate" value="${emkMeetingPage.meetingDate }" readonly onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})"  type="text" style="width: 150px" class="Wdate"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">会议时间</label>
@@ -55,17 +57,19 @@
 					会议记录人:
 				</label>
 			</td>
-			<td class="value" >
+			<td class="value" colspan="3">
 				<input id="recorder" name="recorder"  type="text" value="${emkMeetingPage.recorder }" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">会议记录人</label>
 			</td>
+			</tr>
+		<tr>
 			<td align="right">
 				<label class="Validform_label">
 					会议地点:
 				</label>
 			</td>
-			<td class="value">
+			<td class="value" colspan="3">
 				<input id="address" name="address"   type="text" value="${emkMeetingPage.address }" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">会议地点</label>
@@ -88,26 +92,19 @@
 			</td>
 
 		</tr>
+
 		<tr>
-			<td align="right" >
+			<td align="right" style="width: 18%">
 				<label class="Validform_label">
-					订单号:
+					客户名称:
 				</label>
 			</td>
-			<td class="value" >
-				<input id="orderNo" name="orderNo"  type="text" value="${emkMeetingPage.orderNo }" style="width: 150px" class="inputxt"  ignore="ignore" />
+			<td class="value" style="width: 32%" colspan="3">
+				<input id="cusName" name="cusName" readonly type="text" value="${emkMeetingPage.cusName }" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<t:choose  hiddenName="cusNum"  hiddenid="cusNum" url="ymkCustomController.do?select" name="ymkCustomList" width="700px" height="500px"
+						   icon="icon-search" title="选择客户" textname="cusName,businesseDeptName,businesseDeptId,businesser,businesserName,developer,developerName,tracer,tracerName,bz" isclear="true" isInit="true"></t:choose>
 				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">订单号</label>
-			</td>
-			<td align="right">
-				<label class="Validform_label">
-					款号:
-				</label>
-			</td>
-			<td class="value">
-				<input id="sampleNo" name="sampleNo" type="text" value="${emkMeetingPage.sampleNo }" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">款号</label>
+				<label class="Validform_label" style="display: none;">客户名称</label>
 			</td>
 		</tr>
 		<tr>
@@ -123,20 +120,6 @@
 			</td>
 			<td align="right" style="width: 18%">
 				<label class="Validform_label">
-					客户名称:
-				</label>
-			</td>
-			<td class="value" style="width: 32%">
-				<input id="cusName" name="cusName" readonly type="text" value="${emkMeetingPage.cusName }" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<t:choose  hiddenName="cusNum"  hiddenid="cusNum" url="ymkCustomController.do?select" name="ymkCustomList" width="700px" height="500px"
-						   icon="icon-search" title="选择客户" textname="cusName,businesseDeptName,businesseDeptId,businesser,businesserName,developer,developerName,tracer,tracerName,bz" isclear="true" isInit="true"></t:choose>
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">客户名称</label>
-			</td>
-		</tr>
-		<tr>
-			<td align="right" style="width: 18%">
-				<label class="Validform_label">
 					业务部门:
 				</label>
 			</td>
@@ -145,6 +128,18 @@
 				<input id="businesseDeptId" name="businesseDeptId" value="${emkMeetingPage.businesseDeptId }"  type="hidden"  />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">业务部门</label>
+			</td>
+			</tr>
+		<tr>
+			<td align="right">
+				<label class="Validform_label">
+					款号:
+				</label>
+			</td>
+			<td class="value">
+				<input id="sampleNo" name="sampleNo" type="text" value="${emkMeetingPage.sampleNo }" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">款号</label>
 			</td>
 			<td align="right" style="width: 18%">
 				<label class="Validform_label">
@@ -155,7 +150,7 @@
 				<select class="form-control select2" id="businesserId" datatype="*" >
 					<option value=''>请选择</option>
 				</select>
-				<input id="businesser" name="businesser" readonly value="${emkMeetingPage.businesser }" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="businesser" name="businesser" readonly value="${emkMeetingPage.businesser }" type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<input id="businesserName" name="businesserName" value="${emkMeetingPage.businesserName }" type="hidden"  />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">业务员</label>
@@ -163,6 +158,16 @@
 		</tr>
 
 		<tr>
+			<td align="right">
+				<label class="Validform_label">
+					描述:
+				</label>
+			</td>
+			<td class="value">
+				<input id="sampleNoDesc" name="sampleNoDesc" type="text" value="${emkMeetingPage.sampleNoDesc }" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">描述</label>
+			</td>
 			<td align="right" style="width: 18%">
 				<label class="Validform_label">
 					业务跟单员:
@@ -172,10 +177,24 @@
 				<select class="form-control select2" id="tracerId"  >
 					<option value=''>请选择</option>
 				</select>
-				<input id="tracer" name="tracer" readonly type="text" value="${emkMeetingPage.tracer }" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="tracer" name="tracer" readonly type="hidden" value="${emkMeetingPage.tracer }" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<input id="tracerName" name="tracerName"  value="${emkMeetingPage.tracerName }" type="hidden"  />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">业务员</label>
+			</td>
+			</tr>
+		<tr>
+			<td align="right">
+				<label class="Validform_label">
+					款式大类:
+				</label>
+			</td>
+			<td class="value">
+				<input id="proTypeTree" value="${emkMeetingPage.proTypeName }">
+				<input id="proTypeName" name="proTypeName" datatype="*" value="${emkMeetingPage.proTypeName }"  type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="proType" name="proType" type="hidden" value="${emkMeetingPage.proType }" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">款式大类</label>
 			</td>
 			<td align="right" style="width: 18%">
 				<label class="Validform_label">
@@ -186,7 +205,7 @@
 				<select class="form-control select2" id="developerId"  >
 					<option value=''>请选择</option>
 				</select>
-				<input id="developer" name="developer" readonly value="${emkMeetingPage.developer }" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="developer" name="developer" readonly value="${emkMeetingPage.developer }" type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<input id="developerName" name="developerName"  value="${emkMeetingPage.developerName }" type="hidden"  />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">业务员</label>
@@ -206,19 +225,27 @@
 			</td>
 			<td align="right">
 				<label class="Validform_label">
-					款式大类:
+					出货日期:
 				</label>
 			</td>
 			<td class="value">
-				<input id="proTypeTree" value="${emkMeetingPage.proTypeName }">
-				<input id="proTypeName" name="proTypeName" datatype="*" value="${emkMeetingPage.proTypeName }"  type="hidden" style="width: 150px" class="inputxt"  ignore="ignore" />
-				<input id="proType" name="proType" type="hidden" value="${emkMeetingPage.proType }" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="outDate" name="outDate" value="${emkMeetingPage.outDate }" readonly onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})"  type="text" style="width: 150px" class="Wdate"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">款式大类</label>
+				<label class="Validform_label" style="display: none;">出货日期</label>
 			</td>
 
 		</tr>
 		<tr>
+			<td align="right" >
+				<label class="Validform_label">
+					订单号:
+				</label>
+			</td>
+			<td class="value" >
+				<input id="orderNo" name="orderNo"  type="text" value="${emkMeetingPage.orderNo }" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">订单号</label>
+			</td>
 			<td align="right">
 				<label class="Validform_label">
 					中期检查时间:
@@ -229,7 +256,12 @@
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">中期检查时间</label>
 			</td>
-			<td align="right">
+		</tr>
+		<tr>
+			<td class="value" colspan="2">
+
+			</td>
+			<td align="right" >
 				<label class="Validform_label">
 					尾期检查时间:
 				</label>
@@ -240,18 +272,7 @@
 				<label class="Validform_label" style="display: none;">尾期检查时间</label>
 			</td>
 		</tr>
-		<tr>
-			<td align="right">
-				<label class="Validform_label">
-					描述:
-				</label>
-			</td>
-			<td class="value" colspan="3">
-				<textarea  id="sampleNoDesc" style="width:95%;height:50px" class="inputxt" rows="3" name="sampleNoDesc">${emkMeetingPage.sampleNoDesc }</textarea>
-				<span class="Validform_checktip"></span>
-				<label class="Validform_label" style="display: none;">描述</label>
-			</td>
-		</tr>
+
 		<tr>
 			<td align="right">
 				<label class="Validform_label">

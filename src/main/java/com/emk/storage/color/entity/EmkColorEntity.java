@@ -70,7 +70,10 @@ public class EmkColorEntity implements Serializable {
     private String syTo;
     @Excel(name = "客户评语")
     private String cusRemark;
-
+    @Excel(name = "样品交期")
+    private String ysDate;
+    @Excel(name = "距交期余天数")
+    private String levelDays;
     @Excel(name = "业务员")
     private String businesser;
     private String businesserName;
@@ -523,4 +526,22 @@ public class EmkColorEntity implements Serializable {
     public void setRecevieDate(String recevieDate) {
         this.recevieDate = recevieDate;
     }
+    @Column(name = "YS_DATE", nullable = true, length = 32)
+    public String getYsDate() {
+        return this.ysDate;
+    }
+
+    public void setYsDate(String ysDate) {
+        this.ysDate = ysDate;
+    }
+
+    @Column(name = "LEVEL_DAYS", nullable = true, length = 32)
+    public String getLevelDays() {
+        return this.levelDays;
+    }
+
+    public void setLevelDays(String levelDays) {
+        this.levelDays = levelDays;
+    }
+
 }

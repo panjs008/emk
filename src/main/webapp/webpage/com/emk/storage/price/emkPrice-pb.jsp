@@ -24,7 +24,7 @@
 				</label>
 			</td>
 			<td class="value"  style="width: 90%">
-				<input id="xjkz" name="xjkz" value="${emkPbPage.xjkz }"  type="text" datatype="*" style="width: 150px" class="inputxt"   />
+				<input id="xjkz" name="xjkz" value="${emkPbPage.xjkz }" type="text" datatype="d" style="width: 150px" class="inputxt"   />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">下机克重</label>
 			</td>
@@ -48,7 +48,7 @@
 				</label>
 			</td>
 			<td class="value" >
-				<input id="dw" name="dw" value="${emkPbPage.dw }"  datatype="*" type="text" style="width: 150px" class="inputxt"  />
+				<input id="dw" name="dw" value="${emkPbPage.dw eq null ? "秒":emkPbPage.dw}"  datatype="*" type="text" style="width: 150px" class="inputxt"  />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">单位</label>
 			</td>
@@ -60,7 +60,7 @@
 				</label>
 			</td>
 			<td class="value" >
-				<input id="jtrcl" name="jtrcl" value="${emkPbPage.jtrcl }" datatype="n" type="text" style="width: 150px" class="inputxt"  />
+				<input id="jtrcl" name="jtrcl" value="${emkPbPage.jtrcl eq null ? '79200':emkPbPage.jtrcl }" datatype="n" type="text" style="width: 150px" class="inputxt"  />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">机台日产量</label>
 			</td>
@@ -72,7 +72,7 @@
 				</label>
 			</td>
 			<td class="value" >
-				<input id="qdhsl" name="qdhsl" value="${emkPbPage.qdhsl }"  datatype="d" type="text" style="width: 150px" class="inputxt" />
+				<input id="qdhsl" name="qdhsl" value="${emkPbPage.qdhsl eq null ? "5": emkPbPage.qdhsl}"  datatype="d" type="text" style="width: 50px" class="inputxt" />%
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">前道损耗率</label>
 			</td>
@@ -84,7 +84,7 @@
 				</label>
 			</td>
 			<td class="value" >
-				<input id="hdhsl" name="hdhsl" value="${emkPbPage.hdhsl }"  datatype="d" type="text" style="width: 150px" class="inputxt" />
+				<input id="hdhsl" name="hdhsl"  value="${emkPbPage.hdhsl eq null ? "3": emkPbPage.hdhsl}"  datatype="d" type="text" style="width: 50px" class="inputxt" />%
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">后道损耗率</label>
 			</td>

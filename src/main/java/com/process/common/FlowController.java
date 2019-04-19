@@ -71,7 +71,7 @@ public class FlowController {
             StringBuilder sql = new StringBuilder();
             StringBuilder countsql = new StringBuilder();
 
-            sql.append("select DATE_FORMAT(t1.START_TIME_,'%Y-%m-%d %H:%i:%s') startTime,DATE_FORMAT(t1.END_TIME_,'%Y-%m-%d %H:%i:%s') endTime,t1.*,b.* from emk_approval a \n" +
+            sql.append("select DATE_FORMAT(IFNULL(t1.START_TIME_,a.commit_time),'%Y-%m-%d %H:%i:%s') startTime,DATE_FORMAT(t1.END_TIME_,'%Y-%m-%d %H:%i:%s') endTime,t1.*,b.* from emk_approval a \n" +
                     " left join emk_approval_detail b on b.approval_id = a.id \n" +
                     " left join act_hi_taskinst t1 on t1.assignee_= a.form_id and t1.task_def_key_=b.bpm_node ");
             //sql.append(" SELECT DATE_FORMAT(t1.START_TIME_,'%Y-%m-%d %H:%i:%s') startTime,DATE_FORMAT(t1.END_TIME_,'%Y-%m-%d %H:%i:%s') endTime,t1.*,CASE \n");
@@ -217,12 +217,12 @@ public class FlowController {
             }*/
 
             //countsql.append("SELECT COUNT(1) FROM act_hi_taskinst t1 where ASSIGNEE_='"+map.get("id")+"' ");
-            sql.append(" where ASSIGNEE_='"+map.get("id")+"' ");
-            sql.append(" order by t1.START_TIME_ asc ");
+            sql.append(" where a.form_id='"+map.get("id")+"' ");
+            sql.append(" order by b.approve_date asc ");
 
             //countsql.append(" select COUNT(1) from emk_approval a left join emk_approval_detail b on b.approval_id = a.id where ASSIGNEE_='"+map.get("id")+"' ");
             countsql.append(" select COUNT(1) from emk_approval a left join emk_approval_detail b on b.approval_id = a.id " +
-                    " left join act_hi_taskinst t1 on t1.assignee_= a.form_id and t1.task_def_key_=b.bpm_node where ASSIGNEE_='"+map.get("id")+"'");
+                    " left join act_hi_taskinst t1 on t1.assignee_= a.form_id and t1.task_def_key_=b.bpm_node where a.form_id='"+map.get("id")+"'");
             if(dataGrid.getPage()==1){
                 sql.append(" limit 0, "+dataGrid.getRows());
             }else{
@@ -336,12 +336,12 @@ public class FlowController {
         RepositoryService repositoryService = processEngine.getRepositoryService();
 
         //获取在classpath下的流程文件
-        InputStream in = this.getClass().getClassLoader().getResourceAsStream("/process/enquiry2.zip");
+        InputStream in = this.getClass().getClassLoader().getResourceAsStream("/process/material.zip");
         ZipInputStream zipInputStream = new ZipInputStream(in);
         //使用deploy方法发布流程
         repositoryService.createDeployment()
                 .addZipInputStream(zipInputStream)
-                .name("enquiry2")
+                .name("material")
                 .deploy();
       /*  Map<String, Object> variables = new HashMap<String,Object>();
         variables.put("inputUser", "panjs");//表示惟一用户

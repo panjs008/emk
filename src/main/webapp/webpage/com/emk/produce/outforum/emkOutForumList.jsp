@@ -21,8 +21,8 @@
             <t:dgCol title="款号"  field="sampleNo"  queryMode="single"  width="80"></t:dgCol>
             <t:dgCol title="工艺种类"  field="gyzl"  dictionary="gylx" queryMode="single"  width="60"></t:dgCol>
             <t:dgCol title="款式大类"  field="proTypeName"  queryMode="single"  width="70"></t:dgCol>
-            <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkOutForumController.do?goAdd&winTitle=录入出货通知单" funname="add" height="600" width="1000"></t:dgToolBar>
-            <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkOutForumController.do?goUpdate&winTitle=编辑出货通知单" funname="update" height="600" width="1000"></t:dgToolBar>
+            <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkOutForumController.do?goAdd&winTitle=录入出货通知单" funname="add" height="600" width="1100"></t:dgToolBar>
+            <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkOutForumController.do?goUpdate&winTitle=编辑出货通知单" funname="update" height="600" width="1100"></t:dgToolBar>
             <t:dgToolBar title="删除" operationCode="delete"  icon="fa fa-remove" url="emkOutForumController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
         </t:datagrid>
     </div>

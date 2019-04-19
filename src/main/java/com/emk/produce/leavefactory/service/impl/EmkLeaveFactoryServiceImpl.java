@@ -66,23 +66,13 @@ public class EmkLeaveFactoryServiceImpl
         map.put("businesse_dept_id", t.getBusinesseDeptId());
         map.put("developer", t.getDeveloper());
         map.put("developer_name", t.getDeveloperName());
-        map.put("gyzl", t.getGyzl());
-        map.put("pro_type", t.getProType());
-        map.put("pro_type_name", t.getProTypeName());
-        map.put("sample_no", t.getSampleNo());
-        map.put("sample_no_desc", t.getSampleNoDesc());
-        map.put("total", t.getTotal());
-        map.put("sum_box_total", t.getSumBoxTotal());
-        map.put("sum_box_volume", t.getSumBoxVolume());
-        map.put("sum_box_jz", t.getSumBoxJz());
-        map.put("sum_box_mao", t.getSumBoxMao());
+
         map.put("id", t.getId());
         map.put("create_name", t.getCreateName());
         map.put("create_by", t.getCreateBy());
         map.put("create_date", t.getCreateDate());
         map.put("sys_org_code", t.getSysOrgCode());
-        map.put("order_no", t.getOrderNo());
-        map.put("produce_num", t.getProduceNum());
+
         map.put("out_forum_no", t.getOutForumNo());
         map.put("leave_factory_no", t.getLeaveFactoryNo());
         map.put("kd_date", t.getKdDate());
@@ -101,23 +91,12 @@ public class EmkLeaveFactoryServiceImpl
         sql = sql.replace("#{businesse_dept_id}", String.valueOf(t.getBusinesseDeptId()));
         sql = sql.replace("#{developer}", String.valueOf(t.getDeveloper()));
         sql = sql.replace("#{developer_name}", String.valueOf(t.getDeveloperName()));
-        sql = sql.replace("#{gyzl}", String.valueOf(t.getGyzl()));
-        sql = sql.replace("#{pro_type}", String.valueOf(t.getProType()));
-        sql = sql.replace("#{pro_type_name}", String.valueOf(t.getProTypeName()));
-        sql = sql.replace("#{sample_no}", String.valueOf(t.getSampleNo()));
-        sql = sql.replace("#{sample_no_desc}", String.valueOf(t.getSampleNoDesc()));
-        sql = sql.replace("#{total}", String.valueOf(t.getTotal()));
-        sql = sql.replace("#{sum_box_total}", String.valueOf(t.getSumBoxTotal()));
-        sql = sql.replace("#{sum_box_volume}", String.valueOf(t.getSumBoxVolume()));
-        sql = sql.replace("#{sum_box_jz}", String.valueOf(t.getSumBoxJz()));
-        sql = sql.replace("#{sum_box_mao}", String.valueOf(t.getSumBoxMao()));
+
         sql = sql.replace("#{id}", String.valueOf(t.getId()));
         sql = sql.replace("#{create_name}", String.valueOf(t.getCreateName()));
         sql = sql.replace("#{create_by}", String.valueOf(t.getCreateBy()));
         sql = sql.replace("#{create_date}", String.valueOf(t.getCreateDate()));
         sql = sql.replace("#{sys_org_code}", String.valueOf(t.getSysOrgCode()));
-        sql = sql.replace("#{order_no}", String.valueOf(t.getOrderNo()));
-        sql = sql.replace("#{produce_num}", String.valueOf(t.getProduceNum()));
         sql = sql.replace("#{out_forum_no}", String.valueOf(t.getOutForumNo()));
         sql = sql.replace("#{leave_factory_no}", String.valueOf(t.getLeaveFactoryNo()));
         sql = sql.replace("#{kd_date}", String.valueOf(t.getKdDate()));

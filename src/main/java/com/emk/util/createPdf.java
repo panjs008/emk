@@ -1,10 +1,13 @@
 package com.emk.util;
 
+import com.emk.check.sizecheck.entity.EmkSizeEntity;
 import com.emk.storage.enquiry.entity.EmkEnquiryEntity;
 import com.emk.storage.enquiry.entity.EmkEnquiryEntityA;
 import com.emk.storage.enquirydetail.entity.EmkEnquiryDetailEntity;
 import com.emk.storage.factoryarchives.entity.EmkFactoryArchivesEntity;
 import com.emk.storage.factoryarchives.entity.EmkFactoryArchivesEntityA;
+import com.emk.storage.price.entity.EmkPriceEntity;
+import com.emk.storage.price.entity.EmkPriceEntityA;
 import com.emk.storage.samplecolor.entity.EmkSampleColorEntity;
 import com.emk.storage.supplier.entity.EmkSupplierEntity;
 import com.emk.storage.supplier.entity.EmkSupplierEntity2;
@@ -769,7 +772,7 @@ public class createPdf {
      * @param detailEntityList  明细数据
      * @return
      */
-    public void generateEmkEnquiryPDF(EmkEnquiryEntityA emkEnquiryEntity, List<Map<String, Object>> detailEntityList) throws Exception{
+    public void generateEmkEnquiryPDF(EmkEnquiryEntityA emkEnquiryEntity, List<Map<String, Object>> detailEntityList, EmkSizeEntity emkSizeEntity) throws Exception{
         BaseFont bfChinese_H = BaseFont.createFont( "c://windows//fonts//simsun.ttc,1" , BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
         com.itextpdf.text.Font FontChinese18 = new com.itextpdf.text.Font(bfChinese_H, 8, Font.NORMAL);
         Paragraph blankRow41 = new Paragraph(8f, " ", FontChinese18);
@@ -817,7 +820,209 @@ public class createPdf {
         table.addCell(createCell01(emkEnquiryEntity.getProTypeName(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
         document.add(table);
 
-        float[] widths2 = {15f,15f,15f,15f,15f,15f,15f};
+        float[] widths2 = {15f,15f,8f,8f,8f,8f,8f,8f,8f,8f,8f,8f,8f};
+        table = createTable(widths2);
+
+        table.addCell(createCell("颜色", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,2));
+        table.addCell(createCell("色号", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,2));
+        table.addCell(createCell("尺码", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,11,1));
+
+        table.addCell(createCell(emkSizeEntity.getSizeA(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell(emkSizeEntity.getSizeB(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell(emkSizeEntity.getSizeC(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell(emkSizeEntity.getSizeD(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell(emkSizeEntity.getSizeE(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell(emkSizeEntity.getSizeF(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell(emkSizeEntity.getSizeG(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell(emkSizeEntity.getSizeH(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell(emkSizeEntity.getSizeI(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell(emkSizeEntity.getSizeJ(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell(emkSizeEntity.getSizeK(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+
+        for(Map map : detailEntityList){
+            table.addCell(createCell(map.get("colorName").toString(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+            table.addCell(createCell(map.get("colorVal").toString(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+            table.addCell(createCell(map.get("total_a") != null ? map.get("total_a").toString():"", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+            table.addCell(createCell(map.get("total_b") != null ? map.get("total_b").toString():"", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+            table.addCell(createCell(map.get("total_c") != null ? map.get("total_c").toString():"", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+            table.addCell(createCell(map.get("total_d") != null ? map.get("total_d").toString():"", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+            table.addCell(createCell(map.get("total_e") != null ? map.get("total_e").toString():"", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+            table.addCell(createCell(map.get("total_f") != null ? map.get("total_f").toString():"", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+            table.addCell(createCell(map.get("total_g") != null ? map.get("total_g").toString():"", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+            table.addCell(createCell(map.get("total_h") != null ? map.get("total_h").toString():"", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+            table.addCell(createCell(map.get("total_i") != null ? map.get("total_i").toString():"", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+            table.addCell(createCell(map.get("total_j") != null ? map.get("total_j").toString():"", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+            table.addCell(createCell(map.get("total_k") != null ? map.get("total_k").toString():"", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+
+           /* table.addCell(createCell(map.get("mtotal") != null ? map.get("mtotal").toString():"", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+            table.addCell(createCell(map.get("ltotal") != null ? map.get("ltotal").toString():"", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+            table.addCell(createCell(map.get("xltotal") != null ? map.get("xltotal").toString():"", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+            table.addCell(createCell(map.get("xxltotal") != null ? map.get("xxltotal").toString():"", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));*/
+        }
+        document.add(table);
+
+        document.newPage();
+        float[] widths3 = {21f,60f,21f,60f};
+        table = createTable(widths3);
+
+        if(Utils.notEmpty(emkEnquiryEntity.getOldImageUrl())){
+            imagepath = emkEnquiryEntity.getOldImageUrl();
+            image = Image.getInstance(imagepath);
+            image.setAlignment(image.UNDERLYING);
+            image.setAbsolutePosition(230,405);
+            image.scaleAbsolute(180,170);
+            document.add(image);
+        }
+
+
+        /*if(Utils.notEmpty(emkEnquiryEntity.getDgrImageUrl())){
+            imagepath = emkEnquiryEntity.getDgrImageUrl();
+            image = Image.getInstance(imagepath);
+            image.setAlignment(image.UNDERLYING);
+            image.setAbsolutePosition(490,405);
+            image.scaleAbsolute(180,170);
+            document.add(image);
+        }*/
+
+        table.addCell(createCell02("客户原样", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell02(" ", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_LEFT,3,1));
+        /*table.addCell(createCell02("", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell02(" ", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_LEFT,1,1));*/
+
+       /* if(Utils.notEmpty(emkEnquiryEntity.getSizeImageUrl())){
+            imagepath = emkEnquiryEntity.getSizeImageUrl();
+            image = Image.getInstance(imagepath);
+            image.setAlignment(image.UNDERLYING);
+            image.setAbsolutePosition(230,230);
+            image.scaleAbsolute(180,170);
+            document.add(image);
+        }
+
+        table.addCell(createCell02("尺寸表", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell02(" ", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_LEFT,1,1));
+        table.addCell(createCell02("", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell02(" ", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_LEFT,1,1));*/
+
+        table.addCell(createCell01("意向大货交期", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(emkEnquiryEntity.getYsDate(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01("距交期剩天数", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(emkEnquiryEntity.getLevelDays().toString(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+
+        table.addCell(createCell01("备注", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(emkEnquiryEntity.getRemark(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,3,1));
+
+        document.add(table);
+        document.add(blankRow41);
+
+        document.close();
+    }
+
+    /**
+     * 报价单
+     * @param emkEnquiryEntity  报价单实体
+     * @param detailEntityList  明细数据
+     * @return
+     */
+    public void generatePricePDF(EmkPriceEntityA emkPriceEntity, List<Map<String, Object>> detailEntityList) throws Exception{
+        maxWidth = 600;
+        BaseFont bfChinese_H = BaseFont.createFont( "c://windows//fonts//simsun.ttc,1" , BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+        com.itextpdf.text.Font FontChinese18 = new com.itextpdf.text.Font(bfChinese_H, 8, Font.NORMAL);
+        Paragraph blankRow41 = new Paragraph(8f, " ", FontChinese18);
+        //页头信息
+        document.add(createParagraph("【XXXX有限公司】",headFont,Element.ALIGN_LEFT));
+        document.add(createParagraph("报  价  单",keyFont,Element.ALIGN_CENTER));
+     /*   document.add(createParagraph("意向订单号："+emkEnquiryEntity.getEnquiryNo(),headFont,Element.ALIGN_RIGHT));
+        document.add(createParagraph("日期："+emkEnquiryEntity.getKdDate(),headFont,Element.ALIGN_RIGHT));
+        document.add(createParagraph("生产跟单员："+emkEnquiryEntity.getDeveloperName(),headFont,Element.ALIGN_RIGHT));
+        document.add(createParagraph("业务跟单员："+emkEnquiryEntity.getBusinesserName(),headFont,Element.ALIGN_RIGHT));*/
+
+        //表格信息
+        //float[] widths = {4f,10f,10f,20f,15f,8f,11f,12f,10f};
+        float[] widths = {15f,40f,15f,40f,15f,40f,15f,40f,15f,40f,80f};
+        //float[] widths = {28f,14f};
+        PdfPTable table = createTable(widths);
+        String imagepath = "";
+        Image image = null;
+        if(Utils.notEmpty(emkPriceEntity.getCustomSampleUrl())){
+            imagepath = emkPriceEntity.getCustomSampleUrl();
+            image = Image.getInstance(imagepath);
+            image.setAlignment(image.UNDERLYING);
+            image.setAbsolutePosition(585,390);
+            image.scaleAbsolute(120,140);
+            document.add(image);
+        }
+        table.addCell(createCell01("报价单号", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(emkPriceEntity.getPirceNo(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01("客户代码", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(emkPriceEntity.getCusNum(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,7,1));
+        table.addCell(createCell01(" ", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,5));
+
+        table.addCell(createCell01(" ", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,6,1));
+        table.addCell(createCell01("款式大类", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(emkPriceEntity.getProTypeName(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01("业务部门", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(emkPriceEntity.getBusinesseDeptName(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+
+        table.addCell(createCell01("报价日期", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(emkPriceEntity.getKdDate(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01("报价有效期", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(emkPriceEntity.getLimitDate(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01("工艺种类", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(emkPriceEntity.getGyzl(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01("款号", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(emkPriceEntity.getSampleNo(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01("业务员", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(emkPriceEntity.getBusinesser(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+
+        table.addCell(createCell01("目的国", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(emkPriceEntity.getGuoJia(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01("报价类型", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(emkPriceEntity.getBjlx(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01("报价币种", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(emkPriceEntity.getBz(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01("描述", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(emkPriceEntity.getSampleNoDesc(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01("业务跟单员", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(emkPriceEntity.getTracer(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+
+        table.addCell(createCell01("报价说明", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell01(emkPriceEntity.getBjsm(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,9,1));
+
+        document.add(table);
+
+        document.newPage();
+        float[] widths3 = {21f,60f,21f,60f};
+        table = createTable(widths3);
+
+        if(Utils.notEmpty(emkPriceEntity.getOldImageUrl())){
+            imagepath = emkPriceEntity.getOldImageUrl();
+            image = Image.getInstance(imagepath);
+            image.setAlignment(image.UNDERLYING);
+            image.setAbsolutePosition(490,405);
+            image.scaleAbsolute(180,170);
+            document.add(image);
+        }
+
+        table.addCell(createCell02("客户原样", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell02(" ", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_LEFT,1,1));
+        table.addCell(createCell02("设计稿", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
+        table.addCell(createCell02(" ", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_LEFT,1,1));
+
+        if(Utils.notEmpty(emkPriceEntity.getDgrImageUrl())){
+            imagepath = emkPriceEntity.getDgrImageUrl();
+            image = Image.getInstance(imagepath);
+            image.setAlignment(image.UNDERLYING);
+            image.setAbsolutePosition(230,230);
+            image.scaleAbsolute(180,170);
+            document.add(image);
+        }
+
+
+
+        document.add(table);
+        document.add(blankRow41);
+
+       /* float[] widths2 = {15f,15f,15f,15f,15f,15f,15f};
         table = createTable(widths2);
 
         table.addCell(createCell("颜色", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,2));
@@ -840,58 +1045,7 @@ public class createPdf {
         }
         document.add(table);
 
-        document.newPage();
-        float[] widths3 = {21f,60f,21f,60f};
-        table = createTable(widths3);
-
-        if(Utils.notEmpty(emkEnquiryEntity.getOldImageUrl())){
-            imagepath = emkEnquiryEntity.getOldImageUrl();
-            image = Image.getInstance(imagepath);
-            image.setAlignment(image.UNDERLYING);
-            image.setAbsolutePosition(230,405);
-            image.scaleAbsolute(180,170);
-            document.add(image);
-        }
-
-
-        if(Utils.notEmpty(emkEnquiryEntity.getDgrImageUrl())){
-            imagepath = emkEnquiryEntity.getDgrImageUrl();
-            image = Image.getInstance(imagepath);
-            image.setAlignment(image.UNDERLYING);
-            image.setAbsolutePosition(490,405);
-            image.scaleAbsolute(180,170);
-            document.add(image);
-        }
-
-        table.addCell(createCell02("客户原样", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
-        table.addCell(createCell02(" ", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_LEFT,1,1));
-        table.addCell(createCell02("设计稿", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
-        table.addCell(createCell02(" ", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_LEFT,1,1));
-
-        if(Utils.notEmpty(emkEnquiryEntity.getSizeImageUrl())){
-            imagepath = emkEnquiryEntity.getSizeImageUrl();
-            image = Image.getInstance(imagepath);
-            image.setAlignment(image.UNDERLYING);
-            image.setAbsolutePosition(230,230);
-            image.scaleAbsolute(180,170);
-            document.add(image);
-        }
-
-        table.addCell(createCell02("尺寸表", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
-        table.addCell(createCell02(" ", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_LEFT,1,1));
-        table.addCell(createCell02("", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
-        table.addCell(createCell02(" ", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_LEFT,1,1));
-
-        table.addCell(createCell01("意向大货交期", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
-        table.addCell(createCell01(emkEnquiryEntity.getYsDate(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
-        table.addCell(createCell01("距交期剩天数", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
-        table.addCell(createCell01(emkEnquiryEntity.getLevelDays().toString(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
-
-        table.addCell(createCell01("备注", textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,1,1));
-        table.addCell(createCell01(emkEnquiryEntity.getRemark(), textfont_H,Element.ALIGN_MIDDLE, Element.ALIGN_CENTER,3,1));
-
-        document.add(table);
-        document.add(blankRow41);
+        */
 
         document.close();
     }

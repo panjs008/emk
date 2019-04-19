@@ -68,8 +68,16 @@ public class EmkProOrderEntity implements Serializable {
     private Double sumMoney;
     @Excel(name = "尺码范围")
     private String sizeFw;
-    @Excel(name = "单价")
+    @Excel(name = "颜色")
+    private String color;
+    @Excel(name = "客户单价")
     private Double price;
+    @Excel(name = "客户金额")
+    private Double cusJin;
+    @Excel(name = "供应商单价")
+    private Double gysPrice;
+    @Excel(name = "供应商金额")
+    private Double gysJin;
     @Excel(name = "币种")
     private String bz;
     @Excel(name = "交期")
@@ -80,6 +88,12 @@ public class EmkProOrderEntity implements Serializable {
     private String polybag;
     @Excel(name = "总箱数")
     private Integer sumBoxTotal;
+    @Excel(name = "出货日期")
+    private String chDate;
+    @Excel(name = "单件毛重")
+    private Double oneWeightMao;
+    @Excel(name = "单件净重")
+    private Double oneWeightJz;
     @Excel(name = "总体积")
     private Double sumBoxVolume;
     @Excel(name = "总净重")
@@ -108,13 +122,6 @@ public class EmkProOrderEntity implements Serializable {
     private String gys;
     @Excel(name = "供应商Code")
     private String gysCode;
-    @Excel(name="审核意见")
-    private String leadAdvice;
-    @Excel(name="是否通过")
-    private String isPass;
-    private String leadUserId;
-    @Excel(name="审核人")
-    private String leader;
     private String orderType;
     private String workNo;
 
@@ -571,50 +578,6 @@ public class EmkProOrderEntity implements Serializable {
         this.bzfs = bzfs;
     }
 
-    @Column(name="LEAD_ADVICE", nullable=true, length=256)
-    public String getLeadAdvice()
-    {
-        return this.leadAdvice;
-    }
-
-    public void setLeadAdvice(String leadAdvice)
-    {
-        this.leadAdvice = leadAdvice;
-    }
-
-    @Column(name="IS_PASS", nullable=true, length=32)
-    public String getIsPass()
-    {
-        return this.isPass;
-    }
-
-    public void setIsPass(String isPass)
-    {
-        this.isPass = isPass;
-    }
-
-    @Column(name="LEAD_USER_ID", nullable=true, length=32)
-    public String getLeadUserId()
-    {
-        return this.leadUserId;
-    }
-
-    public void setLeadUserId(String leadUserId)
-    {
-        this.leadUserId = leadUserId;
-    }
-
-    @Column(name="LEADER", nullable=true, length=32)
-    public String getLeader()
-    {
-        return this.leader;
-    }
-
-    public void setLeader(String leader)
-    {
-        this.leader = leader;
-    }
-
     @Column(name="order_type", nullable=true, length=32)
     public String getOrderType() {
         return orderType;
@@ -635,5 +598,68 @@ public class EmkProOrderEntity implements Serializable {
      */
     public void setWorkNo(String workNo){
         this.workNo = workNo;
+    }
+
+    @Column(name ="cus_jin",nullable=true,length=32)
+    public Double getCusJin() {
+        return cusJin;
+    }
+
+    public void setCusJin(Double cusJin) {
+        this.cusJin = cusJin;
+    }
+
+    @Column(name ="gys_price",nullable=true,length=32)
+    public Double getGysPrice() {
+        return gysPrice;
+    }
+
+    public void setGysPrice(Double gysPrice) {
+        this.gysPrice = gysPrice;
+    }
+
+    @Column(name ="gys_jin",nullable=true,length=32)
+    public Double getGysJin() {
+        return gysJin;
+    }
+
+    public void setGysJin(Double gysJin) {
+        this.gysJin = gysJin;
+    }
+
+    @Column(name ="color",nullable=true,length=32)
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    @Column(name ="ch_date",nullable=true,length=32)
+    public String getChDate() {
+        return chDate;
+    }
+
+    public void setChDate(String chDate) {
+        this.chDate = chDate;
+    }
+
+    @Column(name ="one_weight_mao",nullable=true,length=32)
+    public Double getOneWeightMao() {
+        return oneWeightMao;
+    }
+
+    public void setOneWeightMao(Double oneWeightMao) {
+        this.oneWeightMao = oneWeightMao;
+    }
+
+    @Column(name ="one_weight_jz",nullable=true,length=32)
+    public Double getOneWeightJz() {
+        return oneWeightJz;
+    }
+
+    public void setOneWeightJz(Double oneWeightJz) {
+        this.oneWeightJz = oneWeightJz;
     }
 }

@@ -170,7 +170,28 @@
 				<label class="Validform_label" style="display: none;">业务员</label>
 			</td>
 		</tr>
-
+		<tr>
+			<td align="right">
+				<label class="Validform_label">
+					样品交期:
+				</label>
+			</td>
+			<td class="value">
+				<input id="ysDate" name="ysDate" readonly value="${emkColorPage.ysDate }" onClick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'kdDate\');}',onpicked:setEndTime})" type="text" style="width: 150px" class="Wdate"  ignore="ignore" />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">样品交期</label>
+			</td>
+			<td align="right">
+				<label class="Validform_label">
+					距交期剩余天数:
+				</label>
+			</td>
+			<td class="value" colspan="3">
+				<input id="levelDays" name="levelDays" readonly value="${emkColorPage.levelDays }" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">距交期剩余天数</label>
+			</td>
+		</tr>
 		<tr>
 			<td align="right">
 				<label class="Validform_label">
@@ -226,7 +247,7 @@
 				</label>
 			</td>
 			<td class="value">
-				<input id="ysDate" name="recevieDate" readonly onClick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'kdDate\');}'})" type="text" style="width: 150px" class="Wdate"  ignore="ignore" />
+				<input id="recevieDate" name="recevieDate" readonly onClick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'kdDate\');}'})" type="text" style="width: 150px" class="Wdate"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">交货时间</label>
 			</td>

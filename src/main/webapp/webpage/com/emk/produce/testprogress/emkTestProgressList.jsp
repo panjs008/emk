@@ -20,8 +20,8 @@
    <t:dgCol title="款式大类"  field="proTypeName"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="出货日期"  field="outDate"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="更新日期"  field="updateDate"  queryMode="single"  width="120"></t:dgCol>
-       <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkTestProgressController.do?goAdd&winTitle=录入测试进度更新表" funname="add" height="600" width="1000"></t:dgToolBar>
-       <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkTestProgressController.do?goUpdate&winTitle=编辑测试进度更新表" funname="update" height="600" width="1000"></t:dgToolBar>
+       <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkTestProgressController.do?goAdd&winTitle=录入测试进度更新表" funname="add" height="600" width="1200"></t:dgToolBar>
+       <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkTestProgressController.do?goUpdate&winTitle=编辑测试进度更新表" funname="update" height="600" width="1200"></t:dgToolBar>
        <t:dgToolBar title="删除" operationCode="delete"  icon="fa fa-remove" url="emkTestProgressController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
        <t:dgToolBar title="导出" operationCode="exp" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
   </t:datagrid>

@@ -71,16 +71,7 @@ public class EmkMaterialContractServiceImpl
         map.put("tracer_name", t.getTracerName());
         map.put("developer", t.getDeveloper());
         map.put("developer_name", t.getDeveloperName());
-        map.put("ht_num", t.getHtNum());
-        map.put("order_no", t.getOrderNo());
-        map.put("sample_no", t.getSampleNo());
-        map.put("sample_no_desc", t.getSampleNoDesc());
-        map.put("sum_total", t.getSumTotal());
-        map.put("pro_type", t.getProType());
-        map.put("pro_type_name", t.getProTypeName());
-        map.put("gyzl", t.getGyzl());
-        map.put("yht_num", t.getYhtNum());
-        map.put("produce_num", t.getProduceNum());
+
         map.put("gys", t.getGys());
         map.put("gys_code", t.getGysCode());
         map.put("out_date", t.getOutDate());
@@ -105,16 +96,7 @@ public class EmkMaterialContractServiceImpl
         sql = sql.replace("#{tracer_name}", String.valueOf(t.getTracerName()));
         sql = sql.replace("#{developer}", String.valueOf(t.getDeveloper()));
         sql = sql.replace("#{developer_name}", String.valueOf(t.getDeveloperName()));
-        sql = sql.replace("#{ht_num}", String.valueOf(t.getHtNum()));
-        sql = sql.replace("#{order_no}", String.valueOf(t.getOrderNo()));
-        sql = sql.replace("#{sample_no}", String.valueOf(t.getSampleNo()));
-        sql = sql.replace("#{sample_no_desc}", String.valueOf(t.getSampleNoDesc()));
-        sql = sql.replace("#{sum_total}", String.valueOf(t.getSumTotal()));
-        sql = sql.replace("#{pro_type}", String.valueOf(t.getProType()));
-        sql = sql.replace("#{pro_type_name}", String.valueOf(t.getProTypeName()));
-        sql = sql.replace("#{gyzl}", String.valueOf(t.getGyzl()));
-        sql = sql.replace("#{yht_num}", String.valueOf(t.getYhtNum()));
-        sql = sql.replace("#{produce_num}", String.valueOf(t.getProduceNum()));
+
         sql = sql.replace("#{gys}", String.valueOf(t.getGys()));
         sql = sql.replace("#{gys_code}", String.valueOf(t.getGysCode()));
         sql = sql.replace("#{out_date}", String.valueOf(t.getOutDate()));

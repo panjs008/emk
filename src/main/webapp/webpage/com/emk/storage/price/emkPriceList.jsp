@@ -9,9 +9,12 @@
       <t:dgCol title="创建人登录名称"  field="createBy"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
       <t:dgCol title="创建日期"  field="createDate"  formatter="yyyy-MM-dd"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
       <t:dgCol title="所属部门"  field="sysOrgCode"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
+      <t:dgCol title="当前流程节点"  field="processName"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
+
       <%--<t:dgCol title="操作" field="opt" frozenColumn="true"  width="245"></t:dgCol>--%>
       <%--<t:dgCol title="有效期"  field="limitDate"  queryMode="single"  width="80"></t:dgCol>--%>
       <%--<t:dgCol title="原样"  field="oldImageUrl" imageSize="30,30"  image="true"  queryMode="single"  width="50"></t:dgCol>--%>
+      <t:dgCol title="操作" field="opt" width="100" frozenColumn="true"></t:dgCol>
 
       <t:dgCol title="客户代码" query="true" field="cusNum"  queryMode="single"  width="70"></t:dgCol>
       <t:dgCol title="客户名称" query="true" field="cusName"  queryMode="single"  width="200"></t:dgCol>
@@ -23,10 +26,12 @@
       <t:dgCol title="价格"  field="targetPrice"  queryMode="single"  width="80"></t:dgCol>
       <t:dgCol title="报价单号"  field="pirceNo" queryMode="single"  width="105"></t:dgCol>
       <t:dgCol title="报价日期"  field="kdDate"  queryMode="single"  width="80"></t:dgCol>
-      <t:dgCol title="报价状态"  field="state" formatterjs="formatColor"  queryMode="single"  width="70"></t:dgCol>
+      <t:dgCol title="报价状态"  field="state" formatterjs="formatColor"  queryMode="single"  width="90"></t:dgCol>
 
       <t:dgCol title="业务部门"  field="businesseDeptName"  queryMode="single"  width="80"></t:dgCol>
       <t:dgCol title="业务员"  field="businesserName"  queryMode="single"  width="60"></t:dgCol>
+      <t:dgCol title="来源"  field="formType" replace="手工创建_0,询盘单生成_1" queryMode="single"  width="80"></t:dgCol>
+
       <%--<t:dgCol title="工艺种类"  field="gyzl"  dictionary="gylx" queryMode="single"  width="70"></t:dgCol>--%>
       <%--<t:dgCol title="款式大类"  field="proTypeName"  queryMode="single"  width="70"></t:dgCol>
       <t:dgCol title="总计"  field="sumMoney"  queryMode="single"  width="70"></t:dgCol>
@@ -36,6 +41,7 @@
       <t:dgFunOpt funname="queryDetail2(id,pirceNo,state)" title="染色" urlclass="ace_button" urlfont="fa-file-photo-o"></t:dgFunOpt>
       <t:dgFunOpt funname="queryDetail3(id,pirceNo,state)" title="印花" urlclass="ace_button" urlfont="fa-asterisk"></t:dgFunOpt>
       <t:dgFunOpt funname="queryDetail4(id,pirceNo,state)" title="工序" urlclass="ace_button" urlfont="fa-cog"></t:dgFunOpt>--%>
+      <t:dgFunOpt funname="goToProcess(id,createBy,processName,state)" title="流程进度" operationCode="process" urlclass="ace_button"  urlStyle="background-color:#ec4758;" urlfont="fa-tasks"></t:dgFunOpt>
 
 
       <t:dgToolBar title="录入" operationCode="add" icon="fa fa-plus" url="emkPriceController.do?goAdd&winTitle=录入报价单" funname="add" height="600" width="1210"></t:dgToolBar>
@@ -46,6 +52,7 @@
       <t:dgToolBar title="流程进度" operationCode="process" icon="fa fa-plus" funname="goToProcess"></t:dgToolBar>
       <t:dgToolBar title="删除" operationCode="delete" icon="fa fa-remove" url="emkPriceController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
       <t:dgToolBar title="导出" operationCode="exp"  icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
+      <t:dgToolBar title="导出PDF" icon="fa fa-arrow-circle-right"  funname="doPrintPDF"></t:dgToolBar>
 
   </t:datagrid>
   </div>
@@ -72,9 +79,23 @@
 
  function formatColor(val,row){
      if(row.state=="1"){
-         return '<span style="color:	#FF0000;">处理中</span>';
+         return '<span style="color:	#0000FF;">已提交</span>';
+     }else if(row.state=="21"){
+         return '<span style="color:	#0000FF;">回退业务员</span>';
      }else if(row.state=="2"){
-         return '<span style="color:	#0000FF;">完成</span>';
+         return '<span style="color:	#00FF00;">完成</span>';
+     }else if(row.state=="22"){
+         return '<span style="color:	#0000FF;">技术员通过</span>';
+     }else if(row.state=="23"){
+         return '<span style="color:	#0000FF;">回退技术员</span>';
+     }else if(row.state=="24"){
+         return '<span style="color:	#0000FF;">采购员通过</span>';
+     }else if(row.state=="25"){
+         return '<span style="color:	#0000FF;">财务通过</span>';
+     }else if(row.state=="26"){
+         return '<span style="color:	#0000FF;">财务经理通过</span>';
+     }else if(row.state=="27"){
+         return '<span style="color:	#0000FF;">回退财务</span>';
      }else{
          return '创建';
      }
@@ -109,44 +130,35 @@
      });
  }
 
- function goToProcess(id){
+ function goToProcess(id,createBy,processName,state){
      var height =window.top.document.body.offsetHeight*0.85;
-     var rowsData = $('#emkPriceList').datagrid('getSelections');
-
-     $.ajax({
-         url: "flowController.do?getCurrentProcess&tableName=emk_price&title=报价单&id=" + rowsData[0].id,
-         type: 'post',
-         cache: false,
-         data: null,
-         success: function (data) {
-             var d = $.parseJSON(data);
-             if (d.success) {
-                 var msg = d.msg;
-                 if(rowsData[0].createName != "价格" && rowsData[0].createBy == "${CUR_USER.userName}"){
-                     createdetailwindow('流程进度--当前环节：' + msg, 'flowController.do?goProcess&processUrl=com/emk/storage/price/emkPrice-process&id=' + rowsData[0].id, 1230, height);
-                 }else{
-                     if (msg == "完成") {
-                         createdetailwindow('流程进度--当前环节：' + msg, 'flowController.do?goProcess&processUrl=com/emk/storage/price/emkPrice-process&id=' + rowsData[0].id, 1230, height);
-                     } else {
-                         if(rowsData[0].createName == "领导审核" &&  "${ROLE.rolecode}" == "ywjl") {
-                             createwindow("流程进度--当前环节：" + msg, "flowController.do?goProcess&processUrl=com/emk/storage/price/emkPrice-process&id=" + rowsData[0].id, 1230, height);
-                         }else if(rowsData[0].createName == "技术" &&  "${ROLE.rolecode}" == "jsjl") {
-                             createwindow("流程进度--当前环节：" + msg, "flowController.do?goProcess&processUrl=com/emk/storage/price/emkPrice-process&id=" + rowsData[0].id, 1230, height);
-                         }else if(rowsData[0].createName == "采购" &&  "${ROLE.rolecode}" == "cgjl") {
-                             createwindow("流程进度--当前环节：" + msg, "flowController.do?goProcess&processUrl=com/emk/storage/price/emkPrice-process&id=" + rowsData[0].id, 1230, height);
-                         }else if(rowsData[0].createName == "财务" &&  "${ROLE.rolecode}" == "cwjl") {
-                             createwindow("流程进度--当前环节：" + msg, "flowController.do?goProcess&processUrl=com/emk/storage/price/emkPrice-process&id=" + rowsData[0].id, 1230, height);
-                         }else if(rowsData[0].createName == "价格" &&  rowsData[0].createBy == "${CUR_USER.userName}") {
-                             createwindow("流程进度--当前环节：" + msg, "flowController.do?goProcess&processUrl=com/emk/storage/price/emkPrice-process&id=" + rowsData[0].id, 1230, height);
-                         }else{
-                             createdetailwindow('流程进度--当前环节：' + msg, 'flowController.do?goProcess&processUrl=com/emk/storage/price/emkPrice-process&id=' + rowsData[0].id, 1230, height);
-                         }
-                     }
-                 }
+     var processNameVal='',node='';
+     if(processName != null){
+         if(processName.indexOf('-') > 0){
+             processNameVal = processName.substring(0,processName.indexOf('-'));
+             node = processName.substring(processName.indexOf('-')+1);
+         }
+     }
+     if(createBy == "${CUR_USER.userName}"){
+         if(state == '0' || state == '21'){
+             createwindow("流程进度--当前环节：报价单【业务员】", "flowController.do?goProcess&node="+node+"&processUrl=com/emk/storage/price/emkPrice-process&id=" + id, 1230, height);
+         }else {
+             createdetailwindow("流程进度--当前环节：" + processNameVal, "flowController.do?goProcess&node="+node+"&processUrl=com/emk/storage/price/emkPrice-process&id=" + id, 1230, height);
+         }
+     }else{
+         if(state == '2'){
+             createdetailwindow('流程进度--当前环节：完成' , 'flowController.do?goProcess&processUrl=com/emk/storage/price/emkPrice-process&id=' + id, 1230, height);
+         }else{
+             if((state == '1' || state == '23') && "${ROLE.rolecode}" == "jsy" || state == '22' && "${ROLE.rolecode}" == "cgy" || (state == '24' || state == '27') && "${ROLE.rolecode}" == "cw" || state == '25'&& "${ROLE.rolecode}" == "cwjl" || state == '26' && "${ROLE.rolecode}" == "zjl"){
+                 createwindow("流程进度--当前环节：" + processNameVal, "flowController.do?goProcess&node="+node+"&processUrl=com/emk/storage/price/emkPrice-process&id=" + id, 1230, height);
+             }else{
+                 createdetailwindow('流程进度--当前环节：' + processNameVal , 'flowController.do?goProcess&processUrl=com/emk/storage/price/emkPrice-process&id=' + id, 1230, height);
              }
          }
-     });
+     }
+
  }
+
 
  /*function queryDetail1(id,proName,state){
      var title = "主辅料清单："+proName ;
@@ -191,7 +203,22 @@
 
      $('#proDetialListpanel').panel("refresh", "emkSampleGxController.do?list&state="+state+"&sampleId=" + id);
  }*/
- 
+ function doPrintPDF() {
+     var rowsData = $('#emkPriceList').datagrid('getSelections');
+     var ids = [];
+     if (!rowsData || rowsData.length == 0) {
+         tip('请选择需要导出PDF的报价单');
+         return;
+     }
+     for ( var i = 0; i < rowsData.length; i++) {
+         ids.push(rowsData[i].id);
+     }
+     $.dialog.confirm('您是否确定导出PDF的报价单?', function(r) {
+         if (r) {
+             window.location.href = "emkPriceController.do?doPrintPDF&ids="+ids;
+         }
+     });
+ }
 //导入
 function ImportXls() {
 	openuploadwin('Excel导入', 'emkPriceController.do?upload', "emkPriceList");

@@ -132,7 +132,7 @@
 					  </td>
 					  <td align="left"><input id="brand00" nullmsg="请输入尺码！"  errormsg="请输入尺码" name="orderMxList[#index#].brand" maxlength="100" type="text" value=""
 											  style="width: 120px;"></td>
-					  <td align="left"><input id="signTotal00" nullmsg="请输入数量！"  errormsg="请输入数量" name="orderMxList[#index#].signTotal" maxlength="100" type="text" value=""
+					  <td align="left"><input id="signTotal00" nullmsg="请输入数量！"  errormsg="请输入整数" name="orderMxList[#index#].signTotal" maxlength="100" type="text" value=""
 											  style="width: 120px;"></td>
 					  <td align="left">
 						  <input nullmsg="请输入单位！" id="signUnit00" errormsg="请输入单位" name="orderMxList[#index#].signUnit" maxlength="100" type="text" value=""

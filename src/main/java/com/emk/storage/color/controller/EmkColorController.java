@@ -218,7 +218,7 @@ public class EmkColorController extends BaseController {
         String message = null;
         AjaxJson j = new AjaxJson();
         message = "色样需求单更新成功";
-        EmkColorEntity t = (EmkColorEntity) emkColorService.get(EmkColorEntity.class, emkColor.getId());
+        EmkColorEntity t = emkColorService.get(EmkColorEntity.class, emkColor.getId());
         try {
             MyBeanUtils.copyBeanNotNull2Bean(emkColor, t);
             emkColorService.saveOrUpdate(t);
@@ -270,7 +270,7 @@ public class EmkColorController extends BaseController {
     @RequestMapping(params = "goUpdate")
     public ModelAndView goUpdate(EmkColorEntity emkColor, HttpServletRequest req) {
         if (StringUtil.isNotEmpty(emkColor.getId())) {
-            emkColor = (EmkColorEntity) emkColorService.getEntity(EmkColorEntity.class, emkColor.getId());
+            emkColor = emkColorService.getEntity(EmkColorEntity.class, emkColor.getId());
             req.setAttribute("emkColorPage", emkColor);
 
             try {
@@ -330,7 +330,7 @@ public class EmkColorController extends BaseController {
     @ResponseBody
     @ApiOperation(value = "根据ID获取色样需求单信息", notes = "根据ID获取色样需求单信息", httpMethod = "GET", produces = "application/json")
     public ResponseMessage<?> get(@ApiParam(required = true, name = "id", value = "ID") @PathVariable("id") String id) {
-        EmkColorEntity task = (EmkColorEntity) emkColorService.get(EmkColorEntity.class, id);
+        EmkColorEntity task = emkColorService.get(EmkColorEntity.class, id);
         if (task == null) {
             return Result.error("根据ID获取色样需求单信息为空");
         }

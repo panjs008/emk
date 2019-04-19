@@ -92,6 +92,7 @@
 				<label class="Validform_label" style="display: none;">打样需求单编号</label>
 			</td>
 		</tr>
+
 		<tr>
 			<td class="value" align="right" colspan="7">
 				<label class="Validform_label">
@@ -105,6 +106,18 @@
 			</td>
 		</tr>
 
+		<tr>
+			<td class="value" align="right" colspan="7">
+				<label class="Validform_label">
+					工厂代码:
+				</label>
+			</td>
+			<td class="value">
+				<input id="factoryCode" name="factoryCode" value="${emkSamplePage.factoryCode }"  type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">打样需求单日期</label>
+			</td>
+		</tr>
 		<%--<tr>
 			<td align="right" >
 				<label class="Validform_label">
@@ -276,6 +289,28 @@
 				<input id="dhjq" name="dhjq" readonly  value="${emkSamplePage.dhjq }" onClick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'kdTime\');}'})" type="text" style="width: 150px" class="Wdate"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">大货出货日期</label>
+			</td>
+		</tr>
+		<tr>
+			<td align="right">
+				<label class="Validform_label">
+					原料规格:
+				</label>
+			</td>
+			<td class="value" colspan="5">
+				<input id="ylgg" name="ylgg" value="${emkSamplePage.ylgg }"  type="text" style="width: 80%"  ignore="ignore" />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">样品类型</label>
+			</td>
+			<td align="right">
+				<label class="Validform_label">
+					平方克重:
+				</label>
+			</td>
+			<td class="value">
+				<input id="pfkz" name="pfkz" value="${emkSamplePage.pfkz }"  type="text" style="width: 150px"  ignore="ignore" />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">平方克重</label>
 			</td>
 		</tr>
 	</table>

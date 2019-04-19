@@ -64,7 +64,7 @@
             width:'auto',
             fixFooter:false
         });
-        <c:if test="${param.sampleId eq null || param.sampleId eq ''}">
+        <c:if test="${param.sampleId eq null || param.sampleId eq '' || fn:length(sampleContentEntities) eq 0}">
             $('#addBtnContent3').click();
         </c:if>
     });
@@ -84,8 +84,8 @@
     <tbody id="add_jeecgOrderProduct_tableContent3_templateContent3_templateContent3">
     <tr>
         <td align="center" width="2%"><input style="width: 40px;" type="checkbox" name="ck" />
-        <td align="right" width="15%"><span id="seqNum3"></span>
-        <td align="center" width="83%" colspan="7"><input id="ccontent00" nullmsg="请输入数量！"  errormsg="请输入数量" name="orderMxList[#index#].ccontent00" maxlength="100" type="text" value=""
+        <td align="right" width="15%"><span id="seqNum3"></span></td>
+        <td align="center" width="83%" colspan="7"><input id="ccontent00" nullmsg="请输入数量！"  errormsg="请输入整数" name="orderMxList[#index#].ccontent00" maxlength="100" type="text" value=""
                                   style="width: 98%;" ignore="ignore"></td>
 
     </tr>
@@ -130,7 +130,7 @@
                     </td>
                     <td align="right" width="15%">${status.index+1}&nbsp;&nbsp;&nbsp;
                     </td>
-                    <td align="center" colspan="7" width="83%"><input  nullmsg="请输入数量！"  errormsg="请输入数量" value="${poVal.content}" name="orderMxList[${status.index}].ccontent00" maxlength="100" type="text" value=""
+                    <td align="center" colspan="7" width="83%"><input  nullmsg="请输入数量！"  errormsg="请输入整数" value="${poVal.content}" name="orderMxList[${status.index}].ccontent00" maxlength="100" type="text" value=""
                                               style="width: 98%;" ignore="ignore"></td>
                 </tr>
 

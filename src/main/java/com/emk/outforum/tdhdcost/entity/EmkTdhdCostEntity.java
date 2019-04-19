@@ -30,6 +30,19 @@ import org.jeecgframework.poi.excel.annotation.Excel;
 @Table(name = "emk_tdhd_cost", schema = "")
 @SuppressWarnings("serial")
 public class EmkTdhdCostEntity implements java.io.Serializable {
+	/**主键*/
+	private String id;
+	/**创建人名称*/
+	private String createName;
+	/**创建人登录名称*/
+	private String createBy;
+	/**创建日期*/
+	private Date createDate;
+	/**所属部门*/
+	private String sysOrgCode;
+	/**货代费用付款申请表编号*/
+	@Excel(name="货代费用付款申请表编号",width=15)
+	private String hdfyPayNo;
 	/**业务员*/
 	@Excel(name="业务员",width=15)
 	private String businesser;
@@ -50,98 +63,50 @@ public class EmkTdhdCostEntity implements java.io.Serializable {
 	private String developer;
 	/**生产跟单员ID*/
 	private String developerName;
-	/**描述*/
-	@Excel(name="描述",width=15)
-	private String sampleNoDesc;
-	/**单价*/
-	@Excel(name="单价",width=15)
-	private Double price;
-	/**总箱数*/
-	@Excel(name="总箱数",width=15)
-	private Integer sumBoxTotal;
-	/**总体积*/
-	@Excel(name="总体积",width=15)
-	private Double sumBoxVolume;
-	/**总净重*/
-	@Excel(name="总净重",width=15)
-	private Double sumBoxJz;
-	/**总毛重*/
-	@Excel(name="总毛重",width=15)
-	private Double sumBoxMao;
-	/**主键*/
-	private String id;
-	/**创建人名称*/
-	private String createName;
-	/**创建人登录名称*/
-	private String createBy;
-	/**创建日期*/
-	private Date createDate;
-	/**所属部门*/
-	private String sysOrgCode;
 	/**船务员*/
 	@Excel(name="船务员",width=15)
 	private String cwyer;
-	/**订舱通知单号*/
-	@Excel(name="订舱通知单号",width=15)
-	private String cargoNo;
-	/**离厂放行条号*/
-	@Excel(name="离厂放行条号",width=15)
-	private String levealFactoryNo;
 	/**客户代码*/
 	@Excel(name="客户代码",width=15)
 	private String cusNum;
 	/**客户名称*/
 	@Excel(name="客户名称",width=15)
 	private String cusName;
-	/**供应商*/
-	@Excel(name="供应商",width=15)
-	private String gys;
-	/**供应商代码*/
-	@Excel(name="供应商代码",width=15)
-	private String gysCode;
-	/**离厂日期*/
-	@Excel(name="离厂日期",width=15)
-	private String levealDate;
-	/**出货通知单号*/
-	@Excel(name="出货通知单号",width=15)
-	private String outForumNo;
-	/**数量*/
-	@Excel(name="数量",width=15)
-	private Integer total;
-	/**生产合同号*/
-	@Excel(name="生产合同号",width=15)
-	private String htNum;
-	/**提单号*/
-	@Excel(name="提单号",width=15)
-	private String tdNum;
-	/**提单状态*/
-	@Excel(name="提单状态",width=15)
-	private String tdState;
-	/**货代费用发票号*/
-	@Excel(name="货代费用发票号",width=15)
-	private String hdfyFp;
-	/**费用金额*/
-	@Excel(name="费用金额",width=15)
-	private String cost;
-	/**费用付款状态*/
-	@Excel(name="费用付款状态",width=15)
-	private String payState;
+
 	/**货代名称*/
 	@Excel(name="货代名称",width=15)
 	private String hdName;
 	/**货代代码*/
 	@Excel(name="货代代码",width=15)
 	private String hdCode;
-	/**报关单状态*/
-	@Excel(name="报关单状态",width=15)
-	private String bgzt;
-	/**海关放行条状态*/
-	@Excel(name="海关放行条状态",width=15)
-	private String hgfxzt;
+	/**货代费用发票号*/
+	@Excel(name="货代费用发票号",width=15)
+	private String hdfyFp;
+	/**货代费用发票号*/
+	@Excel(name="货代发票状态",width=15)
+	private String hdfyFpState;
+	/**费用金额*/
+	@Excel(name="费用金额",width=15)
+	private String cost;
+	/**费用付款状态*/
+	@Excel(name="费用付款状态",width=15)
+	private String payState;
+	/**费用付款状态*/
+	@Excel(name="费用付款日期",width=15)
+	private String payDate;
+
 	/**订单号*/
 	@Excel(name="订单号",width=15)
 	private String orderNo;
-	
+
+	@Excel(name = "收款单位")
+	private String skDept;
+	@Excel(name = "账号")
+	private String account;
+	@Excel(name = "开户行")
+	private String bankName;
+	@Excel(name = "电话")
+	private String telphone;
 	/**
 	 *方法: 取得java.lang.String
 	 *@return: java.lang.String  业务员
@@ -278,108 +243,7 @@ public class EmkTdhdCostEntity implements java.io.Serializable {
 	public void setDeveloperName(String developerName){
 		this.developerName = developerName;
 	}
-	/**
-	 *方法: 取得java.lang.String
-	 *@return: java.lang.String  描述
-	 */
 
-	@Column(name ="SAMPLE_NO_DESC",nullable=true,length=32)
-	public String getSampleNoDesc(){
-		return this.sampleNoDesc;
-	}
-
-	/**
-	 *方法: 设置java.lang.String
-	 *@param: java.lang.String  描述
-	 */
-	public void setSampleNoDesc(String sampleNoDesc){
-		this.sampleNoDesc = sampleNoDesc;
-	}
-	/**
-	 *方法: 取得java.lang.Double
-	 *@return: java.lang.Double  单价
-	 */
-
-	@Column(name ="PRICE",nullable=true,scale=2,length=32)
-	public Double getPrice(){
-		return this.price;
-	}
-
-	/**
-	 *方法: 设置java.lang.Double
-	 *@param: java.lang.Double  单价
-	 */
-	public void setPrice(Double price){
-		this.price = price;
-	}
-	/**
-	 *方法: 取得java.lang.Integer
-	 *@return: java.lang.Integer  总箱数
-	 */
-
-	@Column(name ="SUM_BOX_TOTAL",nullable=true,length=32)
-	public Integer getSumBoxTotal(){
-		return this.sumBoxTotal;
-	}
-
-	/**
-	 *方法: 设置java.lang.Integer
-	 *@param: java.lang.Integer  总箱数
-	 */
-	public void setSumBoxTotal(Integer sumBoxTotal){
-		this.sumBoxTotal = sumBoxTotal;
-	}
-	/**
-	 *方法: 取得java.lang.Double
-	 *@return: java.lang.Double  总体积
-	 */
-
-	@Column(name ="SUM_BOX_VOLUME",nullable=true,scale=2,length=32)
-	public Double getSumBoxVolume(){
-		return this.sumBoxVolume;
-	}
-
-	/**
-	 *方法: 设置java.lang.Double
-	 *@param: java.lang.Double  总体积
-	 */
-	public void setSumBoxVolume(Double sumBoxVolume){
-		this.sumBoxVolume = sumBoxVolume;
-	}
-	/**
-	 *方法: 取得java.lang.Double
-	 *@return: java.lang.Double  总净重
-	 */
-
-	@Column(name ="SUM_BOX_JZ",nullable=true,scale=2,length=32)
-	public Double getSumBoxJz(){
-		return this.sumBoxJz;
-	}
-
-	/**
-	 *方法: 设置java.lang.Double
-	 *@param: java.lang.Double  总净重
-	 */
-	public void setSumBoxJz(Double sumBoxJz){
-		this.sumBoxJz = sumBoxJz;
-	}
-	/**
-	 *方法: 取得java.lang.Double
-	 *@return: java.lang.Double  总毛重
-	 */
-
-	@Column(name ="SUM_BOX_MAO",nullable=true,scale=2,length=32)
-	public Double getSumBoxMao(){
-		return this.sumBoxMao;
-	}
-
-	/**
-	 *方法: 设置java.lang.Double
-	 *@param: java.lang.Double  总毛重
-	 */
-	public void setSumBoxMao(Double sumBoxMao){
-		this.sumBoxMao = sumBoxMao;
-	}
 	/**
 	 *方法: 取得java.lang.String
 	 *@return: java.lang.String  主键
@@ -487,40 +351,6 @@ public class EmkTdhdCostEntity implements java.io.Serializable {
 	}
 	/**
 	 *方法: 取得java.lang.String
-	 *@return: java.lang.String  订舱通知单号
-	 */
-
-	@Column(name ="CARGO_NO",nullable=true,length=32)
-	public String getCargoNo(){
-		return this.cargoNo;
-	}
-
-	/**
-	 *方法: 设置java.lang.String
-	 *@param: java.lang.String  订舱通知单号
-	 */
-	public void setCargoNo(String cargoNo){
-		this.cargoNo = cargoNo;
-	}
-	/**
-	 *方法: 取得java.lang.String
-	 *@return: java.lang.String  离厂放行条号
-	 */
-
-	@Column(name ="LEVEAL_FACTORY_NO",nullable=true,length=32)
-	public String getLevealFactoryNo(){
-		return this.levealFactoryNo;
-	}
-
-	/**
-	 *方法: 设置java.lang.String
-	 *@param: java.lang.String  离厂放行条号
-	 */
-	public void setLevealFactoryNo(String levealFactoryNo){
-		this.levealFactoryNo = levealFactoryNo;
-	}
-	/**
-	 *方法: 取得java.lang.String
 	 *@return: java.lang.String  客户代码
 	 */
 
@@ -553,142 +383,8 @@ public class EmkTdhdCostEntity implements java.io.Serializable {
 	public void setCusName(String cusName){
 		this.cusName = cusName;
 	}
-	/**
-	 *方法: 取得java.lang.String
-	 *@return: java.lang.String  供应商
-	 */
 
-	@Column(name ="GYS",nullable=true,length=32)
-	public String getGys(){
-		return this.gys;
-	}
 
-	/**
-	 *方法: 设置java.lang.String
-	 *@param: java.lang.String  供应商
-	 */
-	public void setGys(String gys){
-		this.gys = gys;
-	}
-	/**
-	 *方法: 取得java.lang.String
-	 *@return: java.lang.String  供应商代码
-	 */
-
-	@Column(name ="GYS_CODE",nullable=true,length=32)
-	public String getGysCode(){
-		return this.gysCode;
-	}
-
-	/**
-	 *方法: 设置java.lang.String
-	 *@param: java.lang.String  供应商代码
-	 */
-	public void setGysCode(String gysCode){
-		this.gysCode = gysCode;
-	}
-	/**
-	 *方法: 取得java.lang.String
-	 *@return: java.lang.String  离厂日期
-	 */
-
-	@Column(name ="LEVEAL_DATE",nullable=true,length=32)
-	public String getLevealDate(){
-		return this.levealDate;
-	}
-
-	/**
-	 *方法: 设置java.lang.String
-	 *@param: java.lang.String  离厂日期
-	 */
-	public void setLevealDate(String levealDate){
-		this.levealDate = levealDate;
-	}
-	/**
-	 *方法: 取得java.lang.String
-	 *@return: java.lang.String  出货通知单号
-	 */
-
-	@Column(name ="OUT_FORUM_NO",nullable=true,length=32)
-	public String getOutForumNo(){
-		return this.outForumNo;
-	}
-
-	/**
-	 *方法: 设置java.lang.String
-	 *@param: java.lang.String  出货通知单号
-	 */
-	public void setOutForumNo(String outForumNo){
-		this.outForumNo = outForumNo;
-	}
-	/**
-	 *方法: 取得java.lang.Integer
-	 *@return: java.lang.Integer  数量
-	 */
-
-	@Column(name ="TOTAL",nullable=true,length=32)
-	public Integer getTotal(){
-		return this.total;
-	}
-
-	/**
-	 *方法: 设置java.lang.Integer
-	 *@param: java.lang.Integer  数量
-	 */
-	public void setTotal(Integer total){
-		this.total = total;
-	}
-	/**
-	 *方法: 取得java.lang.String
-	 *@return: java.lang.String  生产合同号
-	 */
-
-	@Column(name ="HT_NUM",nullable=true,length=32)
-	public String getHtNum(){
-		return this.htNum;
-	}
-
-	/**
-	 *方法: 设置java.lang.String
-	 *@param: java.lang.String  生产合同号
-	 */
-	public void setHtNum(String htNum){
-		this.htNum = htNum;
-	}
-	/**
-	 *方法: 取得java.lang.String
-	 *@return: java.lang.String  提单号
-	 */
-
-	@Column(name ="TD_NUM",nullable=true,length=32)
-	public String getTdNum(){
-		return this.tdNum;
-	}
-
-	/**
-	 *方法: 设置java.lang.String
-	 *@param: java.lang.String  提单号
-	 */
-	public void setTdNum(String tdNum){
-		this.tdNum = tdNum;
-	}
-	/**
-	 *方法: 取得java.lang.String
-	 *@return: java.lang.String  提单状态
-	 */
-
-	@Column(name ="TD_STATE",nullable=true,length=32)
-	public String getTdState(){
-		return this.tdState;
-	}
-
-	/**
-	 *方法: 设置java.lang.String
-	 *@param: java.lang.String  提单状态
-	 */
-	public void setTdState(String tdState){
-		this.tdState = tdState;
-	}
 	/**
 	 *方法: 取得java.lang.String
 	 *@return: java.lang.String  货代费用发票号
@@ -740,6 +436,88 @@ public class EmkTdhdCostEntity implements java.io.Serializable {
 	public void setPayState(String payState){
 		this.payState = payState;
 	}
+
+	/**
+	 *方法: 取得java.lang.String
+	 *@return: java.lang.String  订单号
+	 */
+
+	@Column(name ="ORDER_NO",nullable=true,length=32)
+	public String getOrderNo(){
+		return this.orderNo;
+	}
+
+	/**
+	 *方法: 设置java.lang.String
+	 *@param: java.lang.String  订单号
+	 */
+	public void setOrderNo(String orderNo){
+		this.orderNo = orderNo;
+	}
+
+	@Column(name = "sk_dept", nullable = true, length = 32)
+	public String getSkDept() {
+		return skDept;
+	}
+
+	public void setSkDept(String skDept) {
+		this.skDept = skDept;
+	}
+
+	@Column(name = "account", nullable = true, length = 32)
+	public String getAccount() {
+		return account;
+	}
+
+	public void setAccount(String account) {
+		this.account = account;
+	}
+
+	@Column(name = "bank_name", nullable = true, length = 32)
+	public String getBankName() {
+		return bankName;
+	}
+
+	public void setBankName(String bankName) {
+		this.bankName = bankName;
+	}
+
+	@Column(name = "telphone", nullable = true, length = 32)
+	public String getTelphone() {
+		return telphone;
+	}
+
+	public void setTelphone(String telphone) {
+		this.telphone = telphone;
+	}
+
+	@Column(name = "hdfy_fp_state", nullable = true, length = 32)
+	public String getHdfyFpState() {
+		return hdfyFpState;
+	}
+
+	public void setHdfyFpState(String hdfyFpState) {
+		this.hdfyFpState = hdfyFpState;
+	}
+
+	@Column(name = "pay_date", nullable = true, length = 32)
+	public String getPayDate() {
+		return payDate;
+	}
+
+	public void setPayDate(String payDate) {
+		this.payDate = payDate;
+	}
+
+	@Column(name = "hdfy_pay_no", nullable = true, length = 32)
+	public String getHdfyPayNo() {
+		return hdfyPayNo;
+	}
+
+	public void setHdfyPayNo(String hdfyPayNo) {
+		this.hdfyPayNo = hdfyPayNo;
+	}
+
 	/**
 	 *方法: 取得java.lang.String
 	 *@return: java.lang.String  货代名称
@@ -773,56 +551,5 @@ public class EmkTdhdCostEntity implements java.io.Serializable {
 	 */
 	public void setHdCode(String hdCode){
 		this.hdCode = hdCode;
-	}
-	/**
-	 *方法: 取得java.lang.String
-	 *@return: java.lang.String  报关单状态
-	 */
-
-	@Column(name ="BGZT",nullable=true,length=32)
-	public String getBgzt(){
-		return this.bgzt;
-	}
-
-	/**
-	 *方法: 设置java.lang.String
-	 *@param: java.lang.String  报关单状态
-	 */
-	public void setBgzt(String bgzt){
-		this.bgzt = bgzt;
-	}
-	/**
-	 *方法: 取得java.lang.String
-	 *@return: java.lang.String  海关放行条状态
-	 */
-
-	@Column(name ="HGFXZT",nullable=true,length=32)
-	public String getHgfxzt(){
-		return this.hgfxzt;
-	}
-
-	/**
-	 *方法: 设置java.lang.String
-	 *@param: java.lang.String  海关放行条状态
-	 */
-	public void setHgfxzt(String hgfxzt){
-		this.hgfxzt = hgfxzt;
-	}
-	/**
-	 *方法: 取得java.lang.String
-	 *@return: java.lang.String  订单号
-	 */
-
-	@Column(name ="ORDER_NO",nullable=true,length=32)
-	public String getOrderNo(){
-		return this.orderNo;
-	}
-
-	/**
-	 *方法: 设置java.lang.String
-	 *@param: java.lang.String  订单号
-	 */
-	public void setOrderNo(String orderNo){
-		this.orderNo = orderNo;
 	}
 }

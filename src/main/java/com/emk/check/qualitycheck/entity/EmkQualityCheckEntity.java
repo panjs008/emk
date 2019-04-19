@@ -114,132 +114,216 @@ public class EmkQualityCheckEntity implements java.io.Serializable {
 	/**污渍*/
 	@Excel(name="污渍",width=15)
 	private String wuji;
+	private String wujiminor;
 	/**油渍*/
 	@Excel(name="油渍",width=15)
 	private String youji;
+	private String youjiminor;
+
 	/**起毛*/
 	@Excel(name="起毛",width=15)
 	private String qimao;
+	private String qimaominor;
+
 	/**断纱*/
 	@Excel(name="断纱",width=15)
 	private String duans;
+	private String duansminor;
+
 	/**抽纱*/
 	@Excel(name="抽纱",width=15)
 	private String chous;
+	private String chousminor;
+
 	/**反纱*/
 	@Excel(name="反纱",width=15)
 	private String fans;
+	private String fansminor;
+
 	/**破洞*/
 	@Excel(name="破洞",width=15)
 	private String pod;
+	private String podminor;
+
 	/**横纹*/
 	@Excel(name="横纹",width=15)
 	private String hengw;
+	private String hengwminor;
+
 	/**染花*/
 	@Excel(name="染花",width=15)
 	private String ranhua;
+	private String ranhuaminor;
+
 	/**色差*/
 	@Excel(name="色差",width=15)
 	private String secha;
+	private String sechaminor;
+
 	/**配色不良*/
 	@Excel(name="配色不良",width=15)
 	private String psbl;
+	private String psblminor;
+
 	/**爆口*/
 	@Excel(name="爆口",width=15)
 	private String baokou;
+	private String baokouminor;
+
 	/**线头*/
 	@Excel(name="线头",width=15)
 	private String xt;
+	private String xtminor;
+
 	/**断线*/
 	@Excel(name="断线",width=15)
 	private String dx;
+	private String dxminor;
+
 	/**落坑*/
 	@Excel(name="落坑",width=15)
 	private String lk;
+	private String lkminor;
+
 	/**左右不对称*/
 	@Excel(name="左右不对称",width=15)
 	private String zybdc;
+	private String zybdcminor;
+
 	/**套结不良*/
 	@Excel(name="套结不良",width=15)
 	private String tjbl;
+	private String tjblminor;
+
 	/**容皱*/
 	@Excel(name="容皱",width=15)
 	private String rongzhou;
+	private String rongzhouminor;
+
 	/**止口*/
 	@Excel(name="止口",width=15)
 	private String zhikou;
+	private String zhikouminor;
+
 	/**尺寸*/
 	@Excel(name="尺寸",width=15)
 	private String chicun;
+	private String chicunminor;
+
 	/**每寸针数*/
 	@Excel(name="每寸针数",width=15)
 	private String mczs;
+	private String mczsminor;
+
 	/**烫工不良*/
 	@Excel(name="烫工不良",width=15)
 	private String tgbl;
+	private String tgblminor;
+
 	/**骨位方向错误*/
 	@Excel(name="骨位方向错误",width=15)
 	private String gwfxcw;
+	private String gwfxcwminor;
+
 	/**驳线不良*/
 	@Excel(name="驳线不良",width=15)
 	private String bxbl;
+	private String bxblminor;
+
 	/**形状不良*/
 	@Excel(name="形状不良",width=15)
 	private String xzbl;
+	private String xzblminor;
+
 	/**漏物料*/
 	@Excel(name="漏物料",width=15)
 	private String lwl;
+	private String lwlminor;
+
 	/**针孔*/
 	@Excel(name="针孔",width=15)
 	private String zhenkong;
+	private String zhenkongminor;
+
 	/**挂错漏打吊牌*/
 	@Excel(name="挂错漏打吊牌",width=15)
 	private String gcdp;
+	private String gcdpminor;
+
 	/**错打漏打条形码*/
 	@Excel(name="错打漏打条形码",width=15)
 	private String cdtxm;
+	private String cdtxmminor;
+
 	/**挂牌位置错误*/
 	@Excel(name="挂牌位置错误",width=15)
 	private String gpwzcw;
+	private String gpwzcwminor;
+
 	/**衣架用错*/
 	@Excel(name="衣架用错",width=15)
 	private String yjyc;
+	private String yjycminor;
+
 	/**衣架方向错误*/
 	@Excel(name="衣架方向错误",width=15)
 	private String yjfxcw;
+	private String yjfxcwminor;
+
 	/**挂得过长*/
 	@Excel(name="挂得过长",width=15)
 	private String gdgc;
+	private String gdgcminor;
+
 	/**错漏码数*/
 	@Excel(name="错漏码数",width=15)
 	private String clms;
+	private String clmsminor;
+
 	/**胶袋内尺码错误*/
 	@Excel(name="胶袋内尺码错误",width=15)
 	private String jdncmcw;
+	private String jdncmcwminor;
+
 	/**胶袋内配比错误*/
 	@Excel(name="胶袋内配比错误",width=15)
 	private String jdnpbcw;
+	private String jdnpbcwminor;
+
 	/**纸箱杂码混色*/
 	@Excel(name="纸箱杂码混色",width=15)
 	private String zxzmhs;
+	private String zxzmhsminor;
+
 	/**包装外观不良*/
 	@Excel(name="包装外观不良",width=15)
 	private String bzwgbl;
+	private String bzwgblminor;
+
 	/**条形码不能扫描*/
 	@Excel(name="条形码不能扫描",width=15)
 	private String txmbnsm;
+	private String txmbnsmminor;
+
 	/**吊牌不稳*/
 	@Excel(name="吊牌不稳",width=15)
 	private String dpbw;
+	private String dpbwminor;
+
 	/**贴纸不稳*/
 	@Excel(name="贴纸不稳",width=15)
 	private String tzbw;
+	private String tzbwminor;
+
 	/**包装资料不一*/
 	@Excel(name="包装资料不一",width=15)
 	private String bzzlby;
+	private String bzzlbyminor;
+
 	/**查验结果*/
 	@Excel(name="查验结果",width=15)
 	private String cyjg;
+
 	/**质量检查编号*/
 	@Excel(name="质量检查编号",width=15)
 	private String qualityCheckNum;
@@ -255,6 +339,19 @@ public class EmkQualityCheckEntity implements java.io.Serializable {
 	/**检查日期*/
 	@Excel(name="检查日期",width=15)
 	private String checkDate;
+
+	@Excel(name="出货日期",width=15)
+	private String outDate;
+	@Excel(name="样品日期",width=15)
+	private String ypDate;
+	@Excel(name="样品尺码",width=15)
+	private String ypSize;
+	@Excel(name="订单数量",width=15)
+	private String orderTotal;
+	@Excel(name="样品数量",width=15)
+	private String ypTotal;
+	@Excel(name="样品类型",width=15)
+	private String ypType;
 
 	@Excel(name="审核意见")
 	private String leadAdvice;
@@ -1661,5 +1758,437 @@ public class EmkQualityCheckEntity implements java.io.Serializable {
 	 */
 	public void setWorkNo(String workNo){
 		this.workNo = workNo;
+	}
+
+	@Column(name ="wujiminor",nullable=true,length=32)
+	public String getWujiminor() {
+		return wujiminor;
+	}
+
+	public void setWujiminor(String wujiminor) {
+		this.wujiminor = wujiminor;
+	}
+
+	@Column(name ="youjiminor",nullable=true,length=32)
+	public String getYoujiminor() {
+		return youjiminor;
+	}
+
+	public void setYoujiminor(String youjiminor) {
+		this.youjiminor = youjiminor;
+	}
+
+	@Column(name ="qimaominor",nullable=true,length=32)
+	public String getQimaominor() {
+		return qimaominor;
+	}
+
+	public void setQimaominor(String qimaominor) {
+		this.qimaominor = qimaominor;
+	}
+
+	@Column(name ="duansminor",nullable=true,length=32)
+	public String getDuansminor() {
+		return duansminor;
+	}
+
+	public void setDuansminor(String duansminor) {
+		this.duansminor = duansminor;
+	}
+
+	@Column(name ="chousminor",nullable=true,length=32)
+	public String getChousminor() {
+		return chousminor;
+	}
+
+	public void setChousminor(String chousminor) {
+		this.chousminor = chousminor;
+	}
+
+	@Column(name ="fansminor",nullable=true,length=32)
+	public String getFansminor() {
+		return fansminor;
+	}
+
+	public void setFansminor(String fansminor) {
+		this.fansminor = fansminor;
+	}
+
+	@Column(name ="podminor",nullable=true,length=32)
+	public String getPodminor() {
+		return podminor;
+	}
+
+	public void setPodminor(String podminor) {
+		this.podminor = podminor;
+	}
+
+	@Column(name ="hengwminor",nullable=true,length=32)
+	public String getHengwminor() {
+		return hengwminor;
+	}
+
+	public void setHengwminor(String hengwminor) {
+		this.hengwminor = hengwminor;
+	}
+
+	@Column(name ="ranhuaminor",nullable=true,length=32)
+	public String getRanhuaminor() {
+		return ranhuaminor;
+	}
+
+	public void setRanhuaminor(String ranhuaminor) {
+		this.ranhuaminor = ranhuaminor;
+	}
+
+	@Column(name ="sechaminor",nullable=true,length=32)
+	public String getSechaminor() {
+		return sechaminor;
+	}
+
+	public void setSechaminor(String sechaminor) {
+		this.sechaminor = sechaminor;
+	}
+
+	@Column(name ="psblminor",nullable=true,length=32)
+	public String getPsblminor() {
+		return psblminor;
+	}
+
+	public void setPsblminor(String psblminor) {
+		this.psblminor = psblminor;
+	}
+
+	@Column(name ="baokouminor",nullable=true,length=32)
+	public String getBaokouminor() {
+		return baokouminor;
+	}
+
+	public void setBaokouminor(String baokouminor) {
+		this.baokouminor = baokouminor;
+	}
+
+	@Column(name ="xtminor",nullable=true,length=32)
+	public String getXtminor() {
+		return xtminor;
+	}
+
+	public void setXtminor(String xtminor) {
+		this.xtminor = xtminor;
+	}
+
+	@Column(name ="dxminor",nullable=true,length=32)
+	public String getDxminor() {
+		return dxminor;
+	}
+
+	public void setDxminor(String dxminor) {
+		this.dxminor = dxminor;
+	}
+
+	@Column(name ="lkminor",nullable=true,length=32)
+	public String getLkminor() {
+		return lkminor;
+	}
+
+	public void setLkminor(String lkminor) {
+		this.lkminor = lkminor;
+	}
+
+	@Column(name ="zybdcminor",nullable=true,length=32)
+	public String getZybdcminor() {
+		return zybdcminor;
+	}
+
+	public void setZybdcminor(String zybdcminor) {
+		this.zybdcminor = zybdcminor;
+	}
+
+	@Column(name ="tjblminor",nullable=true,length=32)
+	public String getTjblminor() {
+		return tjblminor;
+	}
+
+	public void setTjblminor(String tjblminor) {
+		this.tjblminor = tjblminor;
+	}
+
+	@Column(name ="rongzhouminor",nullable=true,length=32)
+	public String getRongzhouminor() {
+		return rongzhouminor;
+	}
+
+	public void setRongzhouminor(String rongzhouminor) {
+		this.rongzhouminor = rongzhouminor;
+	}
+
+	@Column(name ="zhikouminor",nullable=true,length=32)
+	public String getZhikouminor() {
+		return zhikouminor;
+	}
+
+	public void setZhikouminor(String zhikouminor) {
+		this.zhikouminor = zhikouminor;
+	}
+
+	@Column(name ="chicunminor",nullable=true,length=32)
+	public String getChicunminor() {
+		return chicunminor;
+	}
+
+	public void setChicunminor(String chicunminor) {
+		this.chicunminor = chicunminor;
+	}
+
+	@Column(name ="mczsminor",nullable=true,length=32)
+	public String getMczsminor() {
+		return mczsminor;
+	}
+
+	public void setMczsminor(String mczsminor) {
+		this.mczsminor = mczsminor;
+	}
+
+	@Column(name ="tgblminor",nullable=true,length=32)
+	public String getTgblminor() {
+		return tgblminor;
+	}
+
+	public void setTgblminor(String tgblminor) {
+		this.tgblminor = tgblminor;
+	}
+
+	@Column(name ="gwfxcwminor",nullable=true,length=32)
+	public String getGwfxcwminor() {
+		return gwfxcwminor;
+	}
+
+	public void setGwfxcwminor(String gwfxcwminor) {
+		this.gwfxcwminor = gwfxcwminor;
+	}
+
+	@Column(name ="bxblminor",nullable=true,length=32)
+	public String getBxblminor() {
+		return bxblminor;
+	}
+
+	public void setBxblminor(String bxblminor) {
+		this.bxblminor = bxblminor;
+	}
+
+	@Column(name ="xzblminor",nullable=true,length=32)
+	public String getXzblminor() {
+		return xzblminor;
+	}
+
+	public void setXzblminor(String xzblminor) {
+		this.xzblminor = xzblminor;
+	}
+
+	@Column(name ="lwlminor",nullable=true,length=32)
+	public String getLwlminor() {
+		return lwlminor;
+	}
+
+	public void setLwlminor(String lwlminor) {
+		this.lwlminor = lwlminor;
+	}
+
+	@Column(name ="zhenkongminor",nullable=true,length=32)
+	public String getZhenkongminor() {
+		return zhenkongminor;
+	}
+
+	public void setZhenkongminor(String zhenkongminor) {
+		this.zhenkongminor = zhenkongminor;
+	}
+
+	@Column(name ="gcdpminor",nullable=true,length=32)
+	public String getGcdpminor() {
+		return gcdpminor;
+	}
+
+	public void setGcdpminor(String gcdpminor) {
+		this.gcdpminor = gcdpminor;
+	}
+
+	@Column(name ="cdtxmminor",nullable=true,length=32)
+	public String getCdtxmminor() {
+		return cdtxmminor;
+	}
+
+	public void setCdtxmminor(String cdtxmminor) {
+		this.cdtxmminor = cdtxmminor;
+	}
+
+	@Column(name ="gpwzcwminor",nullable=true,length=32)
+	public String getGpwzcwminor() {
+		return gpwzcwminor;
+	}
+
+	public void setGpwzcwminor(String gpwzcwminor) {
+		this.gpwzcwminor = gpwzcwminor;
+	}
+
+	@Column(name ="yjycminor",nullable=true,length=32)
+	public String getYjycminor() {
+		return yjycminor;
+	}
+
+	public void setYjycminor(String yjycminor) {
+		this.yjycminor = yjycminor;
+	}
+
+	@Column(name ="yjfxcwminor",nullable=true,length=32)
+	public String getYjfxcwminor() {
+		return yjfxcwminor;
+	}
+
+	public void setYjfxcwminor(String yjfxcwminor) {
+		this.yjfxcwminor = yjfxcwminor;
+	}
+
+	@Column(name ="gdgcminor",nullable=true,length=32)
+	public String getGdgcminor() {
+		return gdgcminor;
+	}
+
+	public void setGdgcminor(String gdgcminor) {
+		this.gdgcminor = gdgcminor;
+	}
+
+	@Column(name ="clmsminor",nullable=true,length=32)
+	public String getClmsminor() {
+		return clmsminor;
+	}
+
+	public void setClmsminor(String clmsminor) {
+		this.clmsminor = clmsminor;
+	}
+
+	@Column(name ="jdncmcwminor",nullable=true,length=32)
+	public String getJdncmcwminor() {
+		return jdncmcwminor;
+	}
+
+	public void setJdncmcwminor(String jdncmcwminor) {
+		this.jdncmcwminor = jdncmcwminor;
+	}
+
+	@Column(name ="jdnpbcwminor",nullable=true,length=32)
+	public String getJdnpbcwminor() {
+		return jdnpbcwminor;
+	}
+
+	public void setJdnpbcwminor(String jdnpbcwminor) {
+		this.jdnpbcwminor = jdnpbcwminor;
+	}
+
+	@Column(name ="zxzmhsminor",nullable=true,length=32)
+	public String getZxzmhsminor() {
+		return zxzmhsminor;
+	}
+
+	public void setZxzmhsminor(String zxzmhsminor) {
+		this.zxzmhsminor = zxzmhsminor;
+	}
+
+	@Column(name ="bzwgblminor",nullable=true,length=32)
+	public String getBzwgblminor() {
+		return bzwgblminor;
+	}
+
+	public void setBzwgblminor(String bzwgblminor) {
+		this.bzwgblminor = bzwgblminor;
+	}
+
+	@Column(name ="txmbnsmminor",nullable=true,length=32)
+	public String getTxmbnsmminor() {
+		return txmbnsmminor;
+	}
+
+	public void setTxmbnsmminor(String txmbnsmminor) {
+		this.txmbnsmminor = txmbnsmminor;
+	}
+
+	@Column(name ="dpbwminor",nullable=true,length=32)
+	public String getDpbwminor() {
+		return dpbwminor;
+	}
+
+	public void setDpbwminor(String dpbwminor) {
+		this.dpbwminor = dpbwminor;
+	}
+
+	@Column(name ="tzbwminor",nullable=true,length=32)
+	public String getTzbwminor() {
+		return tzbwminor;
+	}
+
+	public void setTzbwminor(String tzbwminor) {
+		this.tzbwminor = tzbwminor;
+	}
+
+	@Column(name ="bzzlbyminor",nullable=true,length=32)
+	public String getBzzlbyminor() {
+		return bzzlbyminor;
+	}
+
+	public void setBzzlbyminor(String bzzlbyminor) {
+		this.bzzlbyminor = bzzlbyminor;
+	}
+
+	@Column(name ="out_date",nullable=true,length=32)
+	public String getOutDate() {
+		return outDate;
+	}
+
+	public void setOutDate(String outDate) {
+		this.outDate = outDate;
+	}
+
+	@Column(name ="yp_date",nullable=true,length=32)
+	public String getYpDate() {
+		return ypDate;
+	}
+
+	public void setYpDate(String ypDate) {
+		this.ypDate = ypDate;
+	}
+
+	@Column(name ="yp_size",nullable=true,length=32)
+	public String getYpSize() {
+		return ypSize;
+	}
+
+	public void setYpSize(String ypSize) {
+		this.ypSize = ypSize;
+	}
+
+	@Column(name ="order_total",nullable=true,length=32)
+	public String getOrderTotal() {
+		return orderTotal;
+	}
+
+	public void setOrderTotal(String orderTotal) {
+		this.orderTotal = orderTotal;
+	}
+
+	@Column(name ="yp_total",nullable=true,length=32)
+	public String getYpTotal() {
+		return ypTotal;
+	}
+
+	public void setYpTotal(String ypTotal) {
+		this.ypTotal = ypTotal;
+	}
+
+	@Column(name ="yp_type",nullable=true,length=32)
+	public String getYpType() {
+		return ypType;
+	}
+
+	public void setYpType(String ypType) {
+		this.ypType = ypType;
 	}
 }

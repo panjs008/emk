@@ -27,34 +27,16 @@ public class EmkCargoSpaceEntity
     @Excel(name = "生产跟单员")
     private String developer;
     private String developerName;
-    @Excel(name = "工艺种类")
-    private String gyzl;
-    @Excel(name = "款式大类")
-    private String proType;
-    @Excel(name = "款式大类")
-    private String proTypeName;
-    @Excel(name = "款号")
-    private String sampleNo;
-    @Excel(name = "描述")
-    private String sampleNoDesc;
+
     @Excel(name = "数量")
     private Integer total;
     @Excel(name = "总金额")
     private Double sumMoney;
-    @Excel(name = "尺码")
-    private String size;
-    @Excel(name = "单价")
-    private Double price;
     @Excel(name = "币种")
     private String bz;
     @Excel(name = "总箱数")
     private Integer sumBoxTotal;
-    @Excel(name = "总体积")
-    private Double sumBoxVolume;
-    @Excel(name = "总净重")
-    private Double sumBoxJz;
-    @Excel(name = "总毛重")
-    private Double sumBoxMao;
+
     private String id;
     private String createName;
     private String createBy;
@@ -74,40 +56,6 @@ public class EmkCargoSpaceEntity
     private String gysCode;
     @Excel(name = "船务员")
     private String cwyer;
-    @Excel(name = "货代名称")
-    private String hdName;
-    @Excel(name = "目的国")
-    private String destination;
-    @Excel(name = "货好时间")
-    private String haoDate;
-    @Excel(name = "开船时间")
-    private String goDate;
-    @Excel(name = "发票号")
-    private String fpNum;
-    @Excel(name = "到港时间")
-    private String arrvieDate;
-    @Excel(name = "收货人")
-    private String shrer;
-    @Excel(name = "电话")
-    private String telphone;
-    @Excel(name = "订单号")
-    private String orderNo;
-    @Excel(name = "生产合同号")
-    private String produceNum;
-    @Excel(name = "长度")
-    private String chang;
-    @Excel(name = "宽度")
-    private String kuan;
-    @Excel(name = "高度")
-    private String gao;
-    @Excel(name = "单箱毛重")
-    private String oneMz;
-    @Excel(name = "单箱净重")
-    private String oneJz;
-    @Excel(name = "单箱体积")
-    private String oneVolume;
-    @Excel(name = "金额")
-    private String money;
     @Excel(name = "订舱状态")
     private String cargoState;
     @Excel(name = "出厂状态")
@@ -116,6 +64,12 @@ public class EmkCargoSpaceEntity
     private String cusNum;
     @Excel(name = "客户名称")
     private String cusName;
+    @Excel(name = "收货人")
+    private String shrer;
+    @Excel(name = "电话")
+    private String telphone;
+    @Excel(name = "到港时间")
+    private String arrvieDate;
 
     @Column(name = "BUSINESSER", nullable = true, length = 32)
     public String getBusinesser() {
@@ -189,51 +143,6 @@ public class EmkCargoSpaceEntity
         this.developerName = developerName;
     }
 
-    @Column(name = "GYZL", nullable = true, length = 32)
-    public String getGyzl() {
-        return this.gyzl;
-    }
-
-    public void setGyzl(String gyzl) {
-        this.gyzl = gyzl;
-    }
-
-    @Column(name = "PRO_TYPE", nullable = true, length = 32)
-    public String getProType() {
-        return this.proType;
-    }
-
-    public void setProType(String proType) {
-        this.proType = proType;
-    }
-
-    @Column(name = "PRO_TYPE_NAME", nullable = true, length = 32)
-    public String getProTypeName() {
-        return this.proTypeName;
-    }
-
-    public void setProTypeName(String proTypeName) {
-        this.proTypeName = proTypeName;
-    }
-
-    @Column(name = "SAMPLE_NO", nullable = true, length = 32)
-    public String getSampleNo() {
-        return this.sampleNo;
-    }
-
-    public void setSampleNo(String sampleNo) {
-        this.sampleNo = sampleNo;
-    }
-
-    @Column(name = "SAMPLE_NO_DESC", nullable = true, length = 32)
-    public String getSampleNoDesc() {
-        return this.sampleNoDesc;
-    }
-
-    public void setSampleNoDesc(String sampleNoDesc) {
-        this.sampleNoDesc = sampleNoDesc;
-    }
-
     @Column(name = "TOTAL", nullable = true, length = 32)
     public Integer getTotal() {
         return this.total;
@@ -250,24 +159,6 @@ public class EmkCargoSpaceEntity
 
     public void setSumMoney(Double sumMoney) {
         this.sumMoney = sumMoney;
-    }
-
-    @Column(name = "SIZE", nullable = true, length = 32)
-    public String getSize() {
-        return this.size;
-    }
-
-    public void setSize(String size) {
-        this.size = size;
-    }
-
-    @Column(name = "PRICE", nullable = true, scale = 2, length = 32)
-    public Double getPrice() {
-        return this.price;
-    }
-
-    public void setPrice(Double price) {
-        this.price = price;
     }
 
     @Column(name = "BZ", nullable = true, length = 32)
@@ -288,32 +179,6 @@ public class EmkCargoSpaceEntity
         this.sumBoxTotal = sumBoxTotal;
     }
 
-    @Column(name = "SUM_BOX_VOLUME", nullable = true, scale = 2, length = 32)
-    public Double getSumBoxVolume() {
-        return this.sumBoxVolume;
-    }
-
-    public void setSumBoxVolume(Double sumBoxVolume) {
-        this.sumBoxVolume = sumBoxVolume;
-    }
-
-    @Column(name = "SUM_BOX_JZ", nullable = true, scale = 2, length = 32)
-    public Double getSumBoxJz() {
-        return this.sumBoxJz;
-    }
-
-    public void setSumBoxJz(Double sumBoxJz) {
-        this.sumBoxJz = sumBoxJz;
-    }
-
-    @Column(name = "SUM_BOX_MAO", nullable = true, scale = 2, length = 32)
-    public Double getSumBoxMao() {
-        return this.sumBoxMao;
-    }
-
-    public void setSumBoxMao(Double sumBoxMao) {
-        this.sumBoxMao = sumBoxMao;
-    }
 
     @Id
     @GeneratedValue(generator = "paymentableGenerator")
@@ -426,159 +291,6 @@ public class EmkCargoSpaceEntity
         this.cwyer = cwyer;
     }
 
-    @Column(name = "HD_NAME", nullable = true, length = 56)
-    public String getHdName() {
-        return this.hdName;
-    }
-
-    public void setHdName(String hdName) {
-        this.hdName = hdName;
-    }
-
-    @Column(name = "DESTINATION", nullable = true, length = 32)
-    public String getDestination() {
-        return this.destination;
-    }
-
-    public void setDestination(String destination) {
-        this.destination = destination;
-    }
-
-    @Column(name = "HAO_DATE", nullable = true, length = 32)
-    public String getHaoDate() {
-        return this.haoDate;
-    }
-
-    public void setHaoDate(String haoDate) {
-        this.haoDate = haoDate;
-    }
-
-    @Column(name = "GO_DATE", nullable = true, length = 32)
-    public String getGoDate() {
-        return this.goDate;
-    }
-
-    public void setGoDate(String goDate) {
-        this.goDate = goDate;
-    }
-
-    @Column(name = "FP_NUM", nullable = true, length = 32)
-    public String getFpNum() {
-        return this.fpNum;
-    }
-
-    public void setFpNum(String fpNum) {
-        this.fpNum = fpNum;
-    }
-
-    @Column(name = "ARRVIE_DATE", nullable = true, length = 32)
-    public String getArrvieDate() {
-        return this.arrvieDate;
-    }
-
-    public void setArrvieDate(String arrvieDate) {
-        this.arrvieDate = arrvieDate;
-    }
-
-    @Column(name = "SHRER", nullable = true, length = 32)
-    public String getShrer() {
-        return this.shrer;
-    }
-
-    public void setShrer(String shrer) {
-        this.shrer = shrer;
-    }
-
-    @Column(name = "TELPHONE", nullable = true, length = 32)
-    public String getTelphone() {
-        return this.telphone;
-    }
-
-    public void setTelphone(String telphone) {
-        this.telphone = telphone;
-    }
-
-    @Column(name = "ORDER_NO", nullable = true, length = 32)
-    public String getOrderNo() {
-        return this.orderNo;
-    }
-
-    public void setOrderNo(String orderNo) {
-        this.orderNo = orderNo;
-    }
-
-    @Column(name = "PRODUCE_NUM", nullable = true, length = 32)
-    public String getProduceNum() {
-        return this.produceNum;
-    }
-
-    public void setProduceNum(String produceNum) {
-        this.produceNum = produceNum;
-    }
-
-    @Column(name = "CHANG", nullable = true, length = 32)
-    public String getChang() {
-        return this.chang;
-    }
-
-    public void setChang(String chang) {
-        this.chang = chang;
-    }
-
-    @Column(name = "KUAN", nullable = true, length = 32)
-    public String getKuan() {
-        return this.kuan;
-    }
-
-    public void setKuan(String kuan) {
-        this.kuan = kuan;
-    }
-
-    @Column(name = "GAO", nullable = true, length = 32)
-    public String getGao() {
-        return this.gao;
-    }
-
-    public void setGao(String gao) {
-        this.gao = gao;
-    }
-
-    @Column(name = "ONE_MZ", nullable = true, length = 32)
-    public String getOneMz() {
-        return this.oneMz;
-    }
-
-    public void setOneMz(String oneMz) {
-        this.oneMz = oneMz;
-    }
-
-    @Column(name = "ONE_JZ", nullable = true, length = 32)
-    public String getOneJz() {
-        return this.oneJz;
-    }
-
-    public void setOneJz(String oneJz) {
-        this.oneJz = oneJz;
-    }
-
-    @Column(name = "ONE_VOLUME", nullable = true, length = 32)
-    public String getOneVolume() {
-        return this.oneVolume;
-    }
-
-    public void setOneVolume(String oneVolume) {
-        this.oneVolume = oneVolume;
-    }
-
-    @Column(name = "MONEY", nullable = true, length = 32)
-    public String getMoney() {
-        return this.money;
-    }
-
-    public void setMoney(String money) {
-        this.money = money;
-    }
-
     @Column(name = "CARGO_STATE", nullable = true, length = 32)
     public String getCargoState() {
         return this.cargoState;
@@ -614,4 +326,31 @@ public class EmkCargoSpaceEntity
     public void setCusName(String cusName) {
         this.cusName = cusName;
     }
+
+    @Column(name = "SHRER", nullable = true, length = 32)
+    public String getShrer() {
+        return this.shrer;
+    }
+
+    public void setShrer(String shrer) {
+        this.shrer = shrer;
+    }
+
+    @Column(name = "TELPHONE", nullable = true, length = 32)
+    public String getTelphone() {
+        return this.telphone;
+    }
+
+    public void setTelphone(String telphone) {
+        this.telphone = telphone;
+    }
+    @Column(name = "ARRVIE_DATE", nullable = true, length = 32)
+    public String getArrvieDate() {
+        return this.arrvieDate;
+    }
+
+    public void setArrvieDate(String arrvieDate) {
+        this.arrvieDate = arrvieDate;
+    }
+
 }

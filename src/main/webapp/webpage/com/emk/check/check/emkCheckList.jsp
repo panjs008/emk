@@ -24,9 +24,9 @@
 
       <t:dgFunOpt funname="goToProcess(id,createBy)" title="流程进度" operationCode="process" urlclass="ace_button"  urlStyle="background-color:#ec4758;" urlfont="fa-tasks"></t:dgFunOpt>
 
-      <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkCheckController.do?goAdd&winTitle=录入验货申请" funname="add" height="600" width="1000"></t:dgToolBar>
-      <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkCheckController.do?goUpdate&winTitle=编辑验货申请" funname="update" height="600" width="1000"></t:dgToolBar>
-      <t:dgToolBar title="查看" icon="fa fa-search" operationCode="look" url="emkCheckController.do?goUpdate&winTitle=查看验货申请" funname="detail" height="580" width="1000"></t:dgToolBar>
+      <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkCheckController.do?goAdd&winTitle=录入验货申请" funname="add" height="600" width="1200"></t:dgToolBar>
+      <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkCheckController.do?goUpdate&winTitle=编辑验货申请" funname="update" height="600" width="1200"></t:dgToolBar>
+      <t:dgToolBar title="查看" icon="fa fa-search" operationCode="look" url="emkCheckController.do?goUpdate&winTitle=查看验货申请" funname="detail" height="580" width="1200"></t:dgToolBar>
       <t:dgToolBar title="提交" operationCode="submit" icon="fa fa-arrow-circle-up" funname="doSubmitV"></t:dgToolBar>
 
       <t:dgToolBar title="删除" operationCode="delete"  icon="fa fa-remove" url="emkCheckController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>

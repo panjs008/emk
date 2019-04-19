@@ -58,6 +58,8 @@ public class EmkMeetingEntity implements Serializable {
     @Excel(name = "生产跟单员")
     private String developer;
     private String developerName;
+    @Excel(name = "出货日期")
+    private String outDate;
     @Excel(name = "中期检查时间")
     private String zqjcDate;
     @Excel(name = "尾期检查时间")
@@ -455,5 +457,14 @@ public class EmkMeetingEntity implements Serializable {
 
     public void setScbzhAdvice(String scbzhAdvice) {
         this.scbzhAdvice = scbzhAdvice;
+    }
+
+    @Column(name = "out_date", nullable = true, length = 256)
+    public String getOutDate() {
+        return outDate;
+    }
+
+    public void setOutDate(String outDate) {
+        this.outDate = outDate;
     }
 }

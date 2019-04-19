@@ -30,35 +30,48 @@
 	<div id="content">
 
 		<ul class="list">
-			<c:forEach items="${taskList}" var="task" varStatus="status">
+			<li>
+				<div class="liwrap">
+					<div class="lileft">
+						<div class="date">
+							<span class="year">${createDate}</span>
+						</div>
+					</div>
+					<div class="point"><b></b></div>
+					<div class="liright">
+						<div class="histt"><a style="font-size: 14px;">报价申请单</a></div>
+						<div class="histt"><a style="font-size: 12px;">【${approvalEntity.createName}】发起报价申请单，单号：${approvalEntity.workNum}
+						</a></div>
+					</div>
+				</div>
+			</li>
+			<c:forEach items="${approvalDetailEntityList}" var="task" varStatus="status">
+			<c:if test="${task.bpmName ne '报价单' }">
 				<li>
 					<div class="liwrap">
 						<div class="lileft">
 							<div class="date">
-								<span class="year">${task.startTime}</span>
+								<span class="year">${task.approveDate}</span>
 							</div>
 						</div>
 						<div class="point"><b></b></div>
 						<div class="liright">
-							<div class="histt"><a style="font-size: 14px;">${task.NAME_}</a></div>
-							<div class="histt"><a style="font-size: 12px;"><c:if test="${task.TASK_DEF_KEY_ eq 'instorageTask'}">【${task.workname}】发起报价单，报价单号：${emkPrice.pirceNo}</c:if>
-								<c:if test="${task.TASK_DEF_KEY_ eq 'checkTask'}">审核人【${emkPrice.leader}】，处理意见：${emkPrice.leadAdvice}</c:if>
-								<c:if test="${task.TASK_DEF_KEY_ eq 'jsTask'}">审核人【${emkPrice.jser}】,指派给【${emkPrice.cger}】，处理意见：${emkPrice.jsAdvice}</c:if>
-								<c:if test="${task.TASK_DEF_KEY_ eq 'cgTask'}">审核人【${emkPrice.cger}】,指派给【${emkPrice.cwer}】，处理意见：${emkPrice.cgAdvice}</c:if>
-								<c:if test="${task.TASK_DEF_KEY_ eq 'cwTask'}">审核人【${emkPrice.cwer}】,指派给【${emkPrice.jger}】，处理意见：${emkPrice.cwAdvice}</c:if>
-								<c:if test="${task.TASK_DEF_KEY_ eq 'usertask1'}">处理人【${emkPrice.jger}】，处理意见：${emkPrice.jgAdvice}</c:if>
+							<div class="histt"><a style="font-size: 14px;">${task.bpmName}</a></div>
+							<div class="histt"><a style="font-size: 12px;">
+								审核人【${task.createName}】，处理意见：${task.approveAdvice}
 
-							</a></div>
+							</div>
 						</div>
 					</div>
 				</li>
+			</c:if>
 			</c:forEach>
+
 		</ul>
 
 	</div>
 
 </div>
-
 
 </body>
 

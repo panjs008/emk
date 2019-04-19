@@ -21,14 +21,22 @@ public class EmkProOrderBoxEntity implements Serializable {
     private String sysOrgCode;
     @Excel(name = "订单ID")
     private String orderId;
+    @Excel(name = "颜色名称")
+    private String colorName;
+    @Excel(name = "尺码")
+    private String size;
     @Excel(name = "长度")
     private Double longVal;
     @Excel(name = "宽度")
     private Double widthVal;
     @Excel(name = "高度")
     private Double heightVal;
+    @Excel(name = "箱数")
+    private Integer total;
     @Excel(name = "总箱数")
     private Integer sumTotal;
+    @Excel(name = "总数量")
+    private Integer sumZsl;
     @Excel(name = "单件毛重")
     private Double oneWeightMao;
     @Excel(name = "单件净重")
@@ -43,10 +51,23 @@ public class EmkProOrderBoxEntity implements Serializable {
     private Double boxVolume;
     @Excel(name = "总体积")
     private Double sumVolume;
+    @Excel(name = "总毛重")
+    private Double sumWeightMao;
     @Excel(name = "总净重")
     private Double sumWeightJz;
     @Excel(name = "类型")
     private String boxType;
+
+    @Excel(name = "工艺种类")
+    private String gyzl;
+    @Excel(name = "款式大类")
+    private String proType;
+    @Excel(name = "款式大类")
+    private String proTypeName;
+    @Excel(name = "单价")
+    private String price;
+    @Excel(name = "金额")
+    private String money;
 
     @Id
     @GeneratedValue(generator = "paymentableGenerator")
@@ -103,6 +124,15 @@ public class EmkProOrderBoxEntity implements Serializable {
 
     public void setOrderId(String orderId) {
         this.orderId = orderId;
+    }
+
+    @Column(name = "color_name", nullable = true, scale = 2, length = 32)
+    public String getColorName() {
+        return colorName;
+    }
+
+    public void setColorName(String colorName) {
+        this.colorName = colorName;
     }
 
     @Column(name = "LONG_VAL", nullable = true, scale = 2, length = 32)
@@ -220,5 +250,86 @@ public class EmkProOrderBoxEntity implements Serializable {
 
     public void setBoxType(String boxType) {
         this.boxType = boxType;
+    }
+
+    @Column(name = "size", nullable = true, length = 32)
+    public String getSize() {
+        return size;
+    }
+
+    public void setSize(String size) {
+        this.size = size;
+    }
+
+    @Column(name = "total", nullable = true, length = 32)
+    public Integer getTotal() {
+        return total;
+    }
+
+    public void setTotal(Integer total) {
+        this.total = total;
+    }
+
+    @Column(name = "sum_zsl", nullable = true, length = 32)
+    public Integer getSumZsl() {
+        return sumZsl;
+    }
+
+    public void setSumZsl(Integer sumZsl) {
+        this.sumZsl = sumZsl;
+    }
+
+    @Column(name = "sum_weight_mao", nullable = true, length = 32)
+    public Double getSumWeightMao() {
+        return sumWeightMao;
+    }
+
+    public void setSumWeightMao(Double sumWeightMao) {
+        this.sumWeightMao = sumWeightMao;
+    }
+
+    @Column(name = "gyzl", nullable = true, length = 32)
+    public String getGyzl() {
+        return gyzl;
+    }
+
+    public void setGyzl(String gyzl) {
+        this.gyzl = gyzl;
+    }
+
+    @Column(name = "pro_type", nullable = true, length = 32)
+    public String getProType() {
+        return proType;
+    }
+
+    public void setProType(String proType) {
+        this.proType = proType;
+    }
+
+    @Column(name = "pro_type_name", nullable = true, length = 32)
+    public String getProTypeName() {
+        return proTypeName;
+    }
+
+    public void setProTypeName(String proTypeName) {
+        this.proTypeName = proTypeName;
+    }
+
+    @Column(name = "price", nullable = true, length = 32)
+    public String getPrice() {
+        return price;
+    }
+
+    public void setPrice(String price) {
+        this.price = price;
+    }
+
+    @Column(name = "money", nullable = true, length = 32)
+    public String getMoney() {
+        return money;
+    }
+
+    public void setMoney(String money) {
+        this.money = money;
     }
 }

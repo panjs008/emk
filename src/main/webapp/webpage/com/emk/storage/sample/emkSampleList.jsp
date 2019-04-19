@@ -10,7 +10,7 @@
    <t:dgCol title="创建日期"  field="createDate"  formatter="yyyy-MM-dd"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="所属部门"  field="sysOrgCode"  hidden="true"  queryMode="single"  width="140"></t:dgCol>
       <%--<t:dgCol title="操作" field="opt" width="245" frozenColumn="true"></t:dgCol>--%>
-      <t:dgCol title="操作" field="opt" width="100" frozenColumn="true"></t:dgCol>
+      <%--<t:dgCol title="操作" field="opt" width="100" frozenColumn="true"></t:dgCol>--%>
 
       <t:dgCol title="样品通知单编号" query="true" frozenColumn="true" field="sampleNum"  queryMode="single"  width="130"></t:dgCol>
       <t:dgCol title="通知单日期"  field="kdTime"  queryMode="single"  width="90"></t:dgCol>
@@ -38,10 +38,11 @@
       <%--<t:dgFunOpt funname="queryDetail3(id,sampleNum,state)" title="染色" urlStyle="background-color:#ec4758;" urlclass="ace_button" urlfont="fa-file-photo-o"></t:dgFunOpt>--%>
       <%--<t:dgFunOpt funname="queryDetail4(id,sampleNum,state)" title="印花" urlStyle="background-color:#18a689;" urlclass="ace_button" urlfont="fa-asterisk"></t:dgFunOpt>--%>
       <%--<t:dgFunOpt funname="queryDetail5(id,sampleNum,state)" title="工序" urlStyle="background-color:#ec4758;" urlclass="ace_button" urlfont="fa-tasks"></t:dgFunOpt>--%>
-      <t:dgFunOpt funname="goToProcess(id,createBy,processName,state,state1,state2,state3)" title="流程进度" operationCode="process" urlclass="ace_button"  urlStyle="background-color:#ec4758;" urlfont="fa-tasks"></t:dgFunOpt>
+      <%--<t:dgFunOpt funname="goToProcess(id,createBy,processName,state,state1,state2,state3)" title="流程进度" operationCode="process" urlclass="ace_button"  urlStyle="background-color:#ec4758;" urlfont="fa-tasks"></t:dgFunOpt>--%>
       <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkYptzdController.do?goAdd&flag=${param.flag}&winTitle=录入样品通知单" funname="add" height="550" width="1220"></t:dgToolBar>
        <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkYptzdController.do?goUpdate&winTitle=编辑样品通知单" funname="update" height="550" width="1220"></t:dgToolBar>
-      <t:dgToolBar title="提交" operationCode="submit" icon="fa fa-arrow-circle-up" funname="doSubmitV"></t:dgToolBar>
+      <%--<t:dgToolBar title="提交" operationCode="submit" icon="fa fa-arrow-circle-up" funname="doSubmitV"></t:dgToolBar>--%>
+      <t:dgToolBar title="生成需求开发单" operationCode="submit" icon="fa fa-arrow-circle-up"  funname="doCreateKfd"></t:dgToolBar>
       <t:dgToolBar title="查看" icon="fa fa-search" operationCode="look" url="emkYptzdController.do?goUpdate&winTitle=查看样品通知单" funname="detail" height="550" width="1220"></t:dgToolBar>
       <%--<t:dgToolBar title="流程进度" operationCode="process" icon="fa fa-plus" funname="goToProcess"></t:dgToolBar>--%>
       <t:dgToolBar title="删除" operationCode="delete"  icon="fa fa-remove" url="emkYptzdController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
@@ -57,15 +58,21 @@
  });
 
  function formatColor(val,row){
-     if(row.state=="1"){
-         return '<span style="color:	#FF0000;">处理中</span>';
-     }else if(row.state=="2"){
-         return '<span style="color:	#0000FF;">完成</span>';
+    if(row.state=="1"){
+         return '<span style="color:	#0000FF;">已生成</span>';
      }else{
          return '创建';
      }
  }
-
+ function doCreateKfd() {
+     var rowsData = $('#emkSampleList').datagrid('getSelections');
+     var ids = [];
+     if (!rowsData || rowsData.length == 0) {
+         tip('请选择需要生成需求开发单的打样通知单');
+         return;
+     }
+     createwindow("生成需求开发单", "emkYptzdController.do?goSelectUser&id="+rowsData[0].id,500,100);
+ }
  function doSubmitV() {
      var rowsData = $('#emkSampleList').datagrid('getSelections');
      var ids = [];

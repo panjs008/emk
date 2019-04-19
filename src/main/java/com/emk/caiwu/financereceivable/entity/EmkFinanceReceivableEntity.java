@@ -50,24 +50,7 @@ public class EmkFinanceReceivableEntity implements java.io.Serializable {
 	private String developer;
 	/**生产跟单员ID*/
 	private String developerName;
-	/**款号*/
-	@Excel(name="款号",width=15)
-	private String sampleNo;
-	/**描述*/
-	@Excel(name="描述",width=15)
-	private String sampleNoDesc;
-	/**总数量*/
-	@Excel(name="总数量",width=15)
-	private Integer sumTotal;
-	/**总金额*/
-	@Excel(name="总金额",width=15)
-	private Double sumMoney;
-	/**总箱数*/
-	@Excel(name="总箱数",width=15)
-	private Integer sumBoxTotal;
-	/**总体积*/
-	@Excel(name="总体积",width=15)
-	private Double sumBoxVolume;
+
 	/**创建人登录名称*/
 	private String createBy;
 	/**创建日期*/
@@ -98,33 +81,7 @@ public class EmkFinanceReceivableEntity implements java.io.Serializable {
 	/**离厂日期*/
 	@Excel(name="离厂日期",width=15)
 	private String levealDate;
-	/**订单号*/
-	@Excel(name="订单号",width=15)
-	private String orderNo;
-	/**收款人*/
-	@Excel(name="收款人",width=15)
-	private String sker;
-	/**账号*/
-	@Excel(name="账号",width=15)
-	private String bankAccount;
-	/**开户行*/
-	@Excel(name="开户行",width=15)
-	private String bankName;
-	/**付款方式*/
-	@Excel(name="付款方式",width=15)
-	private String payType;
-	/**收款日期*/
-	@Excel(name="收款日期",width=15)
-	private String skDate;
-	/**付款状态*/
-	@Excel(name="付款状态",width=15)
-	private String fkState;
-	/**实际付款时间*/
-	@Excel(name="实际付款时间",width=15)
-	private String fkDate;
-	/**提单状态*/
-	@Excel(name="提单状态",width=15)
-	private String tdstate;
+
 	/**类型*/
 	@Excel(name="类型",width=15)
 	private String type;
@@ -145,6 +102,42 @@ public class EmkFinanceReceivableEntity implements java.io.Serializable {
 	@Excel(name = "审核人")
 	private String leader;
 	private String state;
+	@Excel(name = "供应商")
+	private String gys;
+	@Excel(name = "供应商")
+	private String gysCode;
+	@Excel(name="付款项目类别",width=15)
+	private String fkxmlb;
+	@Excel(name="货代费用付款申请单号",width=15)
+	private String hdfyfkNo;
+	/**运输费用付款申请单号*/
+	@Excel(name="运输费用付款申请单号",width=15)
+	private String ysfyfkNo;
+	/**原料面料打样费用付款申请单号*/
+	@Excel(name="原料面料打样费用付款申请单号",width=15)
+	private String ylmldyfyfkNo;
+	/**测试费用付款申请单号*/
+	@Excel(name="测试费用付款申请单号",width=15)
+	private String testNo;
+	/**招待费用付款申请单编号*/
+	@Excel(name="招待费用付款申请单编号",width=15)
+	private String zdfyfkNo;
+	/**应付金额*/
+	@Excel(name="应付金额",width=15)
+	private Double money;
+	/**预计付款日期*/
+	@Excel(name="预计付款日期",width=15)
+	private String yjfkDate;
+
+	@Excel(name="生产合同号",width=15)
+	private String produceHtNum;
+
+	@Excel(name="原料面料打样通知单编号",width=15)
+	private String ylmldyTzdNo;
+	@Excel(name="货款",width=15)
+	private String dk;
+	@Excel(name="招待申请单编号",width=15)
+	private String zdsqNo;
 	/**
 	 *方法: 取得java.lang.String
 	 *@return: java.lang.String  业务员
@@ -251,7 +244,6 @@ public class EmkFinanceReceivableEntity implements java.io.Serializable {
 	 *方法: 取得java.lang.String
 	 *@return: java.lang.String  生产跟单员
 	 */
-
 	@Column(name ="DEVELOPER",nullable=true,length=32)
 	public String getDeveloper(){
 		return this.developer;
@@ -281,108 +273,7 @@ public class EmkFinanceReceivableEntity implements java.io.Serializable {
 	public void setDeveloperName(String developerName){
 		this.developerName = developerName;
 	}
-	/**
-	 *方法: 取得java.lang.String
-	 *@return: java.lang.String  款号
-	 */
 
-	@Column(name ="SAMPLE_NO",nullable=true,length=32)
-	public String getSampleNo(){
-		return this.sampleNo;
-	}
-
-	/**
-	 *方法: 设置java.lang.String
-	 *@param: java.lang.String  款号
-	 */
-	public void setSampleNo(String sampleNo){
-		this.sampleNo = sampleNo;
-	}
-	/**
-	 *方法: 取得java.lang.String
-	 *@return: java.lang.String  描述
-	 */
-
-	@Column(name ="SAMPLE_NO_DESC",nullable=true,length=32)
-	public String getSampleNoDesc(){
-		return this.sampleNoDesc;
-	}
-
-	/**
-	 *方法: 设置java.lang.String
-	 *@param: java.lang.String  描述
-	 */
-	public void setSampleNoDesc(String sampleNoDesc){
-		this.sampleNoDesc = sampleNoDesc;
-	}
-	/**
-	 *方法: 取得java.lang.Integer
-	 *@return: java.lang.Integer  总数量
-	 */
-
-	@Column(name ="SUM_TOTAL",nullable=true,length=32)
-	public Integer getSumTotal(){
-		return this.sumTotal;
-	}
-
-	/**
-	 *方法: 设置java.lang.Integer
-	 *@param: java.lang.Integer  总数量
-	 */
-	public void setSumTotal(Integer sumTotal){
-		this.sumTotal = sumTotal;
-	}
-	/**
-	 *方法: 取得java.lang.Double
-	 *@return: java.lang.Double  总金额
-	 */
-
-	@Column(name ="SUM_MONEY",nullable=true,scale=2,length=32)
-	public Double getSumMoney(){
-		return this.sumMoney;
-	}
-
-	/**
-	 *方法: 设置java.lang.Double
-	 *@param: java.lang.Double  总金额
-	 */
-	public void setSumMoney(Double sumMoney){
-		this.sumMoney = sumMoney;
-	}
-	/**
-	 *方法: 取得java.lang.Integer
-	 *@return: java.lang.Integer  总箱数
-	 */
-
-	@Column(name ="SUM_BOX_TOTAL",nullable=true,length=32)
-	public Integer getSumBoxTotal(){
-		return this.sumBoxTotal;
-	}
-
-	/**
-	 *方法: 设置java.lang.Integer
-	 *@param: java.lang.Integer  总箱数
-	 */
-	public void setSumBoxTotal(Integer sumBoxTotal){
-		this.sumBoxTotal = sumBoxTotal;
-	}
-	/**
-	 *方法: 取得java.lang.Double
-	 *@return: java.lang.Double  总体积
-	 */
-
-	@Column(name ="SUM_BOX_VOLUME",nullable=true,scale=2,length=32)
-	public Double getSumBoxVolume(){
-		return this.sumBoxVolume;
-	}
-
-	/**
-	 *方法: 设置java.lang.Double
-	 *@param: java.lang.Double  总体积
-	 */
-	public void setSumBoxVolume(Double sumBoxVolume){
-		this.sumBoxVolume = sumBoxVolume;
-	}
 	/**
 	 *方法: 取得java.lang.String
 	 *@return: java.lang.String  创建人登录名称
@@ -570,142 +461,7 @@ public class EmkFinanceReceivableEntity implements java.io.Serializable {
 	public void setLevealDate(String levealDate){
 		this.levealDate = levealDate;
 	}
-	/**
-	 *方法: 取得java.lang.String
-	 *@return: java.lang.String  订单号
-	 */
 
-	@Column(name ="ORDER_NO",nullable=true,length=32)
-	public String getOrderNo(){
-		return this.orderNo;
-	}
-
-	/**
-	 *方法: 设置java.lang.String
-	 *@param: java.lang.String  订单号
-	 */
-	public void setOrderNo(String orderNo){
-		this.orderNo = orderNo;
-	}
-	/**
-	 *方法: 取得java.lang.String
-	 *@return: java.lang.String  收款人
-	 */
-
-	@Column(name ="SKER",nullable=true,length=32)
-	public String getSker(){
-		return this.sker;
-	}
-
-	/**
-	 *方法: 设置java.lang.String
-	 *@param: java.lang.String  收款人
-	 */
-	public void setSker(String sker){
-		this.sker = sker;
-	}
-	/**
-	 *方法: 取得java.lang.String
-	 *@return: java.lang.String  账号
-	 */
-
-	@Column(name ="BANK_ACCOUNT",nullable=true,length=56)
-	public String getBankAccount(){
-		return this.bankAccount;
-	}
-
-	/**
-	 *方法: 设置java.lang.String
-	 *@param: java.lang.String  账号
-	 */
-	public void setBankAccount(String bankAccount){
-		this.bankAccount = bankAccount;
-	}
-	/**
-	 *方法: 取得java.lang.String
-	 *@return: java.lang.String  开户行
-	 */
-
-	@Column(name ="BANK_NAME",nullable=true,length=32)
-	public String getBankName(){
-		return this.bankName;
-	}
-
-	/**
-	 *方法: 设置java.lang.String
-	 *@param: java.lang.String  开户行
-	 */
-	public void setBankName(String bankName){
-		this.bankName = bankName;
-	}
-	/**
-	 *方法: 取得java.lang.String
-	 *@return: java.lang.String  付款方式
-	 */
-
-	@Column(name ="PAY_TYPE",nullable=true,length=32)
-	public String getPayType(){
-		return this.payType;
-	}
-
-	/**
-	 *方法: 设置java.lang.String
-	 *@param: java.lang.String  付款方式
-	 */
-	public void setPayType(String payType){
-		this.payType = payType;
-	}
-	/**
-	 *方法: 取得java.lang.String
-	 *@return: java.lang.String  收款日期
-	 */
-
-	@Column(name ="SK_DATE",nullable=true,length=32)
-	public String getSkDate(){
-		return this.skDate;
-	}
-
-	/**
-	 *方法: 设置java.lang.String
-	 *@param: java.lang.String  收款日期
-	 */
-	public void setSkDate(String skDate){
-		this.skDate = skDate;
-	}
-	/**
-	 *方法: 取得java.lang.String
-	 *@return: java.lang.String  付款状态
-	 */
-
-	@Column(name ="FK_STATE",nullable=true,length=32)
-	public String getFkState(){
-		return this.fkState;
-	}
-
-	/**
-	 *方法: 设置java.lang.String
-	 *@param: java.lang.String  付款状态
-	 */
-	public void setFkState(String fkState){
-		this.fkState = fkState;
-	}
-	/**
-	 *方法: 取得java.lang.String
-	 *@return: java.lang.String  实际付款时间
-	 */
-
-	@Column(name ="FK_DATE",nullable=true,length=32)
-	public String getFkDate(){
-		return this.fkDate;
-	}
-
-	/**
-	 *方法: 设置java.lang.String
-	 *@param: java.lang.String  实际付款时间
-	 */
-	public void setFkDate(String fkDate){
-		this.fkDate = fkDate;
-	}
 	/**
 	 *方法: 取得java.lang.String
 	 *@return: java.lang.String  提单状态
@@ -812,15 +568,6 @@ public class EmkFinanceReceivableEntity implements java.io.Serializable {
 		this.cusName = cusName;
 	}
 
-	@Column(name ="tdstate",nullable=true,length=32)
-	public String getTdstate() {
-		return tdstate;
-	}
-
-	public void setTdstate(String tdstate) {
-		this.tdstate = tdstate;
-	}
-
 	@Column(name = "LEAD_ADVICE", nullable = true, length = 256)
 	public String getLeadAdvice() {
 		return this.leadAdvice;
@@ -857,4 +604,190 @@ public class EmkFinanceReceivableEntity implements java.io.Serializable {
 		this.leader = leader;
 	}
 
+	@Column(name = "GYS", nullable = true, length = 32)
+	public String getGys() {
+		return this.gys;
+	}
+
+	public void setGys(String gys) {
+		this.gys = gys;
+	}
+
+	@Column(name = "GYS_CODE", nullable = true, length = 32)
+	public String getGysCode() {
+		return this.gysCode;
+	}
+
+	public void setGysCode(String gysCode) {
+		this.gysCode = gysCode;
+	}
+	/**
+	 *方法: 取得java.lang.String
+	 *@return: java.lang.String  货代费用付款申请单号
+	 */
+
+	@Column(name ="HDFYFK_NO",nullable=true,length=32)
+	public String getHdfyfkNo(){
+		return this.hdfyfkNo;
+	}
+
+	/**
+	 *方法: 设置java.lang.String
+	 *@param: java.lang.String  货代费用付款申请单号
+	 */
+	public void setHdfyfkNo(String hdfyfkNo){
+		this.hdfyfkNo = hdfyfkNo;
+	}
+	/**
+	 *方法: 取得java.lang.String
+	 *@return: java.lang.String  运输费用付款申请单号
+	 */
+
+	@Column(name ="YSFYFK_NO",nullable=true,length=32)
+	public String getYsfyfkNo(){
+		return this.ysfyfkNo;
+	}
+
+	/**
+	 *方法: 设置java.lang.String
+	 *@param: java.lang.String  运输费用付款申请单号
+	 */
+	public void setYsfyfkNo(String ysfyfkNo){
+		this.ysfyfkNo = ysfyfkNo;
+	}
+	/**
+	 *方法: 取得java.lang.String
+	 *@return: java.lang.String  原料面料打样费用付款申请单号
+	 */
+
+	@Column(name ="YLMLDYFYFK_NO",nullable=true,length=32)
+	public String getYlmldyfyfkNo(){
+		return this.ylmldyfyfkNo;
+	}
+
+	/**
+	 *方法: 设置java.lang.String
+	 *@param: java.lang.String  原料面料打样费用付款申请单号
+	 */
+	public void setYlmldyfyfkNo(String ylmldyfyfkNo){
+		this.ylmldyfyfkNo = ylmldyfyfkNo;
+	}
+	/**
+	 *方法: 取得java.lang.String
+	 *@return: java.lang.String  测试费用付款申请单号
+	 */
+
+	@Column(name ="TEST_NO",nullable=true,length=32)
+	public String getTestNo(){
+		return this.testNo;
+	}
+
+	/**
+	 *方法: 设置java.lang.String
+	 *@param: java.lang.String  测试费用付款申请单号
+	 */
+	public void setTestNo(String testNo){
+		this.testNo = testNo;
+	}
+	/**
+	 *方法: 取得java.lang.String
+	 *@return: java.lang.String  招待费用付款申请单编号
+	 */
+
+	@Column(name ="ZDFYFK_NO",nullable=true,length=32)
+	public String getZdfyfkNo(){
+		return this.zdfyfkNo;
+	}
+
+	/**
+	 *方法: 设置java.lang.String
+	 *@param: java.lang.String  招待费用付款申请单编号
+	 */
+	public void setZdfyfkNo(String zdfyfkNo){
+		this.zdfyfkNo = zdfyfkNo;
+	}
+	/**
+	 *方法: 取得java.lang.Double
+	 *@return: java.lang.Double  应付金额
+	 */
+
+	@Column(name ="MONEY",nullable=true,length=32)
+	public Double getMoney(){
+		return this.money;
+	}
+
+	/**
+	 *方法: 设置java.lang.Double
+	 *@param: java.lang.Double  应付金额
+	 */
+	public void setMoney(Double money){
+		this.money = money;
+	}
+	/**
+	 *方法: 取得java.lang.String
+	 *@return: java.lang.String  预计付款日期
+	 */
+
+	@Column(name ="YJFK_DATE",nullable=true,length=32)
+	public String getYjfkDate(){
+		return this.yjfkDate;
+	}
+
+	/**
+	 *方法: 设置java.lang.String
+	 *@param: java.lang.String  预计付款日期
+	 */
+	public void setYjfkDate(String yjfkDate){
+		this.yjfkDate = yjfkDate;
+	}
+
+
+	@Column(name ="FKXMLB",nullable=true,length=32)
+	public String getFkxmlb(){
+		return this.fkxmlb;
+	}
+
+	/**
+	 *方法: 设置java.lang.String
+	 *@param: java.lang.String  付款项目类别
+	 */
+	public void setFkxmlb(String fkxmlb){
+		this.fkxmlb = fkxmlb;
+	}
+
+	@Column(name ="produce_ht_num",nullable=true,length=32)
+	public String getProduceHtNum() {
+		return produceHtNum;
+	}
+
+	public void setProduceHtNum(String produceHtNum) {
+		this.produceHtNum = produceHtNum;
+	}
+
+	@Column(name ="ylmldy_tzd_no",nullable=true,length=32)
+	public String getYlmldyTzdNo() {
+		return ylmldyTzdNo;
+	}
+
+	public void setYlmldyTzdNo(String ylmldyTzdNo) {
+		this.ylmldyTzdNo = ylmldyTzdNo;
+	}
+
+	@Column(name ="dk",nullable=true,length=32)
+	public String getDk() {
+		return dk;
+	}
+
+	public void setDk(String dk) {
+		this.dk = dk;
+	}
+
+	@Column(name ="zdsq_no",nullable=true,length=32)
+	public String getZdsqNo() {
+		return zdsqNo;
+	}
+
+	public void setZdsqNo(String zdsqNo) {
+		this.zdsqNo = zdsqNo;
+	}
 }

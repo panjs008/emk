@@ -10,7 +10,9 @@
    <t:dgCol title="创建日期"  field="createDate"  formatter="yyyy-MM-dd"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="所属部门"  field="sysOrgCode"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="操作" field="opt" frozenColumn="true"  width="100"></t:dgCol>
-   <t:dgCol title="需求单号"  field="parkNo" queryMode="single"  width="100"></t:dgCol>
+      <t:dgCol title="当前流程节点"  field="processName"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
+
+      <t:dgCol title="需求单号"  field="parkNo" queryMode="single"  width="100"></t:dgCol>
    <t:dgCol title="提交日期"  field="kdDate"  queryMode="single"  width="80"></t:dgCol>
    <t:dgCol title="图片"  field="customSampleUrl" imageSize="30,30"  image="true"  queryMode="single"  width="50"></t:dgCol>
    <%--<t:dgCol title="原样"  field="oldImageUrl" imageSize="30,30"  image="true"  queryMode="single"  width="50"></t:dgCol>--%>
@@ -25,8 +27,9 @@
    <t:dgCol title="工艺种类"  field="gyzl"  dictionary="gylx" queryMode="single"  width="70"></t:dgCol>
    <t:dgCol title="款式大类"  field="proTypeName"  queryMode="single"  width="70"></t:dgCol>
    <t:dgCol title="开发最迟日期"  field="ysDate"  queryMode="single"  width="95"></t:dgCol>
-      <t:dgCol title="状态"  field="state" formatterjs="formatColor"  queryMode="single"  width="60"></t:dgCol>
-      <t:dgFunOpt funname="goToProcess(id,createBy)" title="流程进度" operationCode="process" urlclass="ace_button"  urlStyle="background-color:#ec4758;" urlfont="fa-tasks"></t:dgFunOpt>
+      <t:dgCol title="来源"  field="formType" replace="手工创建_0,询盘单生成_1" queryMode="single"  width="80"></t:dgCol>
+      <t:dgCol title="状态"  field="state" formatterjs="formatColor"  queryMode="single"  width="100"></t:dgCol>
+      <t:dgFunOpt funname="goToProcess(id,createBy,processName,state)" title="流程进度" operationCode="process" urlclass="ace_button"  urlStyle="background-color:#ec4758;" urlfont="fa-tasks"></t:dgFunOpt>
    <%--<t:dgFunOpt funname="queryDetail1(id,parkNo,state)" title="包装辅料" urlclass="ace_button" urlfont="fa-list-alt"></t:dgFunOpt>--%>
    <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkPackController.do?goAdd&winTitle=录入包装需求开发单" funname="add" height="580" width="1000"></t:dgToolBar>
    <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkPackController.do?goUpdate&winTitle=编辑包装需求开发单" funname="update" height="580" width="1000"></t:dgToolBar>
@@ -46,43 +49,43 @@
 
  function formatColor(val,row){
      if(row.state=="1"){
-         return '<span style="color:	#FF0000;">处理中</span>';
+         return '<span style="color:	#0000FF;">已提交</span>';
      }else if(row.state=="2"){
-         return '<span style="color:	#0000FF;">完成</span>';
+         return '<span style="color:	#00FF00;">完成</span>';
+     }else if(row.state=="3"){
+         return '<span style="color:	#0000FF;">业务经理通过</span>';
+     }else if(row.state=="35"){
+         return '<span style="color:	#0000FF;">业务员通过</span>';
+     }else if(row.state=="24"){
+         return '<span style="color:	#0000FF;">采购员通过</span>';
+     }else if(row.state=="15"){
+         return '<span style="color:	#0000FF;">采购经理通过</span>';
+     }else if(row.state=="37"){
+         return '<span style="color:	#0000FF;">采购员执行</span>';
+     }else if(row.state=="38"){
+         return '<span style="color:	#0000FF;">采购员进度</span>';
      }else{
          return '创建';
      }
  }
 
- function goToProcess(id,createBy){
+
+ function goToProcess(id,createBy,processName,state){
      var height =window.top.document.body.offsetHeight*0.85;
-
-     $.ajax({
-         url: "flowController.do?getCurrentProcess&tableName=emk_pack&title=包装需求开发单&id=" + id,
-         type: 'post',
-         cache: false,
-         data: null,
-         success: function (data) {
-             var d = $.parseJSON(data);
-             if (d.success) {
-                 var msg = d.msg;
-                 if(createBy == "${CUR_USER.userName}"){
-                     createdetailwindow("流程进度--当前环节：" + msg, "flowController.do?goProcess&processUrl=com/emk/storage/pack/emkPack-process&id=" + id, 1200, height);
-                 }else{
-                     if (msg == "完成") {
-                         createdetailwindow('流程进度--当前环节：' + msg, 'flowController.do?goProcess&processUrl=com/emk/storage/pack/emkPack-process&id=' + id, 1200, height);
-                     } else {
-                         if("${ROLE.rolecode}" == "ywjl") {
-                             createwindow("流程进度--当前环节：" + msg, "flowController.do?goProcess&processUrl=com/emk/storage/pack/emkPack-process&id=" + id, 1200, height);
-                         }else{
-                             createdetailwindow("流程进度--当前环节：" + msg, "flowController.do?goProcess&processUrl=com/emk/storage/pack/emkPack-process&id=" + id, 1200, height);
-                         }
-                     }
-                 }
-
-             }
+     var processNameVal='',node='';
+     if(processName != null){
+         if(processName.indexOf('-') > 0){
+             processNameVal = processName.substring(0,processName.indexOf('-'));
+             node = processName.substring(processName.indexOf('-')+1);
          }
-     });
+     }
+     if(createBy == "${CUR_USER.userName}"){
+         if(state == '0'){
+             createwindow("流程进度--当前环节：包装需求开发单", "flowController.do?goProcess&node="+node+"&processUrl=com/emk/storage/pack/emkPack-process&id=" + id, 1230, height);
+         }else {
+             createdetailwindow("流程进度--当前环节：" + processNameVal, "flowController.do?goProcess&node="+node+"&processUrl=com/emk/storage/pack/emkPack-process&id=" + id, 1230, height);
+         }
+     }
  }
 
  function doSubmitV() {

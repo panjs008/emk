@@ -1,4 +1,5 @@
 package com.emk.outforum.shipexpenses.controller;
+import com.emk.outforum.shipexpenses.entity.EmkShipExpensesDetailEntity;
 import com.emk.outforum.shipexpenses.entity.EmkShipExpensesEntity;
 import com.emk.outforum.shipexpenses.service.EmkShipExpensesServiceI;
 
@@ -7,6 +8,10 @@ import java.text.SimpleDateFormat;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.emk.produce.invoices.entity.EmkInvoicesDetailEntity;
+import com.emk.produce.packinglist.entity.EmkPackingListDetailEntity;
+import com.emk.util.ParameterUtil;
+import com.emk.util.Utils;
 import org.apache.log4j.Logger;
 import org.apache.tools.ant.util.DateUtils;
 import org.jeecgframework.web.system.pojo.base.TSUser;
@@ -110,6 +115,16 @@ public class EmkShipExpensesController extends BaseController {
 		return new ModelAndView("com/emk/outforum/shipexpenses/emkShipExpensesList");
 	}
 
+	@RequestMapping(params = "detailMxList")
+	public ModelAndView detailMxList(HttpServletRequest request) {
+		Map map = ParameterUtil.getParamMaps(request.getParameterMap());
+		if (Utils.notEmpty(map.get("shipExpensesId"))) {
+			List<EmkShipExpensesDetailEntity> emkShipExpensesDetailEntities = systemService.findHql("from EmkShipExpensesDetailEntity where shipExpensesId=?", map.get("shipExpensesId"));
+			request.setAttribute("emkShipExpensesDetailEntities", emkShipExpensesDetailEntities);
+		}
+		return new ModelAndView("com/emk/outforum/shipexpenses/detailMxList");
+	}
+
 	/**
 	 * easyui AJAX请求数据
 	 * 
@@ -207,7 +222,36 @@ public class EmkShipExpensesController extends BaseController {
 		AjaxJson j = new AjaxJson();
 		message = "运费费添加成功";
 		try{
+			Map<String,String> map = ParameterUtil.getParamMaps(request.getParameterMap());
 			emkShipExpensesService.save(emkShipExpenses);
+			String dataRows = (String) map.get("orderMxListIDSR");
+			if (Utils.notEmpty(dataRows)) {
+				int rows = Integer.parseInt(dataRows);
+				for (int i = 0; i < rows; i++) {
+					EmkShipExpensesDetailEntity emkShipExpensesDetailEntity = new EmkShipExpensesDetailEntity();
+					if (Utils.notEmpty(map.get("orderMxList["+i+"].orderNo00"))) {
+						emkShipExpensesDetailEntity.setOrderNo(map.get("orderMxList["+i+"].orderNo00"));
+						emkShipExpensesDetailEntity.setSampleNo(map.get("orderMxList["+i+"].sampleNo00"));
+						emkShipExpensesDetailEntity.setSampleNoDesc(map.get("orderMxList["+i+"].sampleDesc00"));
+						emkShipExpensesDetailEntity.setTotal(map.get("orderMxList["+i+"].signTotal00"));
+
+						if(Utils.notEmpty(map.get("orderMxList["+i+"].atotalBox00"))){
+							emkShipExpensesDetailEntity.setSumBoxTotal(Integer.parseInt(map.get("orderMxList["+i+"].atotalBox00")));
+						}
+						if(Utils.notEmpty(map.get("orderMxList["+i+"].asumVolume00"))){
+							emkShipExpensesDetailEntity.setSumBoxVolume(Double.parseDouble(map.get("orderMxList["+i+"].asumVolume00")));
+						}
+						if(Utils.notEmpty(map.get("orderMxList["+i+"].asumWeightMao00"))){
+							emkShipExpensesDetailEntity.setSumBoxMao(Double.parseDouble(map.get("orderMxList["+i+"].asumWeightMao00")));
+						}
+						if(Utils.notEmpty(map.get("orderMxList["+i+"].asumWeightJz00"))){
+							emkShipExpensesDetailEntity.setSumBoxJz(Double.parseDouble(map.get("orderMxList["+i+"].asumWeightJz00")));
+						}
+						emkShipExpensesDetailEntity.setShipExpensesId(emkShipExpenses.getId());
+						systemService.save(emkShipExpensesDetailEntity);
+					}
+				}
+			}
 			systemService.addLog(message, Globals.Log_Type_INSERT, Globals.Log_Leavel_INFO);
 		}catch(Exception e){
 			e.printStackTrace();
@@ -230,10 +274,42 @@ public class EmkShipExpensesController extends BaseController {
 		String message = null;
 		AjaxJson j = new AjaxJson();
 		message = "运费费更新成功";
-		EmkShipExpensesEntity t = emkShipExpensesService.get(EmkShipExpensesEntity.class, emkShipExpenses.getId());
+		Map<String,String> map = ParameterUtil.getParamMaps(request.getParameterMap());
+		EmkShipExpensesEntity t = emkShipExpensesService.get(EmkShipExpensesEntity.class, map.get("shipId"));
 		try {
+			emkShipExpenses.setId(null);
 			MyBeanUtils.copyBeanNotNull2Bean(emkShipExpenses, t);
 			emkShipExpensesService.saveOrUpdate(t);
+			String dataRows = (String) map.get("orderMxListIDSR");
+			if (Utils.notEmpty(dataRows)) {
+				systemService.executeSql("delete from emk_ship_expenses_detail where ship_expenses_id = ?",t.getId());
+
+				int rows = Integer.parseInt(dataRows);
+				for (int i = 0; i < rows; i++) {
+					EmkShipExpensesDetailEntity emkShipExpensesDetailEntity = new EmkShipExpensesDetailEntity();
+					if (Utils.notEmpty(map.get("orderMxList["+i+"].orderNo00"))) {
+						emkShipExpensesDetailEntity.setOrderNo(map.get("orderMxList["+i+"].orderNo00"));
+						emkShipExpensesDetailEntity.setSampleNo(map.get("orderMxList["+i+"].sampleNo00"));
+						emkShipExpensesDetailEntity.setSampleNoDesc(map.get("orderMxList["+i+"].sampleDesc00"));
+						emkShipExpensesDetailEntity.setTotal(map.get("orderMxList["+i+"].signTotal00"));
+
+						if(Utils.notEmpty(map.get("orderMxList["+i+"].atotalBox00"))){
+							emkShipExpensesDetailEntity.setSumBoxTotal(Integer.parseInt(map.get("orderMxList["+i+"].atotalBox00")));
+						}
+						if(Utils.notEmpty(map.get("orderMxList["+i+"].asumVolume00"))){
+							emkShipExpensesDetailEntity.setSumBoxVolume(Double.parseDouble(map.get("orderMxList["+i+"].asumVolume00")));
+						}
+						if(Utils.notEmpty(map.get("orderMxList["+i+"].asumWeightMao00"))){
+							emkShipExpensesDetailEntity.setSumBoxMao(Double.parseDouble(map.get("orderMxList["+i+"].asumWeightMao00")));
+						}
+						if(Utils.notEmpty(map.get("orderMxList["+i+"].asumWeightJz00"))){
+							emkShipExpensesDetailEntity.setSumBoxJz(Double.parseDouble(map.get("orderMxList["+i+"].asumWeightJz00")));
+						}
+						emkShipExpensesDetailEntity.setShipExpensesId(t.getId());
+						systemService.save(emkShipExpensesDetailEntity);
+					}
+				}
+			}
 			systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
 		} catch (Exception e) {
 			e.printStackTrace();

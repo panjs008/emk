@@ -58,64 +58,38 @@ public class EmkPackingListServiceImpl
 
     private Map<String, Object> populationMap(EmkPackingListEntity t) {
         Map<String, Object> map = new HashMap();
-        map.put("sample_no", t.getSampleNo());
-        map.put("sample_no_desc", t.getSampleNoDesc());
-        map.put("sum_box_total", t.getSumBoxTotal());
-        map.put("sum_box_volume", t.getSumBoxVolume());
-        map.put("sum_box_jz", t.getSumBoxJz());
-        map.put("sum_box_mao", t.getSumBoxMao());
+
         map.put("id", t.getId());
         map.put("create_name", t.getCreateName());
         map.put("create_by", t.getCreateBy());
         map.put("create_date", t.getCreateDate());
         map.put("sys_org_code", t.getSysOrgCode());
-        map.put("order_no", t.getOrderNo());
-        map.put("total", t.getTotal());
+
         map.put("scfmc", t.getScfmc());
         map.put("address", t.getAddress());
         map.put("signer", t.getSigner());
         map.put("sign_date", t.getSignDate());
         map.put("fpbh", t.getFpbh());
         map.put("fp_date", t.getFpDate());
-        map.put("changdu", t.getChangdu());
-        map.put("kuandu", t.getKuandu());
-        map.put("gaodu", t.getGaodu());
-        map.put("one_box_volume", t.getOneBoxVolume());
-        map.put("one_box_mz", t.getOneBoxMz());
-        map.put("one_box_jz", t.getOneBoxJz());
-        map.put("size", t.getSize());
-        map.put("color", t.getColor());
+
         return map;
     }
 
     public String replaceVal(String sql, EmkPackingListEntity t) {
-        sql = sql.replace("#{sample_no}", String.valueOf(t.getSampleNo()));
-        sql = sql.replace("#{sample_no_desc}", String.valueOf(t.getSampleNoDesc()));
-        sql = sql.replace("#{sum_box_total}", String.valueOf(t.getSumBoxTotal()));
-        sql = sql.replace("#{sum_box_volume}", String.valueOf(t.getSumBoxVolume()));
-        sql = sql.replace("#{sum_box_jz}", String.valueOf(t.getSumBoxJz()));
-        sql = sql.replace("#{sum_box_mao}", String.valueOf(t.getSumBoxMao()));
+
         sql = sql.replace("#{id}", String.valueOf(t.getId()));
         sql = sql.replace("#{create_name}", String.valueOf(t.getCreateName()));
         sql = sql.replace("#{create_by}", String.valueOf(t.getCreateBy()));
         sql = sql.replace("#{create_date}", String.valueOf(t.getCreateDate()));
         sql = sql.replace("#{sys_org_code}", String.valueOf(t.getSysOrgCode()));
-        sql = sql.replace("#{order_no}", String.valueOf(t.getOrderNo()));
-        sql = sql.replace("#{total}", String.valueOf(t.getTotal()));
+
         sql = sql.replace("#{scfmc}", String.valueOf(t.getScfmc()));
         sql = sql.replace("#{address}", String.valueOf(t.getAddress()));
         sql = sql.replace("#{signer}", String.valueOf(t.getSigner()));
         sql = sql.replace("#{sign_date}", String.valueOf(t.getSignDate()));
         sql = sql.replace("#{fpbh}", String.valueOf(t.getFpbh()));
         sql = sql.replace("#{fp_date}", String.valueOf(t.getFpDate()));
-        sql = sql.replace("#{changdu}", String.valueOf(t.getChangdu()));
-        sql = sql.replace("#{kuandu}", String.valueOf(t.getKuandu()));
-        sql = sql.replace("#{gaodu}", String.valueOf(t.getGaodu()));
-        sql = sql.replace("#{one_box_volume}", String.valueOf(t.getOneBoxVolume()));
-        sql = sql.replace("#{one_box_mz}", String.valueOf(t.getOneBoxMz()));
-        sql = sql.replace("#{one_box_jz}", String.valueOf(t.getOneBoxJz()));
-        sql = sql.replace("#{size}", String.valueOf(t.getSize()));
-        sql = sql.replace("#{color}", String.valueOf(t.getColor()));
+
         sql = sql.replace("#{UUID}", UUID.randomUUID().toString());
         return sql;
     }

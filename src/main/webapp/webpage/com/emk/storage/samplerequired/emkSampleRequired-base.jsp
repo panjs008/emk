@@ -158,7 +158,7 @@
 				</label>
 			</td>
 			<td class="value">
-				<t:dictSelect id="gyzl" field="gyzl" typeGroupCode="gylx" datatype="*" defaultVal="${emkSampleRequiredPage.gyzl }" hasLabel="false" title="工艺类型"></t:dictSelect>
+				<t:dictSelect id="gyzl" field="gyzl" typeGroupCode="gylx" datatype="*" defaultVal="${emkSampleRequiredPage.gyzl eq null ? 'wufeng':emkSampleRequiredPage.gyzl }" hasLabel="false" title="工艺类型"></t:dictSelect>
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">工艺类型</label>
 			</td>
@@ -293,7 +293,7 @@
 				<input name="isHaveOld" type="radio" datatype="*" <c:if test="${emkSampleRequiredPage.isHaveOld eq '0'}">checked="true"</c:if> value="0">
 				是
 				&nbsp;&nbsp;<input name="isHaveOld" type="radio" datatype="*"  <c:if test="${emkSampleRequiredPage.isHaveOld eq '1'}">checked="true"</c:if> value="1">
-				否
+				否<br/>
 				<input id="customSample" name="customSample" value="${emkSampleRequiredPage.customSample }" type="hidden" />
 				<img id="uploadimg" src="${emkSampleRequiredPage.customSampleUrl eq null || emkSampleRequiredPage.customSampleUrl eq ''? 'images/bjlogo.png':emkSampleRequiredPage.customSampleUrl}" width="150" height="150">
 				<t:upload name="instruction" id="instruction" dialog="false" extend="*.jpg;*.png;*.gif;*.ico;*.dwg" buttonText="添加文件" queueID="instructionfile" view="false" auto="true" uploader="systemController.do?saveFiles"  onUploadSuccess="uploadSuccess" >
@@ -306,7 +306,7 @@
 				<label class="Validform_label" style="display: none;">是否有原样</label>
 			</td>
 
-			<td align="right">
+			<%--<td align="right">
 				<label class="Validform_label">
 					是否有设计稿:
 				</label>
@@ -347,7 +347,7 @@
 				<input id="sizeImage" name="sizeImage" type="hidden" value="${emkSampleRequiredPage.sizeImage }" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">是否有尺寸表</label>
-			</td>
+			</td>--%>
 
 			<td align="right">
 				<label class="Validform_label">
@@ -358,7 +358,7 @@
 				<input name="isHaveColor" type="radio" datatype="*" <c:if test="${emkSampleRequiredPage.isHaveColor eq '0'}">checked="true"</c:if> value="0">
 				是
 				&nbsp;&nbsp;<input name="isHaveColor" type="radio" datatype="*"  <c:if test="${emkSampleRequiredPage.isHaveColor eq '1'}">checked="true"</c:if> value="1">
-				否
+				否<br/>
 				<img id="uploadimgSy" src="${emkSampleRequiredPage.colorImageUrl eq null || emkSampleRequiredPage.colorImageUrl eq '' ? 'images/bjlogo.png':emkSampleRequiredPage.colorImageUrl}" width="150" height="150">
 				<t:upload name="instructionSy" id="instructionSy" dialog="false" extend="*.jpg;*.png;*.gif;*.ico;*.dwg" buttonText="添加文件" queueID="instructionfile" view="false" auto="true" uploader="systemController.do?saveFiles"  onUploadSuccess="uploadSuccessSy" >
 				</t:upload>
@@ -370,32 +370,83 @@
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">是否有色样</label>
 			</td>
+			<td align="right">
+				<label class="Validform_label">
+					是否有色号:
+				</label>
+			</td>
+			<td class="value" colspan="3">
+				<input name="isHaveColorNum" type="radio" datatype="*" <c:if test="${emkSampleRequiredPage.isHaveColorNum eq '0'}">checked="true"</c:if> value="0">
+				是
+				&nbsp;&nbsp;<input name="isHaveColorNum" type="radio" datatype="*"  <c:if test="${emkSampleRequiredPage.isHaveColorNum eq '1'}">checked="true"</c:if> value="1">
+				否<br/>
+				<img id="uploadimgSh" src="${emkSampleRequiredPage.colorNumImageUrl eq null || emkSampleRequiredPage.colorNumImageUrl eq '' ? 'images/bjlogo.png':emkSampleRequiredPage.colorNumImageUrl}" width="150" height="150">
+				<t:upload name="instructionSh" id="instructionSh" dialog="false" extend="*.jpg;*.png;*.gif;*.ico;*.dwg" buttonText="添加文件" queueID="instructionfile" view="false" auto="true" uploader="systemController.do?saveFiles"  onUploadSuccess="uploadSuccessSh" >
+				</t:upload>
+				<c:if test="${emkSampleRequiredPage.colorNumImageUrl ne null && emkSampleRequiredPage.colorNumImageUrl ne ''}">[<a href="javascript:findDetail('${emkSampleRequiredPage.colorNumImageUrl }')">${emkSampleRequiredPage.colorNumImage }</a>]</c:if>
+
+				<span id="shId"></span>
+				<input id="colorNumImageUrl" name="colorNumImageUrl" type="hidden" value="${emkSampleRequiredPage.colorNumImageUrl }" />
+				<input id="colorNumImage" name="colorNumImage" type="hidden" value="${emkSampleRequiredPage.colorNumImage }" />
+				<span class="Validform_checktip"></span>
+				<label class="Validform_label" style="display: none;">是否有色号</label>
+			</td>
 
 		</tr>
 
-		<tr>
+			<tr>
 				<td align="right">
 					<label class="Validform_label">
-						是否有色号:
+						是否有设计稿:
 					</label>
 				</td>
-				<td class="value" colspan="7">
-					<input name="isHaveColorNum" type="radio" datatype="*" <c:if test="${emkSampleRequiredPage.isHaveColorNum eq '0'}">checked="true"</c:if> value="0">
+				<td class="value">
+					<input name="isHaveDgr" type="radio"  datatype="*" <c:if test="${emkSampleRequiredPage.isHaveDgr eq '0'}">checked="true"</c:if> value="0">
 					是
-					&nbsp;&nbsp;<input name="isHaveColorNum" type="radio" datatype="*"  <c:if test="${emkSampleRequiredPage.isHaveColorNum eq '1'}">checked="true"</c:if> value="1">
-					否<br/>
-					<img id="uploadimgSh" src="${emkSampleRequiredPage.colorNumImageUrl eq null || emkSampleRequiredPage.colorNumImageUrl eq '' ? 'images/bjlogo.png':emkSampleRequiredPage.colorNumImageUrl}" width="150" height="150">
-					<t:upload name="instructionSh" id="instructionSh" dialog="false" extend="*.jpg;*.png;*.gif;*.ico;*.dwg" buttonText="添加文件" queueID="instructionfile" view="false" auto="true" uploader="systemController.do?saveFiles"  onUploadSuccess="uploadSuccessSh" >
-					</t:upload>
-					<c:if test="${emkSampleRequiredPage.colorNumImageUrl ne null && emkSampleRequiredPage.colorNumImageUrl ne ''}">[<a href="javascript:findDetail('${emkSampleRequiredPage.colorNumImageUrl }')">${emkSampleRequiredPage.colorNumImage }</a>]</c:if>
-
-					<span id="shId"></span>
-					<input id="colorNumImageUrl" name="colorNumImageUrl" type="hidden" value="${emkSampleRequiredPage.colorNumImageUrl }" />
-					<input id="colorNumImage" name="colorNumImage" type="hidden" value="${emkSampleRequiredPage.colorNumImage }" />
+					&nbsp;&nbsp;<input name="isHaveDgr" type="radio" datatype="*"  <c:if test="${emkSampleRequiredPage.isHaveDgr eq '1'}">checked="true"</c:if> value="1">
+					否
 					<span class="Validform_checktip"></span>
-					<label class="Validform_label" style="display: none;">是否有色号</label>
+					<label class="Validform_label" style="display: none;">是否有设计稿</label>
+				</td>
+				<td class="value">
+					<input id="dgrImage" name="dgrImage" type="hidden" value="${emkSampleRequiredPage.dgrImage }"/>
+					<input id="dgrImageUrl" name="dgrImageUrl" type="hidden" value="${emkSampleRequiredPage.dgrImageUrl }"/>
+						<span id="dgrImageId">
+							<c:if test="${emkSampleRequiredPage.dgrImageUrl ne null && emkSampleRequiredPage.dgrImageUrl ne ''}">[<a href="javascript:findDetail('${emkSampleRequiredPage.dgrImageUrl }')">${emkSampleRequiredPage.dgrImage }</a>]</c:if>
+						</span>
+				</td>
+				<td class="value" colspan="7">
+					<t:upload name="instruction3" id="instruction3" dialog="false" extend="*.jpg;*.png;*.gif;*.ico;*.dwg" buttonText="添加文件" queueID="instructionfile" view="false" auto="true" uploader="systemController.do?saveFiles"  onUploadSuccess="uploadSuccess3" >
+					</t:upload>
 				</td>
 			</tr>
+			<tr>
+				<td align="right">
+					<label class="Validform_label">
+						是否有尺寸表:
+					</label>
+				</td>
+				<td class="value" >
+					<input name="isHaveSize" type="radio" datatype="*" <c:if test="${emkSampleRequiredPage.isHaveSize eq '0'}">checked="true"</c:if> value="0">
+					是
+					&nbsp;&nbsp;<input name="isHaveSize" type="radio" datatype="*"  <c:if test="${emkSampleRequiredPage.isHaveSize eq '1'}">checked="true"</c:if> value="1">
+					否
+					<span class="Validform_checktip"></span>
+					<label class="Validform_label" style="display: none;">是否有尺寸表</label>
+				</td>
+				<td class="value">
+					<input id="sizeImageUrl" name="sizeImageUrl" type="hidden" value="${emkSampleRequiredPage.sizeImageUrl }"/>
+					<input id="sizeImage" name="sizeImage" type="hidden" value="${emkSampleRequiredPage.sizeImage }" />
+					<span id="sizeImageId">
+						<c:if test="${emkSampleRequiredPage.sizeImageUrl ne null && emkSampleRequiredPage.sizeImageUrl ne ''}">[<a href="javascript:findDetail('${emkSampleRequiredPage.sizeImageUrl }')">${emkSampleRequiredPage.sizeImage }</a>]</c:if>
+					</span>
+				</td>
+				<td class="value" colspan="7">
+					<t:upload name="instruction2" id="instruction2" dialog="false" extend="*.jpg;*.png;*.gif;*.ico;*.dwg" buttonText="添加文件" queueID="instructionfile" view="false" auto="true" uploader="systemController.do?saveFiles"  onUploadSuccess="uploadSuccess2" >
+					</t:upload>
+				</td>
+			</tr>
+
 			<tr>
 				<td colspan="8" id="instructionfile" class="value">
 				</td>
@@ -430,7 +481,7 @@
 					</label>
 				</td>
 				<td class="value" >
-					<input id="dhjq" name="dhjq" readonly type="text" value="${emkSampleRequiredPage.dhjq }" style="width: 130px" onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})" class="inputxt"  ignore="ignore" />
+					<input id="dhjq" name="dhjq" readonly type="text" value="${emkSampleRequiredPage.dhjq }" style="width: 130px" onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})" class="Wdate"  ignore="ignore" />
 					<span class="Validform_checktip"></span>
 					<label class="Validform_label" style="display: none;">大货交期</label>
 				</td>
@@ -476,7 +527,7 @@
 					</label>
 				</td>
 				<td class="value" >
-					<input id="dhjq2" name="dhjq2" readonly value="${emkSampleRequiredPage.dhjq2 }" type="text" style="width: 130px" onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})" class="inputxt"  ignore="ignore" />
+					<input id="dhjq2" name="dhjq2" readonly value="${emkSampleRequiredPage.dhjq2 }" type="text" style="width: 130px" onClick="WdatePicker({dateFmt:'yyyy-MM-dd'})" class="Wdate"  ignore="ignore" />
 					<span class="Validform_checktip"></span>
 					<label class="Validform_label" style="display: none;">大货交期</label>
 				</td>

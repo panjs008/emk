@@ -2,9 +2,8 @@
 <%@include file="/context/mytags.jsp"%>
 
 <script type="text/javascript">
-    var flag = 0;
-    var currentFlag = 0;
-
+    var flag = ${fn:length(emkSampleDetailEntities)};
+    var currentFlag = ${fn:length(emkSampleDetailEntities)};
 
     $('#addBtn').linkbutton({
         iconCls: 'icon-add'
@@ -13,7 +12,6 @@
         iconCls: 'icon-remove'
     });
     $('#addBtn').bind('click', function(){
-        flag++;
        /* if(flag>1 || ${param.proOrderId ne null}){
             $("html,body").animate({scrollTop:400},1);
         }*/
@@ -32,6 +30,9 @@
         resetTrNum('add_jeecgOrderProduct_table');
         $("#proZnName"+flag).attr("onclick","productLook("+flag+")");
         $("#orderMxListID").val($("#mxtb").find("tr").length-1);
+
+        flag++;
+
     });
     $('#delBtn').bind('click', function(){
         var chk_value =[];
@@ -68,7 +69,7 @@
             width:'auto',
             fixFooter:false
         });
-        <c:if test="${param.priceId eq null || param.priceId eq ''}">
+        <c:if test="${param.proOrderId eq null || param.proOrderId eq ''}">
             $('#addBtn').click();
         </c:if>
     });
@@ -87,17 +88,23 @@
                                   style="width: 86%;" ignore="ignore"></td>
         <td align="center"><input id="proNum00" nullmsg="请输入原料面料代码！"  errormsg="请输入原料面料代码" name="orderMxList[#index#].proNum" maxlength="100" type="text" value=""
                                   style="width: 86%;" ignore="ignore"></td>
-        <td align="center"><input id="precent00" nullmsg="请输入比例！"  errormsg="请输入比例" name="orderMxList[#index#].precent" maxlength="100" type="text" value=""
+        <td align="center"><input id="gysCode00" nullmsg="请输入原料面料供应商代码！"  errormsg="请输入原料面料供应商代码" name="orderMxList[#index#].gysCode" maxlength="100" type="text" value=""
+                                  style="width: 86%;" ignore="ignore"></td>
+        <td align="center"><input id="brand00" nullmsg="请输入规格！"   errormsg="请输入规格" name="orderMxList[#index#].brand" maxlength="100" type="text" value=""
                                   style="width: 86%;" ignore="ignore"></td>
         <td align="center"><input id="yongliang00" nullmsg="请输入单件用量！"   errormsg="请输入单件用量" name="orderMxList[#index#].yongliang" maxlength="100" type="text" value=""
-                                  style="width: 86%;" ignore="ignore"></td>
-        <td align="center"><input id="gysCode00" nullmsg="请输入供应商！"  errormsg="请输入供应商" name="orderMxList[#index#].gysCode" maxlength="100" type="text" value=""
                                   style="width: 86%;" ignore="ignore"></td>
         <td align="center"><input id="signPrice00" nullmsg="请输入价格！" datatype="d" errormsg="请输入价格" name="orderMxList[#index#].signPrice" maxlength="100" type="text" value=""
                                   style="width: 86%;" ignore="ignore"></td>
         <td align="center"><input id="sunhaoPrecent00" nullmsg="请输入损耗率！" datatype="d"  errormsg="请输入损耗率" name="orderMxList[#index#].sunhaoPrecent" maxlength="100" type="text" value=""
                                   style="width: 86%;" ignore="ignore"></td>
+        <td align="center"><input id="sumYongliang00" nullmsg="请输入总用量！"   errormsg="请输入总用量" name="orderMxList[#index#].sumYongliang" maxlength="100" type="text" value=""
+                                  style="width: 86%;" ignore="ignore"></td>
         <td align="center"><input id="chengben00" nullmsg="请输入成本！" datatype="d"  errormsg="请输入成本" name="orderMxList[#index#].chengben" maxlength="100" type="text" value=""
+                                  style="width: 86%;" ignore="ignore"></td>
+        <td align="center"><input id="position00" nullmsg="请输入位置！"   errormsg="请输入位置" name="orderMxList[#index#].position" maxlength="100" type="text" value=""
+                                  style="width: 86%;" ignore="ignore"></td>
+        <td align="center"><input id="rkState00" nullmsg="请输入入库状态！"   errormsg="请输入总用量" name="orderMxList[#index#].rkState" maxlength="100" type="text" value=""
                                   style="width: 86%;" ignore="ignore"></td>
     </tr>
     </tbody>
@@ -129,34 +136,44 @@
                 <td align="center"  width="40">序号</td>
                 <td align="center"  width="150">原料面料名称</td>
                 <td align="center"  width="150">原料面料代码</td>
-                <td align="center"  width="150">比例</td>
+                <td align="center"  width="150">原料面料供应商代码</td>
+                <td align="center"  width="150">规格</td>
                 <td align="center"  width="150">单件用量</td>
-                <td align="center"  width="150">供应商</td>
                 <td align="center"  width="150">价格</td>
                 <td align="center"  width="150">损耗率</td>
+                <td align="center"  width="150">总用量</td>
                 <td align="center"  width="150">成本</td>
+                <td align="center"  width="150">位置</td>
+                <td align="center"  width="150">入库状态</td>
+
             </tr>
             <tbody id="add_jeecgOrderProduct_table">
             <c:if test="${fn:length(emkSampleDetailEntities)  > 0 }">
                 <c:forEach items="${emkSampleDetailEntities}" var="poVal" varStatus="status">
                     <tr>
                         <td align="center"><input style="width: 40px;" type="checkbox" name="ck" value="${poVal.id}"/>
-                        <td align="center"><input  nullmsg="请输入原料面料名称！"  errormsg="请输入原料面料名称" value="${poVal.proZnName}" name="orderMxList[${status.index}].proZnName" maxlength="100" type="text" value=""
+                        <td align="center"><input  nullmsg="请输入原料面料名称！" id="proZnName${status.index}" onclick="productLook(${status.index});" errormsg="请输入原料面料名称" value="${poVal.proZnName}" name="orderMxList[${status.index}].proZnName" maxlength="100" type="text" value=""
                                                   style="width: 86%;" ignore="ignore"></td>
-                        <td align="center"><input  nullmsg="请输入原料面料代码！"  errormsg="请输入原料面料代码" value="${poVal.proNum}"name="orderMxList[${status.index}].proNum" maxlength="100" type="text" value=""
+                        <td align="center"><input  nullmsg="请输入原料面料代码！"  id="proNum${status.index}" errormsg="请输入原料面料代码" value="${poVal.proNum}" name="orderMxList[${status.index}].proNum" maxlength="100" type="text" value=""
                                                   style="width: 86%;" ignore="ignore"></td>
-                        <td align="center"><input  nullmsg="请输入比例！"  errormsg="请输入比例" value="${poVal.precent}" name="orderMxList[${status.index}].precent" maxlength="100" type="text" value=""
-                                                  style="width: 86%;" ignore="ignore"></td>
-                        <td align="center"><input  nullmsg="请输入单件用量！"  errormsg="请输入单件用量" value="${poVal.yongliang}" name="orderMxList[${status.index}].yongliang" maxlength="100" type="text" value=""
-                                                  style="width: 86%;" ignore="ignore"></td>
-                        <td align="center"><input  nullmsg="请输入供应商！"  errormsg="请输入供应商"  value="${poVal.gysCode}"name="orderMxList[${status.index}].gysCode" maxlength="100" type="text" value=""
+                        <td align="center"><input  nullmsg="请输入原料面料供应商代码！"  errormsg="请输入原料面料供应商代码"  value="${poVal.gysCode}" name="orderMxList[${status.index}].gysCode" maxlength="100" type="text" value=""
+                                                   style="width: 86%;" ignore="ignore"></td>
+                        <td align="center"><input  nullmsg="请输入规格！"  errormsg="请输入规格" id="brand${status.index}" value="${poVal.brand}" name="orderMxList[${status.index}].brand" maxlength="100" type="text" value=""
+                                                   style="width: 86%;" ignore="ignore"></td>
+                        <td align="center"><input  nullmsg="请输入单件用量！"  errormsg="请输入单件用量" id="yongliang${status.index}"  value="${poVal.yongliang}" name="orderMxList[${status.index}].yongliang" maxlength="100" type="text" value=""
                                                   style="width: 86%;" ignore="ignore"></td>
                         <td align="center"><input  nullmsg="请输入价格！"  errormsg="请输入价格" datatype="d" value="${poVal.signPrice}" name="orderMxList[${status.index}].signPrice" maxlength="100" type="text" value=""
                                                   style="width: 86%;" ignore="ignore"></td>
-                        <td align="center"><input  nullmsg="请输入损耗率！"  errormsg="请输入损耗率" datatype="d" value="${poVal.sunhaoPrecent}" name="orderMxList[${status.index}].sunhaoPrecent" maxlength="100" type="text" value=""
+                        <td align="center"><input  nullmsg="请输入损耗率！"  errormsg="请输入损耗率" id="sunhaoPrecent${status.index}" datatype="d" value="${poVal.sunhaoPrecent}" name="orderMxList[${status.index}].sunhaoPrecent" maxlength="100" type="text" value=""
                                                   style="width: 86%;" ignore="ignore"></td>
-                        <td align="center"><input  nullmsg="请输入成本！"  errormsg="请输入成本" datatype="d" value="${poVal.chengben}" name="orderMxList[${status.index}].chengben" maxlength="100" type="text" value=""
+                        <td align="center"><input  nullmsg="请输入总用量！"  errormsg="请输入总用量" value="${poVal.sumYongliang}" name="orderMxList[${status.index}].sumYongliang" maxlength="100" type="text" value=""
+                                                   style="width: 86%;" ignore="ignore"></td>
+                        <td align="center"><input  nullmsg="请输入成本！"  errormsg="请输入成本" id="chengben${status.index}" datatype="d" value="${poVal.chengben}" name="orderMxList[${status.index}].chengben" maxlength="100" type="text" value=""
                                                   style="width: 86%;" ignore="ignore"></td>
+                        <td align="center"><input  nullmsg="请输入位置！"  errormsg="请输入位置" value="${poVal.position}" name="orderMxList[${status.index}].position" maxlength="100" type="text" value=""
+                                                   style="width: 86%;" ignore="ignore"></td>
+                        <td align="center"><input  nullmsg="请输入入库状态！"  errormsg="请输入入库状态" value="${poVal.rkState}" name="orderMxList[${status.index}].rkState" maxlength="100" type="text" value=""
+                                                   style="width: 86%;" ignore="ignore"></td>
                     </tr>
 
                 </c:forEach>
@@ -175,7 +192,6 @@
         $("#proName"+currentFlag).val($("#proTypeName").val());
         $("#proNum"+currentFlag).val($("#proNum").val());
         $("#proZnName"+currentFlag).val($("#proZnName").val());
-        $("#precent"+currentFlag).val($("#precent").val());
         $("#brand"+currentFlag).val($("#brand").val());
         $("#unit"+currentFlag).val($("#unit").val());
         $("#proId"+currentFlag).val($("#id").val());

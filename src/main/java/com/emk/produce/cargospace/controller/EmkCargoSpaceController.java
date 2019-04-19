@@ -1,10 +1,12 @@
 package com.emk.produce.cargospace.controller;
 
 import com.alibaba.fastjson.JSONArray;
+import com.emk.bill.proorderbox.entity.EmkProOrderBoxEntity;
 import com.emk.produce.cargospace.entity.EmkCargoSpaceEntity;
 import com.emk.produce.cargospace.service.EmkCargoSpaceServiceI;
 import com.emk.storage.enquirydetail.entity.EmkEnquiryDetailEntity;
 import com.emk.util.ParameterUtil;
+import com.emk.util.Utils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -62,9 +64,9 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.UriComponentsBuilder;
 
-@Api(value = "EmkCargoSpace", description = "订舱通知单", tags = {"emkCargoSpaceController"})
+@Api(value = "EmkCargoSpace", description = "订舱通知单", tags = "emkCargoSpaceController")
 @Controller
-@RequestMapping({"/emkCargoSpaceController"})
+@RequestMapping("/emkCargoSpaceController")
 public class EmkCargoSpaceController extends BaseController {
     private static final Logger logger = Logger.getLogger(EmkCargoSpaceController.class);
     @Autowired
@@ -74,24 +76,37 @@ public class EmkCargoSpaceController extends BaseController {
     @Autowired
     private Validator validator;
 
-    @RequestMapping(params = {"list"})
+    @RequestMapping(params = "list")
     public ModelAndView list(HttpServletRequest request) {
         return new ModelAndView("com/emk/produce/cargospace/emkCargoSpaceList");
     }
 
-    @RequestMapping(params = {"orderMxList"})
+    @RequestMapping(params = "orderMxList")
     public ModelAndView orderMxList(HttpServletRequest request) {
-        List<Map<String, Object>> codeList = this.systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", new Object[]{"A03"});
+        List<Map<String, Object>> codeList = systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", "A03");
         request.setAttribute("categoryEntityList", codeList);
         Map map = ParameterUtil.getParamMaps(request.getParameterMap());
         if ((map.get("proOrderId") != null) && (!map.get("proOrderId").equals(""))) {
-            List<EmkEnquiryDetailEntity> emkProOrderDetailEntities = this.systemService.findHql("from EmkEnquiryDetailEntity where enquiryId=?", new Object[]{map.get("proOrderId")});
+            List<EmkEnquiryDetailEntity> emkProOrderDetailEntities = systemService.findHql("from EmkEnquiryDetailEntity where enquiryId=?", map.get("proOrderId"));
             request.setAttribute("emkProOrderDetailEntities", emkProOrderDetailEntities);
         }
         return new ModelAndView("com/emk/produce/cargospace/orderMxList");
     }
 
-    @RequestMapping(params = {"datagrid"})
+    @RequestMapping(params = "boxMxList")
+    public ModelAndView boxMxList(HttpServletRequest request) {
+        Map map = ParameterUtil.getParamMaps(request.getParameterMap());
+        List<Map<String, Object>> list = systemService.findForJdbc("select typecode,typename from t_s_type t2 left join t_s_typegroup t1 on t1.ID=t2.typegroupid where typegroupcode='size'");
+        request.setAttribute("sizeList", list);
+        if(Utils.notEmpty(map.get("cargoId"))) {
+            List<EmkProOrderBoxEntity> emkProOrderBoxEntities = systemService.findHql("from EmkProOrderBoxEntity where orderId=? and boxType=6", map.get("cargoId"));
+            request.setAttribute("emkProOrderBoxEntities", emkProOrderBoxEntities);
+        }
+
+        return new ModelAndView("com/emk/produce/cargospace/boxMxList");
+    }
+
+    @RequestMapping(params = "datagrid")
     public void datagrid(EmkCargoSpaceEntity emkCargoSpace, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid) {
         CriteriaQuery cq = new CriteriaQuery(EmkCargoSpaceEntity.class, dataGrid);
         TSUser user = (TSUser) request.getSession().getAttribute(ResourceUtil.LOCAL_CLINET_USER);
@@ -105,20 +120,20 @@ public class EmkCargoSpaceController extends BaseController {
 
 
         cq.add();
-        this.emkCargoSpaceService.getDataGridReturn(cq, true);
+        emkCargoSpaceService.getDataGridReturn(cq, true);
         TagUtil.datagrid(response, dataGrid);
     }
 
-    @RequestMapping(params = {"doDel"})
+    @RequestMapping(params = "doDel")
     @ResponseBody
     public AjaxJson doDel(EmkCargoSpaceEntity emkCargoSpace, HttpServletRequest request) {
         String message = null;
         AjaxJson j = new AjaxJson();
-        emkCargoSpace = (EmkCargoSpaceEntity) this.systemService.getEntity(EmkCargoSpaceEntity.class, emkCargoSpace.getId());
+        emkCargoSpace = systemService.getEntity(EmkCargoSpaceEntity.class, emkCargoSpace.getId());
         message = "订舱通知单删除成功";
         try {
-            this.emkCargoSpaceService.delete(emkCargoSpace);
-            this.systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
+            emkCargoSpaceService.delete(emkCargoSpace);
+            systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
         } catch (Exception e) {
             e.printStackTrace();
             message = "订舱通知单删除失败";
@@ -128,7 +143,7 @@ public class EmkCargoSpaceController extends BaseController {
         return j;
     }
 
-    @RequestMapping(params = {"doBatchDel"})
+    @RequestMapping(params = "doBatchDel")
     @ResponseBody
     public AjaxJson doBatchDel(String ids, HttpServletRequest request) {
         String message = null;
@@ -136,11 +151,11 @@ public class EmkCargoSpaceController extends BaseController {
         message = "订舱通知单删除成功";
         try {
             for (String id : ids.split(",")) {
-                EmkCargoSpaceEntity emkCargoSpace = (EmkCargoSpaceEntity) this.systemService.getEntity(EmkCargoSpaceEntity.class, id);
+                EmkCargoSpaceEntity emkCargoSpace = systemService.getEntity(EmkCargoSpaceEntity.class, id);
 
 
-                this.emkCargoSpaceService.delete(emkCargoSpace);
-                this.systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
+                emkCargoSpaceService.delete(emkCargoSpace);
+                systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -151,7 +166,7 @@ public class EmkCargoSpaceController extends BaseController {
         return j;
     }
 
-    @RequestMapping(params = {"doAdd"})
+    @RequestMapping(params = "doAdd")
     @ResponseBody
     public AjaxJson doAdd(EmkCargoSpaceEntity emkCargoSpace, HttpServletRequest request) {
         String message = null;
@@ -160,10 +175,10 @@ public class EmkCargoSpaceController extends BaseController {
         try {
             TSUser user = (TSUser) request.getSession().getAttribute("LOCAL_CLINET_USER");
             Map<String, String> map = ParameterUtil.getParamMaps(request.getParameterMap());
-            Map orderNum = this.systemService.findOneForJdbc("select CAST(ifnull(max(right(CARGO_NO, 3)),0)+1 AS signed) orderNum from emk_cargo_space");
-            //Map orderNum = this.systemService.findOneForJdbc("select count(0)+1 orderNum from emk_cargo_space where sys_org_code=?", new Object[]{user.getCurrentDepart().getOrgCode()});
+            Map orderNum = systemService.findOneForJdbc("select CAST(ifnull(max(right(CARGO_NO, 3)),0)+1 AS signed) orderNum from emk_cargo_space");
+            //Map orderNum = systemService.findOneForJdbc("select count(0)+1 orderNum from emk_cargo_space where sys_org_code=?", user.getCurrentDepart().getOrgCode()});
             emkCargoSpace.setCargoNo("DC" + DateUtils.format(new Date(), "yyMMdd") + String.format("%03d", Integer.parseInt(orderNum.get("orderNum").toString())));
-            this.emkCargoSpaceService.save(emkCargoSpace);
+            emkCargoSpaceService.save(emkCargoSpace);
             String dataRows = (String) map.get("dataRowsVal");
             if ((dataRows != null) && (!dataRows.isEmpty())) {
                 int rows = Integer.parseInt(dataRows);
@@ -174,11 +189,11 @@ public class EmkCargoSpaceController extends BaseController {
                         orderMxEntity.setColor((String) map.get("orderMxList[" + i + "].color"));
                         orderMxEntity.setSize((String) map.get("orderMxList[" + i + "].size"));
                         orderMxEntity.setTotal(Integer.valueOf(Integer.parseInt((String) map.get("orderMxList[" + i + "].signTotal"))));
-                        this.systemService.save(orderMxEntity);
+                        systemService.save(orderMxEntity);
                     }
                 }
             }
-            this.systemService.addLog(message, Globals.Log_Type_INSERT, Globals.Log_Leavel_INFO);
+            systemService.addLog(message, Globals.Log_Type_INSERT, Globals.Log_Leavel_INFO);
         } catch (Exception e) {
             e.printStackTrace();
             message = "订舱通知单添加失败";
@@ -188,18 +203,81 @@ public class EmkCargoSpaceController extends BaseController {
         return j;
     }
 
-    @RequestMapping(params = {"doUpdate"})
+    @RequestMapping(params = "doUpdate")
     @ResponseBody
     public AjaxJson doUpdate(EmkCargoSpaceEntity emkCargoSpace, HttpServletRequest request) {
         String message = null;
         AjaxJson j = new AjaxJson();
         message = "订舱通知单更新成功";
-        EmkCargoSpaceEntity t = (EmkCargoSpaceEntity) this.emkCargoSpaceService.get(EmkCargoSpaceEntity.class, emkCargoSpace.getId());
+        Map<String, String> map = ParameterUtil.getParamMaps(request.getParameterMap());
+        EmkCargoSpaceEntity t = emkCargoSpaceService.get(EmkCargoSpaceEntity.class, map.get("cargoId"));
         try {
+            emkCargoSpace.setId(null);
             MyBeanUtils.copyBeanNotNull2Bean(emkCargoSpace, t);
-            this.emkCargoSpaceService.saveOrUpdate(t);
-            Map<String, String> map = ParameterUtil.getParamMaps(request.getParameterMap());
-            this.systemService.executeSql("delete from emk_enquiry_detail where ENQUIRY_ID=?", new Object[]{t.getId()});
+            emkCargoSpaceService.saveOrUpdate(t);
+            String dataRows = (String)map.get("orderMxListIDBox");
+            //保存单色单码装数据
+            if (Utils.notEmpty(dataRows)) {
+                systemService.executeSql("delete from emk_pro_order_box where order_id = ? and box_type=6",t.getId());
+
+                int rows = Integer.parseInt(dataRows);
+                for (int i = 0; i < rows; i++) {
+                    EmkProOrderBoxEntity emkProOrderBoxEntity = new EmkProOrderBoxEntity();
+                    if (Utils.notEmpty(map.get("orderMxList["+i+"].acolorName00"))) {
+                        emkProOrderBoxEntity.setGyzl(map.get("orderMxList["+i+"].gyzl00"));
+                        emkProOrderBoxEntity.setProTypeName(map.get("orderMxList["+i+"].proTypeName00"));
+
+                        emkProOrderBoxEntity.setColorName(map.get("orderMxList["+i+"].acolorName00"));
+                        emkProOrderBoxEntity.setSize(map.get("orderMxList["+i+"].asizeBox00"));
+                        emkProOrderBoxEntity.setPrice(map.get("orderMxList["+i+"].price00"));
+                        emkProOrderBoxEntity.setMoney(map.get("orderMxList["+i+"].money00"));
+
+                        if(Utils.notEmpty(map.get("orderMxList["+i+"].ainboxTotal00"))){
+                            emkProOrderBoxEntity.setInboxTotal(Integer.parseInt(map.get("orderMxList["+i+"].ainboxTotal00").toString()));
+                        }
+                        if(Utils.notEmpty(map.get("orderMxList["+i+"].atotalBox00"))){
+                            emkProOrderBoxEntity.setTotal(Integer.parseInt(map.get("orderMxList["+i+"].atotalBox00").toString()));
+                        }
+                        if(Utils.notEmpty(map.get("orderMxList["+i+"].asumZsl00"))){
+                            emkProOrderBoxEntity.setSumZsl(Integer.parseInt(map.get("orderMxList["+i+"].asumZsl00").toString()));
+                        }
+
+                        if(Utils.notEmpty(map.get("orderMxList["+i+"].alongVal00"))){
+                            emkProOrderBoxEntity.setLongVal(Double.parseDouble(map.get("orderMxList["+i+"].alongVal00").toString()));
+                        }
+                        if(Utils.notEmpty(map.get("orderMxList["+i+"].awidthVal00"))){
+                            emkProOrderBoxEntity.setWidthVal(Double.parseDouble(map.get("orderMxList["+i+"].awidthVal00").toString()));
+                        }
+                        if(Utils.notEmpty(map.get("orderMxList["+i+"].aheightVal00"))){
+                            emkProOrderBoxEntity.setHeightVal(Double.parseDouble(map.get("orderMxList["+i+"].aheightVal00").toString()));
+                        }
+
+                        if(Utils.notEmpty(map.get("orderMxList["+i+"].aboxWeightMao00"))){
+                            emkProOrderBoxEntity.setBoxWeightMao(Double.parseDouble(map.get("orderMxList["+i+"].aboxWeightMao00").toString()));
+                        }
+                        if(Utils.notEmpty(map.get("orderMxList["+i+"].aboxWeightJz00"))){
+                            emkProOrderBoxEntity.setBoxWeightJz(Double.parseDouble(map.get("orderMxList["+i+"].aboxWeightJz00").toString()));
+                        }
+                        if(Utils.notEmpty(map.get("orderMxList["+i+"].aboxVolume00"))){
+                            emkProOrderBoxEntity.setBoxVolume(Double.parseDouble(map.get("orderMxList["+i+"].aboxVolume00").toString()));
+                        }
+                        if(Utils.notEmpty(map.get("orderMxList["+i+"].asumVolume00"))){
+                            emkProOrderBoxEntity.setSumVolume(Double.parseDouble(map.get("orderMxList["+i+"].asumVolume00").toString()));
+                        }
+                        if(Utils.notEmpty(map.get("orderMxList["+i+"].asumWeightMao00"))){
+                            emkProOrderBoxEntity.setSumWeightMao(Double.parseDouble(map.get("orderMxList["+i+"].asumWeightMao00").toString()));
+                        }
+                        if(Utils.notEmpty(map.get("orderMxList["+i+"].asumWeightJz00"))){
+                            emkProOrderBoxEntity.setSumWeightJz(Double.parseDouble(map.get("orderMxList["+i+"].asumWeightJz00").toString()));
+                        }
+                        emkProOrderBoxEntity.setBoxType("6");
+                        emkProOrderBoxEntity.setOrderId(t.getId());
+
+                        systemService.save(emkProOrderBoxEntity);
+                    }
+                }
+            }
+            /*systemService.executeSql("delete from emk_enquiry_detail where ENQUIRY_ID=?", t.getId());
             String dataRows = (String) map.get("dataRowsVal");
             if ((dataRows != null) && (!dataRows.isEmpty())) {
                 int rows = Integer.parseInt(dataRows);
@@ -210,11 +288,11 @@ public class EmkCargoSpaceController extends BaseController {
                         orderMxEntity.setColor((String) map.get("orderMxList[" + i + "].color"));
                         orderMxEntity.setSize((String) map.get("orderMxList[" + i + "].size"));
                         orderMxEntity.setTotal(Integer.valueOf(Integer.parseInt((String) map.get("orderMxList[" + i + "].signTotal"))));
-                        this.systemService.save(orderMxEntity);
+                        systemService.save(orderMxEntity);
                     }
                 }
-            }
-            this.systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
+            }*/
+            systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
         } catch (Exception e) {
             e.printStackTrace();
             message = "订舱通知单更新失败";
@@ -224,40 +302,40 @@ public class EmkCargoSpaceController extends BaseController {
         return j;
     }
 
-    @RequestMapping(params = {"goAdd"})
+    @RequestMapping(params = "goAdd")
     public ModelAndView goAdd(EmkCargoSpaceEntity emkCargoSpace, HttpServletRequest req) {
         req.setAttribute("kdDate", DateUtils.format(new Date(), "yyyy-MM-dd"));
-        List<Map<String, Object>> codeList = this.systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", new Object[]{"A03"});
+        List<Map<String, Object>> codeList = systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", "A03");
         req.setAttribute("categoryEntityList", codeList);
         if (StringUtil.isNotEmpty(emkCargoSpace.getId())) {
-            emkCargoSpace = (EmkCargoSpaceEntity) this.emkCargoSpaceService.getEntity(EmkCargoSpaceEntity.class, emkCargoSpace.getId());
+            emkCargoSpace = emkCargoSpaceService.getEntity(EmkCargoSpaceEntity.class, emkCargoSpace.getId());
             req.setAttribute("emkCargoSpacePage", emkCargoSpace);
         }
         return new ModelAndView("com/emk/produce/cargospace/emkCargoSpace-add");
     }
 
-    @RequestMapping(params = {"goUpdate"})
+    @RequestMapping(params = "goUpdate")
     public ModelAndView goUpdate(EmkCargoSpaceEntity emkCargoSpace, HttpServletRequest req) {
-        List<Map<String, Object>> codeList = this.systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", new Object[]{"A03"});
+        List<Map<String, Object>> codeList = systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", "A03");
         req.setAttribute("categoryEntityList", codeList);
         if (StringUtil.isNotEmpty(emkCargoSpace.getId())) {
-            emkCargoSpace = (EmkCargoSpaceEntity) this.emkCargoSpaceService.getEntity(EmkCargoSpaceEntity.class, emkCargoSpace.getId());
+            emkCargoSpace = emkCargoSpaceService.getEntity(EmkCargoSpaceEntity.class, emkCargoSpace.getId());
             req.setAttribute("emkCargoSpacePage", emkCargoSpace);
         }
         return new ModelAndView("com/emk/produce/cargospace/emkCargoSpace-update");
     }
 
-    @RequestMapping(params = {"upload"})
+    @RequestMapping(params = "upload")
     public ModelAndView upload(HttpServletRequest req) {
         req.setAttribute("controller_name", "emkCargoSpaceController");
         return new ModelAndView("common/upload/pub_excel_upload");
     }
 
-    @RequestMapping(params = {"exportXls"})
+    @RequestMapping(params = "exportXls")
     public String exportXls(EmkCargoSpaceEntity emkCargoSpace, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid, ModelMap modelMap) {
         CriteriaQuery cq = new CriteriaQuery(EmkCargoSpaceEntity.class, dataGrid);
         HqlGenerateUtil.installHql(cq, emkCargoSpace, request.getParameterMap());
-        List<EmkCargoSpaceEntity> emkCargoSpaces = this.emkCargoSpaceService.getListByCriteriaQuery(cq, Boolean.valueOf(false));
+        List<EmkCargoSpaceEntity> emkCargoSpaces = emkCargoSpaceService.getListByCriteriaQuery(cq, Boolean.valueOf(false));
         modelMap.put("fileName", "订舱通知单");
         modelMap.put("entity", EmkCargoSpaceEntity.class);
         modelMap.put("params", new ExportParams("订舱通知单列表", "导出人:" + ResourceUtil.getSessionUser().getRealName(), "导出信息"));
@@ -266,7 +344,7 @@ public class EmkCargoSpaceController extends BaseController {
         return "jeecgExcelView";
     }
 
-    @RequestMapping(params = {"exportXlsByT"})
+    @RequestMapping(params = "exportXlsByT")
     public String exportXlsByT(EmkCargoSpaceEntity emkCargoSpace, HttpServletRequest request, HttpServletResponse response, DataGrid dataGrid, ModelMap modelMap) {
         modelMap.put("fileName", "订舱通知单");
         modelMap.put("entity", EmkCargoSpaceEntity.class);
@@ -281,31 +359,31 @@ public class EmkCargoSpaceController extends BaseController {
     @ResponseBody
     @ApiOperation(value = "订舱通知单列表信息", produces = "application/json", httpMethod = "GET")
     public ResponseMessage<List<EmkCargoSpaceEntity>> list() {
-        List<EmkCargoSpaceEntity> listEmkCargoSpaces = this.emkCargoSpaceService.getList(EmkCargoSpaceEntity.class);
+        List<EmkCargoSpaceEntity> listEmkCargoSpaces = emkCargoSpaceService.getList(EmkCargoSpaceEntity.class);
         return Result.success(listEmkCargoSpaces);
     }
 
-    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.GET})
+    @RequestMapping(value = "/{id}", method = {org.springframework.web.bind.annotation.RequestMethod.GET})
     @ResponseBody
     @ApiOperation(value = "根据ID获取订舱通知单信息", notes = "根据ID获取订舱通知单信息", httpMethod = "GET", produces = "application/json")
     public ResponseMessage<?> get(@ApiParam(required = true, name = "id", value = "ID") @PathVariable("id") String id) {
-        EmkCargoSpaceEntity task = (EmkCargoSpaceEntity) this.emkCargoSpaceService.get(EmkCargoSpaceEntity.class, id);
+        EmkCargoSpaceEntity task = emkCargoSpaceService.get(EmkCargoSpaceEntity.class, id);
         if (task == null) {
             return Result.error("根据ID获取订舱通知单信息为空");
         }
         return Result.success(task);
     }
 
-    @RequestMapping(method = {org.springframework.web.bind.annotation.RequestMethod.POST}, consumes = {"application/json"})
+    @RequestMapping(method = {org.springframework.web.bind.annotation.RequestMethod.POST}, consumes = "application/json")
     @ResponseBody
     @ApiOperation("创建订舱通知单")
     public ResponseMessage<?> create(@ApiParam(name = "订舱通知单对象") @RequestBody EmkCargoSpaceEntity emkCargoSpace, UriComponentsBuilder uriBuilder) {
-        Set<ConstraintViolation<EmkCargoSpaceEntity>> failures = this.validator.validate(emkCargoSpace, new Class[0]);
+        Set<ConstraintViolation<EmkCargoSpaceEntity>> failures = validator.validate(emkCargoSpace, new Class[0]);
         if (!failures.isEmpty()) {
             return Result.error(JSONArray.toJSONString(BeanValidators.extractPropertyAndMessage(failures)));
         }
         try {
-            this.emkCargoSpaceService.save(emkCargoSpace);
+            emkCargoSpaceService.save(emkCargoSpace);
         } catch (Exception e) {
             e.printStackTrace();
             return Result.error("订舱通知单信息保存失败");
@@ -313,16 +391,16 @@ public class EmkCargoSpaceController extends BaseController {
         return Result.success(emkCargoSpace);
     }
 
-    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.PUT}, consumes = {"application/json"})
+    @RequestMapping(value = "/{id}", method = {org.springframework.web.bind.annotation.RequestMethod.PUT}, consumes = "application/json")
     @ResponseBody
     @ApiOperation(value = "更新订舱通知单", notes = "更新订舱通知单")
     public ResponseMessage<?> update(@ApiParam(name = "订舱通知单对象") @RequestBody EmkCargoSpaceEntity emkCargoSpace) {
-        Set<ConstraintViolation<EmkCargoSpaceEntity>> failures = this.validator.validate(emkCargoSpace, new Class[0]);
+        Set<ConstraintViolation<EmkCargoSpaceEntity>> failures = validator.validate(emkCargoSpace, new Class[0]);
         if (!failures.isEmpty()) {
             return Result.error(JSONArray.toJSONString(BeanValidators.extractPropertyAndMessage(failures)));
         }
         try {
-            this.emkCargoSpaceService.saveOrUpdate(emkCargoSpace);
+            emkCargoSpaceService.saveOrUpdate(emkCargoSpace);
         } catch (Exception e) {
             e.printStackTrace();
             return Result.error("更新订舱通知单信息失败");
@@ -330,7 +408,7 @@ public class EmkCargoSpaceController extends BaseController {
         return Result.success("更新订舱通知单信息成功");
     }
 
-    @RequestMapping(value = {"/{id}"}, method = {org.springframework.web.bind.annotation.RequestMethod.DELETE})
+    @RequestMapping(value = "/{id}", method = {org.springframework.web.bind.annotation.RequestMethod.DELETE})
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ApiOperation("删除订舱通知单")
     public ResponseMessage<?> delete(@ApiParam(name = "id", value = "ID", required = true) @PathVariable("id") String id) {
@@ -339,7 +417,7 @@ public class EmkCargoSpaceController extends BaseController {
             return Result.error("ID不能为空");
         }
         try {
-            this.emkCargoSpaceService.deleteEntityById(EmkCargoSpaceEntity.class, id);
+            emkCargoSpaceService.deleteEntityById(EmkCargoSpaceEntity.class, id);
         } catch (Exception e) {
             e.printStackTrace();
             return Result.error("订舱通知单删除失败");

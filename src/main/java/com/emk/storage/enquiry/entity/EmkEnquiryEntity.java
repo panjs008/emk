@@ -82,6 +82,7 @@ public class EmkEnquiryEntity implements Serializable {
     private String businesseDeptName;
     private String businesseDeptId;
     private String processName;
+    private String cusType;
 
     private String state1;
     private String state2;
@@ -496,6 +497,15 @@ public class EmkEnquiryEntity implements Serializable {
 
     public void setState3(String state3) {
         this.state3 = state3;
+    }
+
+    @Column(name = "cus_type", nullable = true, length = 32)
+    public String getCusType() {
+        return cusType;
+    }
+
+    public void setCusType(String cusType) {
+        this.cusType = cusType;
     }
 
     /*@Column(name = "LEAD_ADVICE", nullable = true, length = 256)
