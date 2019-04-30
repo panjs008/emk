@@ -8,7 +8,7 @@
    <t:dgCol title="创建人名称"  field="createName"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="创建人登录名称"  field="createBy"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
       <t:dgCol title="当前流程节点"  field="processName"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
-      <t:dgCol title="操作" field="opt" frozenColumn="true"  width="100"></t:dgCol>
+      <%--<t:dgCol title="操作" field="opt" frozenColumn="true"  width="100"></t:dgCol>--%>
       <t:dgCol title="创建日期"  field="createDate"  formatter="yyyy-MM-dd"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="所属部门"  field="sysOrgCode"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
       <t:dgCol title="验厂申请表编号" query="true" field="ycsqbh"  queryMode="single"  width="150" frozenColumn="true"></t:dgCol>
@@ -31,7 +31,7 @@
       <t:dgCol title="申请表状态"  field="state" formatterjs="formatColor"  queryMode="single"  width="100"></t:dgCol>
       <t:dgCol title="验厂状态"  field="ycstate" formatterjs="formatColor2"  queryMode="single"  width="100"></t:dgCol>
 
-      <t:dgFunOpt funname="goToProcess(id,createBy,processName,state)" title="流程进度" operationCode="process" urlclass="ace_button"  urlStyle="background-color:#ec4758;" urlfont="fa-tasks"></t:dgFunOpt>
+      <%--<t:dgFunOpt funname="goToProcess(id,createBy,processName,state)" title="流程进度" operationCode="process" urlclass="ace_button"  urlStyle="background-color:#ec4758;" urlfont="fa-tasks"></t:dgFunOpt>--%>
       <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add"  url="emkCheckFactoryController.do?goAdd&winTitle=录入验厂申请" funname="add" height="600" width="1000"></t:dgToolBar>
       <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkCheckFactoryController.do?goUpdate&winTitle=编辑验厂申请" funname="update" height="600" width="1000"></t:dgToolBar>
       <t:dgToolBar title="查看" icon="fa fa-search" operationCode="look" url="emkCheckFactoryController.do?goUpdate&winTitle=查看验厂申请" funname="detail" height="580" width="1000"></t:dgToolBar>
@@ -50,7 +50,7 @@
  function formatColor(val, row) {
      if (row.state == "1") {
          return '<span style="color:	#FF0000;">处理中</span>';
-     } else if (row.state == "2") {
+     }else if(row.state == "2") {
          return '<span style="color:	#0000FF;">完成</span>';
      } else {
          return '创建';

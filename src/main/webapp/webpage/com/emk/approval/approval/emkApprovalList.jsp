@@ -8,14 +8,14 @@
    <t:dgCol title="创建人登录名称"  field="createBy"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
       <t:dgCol title="创建日期"  field="createDate"  formatter="yyyy-MM-dd"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
       <t:dgCol title="操作" field="opt" width="80" ></t:dgCol>
-      <t:dgCol title="单号"  field="workNum"  query="true" queryMode="single"  width="150"></t:dgCol>
-      <t:dgCol title="工单类型"  field="type"  replace="意向询盘单_0,验厂申请单_1,报价单_2,样品需求单_3,样品材料采购_4,入库申请单_5" queryMode="single"  width="120"></t:dgCol>
+      <t:dgCol title="单号"  field="workNum"  query="true" queryMode="single"  width="140"></t:dgCol>
+      <t:dgCol title="工单类型"  field="type"  replace="意向询盘单_0,验厂申请单_1,报价单_2,样品需求单_3,原料面料样品材料采购_4,入库申请单_5,出库申请单_6,缝制辅料样品材料采购_7,订单表_8,原料面料采购需求单_9,原料面料开发费付款申请单_12,缝制辅料开发费付款申请单_13,包装辅料开发费付款申请单_14" queryMode="single"  width="140"></t:dgCol>
       <t:dgCol title="提交人"  field="createName"    queryMode="single"  width="90"></t:dgCol>
    <t:dgCol title="所属部门"  field="sysOrgCode"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
 
    <t:dgCol title="申请人ID"  field="commitId" hidden="true" queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="提交时间"  field="commitTime"  queryMode="single"  width="120"></t:dgCol>
-   <t:dgCol title="当前节点名称"  field="processName" formatterjs="formatProcessName" queryMode="single"  width="120"></t:dgCol>
+   <t:dgCol title="当前节点名称"  field="processName" formatterjs="formatProcessName" queryMode="single"  width="140"></t:dgCol>
    <t:dgCol title="当前节点代码"  field="processNode"  hidden="true" queryMode="single"  width="120"></t:dgCol>
       <t:dgCol title="formId"  field="formId"  hidden="true" queryMode="single"  width="120"></t:dgCol>
 
@@ -104,12 +104,28 @@
          return '<span style="color:	#0000FF;">生产跟单员通过</span>';
      }else if(row.status=="35"){
          return '<span style="color:	#0000FF;">业务员通过</span>';
+     }else if(row.status=="36"){
+         return '<span style="color:	#0000FF;">回退采购员</span>';
      }else if(row.status=="37"){
          return '<span style="color:	#0000FF;">采购员执行</span>';
      }else if(row.status=="38"){
          return '<span style="color:	#0000FF;">采购员进度</span>';
      }else if(row.status=="39"){
          return '<span style="color:	#0000FF;">入库申请【采购员】</span>';
+     }else if(row.status=="44"){
+         return '<span style="color:	#0000FF;">生成预购销合同</span>';
+     }else if(row.status=="46"){
+         return '<span style="color:	#0000FF;">正式购销合同生成</span>';
+     }else if(row.status=="48"){
+         return '<span style="color:	#0000FF;">总经理通过</span>';
+     }else if(row.status=="49"){
+         return '<span style="color:	#0000FF;">回退正式购销合同</span>';
+     }else if(row.status=="51"){
+         return '<span style="color:	#0000FF;">验厂经理通过</span>';
+     }else if(row.status=="52"){
+         return '<span style="color:	#0000FF;">执行验厂</span>';
+     }else if(row.status=="53"){
+         return '<span style="color:	#0000FF;">验厂报告</span>';
      }else{
          return '创建';
      }
@@ -132,17 +148,13 @@ function formatProcessName(val,row){
  function goToProcess(id,createBy,processName,state,type,state1,state2,state3){
      var height =window.top.document.body.offsetHeight*0.85;
      var processNameVal='',node='',w=1280;
-     if(processName != null){
-         if(processName.indexOf('-') > 0){
-             processNameVal = processName.substring(0,processName.indexOf('-'));
-             node = processName.substring(processName.indexOf('-')+1);
-             initProcessName = processNameVal;
-         }
-     }
      var processUrl,initProcessName;
      if(type == '0'){
          processUrl = 'com/emk/storage/enquiry/emkEnquiry-process';
          initProcessName = '业务部审核';
+     }else if(type == '1'){
+         processUrl = 'com/emk/storage/factoryarchives/emkFactoryArchives-process';
+         initProcessName = '【业务员】工厂信息表';
      }else if(type == '2'){
          processUrl = 'com/emk/storage/price/emkPrice-process';
          initProcessName = '报价单【业务员】';
@@ -153,48 +165,38 @@ function formatProcessName(val,row){
          processUrl = 'com/emk/storage/material/emkMaterial-process';
          initProcessName = '原料面料需求开发单';
          w = 1300;
+     }else if(type == '7'){
+         processUrl = 'com/emk/storage/accessories/emkAccessories-process';
+         initProcessName = '缝制辅料需求开发单';
+         w = 1300;
      }else if(type == '5'){
          processUrl = 'com/emk/bound/minstorage/emkMInStorage-process';
          initProcessName = '入库申请单';
+     }else if(type == '6'){
+         processUrl = 'com/emk/bound/moutstorage/emkMOutStorage-process';
+         initProcessName = '出库申请单';
+     }else if(type == '8'){
+         processUrl = 'com/emk/bill/proorder/emkProOrder-process';
+         initProcessName = '订单表';
+     }else if(type == '9'){
+         processUrl = 'com/emk/bill/materialrequired/emkMaterialRequired-process';
+         initProcessName = '原料面料采购需求单';
+     }else if(type == '12'){
+         processUrl = 'com/emk/bill/materialcontract/emkMaterialContract-process';
+         initProcessName = '原料面料开发费付款申请单';
      }
      if(state == '30'){
          initProcessName = processNameVal;
      }
+     if(processName != null){
+         if(processName.indexOf('-') > 0){
+             processNameVal = processName.substring(0,processName.indexOf('-'));
+             node = processName.substring(processName.indexOf('-')+1);
+             initProcessName = processNameVal;
+         }
+     }
      createwindow("流程进度--当前环节："+initProcessName, "flowController.do?goProcess&node="+node+"&processUrl="+processUrl+"&id=" + id, w, height);
 
-     /*if("${ROLE.rolecode}" == "admin" ) {
-         createdetailwindow("流程进度--当前环节：" + processNameVal, "flowController.do?goProcess&node="+node+"&processUrl="+processUrl+"&id=" + id, w, height);
-     }else{
-         if(createBy == "${CUR_USER.id}"){
-             if(state == '0' || state=='19' || state == '21' || state == '30'){
-                 createwindow("流程进度--当前环节："+initProcessName, "flowController.do?goProcess&node="+node+"&processUrl="+processUrl+"&id=" + id, w, height);
-             }else {
-                 createdetailwindow("流程进度--当前环节：" + processNameVal, "flowController.do?goProcess&node="+node+"&processUrl="+processUrl+"&id=" + id, w, height);
-             }
-         }else{
-             if(state == '2'){
-                 createdetailwindow('流程进度--当前环节：完成' , 'flowController.do?goProcess&processUrl="+processUrl+"&id=' + id, w, height);
-             }else{
-                 if((state == '1' || state == '4'|| state == '35') && "${ROLE.rolecode}" == "ywjl" || (state == '3' || state == '6') && "${ROLE.rolecode}" == "jsjl"
-                         || (state == '5' || state == '8') && "${ROLE.rolecode}" == "rsjl" || (state == '7' || state == '10') && "${ROLE.rolecode}" == "fzjl"
-                         || (state == '9' || state == '12') && "${ROLE.rolecode}" == "btztzz" || (state == '11' || state == '14') && "${ROLE.rolecode}" == "bzzz"
-                         || (state == '13' || state == '16' || state == '24') && "${ROLE.rolecode}" == "cgjl" || (state == '15' || state == '18') && "${ROLE.rolecode}" == "scjjbjl"
-                         || (state == '17' || state == '20') && "${ROLE.rolecode}" == "sczfr") {
-                     createwindow("流程进度--当前环节：" + processNameVal, "flowController.do?goProcess&node="+node+"&processUrl="+processUrl+"&id=" + id, w, height);
-                 }else if((state == '1' || state == '23') && "${ROLE.rolecode}" == "jsy" || state == '22' && "${ROLE.rolecode}" == "cgy" || (state == '24' || state == '27') && "${ROLE.rolecode}" == "cw" || state == '25' && "${ROLE.rolecode}" == "cwjl" || state == '26' && "${ROLE.rolecode}" == "zjl"){
-                     createwindow("流程进度--当前环节：" + processNameVal, "flowController.do?goProcess&node="+node+"&processUrl="+processUrl+"&id=" + id, w, height);
-                 }else if((state == '5' || state == '33') && "${ROLE.rolecode}" == "scgdy" && (node=="dytzdTask" || node=="gxjdTask")){
-                     createwindow("流程进度--当前环节：" + processNameVal, "flowController.do?goProcess&node="+node+"&processUrl="+processUrl+"&id=" + id, w, height);
-                 }else if((type == '4' && (state == '3'|| state == '36'|| state == '15'|| state == '37'|| state == '38') || (type == '5' && state =='1') ) && "${ROLE.rolecode}" == "cgy"){
-                     createwindow("流程进度--当前环节：" + processNameVal, "flowController.do?goProcess&node="+node+"&processUrl="+processUrl+"&id=" + id, w, height);
-                 }else if((state == '1') && "${ROLE.rolecode}" == "ywy"){
-                     createwindow("流程进度--当前环节：" + processNameVal, "flowController.do?goProcess&node="+node+"&processUrl="+processUrl+"&id=" + id, w, height);
-                 }else{
-                     createdetailwindow('流程进度--当前环节：' + processNameVal , 'flowController.do?goProcess&processUrl="+processUrl+"&id=' + id, w, height);
-                 }
-             }
-         }
-     }*/
  }
 //导入
 function ImportXls() {

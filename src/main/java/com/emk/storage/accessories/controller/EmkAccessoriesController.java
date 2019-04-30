@@ -4,9 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.emk.approval.approval.entity.EmkApprovalEntity;
 import com.emk.storage.accessories.entity.EmkAccessoriesEntity;
 import com.emk.storage.accessories.service.EmkAccessoriesServiceI;
-import com.emk.storage.enquirydetail.entity.EmkEnquiryDetailEntity;
 import com.emk.storage.sampledetail.entity.EmkSampleDetailEntity;
-import com.emk.util.FlowUtil;
 import com.emk.util.ParameterUtil;
 import com.emk.util.Utils;
 import com.emk.util.WebFileUtils;
@@ -21,10 +19,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
-import org.activiti.engine.HistoryService;
-import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.TaskService;
-import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.apache.commons.lang3.StringUtils;
@@ -38,7 +32,6 @@ import org.jeecgframework.core.common.model.json.AjaxJson;
 import org.jeecgframework.core.common.model.json.DataGrid;
 import org.jeecgframework.core.constant.Globals;
 import org.jeecgframework.core.extend.hqlsearch.HqlGenerateUtil;
-import org.jeecgframework.core.util.ExceptionUtil;
 import org.jeecgframework.core.util.MyBeanUtils;
 import org.jeecgframework.core.util.ResourceUtil;
 import org.jeecgframework.core.util.StringUtil;
@@ -47,7 +40,6 @@ import org.jeecgframework.jwt.util.Result;
 import org.jeecgframework.poi.excel.entity.ExportParams;
 import org.jeecgframework.tag.core.easyui.TagUtil;
 import org.jeecgframework.web.system.pojo.base.TSUser;
-import org.jeecgframework.web.system.service.SystemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -67,17 +59,10 @@ public class EmkAccessoriesController extends BaseController {
     private static final Logger logger = Logger.getLogger(EmkAccessoriesController.class);
     @Autowired
     private EmkAccessoriesServiceI emkAccessoriesService;
-    @Autowired
-    private SystemService systemService;
+
     @Autowired
     private Validator validator;
 
-    @Autowired
-    ProcessEngine processEngine;
-    @Autowired
-    TaskService taskService;
-    @Autowired
-    HistoryService historyService;
 
     @RequestMapping(params = "list")
     public ModelAndView list(HttpServletRequest request) {

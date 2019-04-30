@@ -1,25 +1,21 @@
 package com.emk.storage.checkfactory.controller;
 import com.emk.approval.approval.entity.EmkApprovalEntity;
 import com.emk.approval.approvaldetail.entity.EmkApprovalDetailEntity;
-import com.emk.produce.testcost.entity.EmkTestCostEntity;
 import com.emk.storage.checkfactory.entity.EmkCheckFactoryEntity;
 import com.emk.storage.checkfactory.entity.EmkCheckFactoryEntity2;
 import com.emk.storage.checkfactory.service.EmkCheckFactoryServiceI;
 
 import java.text.DecimalFormat;
 import java.util.*;
-import java.text.SimpleDateFormat;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.emk.storage.customuse.entity.EmkCustomUseEntity;
+import com.emk.storage.factoryarchives.entity.EmkFactoryArchivesEntity;
 import com.emk.util.ApprovalUtil;
-import com.emk.util.FlowUtil;
 import com.emk.util.ParameterUtil;
-import org.activiti.engine.HistoryService;
-import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.TaskService;
-import org.activiti.engine.history.HistoricTaskInstance;
+
+import com.emk.util.Utils;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.apache.log4j.Logger;
@@ -35,26 +31,17 @@ import org.springframework.web.servlet.ModelAndView;
 import org.jeecgframework.core.common.controller.BaseController;
 import org.jeecgframework.core.common.exception.BusinessException;
 import org.jeecgframework.core.common.hibernate.qbc.CriteriaQuery;
-import org.jeecgframework.core.common.model.common.TreeChildCount;
 import org.jeecgframework.core.common.model.json.AjaxJson;
 import org.jeecgframework.core.common.model.json.DataGrid;
 import org.jeecgframework.core.constant.Globals;
 import org.jeecgframework.core.util.StringUtil;
 import org.jeecgframework.tag.core.easyui.TagUtil;
-import org.jeecgframework.web.system.pojo.base.TSDepart;
-import org.jeecgframework.web.system.service.SystemService;
 import org.jeecgframework.core.util.MyBeanUtils;
 
-import java.io.OutputStream;
-import org.jeecgframework.core.util.BrowserUtils;
-import org.jeecgframework.poi.excel.ExcelExportUtil;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.entity.ExportParams;
 import org.jeecgframework.poi.excel.entity.ImportParams;
-import org.jeecgframework.poi.excel.entity.TemplateExportParams;
 import org.jeecgframework.poi.excel.entity.vo.NormalExcelConstants;
-import org.jeecgframework.poi.excel.entity.vo.TemplateExcelConstants;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.jeecgframework.core.util.ResourceUtil;
 import java.io.IOException;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -62,30 +49,21 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.jeecgframework.core.util.ExceptionUtil;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.jeecgframework.core.beanvalidator.BeanValidators;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
-import java.net.URI;
 import org.springframework.http.MediaType;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.apache.commons.lang3.StringUtils;
-import org.jeecgframework.jwt.util.GsonUtil;
 import org.jeecgframework.jwt.util.ResponseMessage;
 import org.jeecgframework.jwt.util.Result;
 import com.alibaba.fastjson.JSONArray;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
@@ -108,17 +86,10 @@ public class EmkCheckFactoryController extends BaseController {
 
 	@Autowired
 	private EmkCheckFactoryServiceI emkCheckFactoryService;
-	@Autowired
-	private SystemService systemService;
+
 	@Autowired
 	private Validator validator;
 
-	@Autowired
-	ProcessEngine processEngine;
-	@Autowired
-	TaskService taskService;
-	@Autowired
-	HistoryService historyService;
 
 
 	/**
@@ -329,22 +300,13 @@ public class EmkCheckFactoryController extends BaseController {
 	@RequestMapping(params = "goUpdate2")
 	public ModelAndView goUpdate2(EmkCheckFactoryEntity emkCheckFactory, HttpServletRequest req) {
 		if (StringUtil.isNotEmpty(emkCheckFactory.getId())) {
-			emkCheckFactory = emkCheckFactoryService.getEntity(EmkCheckFactoryEntity.class, emkCheckFactory.getId());
-			req.setAttribute("emkCheckFactoryPage", emkCheckFactory);
-
-			EmkCustomUseEntity customUseEntity = systemService.findUniqueByProperty(EmkCustomUseEntity.class,"cusNum",emkCheckFactory.getCusNum());
-			req.setAttribute("customUseEntity",customUseEntity);
-
-			try {
-				Map countMap = MyBeanUtils.culBeanCounts(emkCheckFactory);
-				req.setAttribute("countMap", countMap);
-				double a=0,b=0;
-				a = Double.parseDouble(countMap.get("finishColums").toString())-7;
-				b = Double.parseDouble(countMap.get("Colums").toString())-8;
-				DecimalFormat df = new DecimalFormat("#.00");
-				req.setAttribute("recent", df.format(a*100/b));
-			} catch (Exception e) {
-				e.printStackTrace();
+			EmkFactoryArchivesEntity emkFactoryArchivesEntity = systemService.get(EmkFactoryArchivesEntity.class,emkCheckFactory.getId());
+			List<EmkCheckFactoryEntity> emkCheckFactoryEntityList = systemService.findHql("from EmkCheckFactoryEntity where (state=1 or state=2) and gysCode=?",emkFactoryArchivesEntity.getCompanyCode());
+			if(Utils.notEmpty(emkCheckFactoryEntityList)){
+				emkCheckFactory = emkCheckFactoryEntityList.get(0);
+				req.setAttribute("emkCheckFactoryPage", emkCheckFactory);
+				EmkCustomUseEntity customUseEntity = systemService.findUniqueByProperty(EmkCustomUseEntity.class,"cusNum",emkCheckFactory.getCusNum());
+				req.setAttribute("customUseEntity",customUseEntity);
 			}
 		}
 		return new ModelAndView("com/emk/storage/checkfactory/emkCheckFactory-update2");
@@ -531,6 +493,14 @@ public class EmkCheckFactoryController extends BaseController {
 						flag = 1;
 						break;
 					}
+
+					List<EmkCheckFactoryEntity> emkCheckFactoryEntityList = systemService.findHql("from EmkCheckFactoryEntity where state=1 and gysCode=?",checkFactoryEntity.getGysCode());
+					if (Utils.notEmpty(emkCheckFactoryEntityList) && emkCheckFactoryEntityList.size()>0) {
+						message = "已存在该供应商的验厂申请单，请重新选择在提交！";
+						j.setSuccess(false);
+						flag = 1;
+						break;
+					}
 				}
 			}else{
 				map.put("ids", emkCheckFactoryEntity.getId());
@@ -539,116 +509,26 @@ public class EmkCheckFactoryController extends BaseController {
 			if (flag == 0) {
 				for (String id : map.get("ids").toString().split(",")) {
 					EmkCheckFactoryEntity t = emkCheckFactoryService.get(EmkCheckFactoryEntity.class, id);
-					variables.put("optUser", t.getId());
-					EmkApprovalEntity b = systemService.findUniqueByProperty(EmkApprovalEntity.class,"formId",t.getId());
+					t.setState("1");
+					EmkFactoryArchivesEntity a = systemService.findUniqueByProperty(EmkFactoryArchivesEntity.class,"companyCode",t.getGysCode());
+					EmkApprovalEntity b = systemService.findUniqueByProperty(EmkApprovalEntity.class,"formId",a.getId());
 
-					List<Task> task = taskService.createTaskQuery().taskAssignee(id).list();
-					if (task.size() > 0) {
-						Task task1 = (Task)task.get(task.size() - 1);
-						EmkApprovalDetailEntity approvalDetail = ApprovalUtil.saveApprovalDetail(b.getId(),user,b,map.get("advice"));
-
-						if (task1.getTaskDefinitionKey().equals("checkfactoryTask")) {
-							taskService.complete(task1.getId(), variables);
-							t.setState("1");
-							b.setStatus(1);
-
-							approvalDetail.setBpmName("重新提交验收申请单");
-							approvalDetail.setBpmNode("checkfactoryTask");
-							approvalDetail.setApproveStatus(0);
-							approvalDetail.setApproveAdvice("重新提交");
-						}
-						if(task1.getTaskDefinitionKey().equals("checkTask")) {
-							if (map.get("isPass").equals("0")){
-								variables.put("isPass", map.get("isPass"));
-								taskService.complete(task1.getId(), variables);
-
-								approvalDetail.setBpmName("领导审核");
-								approvalDetail.setBpmNode("checkTask");
-								approvalDetail.setApproveStatus(0);
-								approvalDetail.setApproveAdvice(map.get("advice").toString());
-							}else{
-								systemService.executeSql("delete from act_hi_actinst  where proc_inst_id_=? and act_id_=?  ",task1.getProcessInstanceId(),"checkTask");
-								systemService.executeSql("delete from act_hi_taskinst where proc_inst_id_=? and task_def_key_=?  ",task1.getProcessInstanceId(),"checkTask");
-								systemService.executeSql("update act_ru_task set name_=?,task_def_key_=? where proc_inst_id_=? ","验厂申请","checkfactoryTask",task1.getProcessInstanceId());
-								systemService.executeSql("update act_ru_execution set rev_=1,act_id_=? where ID_=?", "checkfactoryTask",task1.getProcessInstanceId());
-
-								b.setStatus(0);
-								t.setState("0");
-
-								approvalDetail.setBpmName("回退验收申请单");
-								approvalDetail.setBpmNode("checkfactoryTask");
-								approvalDetail.setApproveStatus(1);
-								approvalDetail.setApproveAdvice("回退");
-							}
-								/*t.setLeader(user.getRealName());
-								t.setLeadUserId(user.getId());
-								t.setLeadAdvice(emkCheckFactoryEntity.getLeadAdvice());
-								if (emkCheckFactoryEntity.getIsPass().equals("0")) {
-									variables.put("isPass", emkCheckFactoryEntity.getIsPass());
-									taskService.complete(task1.getId(), variables);
-									t.setCyUserId(t.getCreateBy());
-									t.setCyer(t.getCreateName());
-
-								} else {
-									List<HistoricTaskInstance> hisTasks = historyService.createHistoricTaskInstanceQuery().taskAssignee(t.getId()).list();
-
-									List<Task> taskList = taskService.createTaskQuery().taskAssignee(t.getId()).list();
-									if (taskList.size() > 0) {
-										Task taskH = (Task)taskList.get(taskList.size() - 1);
-										HistoricTaskInstance historicTaskInstance = hisTasks.get(hisTasks.size() - 2);
-										FlowUtil.turnTransition(taskH.getId(), historicTaskInstance.getTaskDefinitionKey(), variables);
-										Map activityMap = systemService.findOneForJdbc("SELECT GROUP_CONCAT(t0.ID_) ids,GROUP_CONCAT(t0.TASK_ID_) taskids FROM act_hi_actinst t0 WHERE t0.ASSIGNEE_=? AND t0.ACT_ID_=? ORDER BY ID_ ASC", new Object[] { t.getId(), historicTaskInstance.getTaskDefinitionKey() });
-										String[] activitIdArr = activityMap.get("ids").toString().split(",");
-										String[] taskIdArr = activityMap.get("taskids").toString().split(",");
-										systemService.executeSql("UPDATE act_hi_taskinst SET  NAME_=CONCAT('【驳回后】','',NAME_) WHERE ASSIGNEE_>=? AND ID_=?",t.getId(), taskIdArr[1]);
-										systemService.executeSql("delete from act_hi_actinst where ID_>=? and ID_<?", activitIdArr[0], activitIdArr[1] );
-									}
-									t.setState("0");
-								}
-
-							}
-							if (task1.getTaskDefinitionKey().equals("cyTask")) {
-								t.setCyAdvice(emkCheckFactoryEntity.getLeadAdvice());
-								t.setBgUserId(t.getCreateBy());
-								t.setBger(t.getCreateName());
-								taskService.complete(task1.getId(), variables);
-
-							}
-							if (task1.getTaskDefinitionKey().equals("bgTask")) {
-								t.setBgAdvice(emkCheckFactoryEntity.getLeadAdvice());
-								if (emkCheckFactoryEntity.getIsHg().equals("0")) {
-									variables.put("isHg", emkCheckFactoryEntity.getIsHg());
-									taskService.complete(task1.getId(), variables);
-									t.setState("2");
-								} else {
-									List<HistoricTaskInstance> hisTasks = historyService.createHistoricTaskInstanceQuery().taskAssignee(t.getId()).list();
-									List<Task> taskList = taskService.createTaskQuery().taskAssignee(t.getId()).list();
-									if (taskList.size() > 0) {
-										Task taskH = (Task)taskList.get(taskList.size() - 1);
-										HistoricTaskInstance historicTaskInstance = hisTasks.get(hisTasks.size() - 2);
-										FlowUtil.turnTransition(taskH.getId(), historicTaskInstance.getTaskDefinitionKey(), variables);
-										Map activityMap = systemService.findOneForJdbc("SELECT GROUP_CONCAT(t0.ID_) ids,GROUP_CONCAT(t0.TASK_ID_) taskids FROM act_hi_actinst t0 WHERE t0.ASSIGNEE_=? AND t0.ACT_ID_=? ORDER BY ID_ ASC", new Object[] { t.getId(), historicTaskInstance.getTaskDefinitionKey() });
-										String[] activitIdArr = activityMap.get("ids").toString().split(",");
-										String[] taskIdArr = activityMap.get("taskids").toString().split(",");
-										systemService.executeSql("UPDATE act_hi_taskinst SET  NAME_=CONCAT('【驳回后】','',NAME_) WHERE ASSIGNEE_>=? AND ID_=?",t.getId(), taskIdArr[1]);
-										systemService.executeSql("delete from act_hi_actinst where ID_>=? and ID_<?", activitIdArr[0], activitIdArr[1] );
-									}
-								}*/
-						}
-						systemService.save(approvalDetail);
-
-					}else {
-						ProcessInstance pi = processEngine.getRuntimeService().startProcessInstanceByKey("checkfactory", "emkCheckFactoryEntity", variables);
-						task = taskService.createTaskQuery().taskAssignee(id).list();
-						Task task1 = task.get(task.size() - 1);
-						taskService.complete(task1.getId(), variables);
-
-						t.setState("1");
-						b.setStatus(1);
-					}
-
+					a.setState("50");
+					b.setStatus(50);
 					systemService.saveOrUpdate(t);
+					List<Task> task = taskService.createTaskQuery().taskAssignee(a.getId()).list();
+					if(Utils.notEmpty(task)){
+						Task task1 = task.get(task.size() - 1);
+						if(task1.getTaskDefinitionKey().equals("ycsqbTask")) {
+							variables.put("optUser",a.getId());
+							taskService.complete(task1.getId(), variables);
+							TSUser bpmUser = systemService.get(TSUser.class,b.getCommitId());
+							saveSmsAndEmailForMany("业务经理","【业务员】验厂申请表","您有【"+b.getCreateName()+"】提交的验厂申请表，单号："+b.getWorkNum()+"，请及时审核。",user.getUserName());
+						}
+					}
+					systemService.saveOrUpdate(a);
 					systemService.saveOrUpdate(b);
+
 				}
 			}
 			systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);

@@ -1,41 +1,25 @@
 package com.emk.bound.moutstorage.controller;
 import com.emk.approval.approval.entity.EmkApprovalEntity;
 import com.emk.approval.approvaldetail.entity.EmkApprovalDetailEntity;
-import com.emk.bound.minstorage.entity.EmkMInStorageEntity;
 import com.emk.bound.minstoragedetail.entity.EmkMInStorageDetailEntity;
 import com.emk.bound.moutstorage.entity.EmkMOutStorageEntity;
 import com.emk.bound.moutstorage.entity.EmkMOutStorageEntity2;
 import com.emk.bound.moutstorage.service.EmkMOutStorageServiceI;
 
-import java.io.InputStream;
 import java.util.*;
-import java.text.SimpleDateFormat;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.emk.storage.instorage.entity.EmkInStorageEntity;
+import com.emk.storage.accessories.entity.EmkAccessoriesEntity;
+import com.emk.storage.material.entity.EmkMaterialEntity;
 import com.emk.storage.storage.entity.EmkStorageEntity;
 import com.emk.storage.storagelog.entity.EmkStorageLogEntity;
 import com.emk.util.ApprovalUtil;
 import com.emk.util.ParameterUtil;
 import com.emk.util.Utils;
-import org.activiti.bpmn.model.BpmnModel;
-import org.activiti.engine.*;
-import org.activiti.engine.history.HistoricActivityInstance;
-import org.activiti.engine.history.HistoricProcessInstance;
-import org.activiti.engine.history.HistoricTaskInstance;
-import org.activiti.engine.impl.RepositoryServiceImpl;
-import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
-import org.activiti.engine.impl.persistence.entity.TaskEntity;
-import org.activiti.engine.impl.pvm.PvmTransition;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
-import org.activiti.engine.impl.pvm.process.TransitionImpl;
+
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
-import org.activiti.image.ProcessDiagramGenerator;
 import org.apache.log4j.Logger;
 import org.apache.tools.ant.util.DateUtils;
 import org.jeecgframework.web.system.pojo.base.TSUser;
@@ -49,26 +33,18 @@ import org.springframework.web.servlet.ModelAndView;
 import org.jeecgframework.core.common.controller.BaseController;
 import org.jeecgframework.core.common.exception.BusinessException;
 import org.jeecgframework.core.common.hibernate.qbc.CriteriaQuery;
-import org.jeecgframework.core.common.model.common.TreeChildCount;
 import org.jeecgframework.core.common.model.json.AjaxJson;
 import org.jeecgframework.core.common.model.json.DataGrid;
 import org.jeecgframework.core.constant.Globals;
 import org.jeecgframework.core.util.StringUtil;
 import org.jeecgframework.tag.core.easyui.TagUtil;
-import org.jeecgframework.web.system.pojo.base.TSDepart;
 import org.jeecgframework.web.system.service.SystemService;
 import org.jeecgframework.core.util.MyBeanUtils;
 
-import java.io.OutputStream;
-import org.jeecgframework.core.util.BrowserUtils;
-import org.jeecgframework.poi.excel.ExcelExportUtil;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.entity.ExportParams;
 import org.jeecgframework.poi.excel.entity.ImportParams;
-import org.jeecgframework.poi.excel.entity.TemplateExportParams;
 import org.jeecgframework.poi.excel.entity.vo.NormalExcelConstants;
-import org.jeecgframework.poi.excel.entity.vo.TemplateExcelConstants;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.jeecgframework.core.util.ResourceUtil;
 import java.io.IOException;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -76,30 +52,22 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.jeecgframework.core.util.ExceptionUtil;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.jeecgframework.core.beanvalidator.BeanValidators;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
-import java.net.URI;
 import org.springframework.http.MediaType;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.apache.commons.lang3.StringUtils;
-import org.jeecgframework.jwt.util.GsonUtil;
 import org.jeecgframework.jwt.util.ResponseMessage;
 import org.jeecgframework.jwt.util.Result;
 import com.alibaba.fastjson.JSONArray;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
@@ -126,21 +94,6 @@ public class EmkMOutStorageController extends BaseController {
 	private SystemService systemService;
 	@Autowired
 	private Validator validator;
-
-	@Autowired
-	ProcessEngine processEngine;
-	@Autowired
-	ManagementService managementService;
-	@Autowired
-	ProcessEngineConfiguration processEngineConfiguration;
-	@Autowired
-	RepositoryService repositoryService;
-	@Autowired
-	RuntimeService runtimeService;
-	@Autowired
-	TaskService taskService;
-	@Autowired
-	HistoryService historyService;
 
 
 	/**
@@ -520,20 +473,33 @@ public class EmkMOutStorageController extends BaseController {
 	 */
 	@RequestMapping(params = "goUpdate")
 	public ModelAndView goUpdate(EmkMOutStorageEntity emkMOutStorage, HttpServletRequest req) {
-		if (StringUtil.isNotEmpty(emkMOutStorage.getId())) {
-			emkMOutStorage = emkMOutStorageService.getEntity(EmkMOutStorageEntity.class, emkMOutStorage.getId());
-			req.setAttribute("emkMOutStoragePage", emkMOutStorage);
-
+		if(Utils.notEmpty(emkMOutStorage.getMaterialNo())){
+			String materialNo = "";
+			Map param = ParameterUtil.getParamMaps(req.getParameterMap());
 			if(emkMOutStorage.getType().equals("0")){
-				req.setAttribute("pactTypeName", "原料面料");
+				EmkMaterialEntity emkMaterialEntity = systemService.getEntity(EmkMaterialEntity.class,emkMOutStorage.getMaterialNo());
+				materialNo = emkMaterialEntity.getMaterialNo();
 			}else if(emkMOutStorage.getType().equals("1")){
-				req.setAttribute("pactTypeName", "缝制辅料");
-			}else if(emkMOutStorage.getType().equals("2")){
-				req.setAttribute("pactTypeName", "包装辅料");
+				EmkAccessoriesEntity emkAccessoriesEntity = systemService.getEntity(EmkAccessoriesEntity.class,emkMOutStorage.getMaterialNo());
+				materialNo = emkAccessoriesEntity.getMaterialNo();
+			}
+			emkMOutStorage = systemService.findUniqueByProperty(EmkMOutStorageEntity.class,"materialNo",materialNo);
+
+		}else{
+			if (StringUtil.isNotEmpty(emkMOutStorage.getId())) {
+				emkMOutStorage = emkMOutStorageService.getEntity(EmkMOutStorageEntity.class, emkMOutStorage.getId());
+
 			}
 		}
-		req.getSession().setAttribute("orderFinish", "");
 
+		req.setAttribute("emkMOutStoragePage", emkMOutStorage);
+		if(emkMOutStorage.getType().equals("0")){
+			req.setAttribute("pactTypeName", "原料面料");
+		}else if(emkMOutStorage.getType().equals("1")){
+			req.setAttribute("pactTypeName", "缝制辅料");
+		}else if(emkMOutStorage.getType().equals("2")){
+			req.setAttribute("pactTypeName", "包装辅料");
+		}
 		return new ModelAndView("com/emk/bound/moutstorage/emkMOutStorage-update");
 	}
 	@RequestMapping(params="goUpdate2")
@@ -735,6 +701,25 @@ public class EmkMOutStorageController extends BaseController {
 			if (flag == 0) {
 				for (String id : map.get("ids").toString().split(",")) {
 					EmkMOutStorageEntity t = emkMOutStorageService.get(EmkMOutStorageEntity.class, id);
+					if(t.getType().equals("0")){
+						EmkMaterialEntity e = systemService.findUniqueByProperty(EmkMaterialEntity.class,"materialNo",t.getMaterialNo());
+						if(Utils.notEmpty(e)){
+							if(!e.getState().equals("41")){
+								message = "提交出库单采购经理还未审核通过，无法提交！";
+								j.setSuccess(false);
+								return j;
+							}
+						}
+					}else if(t.getType().equals("1")){
+						EmkAccessoriesEntity e = systemService.findUniqueByProperty(EmkAccessoriesEntity.class,"materialNo",t.getMaterialNo());
+						if(Utils.notEmpty(e)){
+							if(!e.getState().equals("41")){
+								message = "提交出库单采购经理还未审核通过，无法提交！";
+								j.setSuccess(false);
+								return j;
+							}
+						}
+					}
 					t.setState("1");
 					variables.put("inputUser", t.getId());
 					message = "操作成功";
@@ -757,45 +742,51 @@ public class EmkMOutStorageController extends BaseController {
 					}else{
 						bpmUser = systemService.get(TSUser.class,b.getCommitId());
 					}
+					//保存审批意见
+					EmkApprovalDetailEntity approvalDetail = ApprovalUtil.saveApprovalDetail(b.getId(),user,b,map.get("advice"));
+
 					if (task.size() > 0) {
 						Task task1 = (Task)task.get(task.size() - 1);
 						if (task1.getTaskDefinitionKey().equals("outstorageTask")) {
+							t.setState("1");
+							b.setStatus(1);
 							taskService.complete(task1.getId(), variables);
 						}
-						/*if (task1.getTaskDefinitionKey().equals("checkTask")) {
-							t.setLeader(user.getRealName());
-							t.setLeadUserId(user.getId());
-							t.setLeadAdvice(emkMOutStorageEntity.getLeadAdvice());
-							if (emkMOutStorageEntity.getIsPass().equals("0")) {
-								t.setClUserName(t.getCreateName());
-								t.setClUserId(t.getCreateBy());
-								t.setClAdvice(emkMOutStorageEntity.getLeadAdvice());
-								variables.put("isPass", emkMOutStorageEntity.getIsPass());
+						if (task1.getTaskDefinitionKey().equals("checkTask")) {
+							if (map.get("isPass").equals("0")) {
+								variables.put("isPass","0");
 								taskService.complete(task1.getId(), variables);
-							} else {
-								List<HistoricTaskInstance> hisTasks = historyService.createHistoricTaskInstanceQuery().taskAssignee(emkMOutStorageEntity.getId()).list();
+								b.setStatus(3);
+								approvalDetail.setBpmName("业务经理复核");
+								t.setState("3");
+								approvalDetail.setApproveStatus(0);
 
-								List<Task> taskList = taskService.createTaskQuery().taskAssignee(emkMOutStorageEntity.getId()).list();
-								if (taskList.size() > 0) {
-									Task taskH = (Task)taskList.get(taskList.size() - 1);
-									HistoricTaskInstance historicTaskInstance = hisTasks.get(hisTasks.size() - 2);
-									turnTransition(taskH.getId(), historicTaskInstance.getTaskDefinitionKey(), variables);
-									Map activityMap = systemService.findOneForJdbc("SELECT GROUP_CONCAT(t0.ID_) ids,GROUP_CONCAT(t0.TASK_ID_) taskids FROM act_hi_actinst t0 WHERE t0.ASSIGNEE_=? AND t0.ACT_ID_=? ORDER BY ID_ ASC", t.getId(), historicTaskInstance.getTaskDefinitionKey() });
-									String[] activitIdArr = activityMap.get("ids").toString().split(",");
-									String[] taskIdArr = activityMap.get("taskids").toString().split(",");
-									systemService.executeSql("UPDATE act_hi_taskinst SET  NAME_=CONCAT('【驳回后】','',NAME_) WHERE ASSIGNEE_>=? AND ID_=?",t.getId(), taskIdArr[1]);
-									systemService.executeSql("delete from act_hi_actinst where ID_>=? and ID_<?", activitIdArr[0], activitIdArr[1] );
-								}
+								bpmUser = systemService.findUniqueByProperty(TSUser.class,"userName",t.getCaigouerName());
+								saveSmsAndEmailForOne("业务经理复核","您有【"+user.getRealName()+"】审核过的出库申请单，单号："+b.getWorkNum()+"，请及时处理。",bpmUser,user.getUserName());
+							}else{
+								saveApprvoalDetail(approvalDetail,"业务经理复核","checkTask",1,"回退");
+								backProcess(task1.getProcessInstanceId(),"checkTask","outstorageTask","出库申请单");
+								systemService.executeSql("delete from act_hi_actinst  where proc_inst_id_=? and act_id_=? ",task1.getProcessInstanceId(),"isPass");
+
 								t.setState("0");
+								b.setStatus(0);
+								b.setBpmStatus("1");
+								saveSmsAndEmailForOne("业务经理复核","您有【"+user.getRealName()+"】回退的出库申请单，单号："+b.getWorkNum()+"，请及时处理。",bpmUser,user.getUserName());
 							}
-						}else if (task1.getTaskDefinitionKey().equals("cwTask")) {
-							t.setCkUserName(t.getCreateName());
-							t.setCkUserId(t.getCreateBy());
-							t.setClAdvice(emkMOutStorageEntity.getLeadAdvice());
+						}
+						if (task1.getTaskDefinitionKey().equals("cgyzfhTask")) {
 							taskService.complete(task1.getId(), variables);
+							b.setStatus(24);
+							b.setNextBpmSher(map.get("realName"));
+							b.setNextBpmSherId(map.get("userName"));
+							approvalDetail.setBpmName("采购员再复核");
+							t.setState("24");
+							approvalDetail.setApproveStatus(0);
+							bpmUser = systemService.findUniqueByProperty(TSUser.class,"userName",map.get("userName"));
+							saveSmsAndEmailForOne("采购员再复核","您有【"+user.getRealName()+"】采购员再复核的出库申请单，单号："+b.getWorkNum()+"，请及时处理。",bpmUser,user.getUserName());
+						}
 
-						} else if (task1.getTaskDefinitionKey().equals("ckTask")) {
-							t.setCkAdvice(emkMOutStorageEntity.getLeadAdvice());
+						if (task1.getTaskDefinitionKey().equals("ckTask")) {
 							EmkStorageLogEntity storageLogEntity = new EmkStorageLogEntity();
 							List<EmkMInStorageDetailEntity> inStorageDetailEntityList = systemService.findHql("from EmkMInStorageDetailEntity where inStorageId=?",t.getId());
 							for(EmkMInStorageDetailEntity inStorageDetailEntity : inStorageDetailEntityList){
@@ -814,10 +805,16 @@ public class EmkMOutStorageController extends BaseController {
 								}
 								systemService.save(storageLogEntity);
 							}
-
 							t.setState("2");
+							b.setStatus(2);
 							taskService.complete(task1.getId(), variables);
-						}*/
+
+							bpmUser = systemService.findUniqueByProperty(TSUser.class,"userName",t.getApplerId());
+							saveSmsAndEmailForOne("仓库员出库","您有【"+user.getRealName()+"】仓库员已出库，单号："+b.getWorkNum()+"，请及时处理。",bpmUser,user.getUserName());
+
+						}
+						systemService.save(approvalDetail);
+
 					}else {
 						EmkStorageLogEntity storageLogEntity = new EmkStorageLogEntity();
 						List<EmkMInStorageDetailEntity> inStorageDetailEntityList = systemService.findHql("from EmkMInStorageDetailEntity where inStorageId=?",t.getId());
@@ -842,6 +839,7 @@ public class EmkMOutStorageController extends BaseController {
 						b.setProcessName("出库申请单【仓管员】");
 					}
 					systemService.saveOrUpdate(t);
+					systemService.saveOrUpdate(b);
 				}
 			}
 			systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);

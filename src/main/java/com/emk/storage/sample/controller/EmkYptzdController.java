@@ -4,10 +4,8 @@ import com.alibaba.fastjson.JSONArray;
 import com.emk.check.sizecheck.entity.EmkSizeEntity;
 import com.emk.storage.accessories.entity.EmkAccessoriesEntity;
 import com.emk.storage.enquirydetail.entity.EmkEnquiryDetailEntity;
-import com.emk.storage.gl.entity.EmkGlEntity;
 import com.emk.storage.material.entity.EmkMaterialEntity;
 import com.emk.storage.pb.entity.EmkPbEntity;
-import com.emk.storage.price.entity.EmkPriceEntity;
 import com.emk.storage.sample.entity.EmkSampleContentEntity;
 import com.emk.storage.sample.entity.EmkSampleEntity;
 import com.emk.storage.sample.service.EmkSampleServiceI;
@@ -17,7 +15,6 @@ import com.emk.storage.sampleran.entity.EmkSampleRanEntity;
 import com.emk.storage.samplerequired.entity.EmkSampleRequiredEntity;
 import com.emk.storage.sampleyin.entity.EmkSampleYinEntity;
 import com.emk.util.*;
-import com.emk.workorder.workorder.entity.EmkWorkOrderEntity;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -29,10 +26,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
-import org.activiti.engine.HistoryService;
-import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.TaskService;
-import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.apache.commons.lang3.StringUtils;
@@ -54,7 +47,6 @@ import org.jeecgframework.jwt.util.Result;
 import org.jeecgframework.poi.excel.entity.ExportParams;
 import org.jeecgframework.tag.core.easyui.TagUtil;
 import org.jeecgframework.web.system.pojo.base.TSUser;
-import org.jeecgframework.web.system.service.SystemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -74,17 +66,9 @@ public class EmkYptzdController extends BaseController {
     private static final Logger logger = Logger.getLogger(EmkYptzdController.class);
     @Autowired
     private EmkSampleServiceI emkSampleService;
-    @Autowired
-    private SystemService systemService;
-    @Autowired
-    private Validator validator;
 
     @Autowired
-    ProcessEngine processEngine;
-    @Autowired
-    TaskService taskService;
-    @Autowired
-    HistoryService historyService;
+    private Validator validator;
 
     @RequestMapping(params = "list")
     public ModelAndView list(HttpServletRequest request) {

@@ -3,7 +3,6 @@ import com.emk.approval.approval.entity.EmkApprovalEntity;
 import com.emk.approval.approval.service.EmkApprovalServiceI;
 import java.util.ArrayList;
 import java.util.List;
-import java.text.SimpleDateFormat;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -26,53 +25,36 @@ import org.jeecgframework.core.common.model.json.DataGrid;
 import org.jeecgframework.core.constant.Globals;
 import org.jeecgframework.core.util.StringUtil;
 import org.jeecgframework.tag.core.easyui.TagUtil;
-import org.jeecgframework.web.system.pojo.base.TSDepart;
-import org.jeecgframework.web.system.service.SystemService;
 import org.jeecgframework.core.util.MyBeanUtils;
 
-import java.io.OutputStream;
-import org.jeecgframework.core.util.BrowserUtils;
-import org.jeecgframework.poi.excel.ExcelExportUtil;
+
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.entity.ExportParams;
 import org.jeecgframework.poi.excel.entity.ImportParams;
-import org.jeecgframework.poi.excel.entity.TemplateExportParams;
 import org.jeecgframework.poi.excel.entity.vo.NormalExcelConstants;
-import org.jeecgframework.poi.excel.entity.vo.TemplateExcelConstants;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.jeecgframework.core.util.ResourceUtil;
 import java.io.IOException;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import java.util.Map;
-import java.util.HashMap;
 import org.jeecgframework.core.util.ExceptionUtil;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.jeecgframework.core.beanvalidator.BeanValidators;
 import java.util.Set;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
-import java.net.URI;
 import org.springframework.http.MediaType;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.apache.commons.lang3.StringUtils;
-import org.jeecgframework.jwt.util.GsonUtil;
 import org.jeecgframework.jwt.util.ResponseMessage;
 import org.jeecgframework.jwt.util.Result;
 import com.alibaba.fastjson.JSONArray;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
@@ -95,8 +77,7 @@ public class EmkApprovalController extends BaseController {
 
 	@Autowired
 	private EmkApprovalServiceI emkApprovalService;
-	@Autowired
-	private SystemService systemService;
+
 	@Autowired
 	private Validator validator;
 	
@@ -130,19 +111,9 @@ public class EmkApprovalController extends BaseController {
 		//自定义追加查询条件
 			TSUser user = ResourceUtil.getSessionUser();
 			if(user.getUserKey().equals("业务经理")){
-				cq.add(Restrictions.or(
-						Restrictions.eq("status",1),
-						Restrictions.or(
-								Restrictions.eq("status",4),
-								Restrictions.eq("status",35))
-				));
-				cq.add(Restrictions.or(
-						Restrictions.eq("type",0),
-						Restrictions.or(
-								Restrictions.eq("type",3),
-								Restrictions.eq("type",4))
-				));
-
+				cq.add(Restrictions.sqlRestriction("(({alias}.status=1 or {alias}.status=4 or {alias}.status=35 or {alias}.status=46) and ({alias}.type=0 or {alias}.type=3 or {alias}.type=4 or {alias}.type=6 or {alias}.type=8))" +
+													"	or (({alias}.status=35 or {alias}.status=4 ) and {alias}.type=12)" +
+													"	or (({alias}.status=1 or {alias}.status=4 or {alias}.status=50) and {alias}.type=1)"));
 			}
 			if(user.getUserKey().equals("技术经理")){
 				cq.add(Restrictions.or(
@@ -199,22 +170,10 @@ public class EmkApprovalController extends BaseController {
 				));
 			}
 			if(user.getUserKey().equals("采购经理")){
-				cq.add(Restrictions.or(
-						Restrictions.eq("status",13),
-						Restrictions.or(
-								Restrictions.or(
-										Restrictions.and(
-												Restrictions.eq("status",39),
-												Restrictions.eq("type",4)),
-										Restrictions.eq("status",13)),
-								Restrictions.eq("status",24))
-				));
-				cq.add(Restrictions.or(
-						Restrictions.eq("type",0),
-						Restrictions.or(
-								Restrictions.eq("type",2),
-								Restrictions.eq("type",4))
-				));
+				cq.add(Restrictions.sqlRestriction("(({alias}.status=13 or {alias}.status=43 or {alias}.status=24) and ({alias}.type=0 or {alias}.type=2 or {alias}.type=4))" +
+													"	or (({alias}.status=24 or {alias}.status=16) and {alias}.type=12)" +
+													"	or ({alias}.status=39 and {alias}.type=4)" +
+													"	or ({alias}.status=46 and {alias}.type=9)"));
 			}
 			if(user.getUserKey().equals("生产计划部经理")){
 				cq.add(Restrictions.or(
@@ -234,91 +193,51 @@ public class EmkApprovalController extends BaseController {
 				));
 			}
 			if(user.getUserKey().equals("技术员")){
-				cq.add(Restrictions.or(
-						Restrictions.and(
-								Restrictions.or(
-										Restrictions.eq("status",1),
-										Restrictions.eq("status",23)
-								),
-								Restrictions.eq("type",2)),
-						Restrictions.and(
-								Restrictions.eq("status",0),
-								Restrictions.eq("type",4))
-				));
+				cq.add(Restrictions.sqlRestriction("(({alias}.status=1 or {alias}.status=23) and {alias}.type=2)" +
+													"	or (({alias}.status=0 or {alias}.status=23 or {alias}.status=41) and {alias}.type=4)" +
+													"	or (({alias}.status=3 or {alias}.status=23) and {alias}.type=12)"));
 			}
 			if(user.getUserKey().equals("采购员")){
-				cq.add(Restrictions.or(
-						Restrictions.and(
-								Restrictions.eq("status",22),
-								Restrictions.eq("type",2)),
-						Restrictions.or(
-								Restrictions.and(
-									Restrictions.eq("status",3),
-									Restrictions.eq("type",4)),
-								Restrictions.and(
-										Restrictions.or(
-												Restrictions.or(
-														Restrictions.or(
-																Restrictions.or(
-																		Restrictions.or(
-																				Restrictions.or(
-																						Restrictions.eq("status",0),
-																						Restrictions.eq("status",1)),
-																				Restrictions.eq("status",24)),
-																		Restrictions.eq("status",15)),
-																Restrictions.eq("status",38)),
-														Restrictions.eq("status",36)),
-												Restrictions.eq("status",37)),
-										Restrictions.eq("nextBpmSherId",user.getId()))
-						)
-				));
-
+				cq.add(Restrictions.sqlRestriction("({alias}.status=22 and {alias}.type=2)" +
+													" 	or (({alias}.status=22 or {alias}.status=36) and {alias}.type=12) " +
+													"	or ({alias}.status=3 and ({alias}.type=4 or {alias}.type=6)) " +
+													"	or (({alias}.status=0 or {alias}.status=1 or {alias}.status=15 " +
+													" 	or {alias}.status=24 or {alias}.status=35 or {alias}.status=36" +
+													"	or {alias}.status=37 or {alias}.status=38 or {alias}.status=44) and {alias}.next_bpm_sher_id='"+user.getUserName()+"')"));
 			}
 			if(user.getUserKey().equals("仓库员")){
-				cq.add(Restrictions.or(
-						Restrictions.and(
-								Restrictions.or(
-										Restrictions.eq("status",1),
-										Restrictions.eq("status",23)
-								),
-								Restrictions.eq("type",6)),
-						Restrictions.and(
-								Restrictions.eq("status",40),
-								Restrictions.eq("type",5))
-				));
+				cq.add(Restrictions.sqlRestriction("(({alias}.status=1 or {alias}.status=23 or {alias}.status=24) and {alias}.type=6)" +
+						"	or ({alias}.status=40 and {alias}.type=5)"));
 			}
 			if(user.getUserKey().equals("财务")){
-				cq.add(Restrictions.or(
-						Restrictions.eq("status",24),
-						Restrictions.eq("status",27)
-				));
-				cq.eq("type",2);
+				cq.add(Restrictions.sqlRestriction("(({alias}.status=24 or {alias}.status=27) and {alias}.type=2)" +
+						"	or ({alias}.status=40 and {alias}.type=5)" +
+						"	or (({alias}.status=41 or {alias}.status=27) and {alias}.type=12  and {alias}.next_bpm_sher_id='"+user.getUserName()+"')"));
 			}
 			if(user.getUserKey().equals("财务经理")){
-				cq.add(Restrictions.or(
-						Restrictions.eq("status",25),
-						Restrictions.eq("status",29)
-				));
-				cq.eq("type",2);
+				cq.add(Restrictions.sqlRestriction("(({alias}.status=25 or {alias}.status=29) and {alias}.type=2)" +
+						"	or ({alias}.status=25 and {alias}.type=12)"));
 			}
 			if(user.getUserKey().equals("总经理")){
-				cq.eq("status",26);
-				cq.eq("type",2);
+				cq.add(Restrictions.sqlRestriction("({alias}.status=26 and {alias}.type=2)" +
+						"	or ({alias}.status=3 and {alias}.type=8)" +
+						"	or ({alias}.status=3 and {alias}.type=1)"));
 			}
 			if(user.getUserKey().equals("生产跟单员")){
-				cq.add(Restrictions.or(
-						Restrictions.eq("status",5),
-						Restrictions.eq("status",33)
-				));
-				cq.eq("type",3);
+				cq.add(Restrictions.sqlRestriction("(({alias}.status=5 or {alias}.status=33) and {alias}.type=3)"));
 			}
 			if(user.getUserKey().equals("业务员")){
-				cq.add(Restrictions.or(
-						Restrictions.eq("commitId",user.getId()),
-						(Restrictions.and(
-								Restrictions.eq("status",1),
-								Restrictions.eq("type",4)))
-				));
+				cq.add(Restrictions.sqlRestriction("({alias}.status=1 and {alias}.type=4)" +
+						"	or (({alias}.status=3 or {alias}.status=45  or {alias}.status=49) and {alias}.type=8 and {alias}.commit_id='"+user.getId()+"')" +
+						"	or (({alias}.status=0 or {alias}.status=21 or {alias}.status=48) and {alias}.type=1 and {alias}.commit_id='"+user.getId()+"')" +
+						"	or (({alias}.status=3 or {alias}.status=21) and {alias}.type=9)" +
+						"	or (({alias}.status=1 or {alias}.status=21) and {alias}.type=12)"));
+			}
+			if(user.getUserKey().equals("验厂经理")){
+				cq.add(Restrictions.sqlRestriction("(({alias}.status=3 or {alias}.status=53) and {alias}.type=1)"));
+			}
+			if(user.getUserKey().equals("验厂员")){
+				cq.add(Restrictions.sqlRestriction("(({alias}.status=51 or {alias}.status=52) and {alias}.type=1 and {alias}.next_bpm_sher_id='"+user.getUserName()+"')"));
 			}
 			if( user.getUserKey().equals("业务跟单员")){
 				cq.eq("commitId",user.getId());

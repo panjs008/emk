@@ -3,7 +3,6 @@ package com.emk.storage.price.controller;
 import com.alibaba.fastjson.JSONArray;
 import com.emk.approval.approval.entity.EmkApprovalEntity;
 import com.emk.approval.approvaldetail.entity.EmkApprovalDetailEntity;
-import com.emk.storage.enquiry.entity.EmkEnquiryEntity;
 import com.emk.storage.gl.entity.EmkGlEntity;
 import com.emk.storage.pb.entity.EmkPbEntity;
 import com.emk.storage.price.entity.EmkPriceEntity;
@@ -20,7 +19,6 @@ import io.swagger.annotations.ApiParam;
 
 import java.io.File;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.*;
 import javax.servlet.http.HttpServletRequest;
@@ -28,9 +26,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
-import org.activiti.engine.HistoryService;
-import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.TaskService;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.apache.commons.lang3.StringUtils;
@@ -75,13 +70,6 @@ public class EmkPriceController extends BaseController {
 
     @Autowired
     private Validator validator;
-
-    @Autowired
-    ProcessEngine processEngine;
-    @Autowired
-    TaskService taskService;
-    @Autowired
-    HistoryService historyService;
 
     @RequestMapping(params = "list")
     public ModelAndView list(HttpServletRequest request) {

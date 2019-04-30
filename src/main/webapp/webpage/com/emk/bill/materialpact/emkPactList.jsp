@@ -9,7 +9,7 @@
    <t:dgCol title="创建人登录名称"  field="createBy"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="创建日期"  field="createDate"  formatter="yyyy-MM-dd"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="所属部门"  field="sysOrgCode"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
-   <t:dgCol title="操作" field="opt" frozenColumn="true"  width="100"></t:dgCol>
+   <%--<t:dgCol title="操作" field="opt" frozenColumn="true"  width="100"></t:dgCol>--%>
    <t:dgCol title="采购合同编号"  field="zscghtbh" queryMode="single" query="true"  width="150"></t:dgCol>
    <%--<t:dgCol title="合同编号"  field="htNum" queryMode="single" width="120"></t:dgCol>--%>
    <%--<t:dgCol title="订单号"  field="orderNum" queryMode="single" width="105"></t:dgCol>--%>
@@ -29,7 +29,7 @@
    <%--<t:dgCol title="款式大类"  field="proTypeName"  queryMode="single"  width="70"></t:dgCol>--%>
       <%--<t:dgFunOpt funname="queryDetail2(id,materialNo)" title="原料面料" urlclass="ace_button" urlfont="fa-list-alt"></t:dgFunOpt>--%>
       <t:dgCol title="状态"  field="state" formatterjs="formatColor"  queryMode="single"  width="70"></t:dgCol>
-      <t:dgFunOpt funname="goToProcess(id,createBy)" title="流程进度" operationCode="process" urlclass="ace_button"  urlStyle="background-color:#ec4758;" urlfont="fa-tasks"></t:dgFunOpt>
+      <%--<t:dgFunOpt funname="goToProcess(id,createBy)" title="流程进度" operationCode="process" urlclass="ace_button"  urlStyle="background-color:#ec4758;" urlfont="fa-tasks"></t:dgFunOpt>--%>
       <%--<t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkMaterialPactController.do?goAdd&type=0&winTitle=录入原料预采购合同单" funname="add" height="600" width="1000"></t:dgToolBar>--%>
       <t:dgToolBar title="查看" icon="fa fa-search" operationCode="look" url="emkMaterialPactController.do?goUpdate2&type=0&winTitle=查看原料采购合同单" funname="detail" height="600" width="1350"></t:dgToolBar>
 

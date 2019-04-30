@@ -1,34 +1,26 @@
 package com.emk.bill.materialpact.controller;
 
 import com.alibaba.fastjson.JSONArray;
-import com.emk.bill.contract.entity.EmkContractEntity;
+import com.emk.approval.approval.entity.EmkApprovalEntity;
 import com.emk.bill.materialpact.entity.EmkMaterialPactEntity;
 import com.emk.bill.materialpact.entity.EmkMaterialPactEntity2;
 import com.emk.bill.materialpact.service.EmkMaterialPactServiceI;
+import com.emk.bill.materialrequired.entity.EmkMaterialRequiredEntity;
 import com.emk.bill.proorder.entity.EmkProOrderEntity;
-import com.emk.storage.pack.entity.EmkPackEntity;
 import com.emk.storage.sampledetail.entity.EmkSampleDetailEntity;
-import com.emk.util.FlowUtil;
 import com.emk.util.ParameterUtil;
 import com.emk.util.Utils;
-import com.emk.workorder.workorder.entity.EmkWorkOrderEntity;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.*;
-import java.util.Map.Entry;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
-import org.activiti.engine.HistoryService;
-import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.TaskService;
-import org.activiti.engine.history.HistoricTaskInstance;
+
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.apache.commons.lang3.StringUtils;
@@ -42,19 +34,15 @@ import org.jeecgframework.core.common.model.json.AjaxJson;
 import org.jeecgframework.core.common.model.json.DataGrid;
 import org.jeecgframework.core.constant.Globals;
 import org.jeecgframework.core.extend.hqlsearch.HqlGenerateUtil;
-import org.jeecgframework.core.util.ExceptionUtil;
 import org.jeecgframework.core.util.MyBeanUtils;
 import org.jeecgframework.core.util.ResourceUtil;
 import org.jeecgframework.core.util.StringUtil;
 import org.jeecgframework.jwt.util.ResponseMessage;
 import org.jeecgframework.jwt.util.Result;
-import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.entity.ExportParams;
-import org.jeecgframework.poi.excel.entity.ImportParams;
 import org.jeecgframework.tag.core.easyui.TagUtil;
 import org.jeecgframework.web.system.pojo.base.TSDepart;
 import org.jeecgframework.web.system.pojo.base.TSUser;
-import org.jeecgframework.web.system.service.SystemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -64,8 +52,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -76,17 +62,9 @@ public class EmkMaterialPactController extends BaseController {
     private static final Logger logger = Logger.getLogger(EmkMaterialPactController.class);
     @Autowired
     private EmkMaterialPactServiceI emkMaterialPactService;
-    @Autowired
-    private SystemService systemService;
-    @Autowired
-    private Validator validator;
 
     @Autowired
-    ProcessEngine processEngine;
-    @Autowired
-    TaskService taskService;
-    @Autowired
-    HistoryService historyService;
+    private Validator validator;
 
 
     @RequestMapping(params = "list")
@@ -343,6 +321,7 @@ public class EmkMaterialPactController extends BaseController {
         AjaxJson j = new AjaxJson();
         message = "面料预采购合同更新成功";
         Map<String, String> map = ParameterUtil.getParamMaps(request.getParameterMap());
+        emkMaterialPact.setProTypeName(emkMaterialPact.getProTypeName().replaceAll(",",""));
         EmkMaterialPactEntity t = emkMaterialPactService.get(EmkMaterialPactEntity.class, map.get("pactId").toString());
         try {
             emkMaterialPact.setId(null);
@@ -350,10 +329,16 @@ public class EmkMaterialPactController extends BaseController {
             emkMaterialPactService.saveOrUpdate(t);
 
             String dataRows = map.get("orderMxListID");
-            dataRows = map.get("orderMxListID");
+            if(t.getType().equals("0")){
+                dataRows = map.get("orderMxListID");
+            }else if(t.getType().equals("1")){
+                dataRows = map.get("orderMxListID2");
+            }else if(t.getType().equals("2")){
+                dataRows = map.get("orderMxListID3");
+            }
             //保存原料面料数据
             if (Utils.notEmpty(dataRows)) {
-                systemService.executeSql("delete from emk_sample_detail where sample_id = ? and type=0",t.getId());
+                systemService.executeSql("delete from emk_sample_detail where sample_id = ? and type=?",t.getId(),t.getType());
                 int rows = Integer.parseInt(dataRows);
                 for (int i = 0; i < rows; i++) {
                     EmkSampleDetailEntity emkSampleDetailEntity = new EmkSampleDetailEntity();
@@ -386,92 +371,30 @@ public class EmkMaterialPactController extends BaseController {
                         emkSampleDetailEntity.setRemark(map.get("orderMxList["+i+"].remark"));
 
                         emkSampleDetailEntity.setSampleId(t.getId());
-                        emkSampleDetailEntity.setType("0");
+                        emkSampleDetailEntity.setType(t.getType());
                         systemService.save(emkSampleDetailEntity);
                     }
                 }
             }
-            dataRows = map.get("orderMxListID2");
-            //保存缝制辅料数据
-            if (Utils.notEmpty(dataRows)) {
-                systemService.executeSql("delete from emk_sample_detail where sample_id = ? and type=1",t.getId());
 
-                int rows = Integer.parseInt(dataRows);
-                for (int i = 0; i < rows; i++) {
-                    EmkSampleDetailEntity emkSampleDetailEntity = new EmkSampleDetailEntity();
-                    if (Utils.notEmpty(map.get("orderMxList["+i+"].proZnName"))) {
-                        emkSampleDetailEntity.setCgxqdh(map.get("orderMxList["+i+"].cgxqdh"));
-                        if(t.getFlag().equals("1")){
-                            emkSampleDetailEntity.setCghtbh(map.get("orderMxList["+i+"].cghtbh"));
-                        }
-                        emkSampleDetailEntity.setProZnName(map.get("orderMxList["+i+"].proZnName"));
-                        emkSampleDetailEntity.setProNum(map.get("orderMxList["+i+"].proNum"));
-                        emkSampleDetailEntity.setGysCode(map.get("orderMxList["+i+"].gysCode"));
-                        emkSampleDetailEntity.setBrand(map.get("orderMxList["+i+"].brand"));
-                        emkSampleDetailEntity.setDirection(map.get("orderMxList["+i+"].direction"));
-                        emkSampleDetailEntity.setBetchNum(map.get("orderMxList["+i+"].betchNum"));
-                        emkSampleDetailEntity.setWidth(map.get("orderMxList["+i+"].width"));
-                        emkSampleDetailEntity.setColor(map.get("orderMxList["+i+"].color"));
-                        emkSampleDetailEntity.setWeight(map.get("orderMxList["+i+"].weight"));
-                        emkSampleDetailEntity.setChengf(map.get("orderMxList["+i+"].chengf"));
-                        if(Utils.notEmpty(map.get("orderMxList["+i+"].yongliang"))){
-                            emkSampleDetailEntity.setYongliang(Double.parseDouble(map.get("orderMxList["+i+"].yongliang").toString()));
-                        }
-                        emkSampleDetailEntity.setSignPrice(map.get("orderMxList["+i+"].signPrice"));
-                        emkSampleDetailEntity.setSignPrice(map.get("orderMxList["+i+"].signPrice"));
-                        if(Utils.notEmpty(map.get("orderMxList["+i+"].sunhaoPrecent"))){
-                            emkSampleDetailEntity.setSunhaoPrecent(Double.parseDouble(map.get("orderMxList["+i+"].sunhaoPrecent").toString()));
-                        }
-                        emkSampleDetailEntity.setSumYongliang(map.get("orderMxList["+i+"].sumYongliang").toString());
-                        emkSampleDetailEntity.setSumPrice(map.get("orderMxList["+i+"].sumPrice").toString());
-                        emkSampleDetailEntity.setUnit(map.get("orderMxList["+i+"].unit"));
-                        emkSampleDetailEntity.setRemark(map.get("orderMxList["+i+"].remark"));
+            if("1".equals(map.get("isPass"))){
+                EmkMaterialRequiredEntity a = systemService.get(EmkMaterialRequiredEntity.class, map.get("materialRequiredId"));
+                EmkApprovalEntity b = systemService.findUniqueByProperty(EmkApprovalEntity.class,"formId",a.getId());
 
-                        emkSampleDetailEntity.setSampleId(t.getId());
-                        emkSampleDetailEntity.setType("1");
-                        systemService.save(emkSampleDetailEntity);
-                    }
-                }
-            }
-            dataRows = map.get("orderMxListID3");
-            //保存包装辅料数据
-            if (Utils.notEmpty(dataRows)) {
-                systemService.executeSql("delete from emk_sample_detail where sample_id = ? and type=2",t.getId());
+                a.setState("46");
+                b.setStatus(46);
 
-                int rows = Integer.parseInt(dataRows);
-                for (int i = 0; i < rows; i++) {
-                    EmkSampleDetailEntity emkSampleDetailEntity = new EmkSampleDetailEntity();
-                    if (Utils.notEmpty(map.get("orderMxList["+i+"].proZnName"))) {
-                        emkSampleDetailEntity.setCgxqdh(map.get("orderMxList["+i+"].cgxqdh"));
-                        if(t.getFlag().equals("1")){
-                            emkSampleDetailEntity.setCghtbh(map.get("orderMxList["+i+"].cghtbh"));
-                        }
-                        emkSampleDetailEntity.setProZnName(map.get("orderMxList["+i+"].proZnName"));
-                        emkSampleDetailEntity.setProNum(map.get("orderMxList["+i+"].proNum"));
-                        emkSampleDetailEntity.setGysCode(map.get("orderMxList["+i+"].gysCode"));
-                        emkSampleDetailEntity.setBrand(map.get("orderMxList["+i+"].brand"));
-                        emkSampleDetailEntity.setDirection(map.get("orderMxList["+i+"].direction"));
-                        emkSampleDetailEntity.setBetchNum(map.get("orderMxList["+i+"].betchNum"));
-                        emkSampleDetailEntity.setWidth(map.get("orderMxList["+i+"].width"));
-                        emkSampleDetailEntity.setColor(map.get("orderMxList["+i+"].color"));
-                        emkSampleDetailEntity.setWeight(map.get("orderMxList["+i+"].weight"));
-                        emkSampleDetailEntity.setChengf(map.get("orderMxList["+i+"].chengf"));
-                        if(Utils.notEmpty(map.get("orderMxList["+i+"].yongliang"))){
-                            emkSampleDetailEntity.setYongliang(Double.parseDouble(map.get("orderMxList["+i+"].yongliang").toString()));
-                        }
-                        emkSampleDetailEntity.setSignPrice(map.get("orderMxList["+i+"].signPrice"));
-                        emkSampleDetailEntity.setSignPrice(map.get("orderMxList["+i+"].signPrice"));
-                        if(Utils.notEmpty(map.get("orderMxList["+i+"].sunhaoPrecent"))){
-                            emkSampleDetailEntity.setSunhaoPrecent(Double.parseDouble(map.get("orderMxList["+i+"].sunhaoPrecent").toString()));
-                        }
-                        emkSampleDetailEntity.setSumYongliang(map.get("orderMxList["+i+"].sumYongliang").toString());
-                        emkSampleDetailEntity.setSumPrice(map.get("orderMxList["+i+"].sumPrice").toString());
-                        emkSampleDetailEntity.setUnit(map.get("orderMxList["+i+"].unit"));
-                        emkSampleDetailEntity.setRemark(map.get("orderMxList["+i+"].remark"));
-
-                        emkSampleDetailEntity.setSampleId(t.getId());
-                        emkSampleDetailEntity.setType("2");
-                        systemService.save(emkSampleDetailEntity);
+                systemService.saveOrUpdate(a);
+                systemService.saveOrUpdate(b);
+                Map<String, Object> variables = new HashMap();
+                List<Task> task = taskService.createTaskQuery().taskAssignee(a.getId()).list();
+                if(Utils.notEmpty(task)){
+                    Task task1 = task.get(task.size() - 1);
+                    if(task1.getTaskDefinitionKey().equals("htTask")) {
+                        variables.put("inputUser",a.getId());
+                        taskService.complete(task1.getId(), variables);
+                        TSUser user = (TSUser)request.getSession().getAttribute("LOCAL_CLINET_USER");
+                        saveSmsAndEmailForMany("采购经理","【采购员】正式购销合同","您有【"+b.getCreateName()+"】审核过的采购需求单，单号："+b.getWorkNum()+"，请及时审核。",user.getUserName());
                     }
                 }
             }
@@ -526,6 +449,33 @@ public class EmkMaterialPactController extends BaseController {
         return new ModelAndView("com/emk/bill/materialpact/emkMaterialPact-update2");
     }
 
+    @RequestMapping(params = "goUpdate3")
+    public ModelAndView goUpdate3(EmkMaterialPactEntity emkMaterialPact, HttpServletRequest req) {
+        if (StringUtil.isNotEmpty(emkMaterialPact.getId())) {
+            EmkMaterialRequiredEntity materialRequiredEntity = systemService.get(EmkMaterialRequiredEntity.class,emkMaterialPact.getId());
+            Map m = systemService.findOneForJdbc("SELECT DISTINCT sample_id  FROM emk_sample_detail t WHERE t.cgxqdh=?" ,materialRequiredEntity.getMaterialNo());
+            if(Utils.notEmpty(m)){
+                emkMaterialPact = emkMaterialPactService.getEntity(EmkMaterialPactEntity.class, m.get("sample_id").toString());
+            }
+
+            List<TSUser> userList = systemService.findHql("from TSUser where userKey='业务员'");
+            req.setAttribute("ywyList", userList);
+            userList = systemService.findHql("from TSUser where userKey='业务跟单员'");
+            req.setAttribute("ywgdyList", userList);
+            userList = systemService.findHql("from TSUser where userKey='生产跟单员'");
+            req.setAttribute("scgdyList", userList);
+
+            req.setAttribute("emkMaterialPactPage", emkMaterialPact);
+            if(emkMaterialPact.getType().equals("0")){
+                req.setAttribute("pactTypeName", "原料面料");
+            }else if(emkMaterialPact.getType().equals("1")){
+                req.setAttribute("pactTypeName", "缝制辅料");
+            }else if(emkMaterialPact.getType().equals("2")){
+                req.setAttribute("pactTypeName", "包装辅料");
+            }
+        }
+        return new ModelAndView("com/emk/bill/materialpact/emkMaterialPact-update3");
+    }
 
     @RequestMapping(params = "upload")
     public ModelAndView upload(HttpServletRequest req) {
@@ -634,6 +584,15 @@ public class EmkMaterialPactController extends BaseController {
         //emkMaterialPact = systemService.getEntity(EmkMaterialPactEntity.class, emkMaterialPact.getId());
         message = "生成面料正式采购合同成功";
         try {
+            for (String id : ids.split(",")) {
+                EmkMaterialPactEntity materialPactEntity = systemService.getEntity(EmkMaterialPactEntity.class, id);
+                if (!materialPactEntity.getState().equals("0")) {
+                    message = "存在已生成的预购销合同单，请重新选择预购销合同单！";
+                    j.setSuccess(false);
+                    j.setMsg(message);
+                    return j;
+                }
+            }
             Map orderNum = systemService.findOneForJdbc("select CAST(ifnull(max(right(zscghtbh, 6)),0)+1 AS signed) orderNum from emk_material_pact where flag=1 and type=?",emkMaterialPact.getType());
             EmkMaterialPactEntity pactEntity = new EmkMaterialPactEntity();
             TSDepart depart = systemService.findUniqueByProperty(TSDepart.class,"orgCode","A01");
@@ -641,11 +600,15 @@ public class EmkMaterialPactController extends BaseController {
             pactEntity.setType(emkMaterialPact.getType());
             pactEntity.setKdDate(DateUtils.format(new Date(), "yyyy-MM-dd"));
             pactEntity.setFlag("1");
-            pactEntity.setPartyA(depart.getDepartname());
+            //pactEntity.setPartyA(depart.getDepartname());
             pactEntity.setPartyAId(depart.getOrgCode());
 
             systemService.save(pactEntity);
             for(String id : ids.split(",")){
+                EmkMaterialPactEntity materialPactEntity = systemService.get(EmkMaterialPactEntity.class,id);
+                materialPactEntity.setState("1");
+                systemService.saveOrUpdate(materialPactEntity);
+
                 List<EmkSampleDetailEntity> emkSampleDetailEntities = systemService.findHql("from EmkSampleDetailEntity where sampleId=? and type=?", id,emkMaterialPact.getType());
                 EmkSampleDetailEntity t = null;
                 EmkMaterialPactEntity emkMaterialPactEntity = systemService.get(EmkMaterialPactEntity.class,id);
@@ -653,12 +616,51 @@ public class EmkMaterialPactController extends BaseController {
                     t = new EmkSampleDetailEntity();
                     MyBeanUtils.copyBeanNotNull2Bean(sampleDetailEntity,t);
                     t.setId(null);
-                    t.setSampleId(pactEntity.getId());
                     t.setOrderNum(emkMaterialPactEntity.getOrderNum());
                     t.setSampleNo(emkMaterialPactEntity.getSampleNo());
                     t.setDhjqDate(emkMaterialPactEntity.getDhjqDate());
+                    t.setSampleId(pactEntity.getId());
                     systemService.save(t);
                 }
+
+                Map<String, Object> variables = new HashMap();
+                //订单流程流转到购销合同环节
+                EmkProOrderEntity proOrderEntity = systemService.findUniqueByProperty(EmkProOrderEntity.class,"orderNo",materialPactEntity.getOrderNum());
+                if(Utils.notEmpty(proOrderEntity)){
+                    List<Task> task = taskService.createTaskQuery().taskAssignee(proOrderEntity.getId()).list();
+                    if(Utils.notEmpty(task)){
+                        Task task1 = task.get(task.size() - 1);
+                        if(task1.getTaskDefinitionKey().equals("ygxhtTask")) {
+                            variables.put("optUser", proOrderEntity.getId());
+                            taskService.complete(task1.getId(), variables);
+
+                            EmkApprovalEntity b = systemService.findUniqueByProperty(EmkApprovalEntity.class,"formId",proOrderEntity.getId());
+                            b.setStatus(45);
+                            proOrderEntity.setState("45");
+                            systemService.saveOrUpdate(b);
+                            systemService.saveOrUpdate(proOrderEntity);
+                        }
+                    }
+
+                }
+
+
+                //采购需求单流程流转到采购员执行环节
+                Map m = systemService.findOneForJdbc("select * from emk_material_required where material_no=? and type=?",materialPactEntity.getCgxqdh(),materialPactEntity.getType());
+                //EmkMaterialRequiredEntity materialRequiredEntity = systemService.findUniqueByProperty(EmkMaterialRequiredEntity.class,"materialNo",materialPactEntity.getCgxqdh());
+                if(Utils.notEmpty(m)){
+                    List<Task> task = taskService.createTaskQuery().taskAssignee(m.get("id").toString()).list();
+                    if(Utils.notEmpty(task)){
+                        Task task1 = task.get(task.size() - 1);
+                        if(task1.getTaskDefinitionKey().equals("ycghtTask")) {
+                            variables.put("inputUser", m.get("id").toString());
+                            taskService.complete(task1.getId(), variables);
+                        }
+                    }
+
+                }
+
+
             }
             systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
         } catch (Exception e) {
@@ -680,7 +682,7 @@ public class EmkMaterialPactController extends BaseController {
             int flag = 0;
             TSUser user = (TSUser)request.getSession().getAttribute("LOCAL_CLINET_USER");
             Map map = ParameterUtil.getParamMaps(request.getParameterMap());
-            if ((emkMaterialPactEntity.getId() == null) || (emkMaterialPactEntity.getId().isEmpty())) {
+            if (Utils.notEmpty(emkMaterialPactEntity.getId())) {
                 for (String id : map.get("ids").toString().split(",")) {
                     EmkMaterialPactEntity materialPactEntity = systemService.getEntity(EmkMaterialPactEntity.class, id);
                     if (!materialPactEntity.getState().equals("0")) {
@@ -706,38 +708,7 @@ public class EmkMaterialPactController extends BaseController {
                         if (task1.getTaskDefinitionKey().equals("htTask")) {
                             taskService.complete(task1.getId(), variables);
                         }
-                        if (task1.getTaskDefinitionKey().equals("checkTask")) {
-                            t.setLeader(user.getRealName());
-                            t.setLeadUserId(user.getId());
-                            t.setLeadAdvice(emkMaterialPactEntity.getLeadAdvice());
-                            if (emkMaterialPactEntity.getIsPass().equals("0")) {
-                                variables.put("isPass", emkMaterialPactEntity.getIsPass());
-                                taskService.complete(task1.getId(), variables);
 
-                                Map yht = systemService.findOneForJdbc("SELECT id FROM emk_material_pact WHERE  flag=1 and TYPE=? and order_num=?",t.getType(),t.getOrderNum());
-                                EmkMaterialPactEntity materialPactEntityHt = systemService.get(EmkMaterialPactEntity.class,yht.get("id").toString());
-                                materialPactEntityHt.setYhtUserId(user.getUserName());
-                                materialPactEntityHt.setYhter(user.getRealName());
-                                materialPactEntityHt.setYhtAdvice(t.getLeadAdvice());
-
-                                systemService.saveOrUpdate(materialPactEntityHt);
-                            } else {
-                                List<HistoricTaskInstance> hisTasks = historyService.createHistoricTaskInstanceQuery().taskAssignee(t.getId()).list();
-
-                                List<Task> taskList = taskService.createTaskQuery().taskAssignee(t.getId()).list();
-                                if (taskList.size() > 0) {
-                                    Task taskH = (Task)taskList.get(taskList.size() - 1);
-                                    HistoricTaskInstance historicTaskInstance = hisTasks.get(hisTasks.size() - 2);
-                                    FlowUtil.turnTransition(taskH.getId(), historicTaskInstance.getTaskDefinitionKey(), variables);
-                                    Map activityMap = systemService.findOneForJdbc("SELECT GROUP_CONCAT(t0.ID_) ids,GROUP_CONCAT(t0.TASK_ID_) taskids FROM act_hi_actinst t0 WHERE t0.ASSIGNEE_=? AND t0.ACT_ID_=? ORDER BY ID_ ASC",  t.getId(), historicTaskInstance.getTaskDefinitionKey());
-                                    String[] activitIdArr = activityMap.get("ids").toString().split(",");
-                                    String[] taskIdArr = activityMap.get("taskids").toString().split(",");
-                                    systemService.executeSql("UPDATE act_hi_taskinst SET  NAME_=CONCAT('【驳回后】','',NAME_) WHERE ASSIGNEE_>=? AND ID_=?",t.getId(), taskIdArr[1]);
-                                    systemService.executeSql("delete from act_hi_actinst where ID_>=? and ID_<?", activitIdArr[0], activitIdArr[1] );
-                                }
-                                t.setState("0");
-                            }
-                        }
 
                     }else {
                         ProcessInstance pi = processEngine.getRuntimeService().startProcessInstanceByKey("ht", "materialPactEntityYht", variables);
@@ -794,45 +765,7 @@ public class EmkMaterialPactController extends BaseController {
                         if (task1.getTaskDefinitionKey().equals("htTask")) {
                             taskService.complete(task1.getId(), variables);
                         }
-                        if (task1.getTaskDefinitionKey().equals("checkTask")) {
-                            t.setLeader(user.getRealName());
-                            t.setLeadUserId(user.getId());
-                            t.setLeadAdvice(emkMaterialPactEntity.getLeadAdvice());
-                            if (emkMaterialPactEntity.getIsPass().equals("0")) {
-                                variables.put("isPass", emkMaterialPactEntity.getIsPass());
-                                taskService.complete(task1.getId(), variables);
 
-                                Map yht = systemService.findOneForJdbc("SELECT id FROM emk_material_pact WHERE flag=0 and TYPE=? and order_num=?",t.getType(),t.getOrderNum());
-                                EmkMaterialPactEntity materialPactEntityYht = systemService.get(EmkMaterialPactEntity.class,yht.get("id").toString());
-
-                                task = taskService.createTaskQuery().taskAssignee(materialPactEntityYht.getId()).list();
-                                task1 = (Task)task.get(task.size() - 1);
-                                taskService.complete(task1.getId(), variables);
-
-                                materialPactEntityYht.setYhtUserId(user.getUserName());
-                                materialPactEntityYht.setYhter(user.getRealName());
-                                materialPactEntityYht.setYhtAdvice(t.getLeadAdvice());
-                                materialPactEntityYht.setState("2");
-                                systemService.saveOrUpdate(materialPactEntityYht);
-
-                                t.setState("2");
-                            } else {
-                                List<HistoricTaskInstance> hisTasks = historyService.createHistoricTaskInstanceQuery().taskAssignee(t.getId()).list();
-
-                                List<Task> taskList = taskService.createTaskQuery().taskAssignee(t.getId()).list();
-                                if (taskList.size() > 0) {
-                                    Task taskH = (Task)taskList.get(taskList.size() - 1);
-                                    HistoricTaskInstance historicTaskInstance = hisTasks.get(hisTasks.size() - 2);
-                                    FlowUtil.turnTransition(taskH.getId(), historicTaskInstance.getTaskDefinitionKey(), variables);
-                                    Map activityMap = systemService.findOneForJdbc("SELECT GROUP_CONCAT(t0.ID_) ids,GROUP_CONCAT(t0.TASK_ID_) taskids FROM act_hi_actinst t0 WHERE t0.ASSIGNEE_=? AND t0.ACT_ID_=? ORDER BY ID_ ASC",  t.getId(), historicTaskInstance.getTaskDefinitionKey());
-                                    String[] activitIdArr = activityMap.get("ids").toString().split(",");
-                                    String[] taskIdArr = activityMap.get("taskids").toString().split(",");
-                                    systemService.executeSql("UPDATE act_hi_taskinst SET  NAME_=CONCAT('【驳回后】','',NAME_) WHERE ASSIGNEE_>=? AND ID_=?",t.getId(), taskIdArr[1]);
-                                    systemService.executeSql("delete from act_hi_actinst where ID_>=? and ID_<?", activitIdArr[0], activitIdArr[1] );
-                                }
-                                t.setState("0");
-                            }
-                        }
 
                     }else {
                         ProcessInstance pi = processEngine.getRuntimeService().startProcessInstanceByKey("zsht", "materialPactEntityZsht", variables);

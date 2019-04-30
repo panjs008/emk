@@ -112,6 +112,10 @@ public class EmkCheckFactoryEntity implements java.io.Serializable {
 
 	private String processName;
 
+	private String fileName;
+	private String fileNameUrl;
+
+
 	@Formula("(select CONCAT(p.NAME_,'-',p.TASK_DEF_KEY_) from act_ru_task p where p.ASSIGNEE_ = id limit 0,1)")
 	@Column(name = "process_name", nullable = true, length = 32)
 	public String getProcessName() {
@@ -600,4 +604,21 @@ public class EmkCheckFactoryEntity implements java.io.Serializable {
 		this.developerName = developerName;
 	}
 
+	@Column(name = "file_name", nullable = true, length = 256)
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+
+	@Column(name = "file_name_url", nullable = true, length = 512)
+	public String getFileNameUrl() {
+		return fileNameUrl;
+	}
+
+	public void setFileNameUrl(String fileNameUrl) {
+		this.fileNameUrl = fileNameUrl;
+	}
 }

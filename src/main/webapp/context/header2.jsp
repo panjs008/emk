@@ -108,7 +108,9 @@
         $("#levelDays").val(DateDiff(d1,d2));
     }
 
-
+    function downloadFile(url) {
+        window.open("${webRoot}/"+url);
+    }
 
     function DateDiff(sDate1,  sDate2){    //sDate1和sDate2是2002-12-18格式
         var  aDate,  oDate1,  oDate2,  iDays

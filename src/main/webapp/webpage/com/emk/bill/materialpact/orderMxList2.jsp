@@ -138,15 +138,12 @@
     <input id="precent" name="precent" type="text" />
     <input id="brand" name="brand" type="text" />
     <input id="unit" name="unit" type="text" />
-    <input id="yongliang" name="yongliang" type="text" />
-    <input id="sunhaoPrecent" name="sunhaoPrecent" type="text" />
-    <input id="chengben" name="chengben" type="text" />
     <input id="remark" name="remark" type="text" />
 
 
     <input id="id" name="id" type="text" />
     <t:choose  hiddenName="id"  hiddenid="id" url="emkProductController.do?proSelect&selectType=1" name="emkProductList" width="820px" height="500px"
-               icon="icon-search" title="选择面料" textname="id,proNum,proType,proTypeName,proZnName,precent,brand,unit,yongliang,sunhaoPrecent,chengben,remark" isclear="true" isInit="true"></t:choose>
+               icon="icon-search" title="选择面料" textname="id,proNum,proType,proTypeName,proZnName,precent,brand,unit,remark" isclear="true" isInit="true"></t:choose>
 </div>
 <div style="padding: 3px; height: 25px; width:100%;margin-bottom:4px " class="datagrid-toolbar"><a id="addBtn2" href="#"></a> <a id="delBtn2" href="#"></a></div>
 <input id="orderMxListID2" type="hidden" name="orderMxListID2" value="${fn:length(emkSampleDetailEntities)}"/>
@@ -154,15 +151,15 @@
     <table id="mxtb2" width="100%" border="0" cellspacing="0" cellpadding="0">
         <tr bgcolor="#F8F8F8" style="height: 32px;" >
             <td align="center"  width="40">序号</td>
-            <td align="center"  width="180">采购需求单号</td>
+            <td align="center"  width="230">采购需求单号</td>
             <c:if test="${param.flag eq 1}">
-                <td align="center"  width="200">订单号</td>
+                <td align="center"  width="190">订单号</td>
                 <td align="center"  width="100">款号</td>
             </c:if>
             <td align="center"  width="150">缝制辅料名称</td>
             <td align="center"  width="150">缝制辅料代码</td>
-            <td align="center"  width="150">供应商代码</td>
-            <td align="center"  width="150">规格</td>
+            <td align="center"  width="110">供应商代码</td>
+            <td align="center"  width="110">规格</td>
             <td align="center"  width="150">捻向</td>
             <td align="center"  width="150">批号</td>
             <td align="center"  width="100">幅宽</td>
@@ -211,11 +208,11 @@
                                                style="width: 86%;" ignore="ignore"></td>
                     <td align="center"><input  nullmsg="请输入成分！"  errormsg="请输入成分" value="${poVal.chengf}" name="orderMxList[${status.index}].chengf" maxlength="100" type="text" value=""
                                                style="width: 86%;" ignore="ignore"></td>
+                    <td align="center"><input  nullmsg="请输入损耗率！"  id="sunhaoPrecent${status.index}"  errormsg="请输入数值" datatype="d" value="${poVal.sunhaoPrecent}" name="orderMxList[${status.index}].sunhaoPrecent" maxlength="100" type="text" value=""
+                                               style="width: 86%;" ignore="ignore"></td>
                     <td align="center"><input  nullmsg="请输入单件用量！" id="yongliang${status.index}"   errormsg="请输入数值" datatype="d" value="${poVal.yongliang}" name="orderMxList[${status.index}].yongliang" maxlength="100" type="text" value=""
                                                style="width: 86%;" ignore="ignore"></td>
                     <td align="center"><input  nullmsg="请输入单价！"  errormsg="请输入数值" datatype="d" value="${poVal.signPrice}" name="orderMxList[${status.index}].signPrice" maxlength="100" type="text" value=""
-                                               style="width: 86%;" ignore="ignore"></td>
-                    <td align="center"><input  nullmsg="请输入损耗率！"  id="sunhaoPrecent${status.index}"  errormsg="请输入数值" datatype="d" value="${poVal.sunhaoPrecent}" name="orderMxList[${status.index}].sunhaoPrecent" maxlength="100" type="text" value=""
                                                style="width: 86%;" ignore="ignore"></td>
                     <td align="center"><input  nullmsg="请输入总用量！"  errormsg="请输入数值" datatype="d" value="${poVal.sumYongliang}" name="orderMxList[${status.index}].sumYongliang" maxlength="100" type="text" value=""
                                                style="width: 86%;" ignore="ignore"></td>
@@ -246,8 +243,6 @@
         $("#unit"+currentFlag2).val($("#unit").val());
         $("#proId"+currentFlag2).val($("#id").val());
         $("#remark"+currentFlag2).val($("#remark").val());
-        $("#yongliang"+currentFlag2).val($("#yongliang").val());
-        $("#sunhaoPrecent"+currentFlag2).val($("#sunhaoPrecent").val());
 
     }
     </script>

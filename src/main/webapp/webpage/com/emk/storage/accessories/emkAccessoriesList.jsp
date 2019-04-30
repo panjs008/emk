@@ -81,9 +81,9 @@
      }
      if(createBy == "${CUR_USER.userName}"){
          if(state == '0'){
-             createwindow("流程进度--当前环节：缝制辅料需求开发申请单", "flowController.do?goProcess&node="+node+"&processUrl=com/emk/storage/accessories/emkAccessories-process&id=" + id, 1230, height);
+             createwindow("流程进度--当前环节：缝制辅料需求开发申请单", "flowController.do?goProcess&node="+node+"&processUrl=com/emk/storage/accessories/emkAccessories-process&id=" + id, 1300, height);
          }else {
-             createdetailwindow("流程进度--当前环节：" + processNameVal, "flowController.do?goProcess&node="+node+"&processUrl=com/emk/storage/accessories/emkAccessories-process&id=" + id, 1230, height);
+             createdetailwindow("流程进度--当前环节：" + processNameVal, "flowController.do?goProcess&node="+node+"&processUrl=com/emk/storage/accessories/emkAccessories-process&id=" + id, 1300, height);
          }
      }
 

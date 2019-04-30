@@ -13,6 +13,8 @@
     });
     $('#addBtnSR').bind('click', function(){
         srflag++;
+        $("#seqNum").html(srflag+parseInt($("#listSize").val()));
+
         var tr =  $("#add_jeecgOrderProduct_tableSR_template tr").clone();
         $("#add_jeecgOrderProduct_tableSR").append(tr);
 
@@ -30,9 +32,6 @@
         resetTrNum('add_jeecgOrderProduct_tableSR');
         $("#orderMxListIDSR").val($("#mxtbSR").find("tr").length-1);
 
-        if(chk_value.length>0){
-
-        }
 
     });
     $(document).ready(function(){
@@ -52,6 +51,7 @@
     <tbody id="add_jeecgOrderProduct_tableSR_template">
     <tr>
         <td align="center"><input style="width: 40px;" type="checkbox" name="ck" />
+        <td align="center" width="40"><span id="seqNum"></span></td>
         <td align="center">
             <select name="orderMxList[#index#].color" style="width: 86%;" nullmsg="请输入颜色！" errormsg="请输入颜色" datatype="*">
                 <c:forEach items="${colorList}" var="category">
@@ -99,11 +99,14 @@
 </table>
 <div style="padding: 3px; height: 25px; width:100%;margin-bottom:4px " class="datagrid-toolbar"><a id="addBtnSR" href="#"></a> <a id="delBtn" href="#"></a></div>
 <%--<table border="0" cellpadding="2" cellspacing="0" id="jeecgOrderProduct_table">--%>
+<input id="listSize" type="hidden" value="${fn:length(emkProOrderDetailEntities)}"/>
+
 <input id="orderMxListIDSR" type="hidden" name="orderMxListIDSR" value="${fn:length(emkProOrderDetailEntities)}"/>
 <div class="table-c">
-    <table id="mxtbSR" width="50%" border="0" cellspacing="0" cellpadding="0">
+    <table id="mxtbSR" width="100%" border="0" cellspacing="0" cellpadding="0">
         <tr bgcolor="#F8F8F8" style="height: 32px;" >
-            <td align="center"  width="40" rowspan="2">序号</td>
+            <td align="center"  width="40" rowspan="2"><input type="checkbox" onclick="selectAll(this.checked)" /></td>
+            <td align="center" width="40" rowspan="2">序号</td>
             <td align="center"  width="90" rowspan="2">颜色</td>
             <td align="center"  width="400" colspan="11" >尺码</td>
         <%--<td align="center"  width="90">尺码</td>
@@ -130,6 +133,7 @@
                 <tr>
                     <td align="center"><input style="width: 40px;" type="checkbox" name="ck" value="${poVal.id}"/>
                     </td>
+                    <td align="center" width="40">${status.index+1}</td>
                     <td align="center">
                         <select name="orderMxList[${status.index}].color" style="width: 86%;" nullmsg="请输入颜色！" errormsg="请输入颜色" datatype="*">
                             <c:forEach items="${colorList}" var="category">

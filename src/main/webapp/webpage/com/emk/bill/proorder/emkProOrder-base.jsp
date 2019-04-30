@@ -292,7 +292,7 @@
 	<t:tabs id="orderDetail" iframe="false"  tabPosition="top" fit="false">
 		<t:tab href="emkProOrderController.do?detailMxList&proOrderId=${emkProOrderPage.id}" icon="icon-search" title="明细" id="detail"></t:tab>
 	</t:tabs>
-	<t:tabs id="barCodeDetail" iframe="false"  tabPosition="top" fit="false">
+	<%--<t:tabs id="barCodeDetail" iframe="false"  tabPosition="top" fit="false">
 		<t:tab href="emkProOrderController.do?barCodeMxList&type=0&proOrderId=${emkProOrderPage.id}" icon="icon-search" title="洗水标条码" id="barCode"></t:tab>
 	</t:tabs>
 	<t:tabs id="barCodeDetail" iframe="false"  tabPosition="top" fit="false">
@@ -300,7 +300,7 @@
 	</t:tabs>
 	<t:tabs id="barCodeDetail" iframe="false"  tabPosition="top" fit="false">
 		<t:tab href="emkProOrderController.do?barCodeMxList&type=2&proOrderId=${emkProOrderPage.id}" icon="icon-search" title="箱贴条码" id="barCode2"></t:tab>
-	</t:tabs>
+	</t:tabs>--%>
 	<table style="width: 100%;margin-top:22px;" cellpadding="0" cellspacing="1" class="formtable">
 		<%--<tr>
 			<td align="right">
@@ -467,7 +467,7 @@
 				</td>
 			</tr>
 	</table>
-	<t:tabs id="barCodeDetail" iframe="false"  tabPosition="top" fit="false">
+	<%--<t:tabs id="barCodeDetail" iframe="false"  tabPosition="top" fit="false">
 		<t:tab href="emkProOrderController.do?boxMxList&type=0&proOrderId=${emkProOrderPage.id}" icon="icon-search" title="单色单码装" id="box1"></t:tab>
 	</t:tabs>
 	<t:tabs id="barCodeDetail" iframe="false"  tabPosition="top" fit="false">
@@ -478,7 +478,7 @@
 	</t:tabs>
 	<t:tabs id="barCodeDetail" iframe="false"  tabPosition="top" fit="false">
 		<t:tab href="emkProOrderController.do?boxMxList&type=3&proOrderId=${emkProOrderPage.id}" icon="icon-search" title="混色混码装" id="box4"></t:tab>
-	</t:tabs>
+	</t:tabs>--%>
 	<table style="width: 100%;margin-top:22px;" cellpadding="0" cellspacing="1" class="formtable">
 		<tr>
 			<td align="right" width="12%">

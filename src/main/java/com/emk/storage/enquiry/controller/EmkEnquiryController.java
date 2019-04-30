@@ -5,16 +5,12 @@ import com.emk.approval.approval.entity.EmkApprovalEntity;
 import com.emk.approval.approvaldetail.entity.EmkApprovalDetailEntity;
 import com.emk.check.sizecheck.entity.EmkSizeEntity;
 import com.emk.check.sizecheck.entity.EmkSizeTotalEntity;
-import com.emk.check.sizecheck.entity.EmkSizeTotalEntityE;
 import com.emk.storage.enquiry.entity.EmkEnquiryEntity;
 import com.emk.storage.enquiry.entity.EmkEnquiryEntityA;
 import com.emk.storage.enquiry.service.EmkEnquiryServiceI;
 import com.emk.storage.enquirydetail.entity.EmkEnquiryDetailEntity;
-import com.emk.storage.price.entity.EmkPriceEntity;
 import com.emk.storage.sampleprice.entity.EmkSamplePriceEntity;
-import com.emk.storage.samplerequired.entity.EmkSampleRequiredEntity;
 import com.emk.util.*;
-import com.emk.workorder.workorder.entity.EmkWorkOrderEntity;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -28,15 +24,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
-import org.activiti.engine.*;
-import org.activiti.engine.history.HistoricActivityInstance;
-import org.activiti.engine.history.HistoricProcessInstance;
-import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.apache.tools.ant.util.*;
 import org.jeecgframework.core.beanvalidator.BeanValidators;
 import org.jeecgframework.core.common.controller.BaseController;
 import org.jeecgframework.core.common.exception.BusinessException;
@@ -53,8 +44,6 @@ import org.jeecgframework.poi.excel.entity.ExportParams;
 import org.jeecgframework.poi.excel.entity.vo.NormalExcelConstants;
 import org.jeecgframework.tag.core.easyui.TagUtil;
 import org.jeecgframework.web.system.pojo.base.TSUser;
-import org.jeecgframework.web.system.service.SystemService;
-import org.jeecgframework.web.system.sms.entity.TSSmsEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -74,17 +63,10 @@ public class EmkEnquiryController extends BaseController {
     private static final Logger logger = Logger.getLogger(EmkEnquiryController.class);
     @Autowired
     private EmkEnquiryServiceI emkEnquiryService;
-    /*@Autowired
-    private SystemService systemService;*/
+
     @Autowired
     private Validator validator;
 
-    @Autowired
-    ProcessEngine processEngine;
-    @Autowired
-    TaskService taskService;
-    @Autowired
-    HistoryService historyService;
 
 
     @RequestMapping(params = "list")

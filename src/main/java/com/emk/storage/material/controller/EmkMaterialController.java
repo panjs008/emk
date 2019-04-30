@@ -4,9 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.emk.approval.approval.entity.EmkApprovalEntity;
 import com.emk.approval.approvaldetail.entity.EmkApprovalDetailEntity;
 import com.emk.bound.minstorage.entity.EmkMInStorageEntity;
-import com.emk.bound.minstorage.entity.EmkMInStorageEntity2;
 import com.emk.bound.minstoragedetail.entity.EmkMInStorageDetailEntity;
-import com.emk.storage.instorage.entity.EmkInStorageEntity;
 import com.emk.storage.material.entity.EmkMaterialEntity;
 import com.emk.storage.material.service.EmkMaterialServiceI;
 import com.emk.storage.sampledetail.entity.EmkSampleDetailEntity;
@@ -21,10 +19,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
-import org.activiti.engine.HistoryService;
-import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.TaskService;
-import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.apache.commons.lang3.StringUtils;
@@ -46,7 +40,6 @@ import org.jeecgframework.jwt.util.Result;
 import org.jeecgframework.poi.excel.entity.ExportParams;
 import org.jeecgframework.tag.core.easyui.TagUtil;
 import org.jeecgframework.web.system.pojo.base.TSUser;
-import org.jeecgframework.web.system.service.SystemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -66,17 +59,11 @@ public class EmkMaterialController extends BaseController {
     private static final Logger logger = Logger.getLogger(EmkMaterialController.class);
     @Autowired
     private EmkMaterialServiceI emkMaterialService;
-    @Autowired
-    private SystemService systemService;
+
     @Autowired
     private Validator validator;
 
-    @Autowired
-    ProcessEngine processEngine;
-    @Autowired
-    TaskService taskService;
-    @Autowired
-    HistoryService historyService;
+
 
     @RequestMapping(params = "list")
     public ModelAndView list(HttpServletRequest request) {
@@ -599,9 +586,13 @@ public class EmkMaterialController extends BaseController {
                             }
                         }
                         if (task1.getTaskDefinitionKey().equals("cgjlshTask")) {
+                            String title = "入库申请单";
                             if(map.get("isPass").equals("0")) {
                                 if(b.getStatus().equals(39)){
                                     variables.put("isType","0");
+                                }else if(b.getStatus().equals(43)){
+                                    variables.put("isType","1");
+                                    title = "出库申请单";
                                 }
                                 taskService.complete(task1.getId(), variables);
                                 b.setStatus(41);
@@ -609,16 +600,39 @@ public class EmkMaterialController extends BaseController {
                                 t.setState("41");
                                 approvalDetail.setApproveStatus(0);
 
-                                EmkMInStorageEntity emkMInStorageEntity = systemService.findUniqueByProperty(EmkMInStorageEntity.class,"materialNo",t.getMaterialNo());
-                                saveSmsAndEmailForOne("采购部经理审核","您有【"+user.getRealName()+"】提交的入库申请单，单号："+emkMInStorageEntity.getRkNo()+"，请及时处理。",bpmUser,user.getUserName());
+//                                EmkMInStorageEntity emkMInStorageEntity = systemService.findUniqueByProperty(EmkMInStorageEntity.class,"materialNo",t.getMaterialNo());
+                                saveSmsAndEmailForOne("采购部经理审核","您有【"+user.getRealName()+"】提交的"+title+"，单号："+b.getWorkNum()+"，请及时处理。",bpmUser,user.getUserName());
                             }else{
-                                saveApprvoalDetail(approvalDetail,"采购部经理审核","rksqTask",1,"回退");
-                                backProcess(task1.getProcessInstanceId(),"cgjlshTask","cgjlshTask","采购部经理审核");
-                                t.setState("36");
-                                b.setStatus(36);
+                                saveApprvoalDetail(approvalDetail,"采购部经理审核","cgjlshTask",1,"回退");
+                                if(b.getStatus().equals(39)){
+                                    backProcess(task1.getProcessInstanceId(),"cgjlshTask","rksqTask","采购部经理审核");
+                                    t.setState("36");
+                                    b.setStatus(36);
+                                }else if(b.getStatus().equals(43)){
+                                    backProcess(task1.getProcessInstanceId(),"cgjlshTask","cksqdTask","采购部经理审核");
+                                    t.setState("23");
+                                    b.setStatus(23);
+                                    title = "出库申请单";
+                                }
                                 b.setBpmStatus("1");
-                                saveSmsAndEmailForOne("采购部经理审核","您有【"+user.getRealName()+"】回退的入库申请单，单号："+b.getWorkNum()+"，请及时处理。",bpmUser,user.getUserName());
+                                saveSmsAndEmailForOne("采购部经理审核","您有【"+user.getRealName()+"】回退的"+title+"，单号："+b.getWorkNum()+"，请及时处理。",bpmUser,user.getUserName());
                             }
+                        }
+                        if (task1.getTaskDefinitionKey().equals("cksqdTask")) {
+                            taskService.complete(task1.getId(), variables);
+                            b.setStatus(43);
+                            approvalDetail.setBpmName("出库申请单【技术员】");
+                            t.setState("43");
+                            approvalDetail.setApproveStatus(0);
+
+                            saveSmsAndEmailForMany("采购经理","出库申请单【技术员】","您有【"+user.getRealName()+"】出库申请单【技术员】，单号："+b.getWorkNum()+"，请及时审核。",user.getUserName());
+                        }
+                        if (task1.getTaskDefinitionKey().equals("jsylqTask")) {
+                            taskService.complete(task1.getId(), variables);
+                            b.setStatus(2);
+                            approvalDetail.setBpmName("技术员领取");
+                            t.setState("2");
+                            approvalDetail.setApproveStatus(0);
                         }
                         systemService.save(approvalDetail);
                     }else {

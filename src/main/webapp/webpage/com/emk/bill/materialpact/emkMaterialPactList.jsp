@@ -9,7 +9,7 @@
    <t:dgCol title="创建人登录名称"  field="createBy"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="创建日期"  field="createDate"  formatter="yyyy-MM-dd"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="所属部门"  field="sysOrgCode"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
-   <t:dgCol title="操作" field="opt" frozenColumn="true"  width="100"></t:dgCol>
+   <%--<t:dgCol title="操作" field="opt" frozenColumn="true"  width="100"></t:dgCol>--%>
    <%--<t:dgCol title="采购合同编号"  field="materialNo" queryMode="single" query="true"  width="125"></t:dgCol>--%>
    <%--<t:dgCol title="合同编号"  field="htNum" queryMode="single" width="120"></t:dgCol>--%>
    <t:dgCol title="订单号"  field="orderNum" queryMode="single" width="105"></t:dgCol>
@@ -20,18 +20,18 @@
    <t:dgCol title="业务员"  field="businesserName"  queryMode="single"  width="70"></t:dgCol>
    <%--<t:dgCol title="跟单员"  field="developer"  queryMode="single"  width="70"></t:dgCol>--%>
    <t:dgCol title="客户代码" query="true" field="cusNum"  queryMode="single"  width="70"></t:dgCol>
-   <t:dgCol title="客户名称" query="true" field="cusName"  queryMode="single"  width="160"></t:dgCol>
+   <t:dgCol title="客户名称" query="true" field="cusName"  queryMode="single"  width="220"></t:dgCol>
    <t:dgCol title="款号"  field="sampleNo"  queryMode="single"  width="70"></t:dgCol>
    <t:dgCol title="工艺种类"  field="gyzl"  dictionary="gylx" queryMode="single"  width="70"></t:dgCol>
    <t:dgCol title="款式大类"  field="proTypeName"  queryMode="single"  width="70"></t:dgCol>
 
    <%--<t:dgFunOpt funname="queryDetail2(id,materialNo,state)" title="原料面料" urlclass="ace_button" urlfont="fa-list-alt"></t:dgFunOpt>--%>
       <t:dgCol title="状态"  field="state" formatterjs="formatColor"  queryMode="single"  width="70"></t:dgCol>
-      <t:dgFunOpt funname="goToProcess(id,createBy,createName)" title="流程进度" operationCode="process" urlclass="ace_button"  urlStyle="background-color:#ec4758;" urlfont="fa-tasks"></t:dgFunOpt>
+      <%--<t:dgFunOpt funname="goToProcess(id,createBy,createName)" title="流程进度" operationCode="process" urlclass="ace_button"  urlStyle="background-color:#ec4758;" urlfont="fa-tasks"></t:dgFunOpt>--%>
         <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkMaterialPactController.do?goAdd&type=0&winTitle=录入原料预采购合同单" funname="add" height="600" width="1350"></t:dgToolBar>
       <t:dgToolBar title="查看" icon="fa fa-search" operationCode="look" url="emkMaterialPactController.do?goUpdate&type=0&winTitle=查看原料预采购合同单" funname="detail" height="600" width="1350"></t:dgToolBar>
       <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkMaterialPactController.do?goUpdate&type=0&winTitle=编辑原料预采购合同单" funname="update" height="600" width="1350"></t:dgToolBar>
-      <t:dgToolBar title="提交" operationCode="submit" icon="fa fa-arrow-circle-right" funname="doSubmitV"></t:dgToolBar>
+      <%--<t:dgToolBar title="提交" operationCode="submit" icon="fa fa-arrow-circle-right" funname="doSubmitV"></t:dgToolBar>--%>
       <t:dgToolBar title="生成合同" operationCode="submit" icon="fa fa-arrow-circle-right" funname="doGenerateV"></t:dgToolBar>
       <t:dgToolBar title="删除" operationCode="delete"  icon="fa fa-remove" url="emkMaterialPactController.do?doBatchDel" funname="deleteALLSelect"></t:dgToolBar>
       <t:dgToolBar title="导出" operationCode="exp" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>
@@ -72,9 +72,7 @@
  }
  function formatColor(val,row){
      if(row.state=="1"){
-         return '<span style="color:	#FF0000;">处理中</span>';
-     }else if(row.state=="2"){
-         return '<span style="color:	#0000FF;">完成</span>';
+         return '<span style="color:	#0000FF;">已生成</span>';
      }else{
          return '创建';
      }

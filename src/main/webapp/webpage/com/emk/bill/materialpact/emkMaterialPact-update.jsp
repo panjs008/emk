@@ -208,7 +208,7 @@
 		</tr>
 		</table>
 		<t:tabs id="pactDetail" iframe="false"  tabPosition="top" fit="false">
-			<t:tab href="emkMaterialPactController.do?orderMxList&type=${param.type}&flag=0&proOrderId=${emkMaterialPactPage.id}" icon="icon-search" title="${pactTypeName}" id="pact"></t:tab>
+			<t:tab href="emkMaterialPactController.do?orderMxList&type=${emkMaterialPactPage.type}&flag=0&proOrderId=${emkMaterialPactPage.id}" icon="icon-search" title="${pactTypeName}" id="pact"></t:tab>
 		</t:tabs>
 		<table style="width: 100%;margin-top:22px;" cellpadding="0" cellspacing="1" class="formtable">
 			<tr>

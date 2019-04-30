@@ -67,20 +67,7 @@ public class EmkMaterialContractEntity2 implements Serializable {
     private String mState;
     @Excel(name = "开单日期")
     private String kdDate;
-    @Excel(name = "审核意见")
-    private String leadAdvice;
-    @Excel(name = "处理意见")
-    private String financeAdvice;
-    @Excel(name = "是否通过")
-    private String isPass;
-    @Excel(name = "审核人ID")
-    private String leadUserId;
-    @Excel(name = "审核人")
-    private String leader;
-    @Excel(name = "财务处理人ID")
-    private String financeUserId;
-    @Excel(name = "财务处理人")
-    private String financer;
+
     @Excel(name = "状态")
     private String state;
     @Excel(name = "客户代码")
@@ -88,33 +75,6 @@ public class EmkMaterialContractEntity2 implements Serializable {
     @Excel(name = "客户名称")
     private String cusName;
 
-    @Excel(name = "预合同处理人ID")
-    private String yhtUserId;
-    @Excel(name = "预合同处理人")
-    private String yhtUserName;
-    @Excel(name = "预合同处理意见")
-    private String yhtAdvice;
-
-    @Excel(name = "合同处理人ID")
-    private String htUserId;
-    @Excel(name = "合同处理人")
-    private String htUserName;
-    @Excel(name = "合同处理意见")
-    private String htAdvice;
-
-    @Excel(name = "入库处理人ID")
-    private String rkUserId;
-    @Excel(name = "入库处理人")
-    private String rkUserName;
-    @Excel(name = "入库处理意见")
-    private String rkAdvice;
-
-    @Excel(name = "出库处理人ID")
-    private String ckUserId;
-    @Excel(name = "出库处理人")
-    private String ckUserName;
-    @Excel(name = "出库处理意见")
-    private String ckAdvice;
 
     @Id
     @GeneratedValue(generator = "paymentableGenerator")
@@ -398,68 +358,7 @@ public class EmkMaterialContractEntity2 implements Serializable {
         this.kdDate = kdDate;
     }
 
-    @Column(name = "LEAD_ADVICE", nullable = true, length = 256)
-    public String getLeadAdvice() {
-        return this.leadAdvice;
-    }
 
-    public void setLeadAdvice(String leadAdvice) {
-        this.leadAdvice = leadAdvice;
-    }
-
-    @Column(name = "FINANCE_ADVICE", nullable = true, length = 256)
-    public String getFinanceAdvice() {
-        return this.financeAdvice;
-    }
-
-    public void setFinanceAdvice(String financeAdvice) {
-        this.financeAdvice = financeAdvice;
-    }
-
-    @Column(name = "IS_PASS", nullable = true, length = 32)
-    public String getIsPass() {
-        return this.isPass;
-    }
-
-    public void setIsPass(String isPass) {
-        this.isPass = isPass;
-    }
-
-    @Column(name = "LEAD_USER_ID", nullable = true, length = 32)
-    public String getLeadUserId() {
-        return this.leadUserId;
-    }
-
-    public void setLeadUserId(String leadUserId) {
-        this.leadUserId = leadUserId;
-    }
-
-    @Column(name = "LEADER", nullable = true, length = 32)
-    public String getLeader() {
-        return this.leader;
-    }
-
-    public void setLeader(String leader) {
-        this.leader = leader;
-    }
-
-    @Column(name = "FINANCE_USER_ID", nullable = true, length = 32)
-    public String getFinanceUserId() {
-        return this.financeUserId;
-    }
-
-    public void setFinanceUserId(String financeUserId) {
-        this.financeUserId = financeUserId;
-    }
-
-    @Column(name = "FINANCER", nullable = true, length = 32)
-    public String getFinancer() {
-        return this.financer;
-    }
-
-    public void setFinancer(String financer) {
-        this.financer = financer;
-    }
 
     @Column(name = "STATE", nullable = true, length = 32)
     public String getState() {
@@ -488,111 +387,4 @@ public class EmkMaterialContractEntity2 implements Serializable {
         this.cusName = cusName;
     }
 
-    @Column(name = "yht_user_id", nullable = true, length = 32)
-    public String getYhtUserId() {
-        return yhtUserId;
-    }
-
-    public void setYhtUserId(String yhtUserId) {
-        this.yhtUserId = yhtUserId;
-    }
-
-    @Column(name = "yht_user_name", nullable = true, length = 32)
-    public String getYhtUserName() {
-        return yhtUserName;
-    }
-
-    public void setYhtUserName(String yhtUserName) {
-        this.yhtUserName = yhtUserName;
-    }
-
-    @Column(name = "yht_advice", nullable = true, length = 32)
-    public String getYhtAdvice() {
-        return yhtAdvice;
-    }
-
-    public void setYhtAdvice(String yhtAdvice) {
-        this.yhtAdvice = yhtAdvice;
-    }
-
-    @Column(name = "ht_user_id", nullable = true, length = 32)
-    public String getHtUserId() {
-        return htUserId;
-    }
-
-    public void setHtUserId(String htUserId) {
-        this.htUserId = htUserId;
-    }
-
-    @Column(name = "ht_user_name", nullable = true, length = 32)
-    public String getHtUserName() {
-        return htUserName;
-    }
-
-    public void setHtUserName(String htUserName) {
-        this.htUserName = htUserName;
-    }
-
-    @Column(name = "ht_advice", nullable = true, length = 32)
-    public String getHtAdvice() {
-        return htAdvice;
-    }
-
-    public void setHtAdvice(String htAdvice) {
-        this.htAdvice = htAdvice;
-    }
-
-    @Column(name = "rk_user_id", nullable = true, length = 32)
-    public String getRkUserId() {
-        return rkUserId;
-    }
-
-    public void setRkUserId(String rkUserId) {
-        this.rkUserId = rkUserId;
-    }
-
-    @Column(name = "rk_user_name", nullable = true, length = 32)
-    public String getRkUserName() {
-        return rkUserName;
-    }
-
-    public void setRkUserName(String rkUserName) {
-        this.rkUserName = rkUserName;
-    }
-
-    @Column(name = "rk_advice", nullable = true, length = 32)
-    public String getRkAdvice() {
-        return rkAdvice;
-    }
-
-    public void setRkAdvice(String rkAdvice) {
-        this.rkAdvice = rkAdvice;
-    }
-
-    @Column(name = "ck_user_id", nullable = true, length = 32)
-    public String getCkUserId() {
-        return ckUserId;
-    }
-
-    public void setCkUserId(String ckUserId) {
-        this.ckUserId = ckUserId;
-    }
-
-    @Column(name = "ck_user_name", nullable = true, length = 32)
-    public String getCkUserName() {
-        return ckUserName;
-    }
-
-    public void setCkUserName(String ckUserName) {
-        this.ckUserName = ckUserName;
-    }
-
-    @Column(name = "ck_advice", nullable = true, length = 32)
-    public String getCkAdvice() {
-        return ckAdvice;
-    }
-
-    public void setCkAdvice(String ckAdvice) {
-        this.ckAdvice = ckAdvice;
-    }
 }

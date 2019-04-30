@@ -60,7 +60,7 @@
 						</div>
 						<div class="point"><b></b></div>
 						<div class="liright">
-							<div class="histt"><a style="font-size: 14px;">入库申请单</a></div>
+							<div class="histt"><a style="font-size: 14px;">出库申请单</a></div>
 							<div class="histt"><a style="font-size: 12px;">【${approvalEntity.createName}】发起出库申请单，单号：${approvalEntity.workNum}
 							</a></div>
 						</div>

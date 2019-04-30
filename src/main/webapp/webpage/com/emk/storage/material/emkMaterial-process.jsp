@@ -15,7 +15,10 @@
     <t:tab title="任务处理" id="orderFrm"  heigth="600px"  width="100%" href="emkMaterialController.do?goWork&node=${param.node}&id=${param.id}" icon="fa fa-crosshairs"></t:tab>
     <c:choose>
         <c:when test="${param.node eq 'rksqTask' || param.node eq 'cgjlshTask'}">
-            <t:tab title="原料面料入库申请单" id="materialFrm"  heigth="600px"  width="100%" iframe="emkMInStorageController.do?goUpdate&type=0&materialNo=${param.id}" icon="fa fa-calendar"></t:tab>
+            <t:tab title="原料面料入库申请单" id="imaterialFrm"  heigth="600px"  width="100%" iframe="emkMInStorageController.do?goUpdate&type=0&materialNo=${param.id}" icon="fa fa-calendar"></t:tab>
+        </c:when>
+        <c:when test="${param.node eq 'cksqdTask' || param.node eq 'cgjlshTask'}">
+            <t:tab title="原料面料出库申请单" id="omaterialFrm"  heigth="600px"  width="100%" iframe="emkMOutStorageController.do?goUpdate&type=0&materialNo=${param.id}" icon="fa fa-calendar"></t:tab>
         </c:when>
         <c:otherwise>
             <t:tab title="基本信息" id="baseFrm"  heigth="600px"  width="100%" iframe="emkMaterialController.do?goUpdate2&id=${param.id}" icon="fa fa-calendar"></t:tab>

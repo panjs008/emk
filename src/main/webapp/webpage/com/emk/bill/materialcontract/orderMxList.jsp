@@ -167,7 +167,7 @@
                                                style="width: 86%;" ignore="ignore"></td>
                     <td align="center"><input  nullmsg="请输入单价！"  errormsg="请输入数值" datatype="d" value="${poVal.signPrice}" name="orderMxList[${status.index}].signPrice" maxlength="100" type="text" value=""
                                                style="width: 86%;" ignore="ignore"></td>
-                    <td align="center"><input  nullmsg="请输入金额！"  errormsg="请输入数值" datatype="d" value="${poVal.sumPrice}" name="orderMxList[${status.index}].sumPrice" maxlength="100" type="text" value=""
+                    <td align="center"><input  nullmsg="请输入金额！"  errormsg="请输入数值" datatype="d" value="${poVal.signPrice*poVal.sumTotal}" maxlength="100" type="text" value=""
                                                style="width: 86%;" ignore="ignore"></td>
                 </tr>
 

@@ -200,7 +200,7 @@
 						</label>
 					</td>
 					<td class="value" colspan="3">
-						<input id="companyCode" name="companyCode" datatype="*" type="text" style="width: 150px" class="inputxt"  />
+						<input id="companyCode" name="companyCode" datatype="*" validType="emk_factory_archives,company_code,id" type="text" style="width: 150px" class="inputxt"  />
 						<span class="Validform_checktip"></span>
 						<label class="Validform_label" style="display: none;">供应商代码</label>
 					</td>

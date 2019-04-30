@@ -17,10 +17,18 @@
 	</script>
 </head>
 <body>
-<iframe scrolling="no" id="processFrm" frameborder="0" style="overflow-x: hidden;overflow-y: hidden"  src="${webRoot}/context/progress.jsp?finishColums=${countMap.finishColums}&Colums=${countMap.Colums}&recent=${recent}" width="100%" height="20px"></iframe>
 <t:formvalid formid="formobj" dialog="true" usePlugin="password" layout="table" action="emkCheckFactoryController.do?doUpdate" tiptype="1">
 	<input id="id" name="id" type="hidden" value="${emkCheckFactoryPage.id }"/>
 	<table style="width: 100%;" cellpadding="0" cellspacing="1" class="formtable">
+		<tr>
+			<td align="right">
+				<label class="Validform_label">
+					验厂报告:
+				</label>
+			</td>
+			<td class="value" colspan="3"><a href="javascript:downloadFile('${emkCheckFactoryPage.fileNameUrl}')">[${emkCheckFactoryPage.fileName}]</a>
+			</td>
+		</tr>
 		<tr>
 			<td class="value" align="right"  colspan="3">
 				<label class="Validform_label">
@@ -158,7 +166,7 @@
 				</label>
 			</td>
 			<td class="value" colspan="3">
-				<t:dictSelect id="factoryCode" field="factoryCode" typeGroupCode="gongchang" datatype="*" defaultVal="${emkCheckFactoryPage.factoryCode }" hasLabel="false" title="工艺类型"></t:dictSelect>
+				<input id="factoryCode" name="factoryCode" value="${emkCheckFactoryPage.factoryCode }" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">工厂名称</label>
 			</td>
@@ -304,6 +312,7 @@
 				<label class="Validform_label" style="display: none;">计划审核日期</label>
 			</td>
 		</tr>
+
 
 	</table>
 </t:formvalid>

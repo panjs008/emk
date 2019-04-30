@@ -37,7 +37,8 @@
 							}
 						}
 						$("#shengFen").append(option1);
-						if(${emkFactoryArchivesPage.chengShi ne '' && emkFactoryArchivesPage.chengShi ne null}){
+
+						if(${emkFactoryArchivesPage.shengFen ne '' && emkFactoryArchivesPage.shengFen ne null}){
 							$.ajax({
 								url : "ymkCustomController.do?getCity&code=${emkFactoryArchivesPage.shengFen}",
 								type : 'post',
@@ -60,8 +61,9 @@
 												option1 += '<option value='+dataitem[0]+'>'+dataitem[1]+'</option>';
 											}
 										}
-										$("#chengShi").append(option1);
-
+										if(option1 != ''){
+											$("#chengShi").append(option1);
+										}
 									}
 								}
 							});
@@ -103,7 +105,6 @@
 								}
 							}
 							$("#chengShi").append(option3);
-
 						}
 					}
 				});
@@ -202,7 +203,7 @@
 				</label>
 			</td>
 			<td class="value" colspan="3">
-				<input id="companyCode" name="companyCode" datatype="*" value="${emkFactoryArchivesPage.companyCode }" type="text" style="width: 150px" class="inputxt" />
+				<input id="companyCode" name="companyCode" datatype="*" validType="emk_factory_archives,company_code,id"  value="${emkFactoryArchivesPage.companyCode }" type="text" style="width: 150px" class="inputxt" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">供应商代码</label>
 			</td>

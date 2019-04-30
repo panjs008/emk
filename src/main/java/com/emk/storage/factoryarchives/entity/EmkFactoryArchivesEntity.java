@@ -14,6 +14,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.SequenceGenerator;
 import org.jeecgframework.poi.excel.annotation.Excel;
@@ -200,7 +202,11 @@ public class EmkFactoryArchivesEntity implements java.io.Serializable {
 	/**产品类型*/
 	@Excel(name="产品类型",width=15)
 	private String proTypeName;
-	
+	private String state;
+	private String processName;
+	private String formType;
+
+
 	/**
 	 *方法: 取得java.lang.String
 	 *@return: java.lang.String  主键
@@ -1189,5 +1195,33 @@ public class EmkFactoryArchivesEntity implements java.io.Serializable {
 	 */
 	public void setProTypeName(String proTypeName){
 		this.proTypeName = proTypeName;
+	}
+
+	@Column(name = "STATE", nullable = true, length = 32)
+	public String getState() {
+		return this.state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
+
+	@Formula("(select CONCAT(p.NAME_,'-',p.TASK_DEF_KEY_) from act_ru_task p where p.ASSIGNEE_ = id limit 0,1)")
+	@Column(name = "process_name", nullable = true, length = 32)
+	public String getProcessName() {
+		return processName;
+	}
+
+	public void setProcessName(String processName) {
+		this.processName = processName;
+	}
+
+	@Column(name = "form_type", nullable = true, length = 32)
+	public String getFormType() {
+		return formType;
+	}
+
+	public void setFormType(String formType) {
+		this.formType = formType;
 	}
 }

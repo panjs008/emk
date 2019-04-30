@@ -11,6 +11,7 @@
             //$("#proFrm").css("height",height);
             $("#priceFrm0").css("height",height);
             $("#priceFrm").css("height",height);
+            $("#proFrm").css("height",height);
 
         });
         function setchooseUser(flag){

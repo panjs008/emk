@@ -64,7 +64,7 @@
           <t:dgCol title="面料名称"  field="proZnName"  query="true" queryMode="single"  width="150"></t:dgCol>
           <t:dgCol title="面料代码"  field="proNum" query="true"  queryMode="single"  width="120"></t:dgCol>
           <t:dgCol title="比例"  field="precent"  queryMode="single"  width="120"></t:dgCol>
-          <t:dgCol title="单件用量"  field="yongliang"  queryMode="single"  width="120"></t:dgCol>
+          <%--<t:dgCol title="单件用量"  field="yongliang"  queryMode="single"  width="120"></t:dgCol>--%>
        <%--<t:dgCol title="英文名称"  field="proEnName"  query="true" queryMode="single"  width="120"></t:dgCol>--%>
    <t:dgCol title="规格"  field="brand"  queryMode="single"  width="150"></t:dgCol>
    <t:dgCol title="单位"  field="unit"  queryMode="single"  width="100"></t:dgCol>

@@ -79,16 +79,10 @@ public class EmkContractEntity implements Serializable {
     private Double sumMoney;
     @Excel(name = "交货期")
     private String recevieDate;
-    @Excel(name="审核意见")
-    private String leadAdvice;
-    @Excel(name="是否通过")
-    private String isPass;
-    private String leadUserId;
-    @Excel(name="审核人")
-    private String leader;
-
     @Excel(name="出厂价")
     private String outPrice;
+    private String formType;
+
 
     @Id
     @GeneratedValue(generator = "paymentableGenerator")
@@ -394,50 +388,6 @@ public class EmkContractEntity implements Serializable {
         this.state = state;
     }
 
-    @Column(name="LEAD_ADVICE", nullable=true, length=256)
-    public String getLeadAdvice()
-    {
-        return this.leadAdvice;
-    }
-
-    public void setLeadAdvice(String leadAdvice)
-    {
-        this.leadAdvice = leadAdvice;
-    }
-
-    @Column(name="IS_PASS", nullable=true, length=32)
-    public String getIsPass()
-    {
-        return this.isPass;
-    }
-
-    public void setIsPass(String isPass)
-    {
-        this.isPass = isPass;
-    }
-
-    @Column(name="LEAD_USER_ID", nullable=true, length=32)
-    public String getLeadUserId()
-    {
-        return this.leadUserId;
-    }
-
-    public void setLeadUserId(String leadUserId)
-    {
-        this.leadUserId = leadUserId;
-    }
-
-    @Column(name="LEADER", nullable=true, length=32)
-    public String getLeader()
-    {
-        return this.leader;
-    }
-
-    public void setLeader(String leader)
-    {
-        this.leader = leader;
-    }
-
     @Column(name="out_price", nullable=true, length=32)
     public String getOutPrice() {
         return outPrice;
@@ -490,5 +440,14 @@ public class EmkContractEntity implements Serializable {
 
     public void setBoundName(String boundName) {
         this.boundName = boundName;
+    }
+
+    @Column(name = "form_type", nullable = true, length = 32)
+    public String getFormType() {
+        return formType;
+    }
+
+    public void setFormType(String formType) {
+        this.formType = formType;
     }
 }

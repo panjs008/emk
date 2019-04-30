@@ -13,7 +13,6 @@ import com.emk.storage.price.entity.EmkPriceEntity;
 import com.emk.storage.sample.entity.EmkSampleEntity;
 import com.emk.storage.sampledetail.entity.EmkSampleDetailEntity;
 import com.emk.storage.samplegx.entity.EmkSampleGxEntity;
-import com.emk.storage.sampleprice.entity.EmkSamplePriceEntity;
 import com.emk.storage.sampleran.entity.EmkSampleRanEntity;
 import com.emk.storage.samplerequired.entity.EmkSampleRequiredEntity;
 import com.emk.storage.samplerequired.service.EmkSampleRequiredServiceI;
@@ -30,9 +29,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
-import org.activiti.engine.HistoryService;
-import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.TaskService;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.apache.commons.lang3.StringUtils;
@@ -79,13 +75,6 @@ public class EmkSampleRequiredController
     private SystemService systemService;
     @Autowired
     private Validator validator;
-
-    @Autowired
-    ProcessEngine processEngine;
-    @Autowired
-    TaskService taskService;
-    @Autowired
-    HistoryService historyService;
 
     @RequestMapping(params = "list")
     public ModelAndView list(HttpServletRequest request) {

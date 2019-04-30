@@ -263,11 +263,15 @@ function createdetailwindow(title, addurl,width,height) {
 	if(addurl.indexOf('com/emk/storage/enquiry/emkEnquiry-process')>=0){
 		height =window.top.document.body.offsetHeight-100;
 	}
-	console.log(addurl);
 	if(addurl.indexOf('com/emk/storage/material/emkMaterial-process')>=0){
 		height =window.top.document.body.offsetHeight-100;
 	}
-	if(addurl.indexOf('com/emk/storage/price/emkPrice-process')>=0){
+	if(addurl.indexOf('com/emk/storage/price/emkPrice-process')>=0 ){
+		width =  window.top.document.body.offsetWidth;
+		height =window.top.document.body.offsetHeight-100;
+		addurl = addurl + "&wVal="+window.top.document.body.offsetWidth*0.97+ "px&hVal="+(window.top.document.body.offsetHeight-190)+"px&hVal2="+(window.top.document.body.offsetHeight-230)+"px";
+	}
+	if(addurl.indexOf('com/emk/bill/proorder/emkProOrder-process')>=0){
 		width =  window.top.document.body.offsetWidth;
 		height =window.top.document.body.offsetHeight-100;
 		addurl = addurl + "&wVal="+window.top.document.body.offsetWidth*0.97+ "px&hVal="+(window.top.document.body.offsetHeight-190)+"px&hVal2="+(window.top.document.body.offsetHeight-230)+"px";
@@ -499,7 +503,6 @@ function createwindow(title, addurl,width,height) {
 		width =  window.top.document.body.offsetWidth;
 		height =window.top.document.body.offsetHeight-50;
 		addurl = addurl + "&wVal="+window.top.document.body.offsetWidth*0.97+ "px&hVal="+(window.top.document.body.offsetHeight-120)+"px&hVal2="+(window.top.document.body.offsetHeight-160)+"px";
-
 	}
 	if(addurl.indexOf('emkSampleRequiredController.do?goAdd')>=0 || addurl.indexOf('emkSampleRequiredController.do?goUpdate')>=0){
 		height =window.top.document.body.offsetHeight-50;
@@ -545,7 +548,7 @@ function createwindow(title, addurl,width,height) {
 	if(addurl.indexOf('com/emk/storage/material/emkMaterial-process')>=0){
 		height =window.top.document.body.offsetHeight-100;
 	}
-	if(addurl.indexOf('com/emk/storage/price/emkPrice-process')>=0){
+	if(addurl.indexOf('com/emk/storage/price/emkPrice-process')>=0 || addurl.indexOf('com/emk/bill/proorder/emkProOrder-process')>=0){
 		width =  window.top.document.body.offsetWidth;
 		height =window.top.document.body.offsetHeight-100;
 		addurl = addurl + "&wVal="+window.top.document.body.offsetWidth*0.97+ "px&hVal="+(window.top.document.body.offsetHeight-190)+"px&hVal2="+(window.top.document.body.offsetHeight-230)+"px";

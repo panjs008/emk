@@ -20,10 +20,9 @@
 	<table id="adviceTb" style="width: 100%;margin-top:2px;margin-bottom: 4px" cellpadding="0" cellspacing="1" class="formtable">
 		<c:if test="${emkMaterial.state eq '1' && param.node  eq 'ywyTask'  && ROLE.rolecode eq 'ywy'
 						|| (emkMaterial.state eq '4' || emkMaterial.state eq '35') && param.node  eq 'checkTask'  && ROLE.rolecode eq 'ywjl'
-						|| emkMaterial.state eq '0' && param.node  eq 'materialTask'  && ROLE.rolecode eq 'jsy'
+						|| (emkMaterial.state eq '0' && param.node  eq 'materialTask' || (emkMaterial.state eq '23' || emkMaterial.state eq '41') && param.node  eq 'cksqdTask')  && ROLE.rolecode eq 'jsy'
 						|| (emkMaterial.state eq '3' || emkMaterial.state eq '36' || emkMaterial.state eq '37' || emkMaterial.state eq '38'|| emkMaterial.state eq '39' || emkMaterial.state eq '15') && (param.node  eq 'cgyTask' || param.node  eq 'cgyzxTask' || param.node  eq 'cgyjdTask' || param.node  eq 'rksqTask')  && ROLE.rolecode eq 'cgy'
-						|| emkMaterial.state eq '24' && param.node  eq 'cgjlTask'  && ROLE.rolecode eq 'cgjl'
-						|| emkMaterial.state eq '39' && param.node  eq 'cgjlshTask'  && ROLE.rolecode eq 'cgjl'}">
+						|| (emkMaterial.state eq '24' && param.node  eq 'cgjlTask' || emkMaterial.state eq '39' && param.node  eq 'cgjlshTask' || emkMaterial.state eq '43' && param.node  eq 'cgjlshTask')  && ROLE.rolecode eq 'cgjl'}">
 			<c:if test="${ROLE.rolecode ne 'jsy'}">
 				<tr>
 					<td align="right">

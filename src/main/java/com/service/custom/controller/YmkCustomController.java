@@ -463,8 +463,15 @@ public class YmkCustomController
     @ResponseBody
     public AjaxJson findSupplierList(YmkCustomEntity customEntity, HttpServletRequest request) {
         AjaxJson j = new AjaxJson();
-        List<EmkFactoryArchivesEntity> supplierEntities = systemService.findHql("from EmkFactoryArchivesEntity", null);
-        j.setObj(supplierEntities);
+        Map<String,String> param = ParameterUtil.getParamMaps(request.getParameterMap());
+        if(Utils.notEmpty(param.get("type"))){
+            List<EmkFactoryArchivesEntity> supplierEntities = systemService.findHql("from EmkFactoryArchivesEntity", null);
+            j.setObj(supplierEntities);
+        }else{
+            List<EmkFactoryArchivesEntity> supplierEntities = systemService.findHql("from EmkFactoryArchivesEntity where state=2", null);
+            j.setObj(supplierEntities);
+        }
+
         return j;
     }
 

@@ -74,147 +74,6 @@ public class FlowController {
             sql.append("select DATE_FORMAT(IFNULL(t1.START_TIME_,a.commit_time),'%Y-%m-%d %H:%i:%s') startTime,DATE_FORMAT(t1.END_TIME_,'%Y-%m-%d %H:%i:%s') endTime,t1.*,b.* from emk_approval a \n" +
                     " left join emk_approval_detail b on b.approval_id = a.id \n" +
                     " left join act_hi_taskinst t1 on t1.assignee_= a.form_id and t1.task_def_key_=b.bpm_node ");
-            //sql.append(" SELECT DATE_FORMAT(t1.START_TIME_,'%Y-%m-%d %H:%i:%s') startTime,DATE_FORMAT(t1.END_TIME_,'%Y-%m-%d %H:%i:%s') endTime,t1.*,CASE \n");
-            /*sql.append( " WHEN t1.TASK_DEF_KEY_='orderTask' THEN t2.create_name \n");
-            sql.append( " WHEN t1.TASK_DEF_KEY_='htTask' THEN t2.create_name \n");
-            sql.append( " WHEN t1.TASK_DEF_KEY_='testTask' THEN t2.create_name \n");
-            sql.append( " WHEN t1.TASK_DEF_KEY_='testcostTask' THEN t2.create_name \n");
-            sql.append( " WHEN t1.TASK_DEF_KEY_='checkfactoryTask' THEN t2.create_name \n");
-            sql.append( " WHEN t1.TASK_DEF_KEY_='outstorageTask' THEN t2.create_name \n");
-            sql.append( " WHEN t1.TASK_DEF_KEY_='instorageTask' THEN t2.create_name \n");
-            sql.append( " WHEN t1.TASK_DEF_KEY_='sampleTask' THEN t2.create_name \n");
-            if(!map.get("sqlType").equals("emk")) {
-                sql.append( " WHEN t1.TASK_DEF_KEY_='checkTask' THEN t2.leader \n");
-            }
-            sql.append( " WHEN t1.TASK_DEF_KEY_='ysTask' THEN t2.create_name \n");
-            sql.append( " WHEN t1.TASK_DEF_KEY_='yfTask' THEN t2.create_name \n");
-            sql.append( " WHEN t1.TASK_DEF_KEY_='packTask' THEN t2.create_name \n");
-            sql.append( " WHEN t1.TASK_DEF_KEY_='materialTask' THEN t2.create_name \n");
-            sql.append( " WHEN t1.TASK_DEF_KEY_='accessoriesTask' THEN t2.create_name \n");
-            sql.append( " WHEN t1.TASK_DEF_KEY_='qualitycheckTask' THEN t2.create_name \n");
-            sql.append( " WHEN t1.TASK_DEF_KEY_='sizecheckTask' THEN t2.create_name \n");
-            sql.append( " WHEN t1.TASK_DEF_KEY_='checkfactoryTask' THEN t2.create_name \n");
-
-
-            if(map.get("sqlType").equals("emk")){
-                sql.append( " WHEN t1.TASK_DEF_KEY_='khxpTask' THEN t2.ask_work_user \n");
-                sql.append( " WHEN t1.TASK_DEF_KEY_='sampleTask' THEN t2.sample_user \n");
-                sql.append( " WHEN t1.TASK_DEF_KEY_='sampleCheckTask' THEN t2.sample_check_user \n");
-                sql.append( " WHEN t1.TASK_DEF_KEY_='billTask' THEN t2.order_user \n");
-                sql.append( " WHEN t1.TASK_DEF_KEY_='htTask' THEN t2.ht_user \n");
-                sql.append( " WHEN t1.TASK_DEF_KEY_='produceTask' THEN t2.produce_user \n");
-                sql.append( " WHEN t1.TASK_DEF_KEY_='outTask' THEN t2.out_user \n");
-            }
-
-            //订单生产流程
-            if(map.get("sqlType").equals("produce")){
-                sql.append( " WHEN t1.TASK_DEF_KEY_='produceTask' THEN t2.create_name \n");
-                sql.append( " WHEN t1.TASK_DEF_KEY_='ssyTask' THEN t2.SS_SAMPLE_USER \n");
-                sql.append( " WHEN t1.TASK_DEF_KEY_='cqyTask' THEN t2.CQ_SAMPLE_USER \n");
-                sql.append( " WHEN t1.TASK_DEF_KEY_='syTask' THEN t2.CQ_SAMPLE_USER \n");
-                sql.append( " WHEN t1.TASK_DEF_KEY_='testTask' THEN t2.test_user \n");
-                sql.append( " WHEN t1.TASK_DEF_KEY_='meetingTask' THEN t2.cqhy_user_name \n");
-                sql.append( " WHEN t1.TASK_DEF_KEY_='ylTask' THEN t2.ylflcg_user_name \n");
-                sql.append( " WHEN t1.TASK_DEF_KEY_='ranTask' THEN t2.ran_user_name \n");
-                sql.append( " WHEN t1.TASK_DEF_KEY_='caiTask' THEN t2.cai_user_name \n");
-                sql.append( " WHEN t1.TASK_DEF_KEY_='fengTask' THEN t2.feng_user_name \n");
-                sql.append( " WHEN t1.TASK_DEF_KEY_='zqjcTask' THEN t2.zqjc_user_name \n");
-                sql.append( " WHEN t1.TASK_DEF_KEY_='btTask' THEN t2.biao_user_name \n");
-                sql.append( " WHEN t1.TASK_DEF_KEY_='ztTask' THEN t2.zhengt_user_name \n");
-                sql.append( " WHEN t1.TASK_DEF_KEY_='cyTask' THEN t2.chuang_user_name \n");
-                sql.append( " WHEN t1.TASK_DEF_KEY_='bzTask' THEN t2.box_user_name \n");
-                sql.append( " WHEN t1.TASK_DEF_KEY_='outTask' THEN t2.out_user_name \n");
-                sql.append( " WHEN t1.TASK_DEF_KEY_='wqTask' THEN t2.wei_user_name \n");
-                sql.append( " WHEN t1.TASK_DEF_KEY_='skTask' THEN t2.shou_user_name \n");
-            }
-
-            //报价单生产流程
-            if(map.get("sqlType").equals("price")){
-                sql.append( " WHEN t1.TASK_DEF_KEY_='jsTask' THEN t2.jser \n");
-                sql.append( " WHEN t1.TASK_DEF_KEY_='cgTask' THEN t2.cger \n");
-                sql.append( " WHEN t1.TASK_DEF_KEY_='cwTask' THEN t2.cwer \n");
-                sql.append( " WHEN t1.TASK_DEF_KEY_='jgTask' THEN t2.jger \n");
-            }
-            //采购单流程
-            if(map.get("sqlType").equals("order")){
-                sql.append( " WHEN t1.TASK_DEF_KEY_='ycghtTask' THEN t2.yht_user_name \n");
-                sql.append( " WHEN t1.TASK_DEF_KEY_='htTask' THEN t2.ht_user_name \n");
-                sql.append( " WHEN t1.TASK_DEF_KEY_='rkTask' THEN t2.rk_user_name \n");
-                sql.append( " WHEN t1.TASK_DEF_KEY_='ckTask' THEN t2.ck_user_name \n");
-            }
-            //预采购合同、采购合同单流程
-            if(map.get("sqlType").equals("pact")){
-                sql.append( " WHEN t1.TASK_DEF_KEY_='zshtTask' THEN t2.hter \n");
-            }
-            //验厂流程
-            if(map.get("sqlType").equals("checkfactory") || map.get("sqlType").equals("check")){
-                sql.append( " WHEN t1.TASK_DEF_KEY_='cyTask' THEN t2.cyer \n");
-                sql.append( " WHEN t1.TASK_DEF_KEY_='bgTask' THEN t2.bger \n");
-            }
-
-            if(map.get("sqlType").equals("inStorage") || map.get("sqlType").equals("outStorage") || map.get("sqlType").equals("order") || map.get("sqlType").equals("testcost")){
-                sql.append( " WHEN t1.TASK_DEF_KEY_='cwTask' THEN t2.financer \n");
-            }
-
-            //入库流程
-            if(map.get("sqlType").equals("inStorage")){
-                sql.append( " WHEN t1.TASK_DEF_KEY_='cwTask' THEN t2.jl_user_name \n");
-                sql.append( " WHEN t1.TASK_DEF_KEY_='rkTask' THEN t2.rk_user_name \n");
-            }
-            //出库流程
-            if(map.get("sqlType").equals("outStorage")){
-                sql.append( " WHEN t1.TASK_DEF_KEY_='cwTask' THEN t2.cl_user_name \n");
-                sql.append( " WHEN t1.TASK_DEF_KEY_='ckTask' THEN t2.ck_user_name \n");
-            }
-
-            sql.append( " ELSE ''  END workname FROM act_hi_taskinst t1 \n");
-
-            switch(map.get("sqlType").toString()){
-                case "enquiry":
-                    sql.append("left join emk_enquiry t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='"+map.get("id")+"'");break;
-                case "price":
-                    sql.append("left join emk_price t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='"+map.get("id")+"'");break;
-                case "outStorage":
-                    sql.append("left join emk_m_out_storage t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='"+map.get("id")+"'");break;
-                case "inStorage":
-                    sql.append("left join emk_m_in_storage t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='"+map.get("id")+"'");break;
-                case "order":
-                    sql.append("left join emk_material_contract t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='"+map.get("id")+"'");break;
-                case "bill":
-                    sql.append("left join emk_pro_order t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='"+map.get("id")+"'");break;
-                case "ht":
-                    sql.append("left join emk_contract t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='"+map.get("id")+"'");break;
-                case "sample":
-                    sql.append("left join emk_sample t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='"+map.get("id")+"'");break;
-                case "produce":
-                    sql.append("left join emk_produce t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='"+map.get("id")+"'");break;
-                case "test":
-                    sql.append("left join emk_test t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='"+map.get("id")+"'");break;
-                case "testcost":
-                    sql.append("left join emk_test_cost t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='"+map.get("id")+"'");break;
-                case "checkfactory":
-                    sql.append("left join emk_check_factory t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='"+map.get("id")+"'");break;
-                case "ys":
-                    sql.append("left join emk_finance_receivable t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='"+map.get("id")+"'");break;
-                case "yf":
-                    sql.append("left join emk_finance_receivable t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='"+map.get("id")+"'");break;
-                case "emk":
-                    sql.append("left join emk_work_order t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='"+map.get("id")+"'");break;
-                case "pack":
-                    sql.append("left join emk_pack t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='"+map.get("id")+"'");break;
-                case "material":
-                    sql.append("left join emk_material t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='"+map.get("id")+"'");break;
-                case "accessories":
-                    sql.append("left join emk_accessories t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='"+map.get("id")+"'");break;
-                case "check":
-                    sql.append("left join emk_check t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='"+map.get("id")+"'");break;
-                case "qualitycheck":
-                    sql.append("left join emk_quality_check t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='"+map.get("id")+"'");break;
-                case "sizecheck":
-                    sql.append("left join emk_size_check t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='"+map.get("id")+"'");break;
-                case "pact":
-                    sql.append("left join emk_material_pact t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='"+map.get("id")+"'");break;
-            }*/
 
             //countsql.append("SELECT COUNT(1) FROM act_hi_taskinst t1 where ASSIGNEE_='"+map.get("id")+"' ");
             sql.append(" where a.form_id='"+map.get("id")+"' ");
@@ -336,12 +195,12 @@ public class FlowController {
         RepositoryService repositoryService = processEngine.getRepositoryService();
 
         //获取在classpath下的流程文件
-        InputStream in = this.getClass().getClassLoader().getResourceAsStream("/process/material.zip");
+        InputStream in = this.getClass().getClassLoader().getResourceAsStream("/process/checkfactory.zip");
         ZipInputStream zipInputStream = new ZipInputStream(in);
         //使用deploy方法发布流程
         repositoryService.createDeployment()
                 .addZipInputStream(zipInputStream)
-                .name("material")
+                .name("checkfactory")
                 .deploy();
       /*  Map<String, Object> variables = new HashMap<String,Object>();
         variables.put("inputUser", "panjs");//表示惟一用户

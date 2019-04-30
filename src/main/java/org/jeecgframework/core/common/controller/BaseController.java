@@ -1,6 +1,13 @@
 package org.jeecgframework.core.common.controller;
 
+import com.emk.approval.approval.entity.EmkApprovalEntity;
 import com.emk.approval.approvaldetail.entity.EmkApprovalDetailEntity;
+import com.emk.bill.materialcontract.entity.EmkMaterialContractEntity;
+import com.emk.bill.materialrequired.entity.EmkMaterialRequiredEntity;
+import com.emk.bill.proorder.entity.EmkProOrderEntity;
+import com.emk.bill.proorderbarcode.entity.EmkProOrderBarcodeEntity;
+import com.emk.bill.proorderbox.entity.EmkProOrderBoxEntity;
+import com.emk.bill.proorderdetail.entity.EmkProOrderDetailEntity;
 import com.emk.check.sizecheck.entity.EmkSizeEntity;
 import com.emk.check.sizecheck.entity.EmkSizeTotalEntity;
 import com.emk.storage.enquiry.entity.EmkEnquiryEntity;
@@ -13,8 +20,13 @@ import com.emk.storage.samplegx.entity.EmkSampleGxEntity;
 import com.emk.storage.sampleran.entity.EmkSampleRanEntity;
 import com.emk.storage.samplerequired.entity.EmkSampleRequiredEntity;
 import com.emk.storage.sampleyin.entity.EmkSampleYinEntity;
+import com.emk.util.ApprovalUtil;
 import com.emk.util.DateUtil;
 import com.emk.util.Utils;
+import org.activiti.engine.HistoryService;
+import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.TaskService;
+import org.activiti.engine.task.Task;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Projections;
 import org.jeecgframework.core.common.service.CommonService;
@@ -33,10 +45,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -49,6 +58,14 @@ import java.util.Map;
 public class BaseController {
 	@Autowired
 	public SystemService systemService;
+
+	@Autowired
+	public ProcessEngine processEngine;
+	@Autowired
+	public TaskService taskService;
+	@Autowired
+	public HistoryService historyService;
+
 	/**
 	 * 将前台传递过来的日期格式的字符串，自动转化为Date类型
 	 * 
@@ -741,5 +758,464 @@ public class BaseController {
 
 	}
 
-	
+	//保存订单明细数据
+	protected void saveOrderData(EmkProOrderEntity t,Map<String, String> map){
+		String dataRows = (String) map.get("orderMxListIDSR");
+		if (Utils.notEmpty(dataRows)) {
+			systemService.executeSql("delete from emk_size_total where FIND_IN_SET(p_id,(SELECT GROUP_CONCAT(id) FROM emk_pro_order_detail where PRO_ORDER_ID=?))", t.getId());
+			systemService.executeSql("delete from emk_pro_order_detail where PRO_ORDER_ID=?",t.getId());
+			int rows = Integer.parseInt(dataRows);
+			EmkProOrderDetailEntity proOrderDetailEntity = null;
+			EmkSizeTotalEntity emkSizeTotalEntity = null;
+			for (int i = 0; i < rows; i++) {
+				if (Utils.notEmpty(map.get("orderMxList["+i+"].color"))){
+					proOrderDetailEntity = new EmkProOrderDetailEntity();
+					proOrderDetailEntity.setProOrderId(t.getId());
+					proOrderDetailEntity.setColor(map.get("orderMxList["+i+"].color").toString());
+					proOrderDetailEntity.setSortDesc(String.valueOf(i+1));
+					proOrderDetailEntity.setSumTotal(map.get("orderMxList["+i+"].sumTotal00").toString());
+
+					systemService.save(proOrderDetailEntity);
+
+					if (Utils.notEmpty(map.get("orderMxList["+i+"].color"))){
+						emkSizeTotalEntity = new EmkSizeTotalEntity();
+						emkSizeTotalEntity.setTotalA(map.get("orderMxList["+i+"].totalA"));
+						emkSizeTotalEntity.setTotalB(map.get("orderMxList["+i+"].totalB"));
+						emkSizeTotalEntity.setTotalC(map.get("orderMxList["+i+"].totalC"));
+						emkSizeTotalEntity.setTotalD(map.get("orderMxList["+i+"].totalD"));
+						emkSizeTotalEntity.setTotalE(map.get("orderMxList["+i+"].totalE"));
+						emkSizeTotalEntity.setTotalF(map.get("orderMxList["+i+"].totalF"));
+						emkSizeTotalEntity.setTotalG(map.get("orderMxList["+i+"].totalG"));
+						emkSizeTotalEntity.setTotalH(map.get("orderMxList["+i+"].totalH"));
+						emkSizeTotalEntity.setTotalI(map.get("orderMxList["+i+"].totalI"));
+						emkSizeTotalEntity.setTotalJ(map.get("orderMxList["+i+"].totalJ"));
+						emkSizeTotalEntity.setTotalK(map.get("orderMxList["+i+"].totalK"));
+						emkSizeTotalEntity.setpId(proOrderDetailEntity.getId());
+						systemService.save(emkSizeTotalEntity);
+					}
+				}
+			}
+
+		}
+		dataRows = map.get("orderMxListID");
+		//保存原料面料数据
+		if (Utils.notEmpty(dataRows)) {
+			systemService.executeSql("delete from emk_sample_detail where sample_id = ? and type=0",t.getId());
+			int rows = Integer.parseInt(dataRows);
+			for (int i = 0; i < rows; i++) {
+				EmkSampleDetailEntity emkSampleDetailEntity = new EmkSampleDetailEntity();
+				if (Utils.notEmpty(map.get("orderMxList["+i+"].proZnName"))) {
+					emkSampleDetailEntity.setProZnName(map.get("orderMxList["+i+"].proZnName"));
+					emkSampleDetailEntity.setProNum(map.get("orderMxList["+i+"].proNum"));
+					emkSampleDetailEntity.setGysCode(map.get("orderMxList["+i+"].gysCode"));
+					emkSampleDetailEntity.setBrand(map.get("orderMxList["+i+"].brand"));
+					emkSampleDetailEntity.setPrecent(map.get("orderMxList["+i+"].precent"));
+
+					if(Utils.notEmpty(map.get("orderMxList["+i+"].yongliang"))){
+						emkSampleDetailEntity.setYongliang(Double.parseDouble(map.get("orderMxList["+i+"].yongliang").toString()));
+					}
+					emkSampleDetailEntity.setSignPrice(map.get("orderMxList["+i+"].signPrice"));
+					emkSampleDetailEntity.setUnit(map.get("orderMxList["+i+"].unit"));
+					if(Utils.notEmpty(map.get("orderMxList["+i+"].sunhaoPrecent"))){
+						emkSampleDetailEntity.setSunhaoPrecent(Double.parseDouble(map.get("orderMxList["+i+"].sunhaoPrecent").toString()));
+					}
+					emkSampleDetailEntity.setSumYongliang(map.get("orderMxList["+i+"].sumYongliang").toString());
+					if(Utils.notEmpty(map.get("orderMxList["+i+"].chengben"))){
+						emkSampleDetailEntity.setChengben(Double.parseDouble(map.get("orderMxList["+i+"].chengben").toString()));
+					}
+					emkSampleDetailEntity.setPosition(map.get("orderMxList["+i+"].position").toString());
+					emkSampleDetailEntity.setRkState(map.get("orderMxList["+i+"].rkState").toString());
+
+					emkSampleDetailEntity.setSampleId(t.getId());
+					emkSampleDetailEntity.setType("0");
+					systemService.save(emkSampleDetailEntity);
+				}
+			}
+		}
+		dataRows = map.get("orderMxListID2");
+		//保存缝制辅料数据
+		if (Utils.notEmpty(dataRows)) {
+			systemService.executeSql("delete from emk_sample_detail where sample_id = ? and type=1",t.getId());
+
+			int rows = Integer.parseInt(dataRows);
+			for (int i = 0; i < rows; i++) {
+				EmkSampleDetailEntity emkSampleDetailEntity = new EmkSampleDetailEntity();
+				if (Utils.notEmpty(map.get("orderMxList["+i+"].bproZnName"))) {
+					emkSampleDetailEntity.setProZnName(map.get("orderMxList["+i+"].bproZnName"));
+					emkSampleDetailEntity.setProNum(map.get("orderMxList["+i+"].bproNum"));
+					emkSampleDetailEntity.setGysCode(map.get("orderMxList["+i+"].bgysCode"));
+					emkSampleDetailEntity.setBrand(map.get("orderMxList["+i+"].bbrand"));
+					if(Utils.notEmpty(map.get("orderMxList["+i+"].byongliang"))){
+						emkSampleDetailEntity.setYongliang(Double.parseDouble(map.get("orderMxList["+i+"].byongliang").toString()));
+					}
+					emkSampleDetailEntity.setSignPrice(map.get("orderMxList["+i+"].bsignPrice"));
+					emkSampleDetailEntity.setUnit(map.get("orderMxList["+i+"].bunit"));
+
+					if(Utils.notEmpty(map.get("orderMxList["+i+"].bsunhaoPrecent"))){
+						emkSampleDetailEntity.setSunhaoPrecent(Double.parseDouble(map.get("orderMxList["+i+"].bsunhaoPrecent").toString()));
+					}
+					emkSampleDetailEntity.setSumYongliang(map.get("orderMxList["+i+"].bsumYongliang").toString());
+					if(Utils.notEmpty(map.get("orderMxList["+i+"].bchengben"))){
+						emkSampleDetailEntity.setChengben(Double.parseDouble(map.get("orderMxList["+i+"].bchengben").toString()));
+					}
+					emkSampleDetailEntity.setPosition(map.get("orderMxList["+i+"].bposition").toString());
+					emkSampleDetailEntity.setRkState(map.get("orderMxList["+i+"].brkState").toString());
+					emkSampleDetailEntity.setSampleId(t.getId());
+					emkSampleDetailEntity.setType("1");
+					systemService.save(emkSampleDetailEntity);
+				}
+			}
+		}
+		dataRows = map.get("orderMxListID3");
+		//保存包装辅料数据
+		if (Utils.notEmpty(dataRows)) {
+			systemService.executeSql("delete from emk_sample_detail where sample_id = ? and type=2",t.getId());
+
+			int rows = Integer.parseInt(dataRows);
+			for (int i = 0; i < rows; i++) {
+				EmkSampleDetailEntity emkSampleDetailEntity = new EmkSampleDetailEntity();
+				if (Utils.notEmpty(map.get("orderMxList["+i+"].cproZnName"))) {
+					emkSampleDetailEntity.setProZnName(map.get("orderMxList["+i+"].cproZnName"));
+					emkSampleDetailEntity.setProNum(map.get("orderMxList["+i+"].cproNum"));
+					emkSampleDetailEntity.setGysCode(map.get("orderMxList["+i+"].cgysCode"));
+					emkSampleDetailEntity.setBrand(map.get("orderMxList["+i+"].cbrand"));
+					if(Utils.notEmpty(map.get("orderMxList["+i+"].cyongliang"))){
+						emkSampleDetailEntity.setYongliang(Double.parseDouble(map.get("orderMxList["+i+"].cyongliang").toString()));
+					}
+					emkSampleDetailEntity.setSignPrice(map.get("orderMxList["+i+"].csignPrice"));
+					emkSampleDetailEntity.setUnit(map.get("orderMxList["+i+"].cunit"));
+
+					if(Utils.notEmpty(map.get("orderMxList["+i+"].csunhaoPrecent"))){
+						emkSampleDetailEntity.setSunhaoPrecent(Double.parseDouble(map.get("orderMxList["+i+"].csunhaoPrecent").toString()));
+					}
+					emkSampleDetailEntity.setSumYongliang(map.get("orderMxList["+i+"].csumYongliang").toString());
+					if(Utils.notEmpty(map.get("orderMxList["+i+"].cchengben"))){
+						emkSampleDetailEntity.setChengben(Double.parseDouble(map.get("orderMxList["+i+"].cchengben").toString()));
+					}
+					emkSampleDetailEntity.setPosition(map.get("orderMxList["+i+"].cposition").toString());
+					emkSampleDetailEntity.setRkState(map.get("orderMxList["+i+"].crkState").toString());
+					emkSampleDetailEntity.setSampleId(t.getId());
+					emkSampleDetailEntity.setType("2");
+					systemService.save(emkSampleDetailEntity);
+				}
+			}
+		}
+
+		dataRows = map.get("orderMxListIDBarCode");
+		//保存洗水标条码数据
+		if (Utils.notEmpty(dataRows)) {
+			systemService.executeSql("delete from emk_pro_order_barcode where order_id = ? and type=0",t.getId());
+
+			int rows = Integer.parseInt(dataRows);
+			for (int i = 0; i < rows; i++) {
+				EmkProOrderBarcodeEntity emkProOrderBarcodeEntity = new EmkProOrderBarcodeEntity();
+				if (Utils.notEmpty(map.get("orderMxList["+i+"].acolor00"))) {
+					emkProOrderBarcodeEntity.setColor(map.get("orderMxList["+i+"].acolor00"));
+					emkProOrderBarcodeEntity.setSize(map.get("orderMxList["+i+"].asize00"));
+					emkProOrderBarcodeEntity.setCode(map.get("orderMxList["+i+"].acode00"));
+					emkProOrderBarcodeEntity.setTotal(Integer.parseInt(map.get("orderMxList["+i+"].asignTotal00").toString()));
+					emkProOrderBarcodeEntity.setOrderId(t.getId());
+					emkProOrderBarcodeEntity.setType("0");
+					systemService.save(emkProOrderBarcodeEntity);
+				}
+			}
+		}
+		dataRows = map.get("orderMxListIDBarCode");
+		//保存胶袋贴条码数据
+		if (Utils.notEmpty(dataRows)) {
+			systemService.executeSql("delete from emk_pro_order_barcode where order_id = ? and type=1",t.getId());
+
+			int rows = Integer.parseInt(dataRows);
+			for (int i = 0; i < rows; i++) {
+				EmkProOrderBarcodeEntity emkProOrderBarcodeEntity = new EmkProOrderBarcodeEntity();
+				if (Utils.notEmpty(map.get("orderMxList["+i+"].bcolor00"))) {
+					emkProOrderBarcodeEntity.setColor(map.get("orderMxList["+i+"].bcolor00"));
+					emkProOrderBarcodeEntity.setSize(map.get("orderMxList["+i+"].bsize00"));
+					emkProOrderBarcodeEntity.setCode(map.get("orderMxList["+i+"].bcode00"));
+					emkProOrderBarcodeEntity.setTotal(Integer.parseInt(map.get("orderMxList["+i+"].bsignTotal00").toString()));
+					emkProOrderBarcodeEntity.setOrderId(t.getId());
+					emkProOrderBarcodeEntity.setType("1");
+					systemService.save(emkProOrderBarcodeEntity);
+				}
+			}
+		}
+		dataRows = map.get("orderMxListIDBarCode");
+		//保存箱贴条码数据
+		if (Utils.notEmpty(dataRows)) {
+			systemService.executeSql("delete from emk_pro_order_barcode where order_id = ? and type=2",t.getId());
+
+			int rows = Integer.parseInt(dataRows);
+			for (int i = 0; i < rows; i++) {
+				EmkProOrderBarcodeEntity emkProOrderBarcodeEntity = new EmkProOrderBarcodeEntity();
+				if (Utils.notEmpty(map.get("orderMxList["+i+"].ccolor00"))) {
+					emkProOrderBarcodeEntity.setColor(map.get("orderMxList["+i+"].ccolor00"));
+					emkProOrderBarcodeEntity.setSize(map.get("orderMxList["+i+"].csize00"));
+					emkProOrderBarcodeEntity.setCode(map.get("orderMxList["+i+"].ccode00"));
+					emkProOrderBarcodeEntity.setTotal(Integer.parseInt(map.get("orderMxList["+i+"].csignTotal00").toString()));
+					emkProOrderBarcodeEntity.setOrderId(t.getId());
+					emkProOrderBarcodeEntity.setType("2");
+					systemService.save(emkProOrderBarcodeEntity);
+				}
+			}
+		}
+
+		dataRows = map.get("orderMxListIDBox");
+		//保存单色单码装数据
+		if (Utils.notEmpty(dataRows)) {
+			systemService.executeSql("delete from emk_pro_order_box where order_id = ? and box_type=0",t.getId());
+
+			int rows = Integer.parseInt(dataRows);
+			for (int i = 0; i < rows; i++) {
+				EmkProOrderBoxEntity emkProOrderBoxEntity = new EmkProOrderBoxEntity();
+				if (Utils.notEmpty(map.get("orderMxList["+i+"].acolorName00"))) {
+					emkProOrderBoxEntity.setColorName(map.get("orderMxList["+i+"].acolorName00"));
+					emkProOrderBoxEntity.setSize(map.get("orderMxList["+i+"].asizeBox00"));
+					if(Utils.notEmpty(map.get("orderMxList["+i+"].ainboxTotal00"))){
+						emkProOrderBoxEntity.setInboxTotal(Integer.parseInt(map.get("orderMxList["+i+"].ainboxTotal00").toString()));
+					}
+					if(Utils.notEmpty(map.get("orderMxList["+i+"].atotalBox00"))){
+						emkProOrderBoxEntity.setTotal(Integer.parseInt(map.get("orderMxList["+i+"].atotalBox00").toString()));
+					}
+					if(Utils.notEmpty(map.get("orderMxList["+i+"].asumZsl00"))){
+						emkProOrderBoxEntity.setSumZsl(Integer.parseInt(map.get("orderMxList["+i+"].asumZsl00").toString()));
+					}
+					if(Utils.notEmpty(map.get("orderMxList["+i+"].asumTotal00"))){
+						emkProOrderBoxEntity.setSumTotal(Integer.parseInt(map.get("orderMxList["+i+"].asumTotal00").toString()));
+					}
+					if(Utils.notEmpty(map.get("orderMxList["+i+"].alongVal00"))){
+						emkProOrderBoxEntity.setLongVal(Double.parseDouble(map.get("orderMxList["+i+"].alongVal00").toString()));
+					}
+					if(Utils.notEmpty(map.get("orderMxList["+i+"].awidthVal00"))){
+						emkProOrderBoxEntity.setWidthVal(Double.parseDouble(map.get("orderMxList["+i+"].awidthVal00").toString()));
+					}
+					if(Utils.notEmpty(map.get("orderMxList["+i+"].aheightVal00"))){
+						emkProOrderBoxEntity.setHeightVal(Double.parseDouble(map.get("orderMxList["+i+"].aheightVal00").toString()));
+					}
+					if(Utils.notEmpty(map.get("orderMxList["+i+"].aboxWeightMao00"))){
+						emkProOrderBoxEntity.setBoxWeightMao(Double.parseDouble(map.get("orderMxList["+i+"].aboxWeightMao00").toString()));
+					}
+					if(Utils.notEmpty(map.get("orderMxList["+i+"].aboxWeightJz00"))){
+						emkProOrderBoxEntity.setBoxWeightJz(Double.parseDouble(map.get("orderMxList["+i+"].aboxWeightJz00").toString()));
+					}
+					if(Utils.notEmpty(map.get("orderMxList["+i+"].aboxVolume00"))){
+						emkProOrderBoxEntity.setBoxVolume(Double.parseDouble(map.get("orderMxList["+i+"].aboxVolume00").toString()));
+					}
+					if(Utils.notEmpty(map.get("orderMxList["+i+"].asumVolume00"))){
+						emkProOrderBoxEntity.setSumVolume(Double.parseDouble(map.get("orderMxList["+i+"].asumVolume00").toString()));
+					}
+					if(Utils.notEmpty(map.get("orderMxList["+i+"].asumWeightMao00"))){
+						emkProOrderBoxEntity.setSumWeightMao(Double.parseDouble(map.get("orderMxList["+i+"].asumWeightMao00").toString()));
+					}
+					if(Utils.notEmpty(map.get("orderMxList["+i+"].asumWeightJz00"))){
+						emkProOrderBoxEntity.setSumWeightJz(Double.parseDouble(map.get("orderMxList["+i+"].asumWeightJz00").toString()));
+					}
+					emkProOrderBoxEntity.setBoxType("0");
+					emkProOrderBoxEntity.setOrderId(t.getId());
+
+					systemService.save(emkProOrderBoxEntity);
+				}
+			}
+		}
+
+		dataRows = map.get("orderMxListIDBox1");
+		//保存单色混码装数据
+		if (Utils.notEmpty(dataRows)) {
+			systemService.executeSql("delete from emk_pro_order_box where order_id = ? and box_type=1",t.getId());
+
+			int rows = Integer.parseInt(dataRows);
+			for (int i = 0; i < rows; i++) {
+				EmkProOrderBoxEntity emkProOrderBoxEntity = new EmkProOrderBoxEntity();
+				if (Utils.notEmpty(map.get("orderMxList["+i+"].bcolorName00"))) {
+					emkProOrderBoxEntity.setColorName(map.get("orderMxList["+i+"].bcolorName00"));
+					emkProOrderBoxEntity.setSize(map.get("orderMxList["+i+"].bsizeBox00"));
+					if(Utils.notEmpty(map.get("orderMxList["+i+"].binboxTotal00"))){
+						emkProOrderBoxEntity.setInboxTotal(Integer.parseInt(map.get("orderMxList["+i+"].binboxTotal00").toString()));
+					}
+					if(Utils.notEmpty(map.get("orderMxList["+i+"].btotalBox00"))){
+						emkProOrderBoxEntity.setTotal(Integer.parseInt(map.get("orderMxList["+i+"].btotalBox00").toString()));
+					}
+					if(Utils.notEmpty(map.get("orderMxList["+i+"].bsumZsl00"))){
+						emkProOrderBoxEntity.setSumZsl(Integer.parseInt(map.get("orderMxList["+i+"].bsumZsl00").toString()));
+					}
+					if(Utils.notEmpty(map.get("orderMxList["+i+"].bsumTotal00"))){
+						emkProOrderBoxEntity.setSumTotal(Integer.parseInt(map.get("orderMxList["+i+"].bsumTotal00").toString()));
+					}
+					if(Utils.notEmpty(map.get("orderMxList["+i+"].blongVal00"))){
+						emkProOrderBoxEntity.setLongVal(Double.parseDouble(map.get("orderMxList["+i+"].blongVal00").toString()));
+					}
+					if(Utils.notEmpty(map.get("orderMxList["+i+"].bwidthVal00"))){
+						emkProOrderBoxEntity.setWidthVal(Double.parseDouble(map.get("orderMxList["+i+"].bwidthVal00").toString()));
+					}
+					if(Utils.notEmpty(map.get("orderMxList["+i+"].bheightVal00"))){
+						emkProOrderBoxEntity.setHeightVal(Double.parseDouble(map.get("orderMxList["+i+"].bheightVal00").toString()));
+					}
+					if(Utils.notEmpty(map.get("orderMxList["+i+"].bboxWeightMao00"))){
+						emkProOrderBoxEntity.setBoxWeightMao(Double.parseDouble(map.get("orderMxList["+i+"].bboxWeightMao00").toString()));
+					}
+					if(Utils.notEmpty(map.get("orderMxList["+i+"].bboxWeightJz00"))){
+						emkProOrderBoxEntity.setBoxWeightJz(Double.parseDouble(map.get("orderMxList["+i+"].bboxWeightJz00").toString()));
+					}
+					if(Utils.notEmpty(map.get("orderMxList["+i+"].bboxVolume00"))){
+						emkProOrderBoxEntity.setBoxVolume(Double.parseDouble(map.get("orderMxList["+i+"].bboxVolume00").toString()));
+					}
+					if(Utils.notEmpty(map.get("orderMxList["+i+"].bsumVolume00"))){
+						emkProOrderBoxEntity.setSumVolume(Double.parseDouble(map.get("orderMxList["+i+"].bsumVolume00").toString()));
+					}
+					if(Utils.notEmpty(map.get("orderMxList["+i+"].bsumWeightMao00"))){
+						emkProOrderBoxEntity.setSumWeightMao(Double.parseDouble(map.get("orderMxList["+i+"].bsumWeightMao00").toString()));
+					}
+					if(Utils.notEmpty(map.get("orderMxList["+i+"].bsumWeightJz00"))){
+						emkProOrderBoxEntity.setSumWeightJz(Double.parseDouble(map.get("orderMxList["+i+"].bsumWeightJz00").toString()));
+					}
+					emkProOrderBoxEntity.setBoxType("1");
+					emkProOrderBoxEntity.setOrderId(t.getId());
+
+					systemService.save(emkProOrderBoxEntity);
+				}
+			}
+		}
+
+		dataRows = map.get("orderMxListIDBox2");
+		//保存混色单码装数据
+		if (Utils.notEmpty(dataRows)) {
+			systemService.executeSql("delete from emk_pro_order_box where order_id = ? and box_type=2",t.getId());
+
+			int rows = Integer.parseInt(dataRows);
+			for (int i = 0; i < rows; i++) {
+				EmkProOrderBoxEntity emkProOrderBoxEntity = new EmkProOrderBoxEntity();
+				if (Utils.notEmpty(map.get("orderMxList["+i+"].ccolorName00"))) {
+					emkProOrderBoxEntity.setColorName(map.get("orderMxList["+i+"].ccolorName00"));
+					emkProOrderBoxEntity.setSize(map.get("orderMxList["+i+"].csizeBox00"));
+					if(Utils.notEmpty(map.get("orderMxList["+i+"].cinboxTotal00"))){
+						emkProOrderBoxEntity.setInboxTotal(Integer.parseInt(map.get("orderMxList["+i+"].cinboxTotal00").toString()));
+					}
+					if(Utils.notEmpty(map.get("orderMxList["+i+"].ctotalBox00"))){
+						emkProOrderBoxEntity.setTotal(Integer.parseInt(map.get("orderMxList["+i+"].ctotalBox00").toString()));
+					}
+					if(Utils.notEmpty(map.get("orderMxList["+i+"].csumZsl00"))){
+						emkProOrderBoxEntity.setSumZsl(Integer.parseInt(map.get("orderMxList["+i+"].csumZsl00").toString()));
+					}
+					if(Utils.notEmpty(map.get("orderMxList["+i+"].csumTotal00"))){
+						emkProOrderBoxEntity.setSumTotal(Integer.parseInt(map.get("orderMxList["+i+"].csumTotal00").toString()));
+					}
+					if(Utils.notEmpty(map.get("orderMxList["+i+"].clongVal00"))){
+						emkProOrderBoxEntity.setLongVal(Double.parseDouble(map.get("orderMxList["+i+"].clongVal00").toString()));
+					}
+					if(Utils.notEmpty(map.get("orderMxList["+i+"].cwidthVal00"))){
+						emkProOrderBoxEntity.setWidthVal(Double.parseDouble(map.get("orderMxList["+i+"].cwidthVal00").toString()));
+					}
+					if(Utils.notEmpty(map.get("orderMxList["+i+"].cheightVal00"))){
+						emkProOrderBoxEntity.setHeightVal(Double.parseDouble(map.get("orderMxList["+i+"].cheightVal00").toString()));
+					}
+					if(Utils.notEmpty(map.get("orderMxList["+i+"].cboxWeightMao00"))){
+						emkProOrderBoxEntity.setBoxWeightMao(Double.parseDouble(map.get("orderMxList["+i+"].cboxWeightMao00").toString()));
+					}
+					if(Utils.notEmpty(map.get("orderMxList["+i+"].cboxWeightJz00"))){
+						emkProOrderBoxEntity.setBoxWeightJz(Double.parseDouble(map.get("orderMxList["+i+"].cboxWeightJz00").toString()));
+					}
+					if(Utils.notEmpty(map.get("orderMxList["+i+"].cboxVolume00"))){
+						emkProOrderBoxEntity.setBoxVolume(Double.parseDouble(map.get("orderMxList["+i+"].cboxVolume00").toString()));
+					}
+					if(Utils.notEmpty(map.get("orderMxList["+i+"].csumVolume00"))){
+						emkProOrderBoxEntity.setSumVolume(Double.parseDouble(map.get("orderMxList["+i+"].csumVolume00").toString()));
+					}
+					if(Utils.notEmpty(map.get("orderMxList["+i+"].csumWeightMao00"))){
+						emkProOrderBoxEntity.setSumWeightMao(Double.parseDouble(map.get("orderMxList["+i+"].csumWeightMao00").toString()));
+					}
+					if(Utils.notEmpty(map.get("orderMxList["+i+"].csumWeightJz00"))){
+						emkProOrderBoxEntity.setSumWeightJz(Double.parseDouble(map.get("orderMxList["+i+"].csumWeightJz00").toString()));
+					}
+					emkProOrderBoxEntity.setBoxType("2");
+					emkProOrderBoxEntity.setOrderId(t.getId());
+
+					systemService.save(emkProOrderBoxEntity);
+				}
+			}
+		}
+
+		dataRows = map.get("orderMxListIDBox4");
+		//保存混色混码装数据
+		if (Utils.notEmpty(dataRows)) {
+			systemService.executeSql("delete from emk_pro_order_box where order_id = ? and box_type=3",t.getId());
+
+			int rows = Integer.parseInt(dataRows);
+			for (int i = 0; i < rows; i++) {
+				EmkProOrderBoxEntity emkProOrderBoxEntity = new EmkProOrderBoxEntity();
+				if (Utils.notEmpty(map.get("orderMxList["+i+"].ecolorName00"))) {
+					emkProOrderBoxEntity.setColorName(map.get("orderMxList["+i+"].ecolorName00"));
+					emkProOrderBoxEntity.setSize(map.get("orderMxList["+i+"].esizeBox00"));
+					if(Utils.notEmpty(map.get("orderMxList["+i+"].einboxTotal00"))){
+						emkProOrderBoxEntity.setInboxTotal(Integer.parseInt(map.get("orderMxList["+i+"].einboxTotal00").toString()));
+					}
+					if(Utils.notEmpty(map.get("orderMxList["+i+"].etotalBox00"))){
+						emkProOrderBoxEntity.setTotal(Integer.parseInt(map.get("orderMxList["+i+"].etotalBox00").toString()));
+					}
+					if(Utils.notEmpty(map.get("orderMxList["+i+"].esumZsl00"))){
+						emkProOrderBoxEntity.setSumZsl(Integer.parseInt(map.get("orderMxList["+i+"].esumZsl00").toString()));
+					}
+					if(Utils.notEmpty(map.get("orderMxList["+i+"].esumTotal00"))){
+						emkProOrderBoxEntity.setSumTotal(Integer.parseInt(map.get("orderMxList["+i+"].esumTotal00").toString()));
+					}
+					if(Utils.notEmpty(map.get("orderMxList["+i+"].elongVal00"))){
+						emkProOrderBoxEntity.setLongVal(Double.parseDouble(map.get("orderMxList["+i+"].elongVal00").toString()));
+					}
+					if(Utils.notEmpty(map.get("orderMxList["+i+"].ewidthVal00"))){
+						emkProOrderBoxEntity.setWidthVal(Double.parseDouble(map.get("orderMxList["+i+"].ewidthVal00").toString()));
+					}
+					if(Utils.notEmpty(map.get("orderMxList["+i+"].eheightVal00"))){
+						emkProOrderBoxEntity.setHeightVal(Double.parseDouble(map.get("orderMxList["+i+"].eheightVal00").toString()));
+					}
+					if(Utils.notEmpty(map.get("orderMxList["+i+"].eboxWeightMao00"))){
+						emkProOrderBoxEntity.setBoxWeightMao(Double.parseDouble(map.get("orderMxList["+i+"].eboxWeightMao00").toString()));
+					}
+					if(Utils.notEmpty(map.get("orderMxList["+i+"].eboxWeightJz00"))){
+						emkProOrderBoxEntity.setBoxWeightJz(Double.parseDouble(map.get("orderMxList["+i+"].eboxWeightJz00").toString()));
+					}
+					if(Utils.notEmpty(map.get("orderMxList["+i+"].eboxVolume00"))){
+						emkProOrderBoxEntity.setBoxVolume(Double.parseDouble(map.get("orderMxList["+i+"].eboxVolume00").toString()));
+					}
+					if(Utils.notEmpty(map.get("orderMxList["+i+"].esumVolume00"))){
+						emkProOrderBoxEntity.setSumVolume(Double.parseDouble(map.get("orderMxList["+i+"].esumVolume00").toString()));
+					}
+					if(Utils.notEmpty(map.get("orderMxList["+i+"].esumWeightMao00"))){
+						emkProOrderBoxEntity.setSumWeightMao(Double.parseDouble(map.get("orderMxList["+i+"].esumWeightMao00").toString()));
+					}
+					if(Utils.notEmpty(map.get("orderMxList["+i+"].esumWeightJz00"))){
+						emkProOrderBoxEntity.setSumWeightJz(Double.parseDouble(map.get("orderMxList["+i+"].esumWeightJz00").toString()));
+					}
+					emkProOrderBoxEntity.setBoxType("3");
+					emkProOrderBoxEntity.setOrderId(t.getId());
+
+					systemService.save(emkProOrderBoxEntity);
+				}
+			}
+		}
+	}
+
+	protected void saveMaterialRequiredProcess(EmkMaterialContractEntity t,String content,String advice,TSUser user){
+		EmkMaterialRequiredEntity c = null;
+		EmkApprovalEntity d = null;
+		List<EmkMaterialRequiredEntity> emkMaterialRequiredEntityList = systemService.findHql("from EmkMaterialRequiredEntity where materialNo=? and type=?",t.getCaigouNo(),t.getType());
+		if(Utils.notEmpty(emkMaterialRequiredEntityList)){
+			c = emkMaterialRequiredEntityList.get(0);
+			d = systemService.findUniqueByProperty(EmkApprovalEntity.class,"formId",c.getId());
+		}
+		Map variables = new HashMap();
+		List<Task> task = taskService.createTaskQuery().taskAssignee(c.getId()).list();
+		if(Utils.notEmpty(task)){
+			Task task1 = task.get(task.size() - 1);
+			if(task1.getTaskDefinitionKey().equals("fksqdTask")){
+				variables.put("inputUser",c.getId());
+				taskService.complete(task1.getId(), variables);
+				TSUser bpmUser = systemService.get(TSUser.class,d.getBpmSherId());
+				try {
+					//content = 提交审核的付款申请单
+					EmkApprovalDetailEntity approvalDetail = ApprovalUtil.saveApprovalDetail(d.getId(),user,d,advice);
+					saveSmsAndEmailForOne("采购需求单","您有【"+user.getRealName()+"】"+content+"，单号："+d.getWorkNum()+"，请及时处理。",bpmUser,user.getUserName());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
 }

@@ -1,17 +1,22 @@
 package com.emk.storage.factoryarchives.controller;
-import com.emk.storage.enquiry.entity.EmkEnquiryEntity;
+import com.emk.approval.approval.entity.EmkApprovalEntity;
+import com.emk.approval.approvaldetail.entity.EmkApprovalDetailEntity;
+import com.emk.storage.checkfactory.entity.EmkCheckFactoryEntity;
 import com.emk.storage.factoryarchives.entity.EmkFactoryArchivesEntity;
 import com.emk.storage.factoryarchives.entity.EmkFactoryArchivesEntityA;
 import com.emk.storage.factoryarchives.service.EmkFactoryArchivesServiceI;
 
 import java.io.File;
 import java.util.*;
-import java.text.SimpleDateFormat;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.emk.util.*;
+
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.apache.log4j.Logger;
+import org.jeecgframework.web.system.pojo.base.TSUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -22,26 +27,17 @@ import org.springframework.web.servlet.ModelAndView;
 import org.jeecgframework.core.common.controller.BaseController;
 import org.jeecgframework.core.common.exception.BusinessException;
 import org.jeecgframework.core.common.hibernate.qbc.CriteriaQuery;
-import org.jeecgframework.core.common.model.common.TreeChildCount;
 import org.jeecgframework.core.common.model.json.AjaxJson;
 import org.jeecgframework.core.common.model.json.DataGrid;
 import org.jeecgframework.core.constant.Globals;
 import org.jeecgframework.core.util.StringUtil;
 import org.jeecgframework.tag.core.easyui.TagUtil;
-import org.jeecgframework.web.system.pojo.base.TSDepart;
-import org.jeecgframework.web.system.service.SystemService;
 import org.jeecgframework.core.util.MyBeanUtils;
 
-import java.io.OutputStream;
-import org.jeecgframework.core.util.BrowserUtils;
-import org.jeecgframework.poi.excel.ExcelExportUtil;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.entity.ExportParams;
 import org.jeecgframework.poi.excel.entity.ImportParams;
-import org.jeecgframework.poi.excel.entity.TemplateExportParams;
 import org.jeecgframework.poi.excel.entity.vo.NormalExcelConstants;
-import org.jeecgframework.poi.excel.entity.vo.TemplateExcelConstants;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.jeecgframework.core.util.ResourceUtil;
 import java.io.IOException;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -49,30 +45,21 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.jeecgframework.core.util.ExceptionUtil;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.jeecgframework.core.beanvalidator.BeanValidators;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
-import java.net.URI;
 import org.springframework.http.MediaType;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.apache.commons.lang3.StringUtils;
-import org.jeecgframework.jwt.util.GsonUtil;
 import org.jeecgframework.jwt.util.ResponseMessage;
 import org.jeecgframework.jwt.util.Result;
 import com.alibaba.fastjson.JSONArray;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
@@ -95,11 +82,9 @@ public class EmkFactoryArchivesController extends BaseController {
 
 	@Autowired
 	private EmkFactoryArchivesServiceI emkFactoryArchivesService;
-	@Autowired
-	private SystemService systemService;
+
 	@Autowired
 	private Validator validator;
-	
 
 
 	/**
@@ -204,6 +189,7 @@ public class EmkFactoryArchivesController extends BaseController {
 		try{
 			Map orderNum = systemService.findOneForJdbc("select CAST(ifnull(max(right(archives_no, 3)),0)+1 AS signed) orderNum from emk_factory_archives ");
 			emkFactoryArchives.setArchivesNo("GYSDA" + String.format("%04d", Integer.parseInt(orderNum.get("orderNum").toString())));
+			emkFactoryArchives.setState("0");
 			emkFactoryArchivesService.save(emkFactoryArchives);
 			systemService.addLog(message, Globals.Log_Type_INSERT, Globals.Log_Leavel_INFO);
 		}catch(Exception e){
@@ -227,10 +213,32 @@ public class EmkFactoryArchivesController extends BaseController {
 		String message = null;
 		AjaxJson j = new AjaxJson();
 		message = "工厂档案更新成功";
+		Map<String, String> map = ParameterUtil.getParamMaps(request.getParameterMap());
 		EmkFactoryArchivesEntity t = emkFactoryArchivesService.get(EmkFactoryArchivesEntity.class, emkFactoryArchives.getId());
 		try {
 			MyBeanUtils.copyBeanNotNull2Bean(emkFactoryArchives, t);
 			emkFactoryArchivesService.saveOrUpdate(t);
+
+			if("1".equals(map.get("isPass"))){
+				EmkApprovalEntity b = systemService.findUniqueByProperty(EmkApprovalEntity.class,"formId",t.getId());
+
+				t.setState("1");
+				b.setStatus(1);
+
+				systemService.saveOrUpdate(t);
+				systemService.saveOrUpdate(b);
+				Map<String, Object> variables = new HashMap();
+				List<Task> task = taskService.createTaskQuery().taskAssignee(t.getId()).list();
+				if(Utils.notEmpty(task)){
+					Task task1 = task.get(task.size() - 1);
+					if(task1.getTaskDefinitionKey().equals("checkfactoryTask")) {
+						variables.put("optUser",t.getId());
+						taskService.complete(task1.getId(), variables);
+						TSUser user = (TSUser)request.getSession().getAttribute("LOCAL_CLINET_USER");
+						saveSmsAndEmailForMany("业务经理","【业务员】工厂信息表","您有【"+b.getCreateName()+"】重新提交的工厂信息表，单号："+b.getWorkNum()+"，请及时审核。",user.getUserName());
+					}
+				}
+			}
 			systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -321,7 +329,26 @@ public class EmkFactoryArchivesController extends BaseController {
 		}
 		return new ModelAndView("com/emk/storage/factoryarchives/emkFactoryArchives-update");
 	}
-	
+	@RequestMapping(params = "goUpdate2")
+	public ModelAndView goUpdate2(EmkFactoryArchivesEntity emkFactoryArchives, HttpServletRequest req) {
+		if (StringUtil.isNotEmpty(emkFactoryArchives.getId())) {
+			emkFactoryArchives = emkFactoryArchivesService.getEntity(EmkFactoryArchivesEntity.class, emkFactoryArchives.getId());
+			req.setAttribute("emkFactoryArchivesPage", emkFactoryArchives);
+		}
+		return new ModelAndView("com/emk/storage/factoryarchives/emkFactoryArchives-update2");
+	}
+	@RequestMapping(params = "goUpdate3")
+	public ModelAndView goUpdate3(EmkFactoryArchivesEntity emkFactoryArchives, HttpServletRequest req) {
+		if (StringUtil.isNotEmpty(emkFactoryArchives.getId())) {
+			emkFactoryArchives = emkFactoryArchivesService.getEntity(EmkFactoryArchivesEntity.class, emkFactoryArchives.getId());
+			req.setAttribute("emkFactoryArchivesPage", emkFactoryArchives);
+
+			List<Map<String, Object>> codeList = systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE='A01A05' order by code asc");
+			req.setAttribute("codeList", codeList);
+
+		}
+		return new ModelAndView("com/emk/storage/factoryarchives/emkFactoryArchives-update3");
+	}
 	/**
 	 * 导入功能跳转
 	 * 
@@ -481,5 +508,246 @@ public class EmkFactoryArchivesController extends BaseController {
 		}
 
 		return Result.success();
+	}
+
+	@RequestMapping(params="doSubmit")
+	@ResponseBody
+	public AjaxJson doSubmit(EmkFactoryArchivesEntity emkFactoryArchivesEntity, HttpServletRequest request) {
+		String message = null;
+		AjaxJson j = new AjaxJson();
+		message = "验厂申请表提交成功";
+		try {
+			int flag = 0;
+			TSUser user = (TSUser)request.getSession().getAttribute("LOCAL_CLINET_USER");
+			Map<String, String> map = ParameterUtil.getParamMaps(request.getParameterMap());
+
+			if ((emkFactoryArchivesEntity.getId() == null) || (emkFactoryArchivesEntity.getId().isEmpty())) {
+				for (String id : map.get("ids").toString().split(",")) {
+					EmkFactoryArchivesEntity factoryArchivesEntity = systemService.getEntity(EmkFactoryArchivesEntity.class, id);
+					if (!factoryArchivesEntity.getState().equals("0")) {
+						message = "存在已提交的验厂申请表，请重新选择在提交！";
+						j.setSuccess(false);
+						flag = 1;
+						break;
+					}
+				}
+			}else{
+				map.put("ids", emkFactoryArchivesEntity.getId());
+			}
+			Map<String, Object> variables = new HashMap();
+			if (flag == 0) {
+				for (String id : map.get("ids").toString().split(",")) {
+					EmkFactoryArchivesEntity t = emkFactoryArchivesService.get(EmkFactoryArchivesEntity.class, id);
+					variables.put("optUser", t.getId());
+					EmkApprovalEntity b = systemService.findUniqueByProperty(EmkApprovalEntity.class,"formId",t.getId());
+					if(Utils.isEmpty(b)){
+						b = new EmkApprovalEntity();
+						EmkApprovalDetailEntity approvalDetailEntity = new EmkApprovalDetailEntity();
+						ApprovalUtil.saveApproval(b,1,t.getArchivesNo(),t.getId(),user);
+						systemService.save(b);
+						ApprovalUtil.saveApprovalDetail(approvalDetailEntity,b.getId(),"工厂信息表","checkfactoryTask","提交",user);
+						systemService.save(approvalDetailEntity);
+					}
+
+					List<Task> task = taskService.createTaskQuery().taskAssignee(id).list();
+					TSUser makerUser = systemService.findUniqueByProperty(TSUser.class,"userName",t.getCreateBy());
+					TSUser bpmUser = null;
+					if (task.size() > 0) {
+						bpmUser = systemService.get(TSUser.class,b.getBpmSherId());
+					}else{
+						bpmUser = systemService.get(TSUser.class,b.getCommitId());
+					}
+					//保存审批意见
+					EmkApprovalDetailEntity approvalDetail = ApprovalUtil.saveApprovalDetail(b.getId(),user,b,map.get("advice"));
+					t.setState("1");
+					variables.put("optUser", t.getId());
+					if (task.size() > 0) {
+						Task task1 = (Task)task.get(task.size() - 1);
+						if (task1.getTaskDefinitionKey().equals("checkfactoryTask")) {
+							taskService.complete(task1.getId(), variables);
+							t.setState("1");
+							b.setStatus(1);
+							saveApprvoalDetail(approvalDetail,"重新提交的工厂信息表","checkfactoryTask",0,"重新提交工厂信息表");
+							saveSmsAndEmailForMany("业务经理","【业务员】工厂信息表","您有【"+b.getCreateName()+"】重新提交的订单表，单号："+b.getWorkNum()+"，请及时审核。",user.getUserName());
+						}
+						if(task1.getTaskDefinitionKey().equals("checkTask")) {
+							if (map.get("isPass").equals("0")){
+								taskService.complete(task1.getId(), variables);
+								b.setStatus(3);
+								approvalDetail.setBpmName("业务经理审核");
+								t.setState("3");
+								approvalDetail.setApproveStatus(0);
+								saveSmsAndEmailForMany("总经理","业务经理审核","您有【"+b.getCreateName()+"】审核通过的工厂信息表，单号："+b.getWorkNum()+"，请及时审核。",user.getUserName());
+
+							}else{
+								saveApprvoalDetail(approvalDetail,"业务经理审核","checkTask",1,"回退");
+								backProcess(task1.getProcessInstanceId(),"checkTask","checkfactoryTask","【业务员】工厂信息表");
+								t.setState("0");
+								b.setStatus(0);
+								b.setBpmStatus("1");
+								saveSmsAndEmailForOne("业务经理审核","您有【"+user.getRealName()+"】回退的工厂信息表，单号："+b.getWorkNum()+"，请及时处理。",bpmUser,user.getUserName());
+							}
+						}
+						if(task1.getTaskDefinitionKey().equals("zjlshTask")) {
+							if (map.get("isPass").equals("0")){
+								taskService.complete(task1.getId(), variables);
+								b.setStatus(48);
+								approvalDetail.setBpmName("总经理审批");
+								t.setState("48");
+								approvalDetail.setApproveStatus(0);
+
+								bpmUser = systemService.get(TSUser.class,b.getCommitId());
+								saveSmsAndEmailForOne("总经理审批","您有【"+user.getRealName()+"】审核通过的订单表，单号："+b.getWorkNum()+"，请及时处理。",bpmUser,user.getUserName());
+							}
+						}
+						if(task1.getTaskDefinitionKey().equals("ywjlshTask")) {
+							if (map.get("isPass").equals("0")){
+								variables.put("isPass2","0");
+								taskService.complete(task1.getId(), variables);
+								b.setStatus(3);
+								approvalDetail.setBpmName("业务经理审核");
+								t.setState("3");
+								approvalDetail.setApproveStatus(0);
+								saveSmsAndEmailForMany("验厂经理","业务经理审核","您有【"+b.getCreateName()+"】审核通过的验厂申请表，单号："+b.getWorkNum()+"，请及时审核。",user.getUserName());
+							}else{
+								List<EmkCheckFactoryEntity> emkCheckFactoryEntityList = systemService.findHql("from EmkCheckFactoryEntity where state=1 and gysCode=?",t.getCompanyCode());
+								if(Utils.notEmpty(emkCheckFactoryEntityList)){
+									EmkCheckFactoryEntity emkCheckFactoryEntity = emkCheckFactoryEntityList.get(0);
+									emkCheckFactoryEntity.setState("0");
+									systemService.saveOrUpdate(emkCheckFactoryEntity);
+								}
+								saveApprvoalDetail(approvalDetail,"业务经理审核","ywjlshTask",1,"回退");
+								backProcess(task1.getProcessInstanceId(),"ywjlshTask","ycsqbTask","【业务员】验厂申请表");
+								t.setState("21");
+								b.setStatus(21);
+								b.setBpmStatus("1");
+								saveSmsAndEmailForOne("业务经理审核","您有【"+user.getRealName()+"】回退的工厂信息表，单号："+b.getWorkNum()+"，请及时处理。",bpmUser,user.getUserName());
+							}
+						}
+						if(task1.getTaskDefinitionKey().equals("fpycyTask")) {
+							if (map.get("isPass").equals("0")){
+								taskService.complete(task1.getId(), variables);
+								b.setStatus(51);
+								b.setNextBpmSher(map.get("realName"));
+								b.setNextBpmSherId(map.get("userName"));
+								approvalDetail.setBpmName("【验厂部经理】分配验厂员");
+								t.setState("51");
+								approvalDetail.setApproveStatus(0);
+
+								bpmUser = systemService.findUniqueByProperty(TSUser.class,"userName",b.getNextBpmSherId());
+								saveSmsAndEmailForOne("【验厂部经理】分配验厂员","您有【"+user.getRealName()+"】审核通过的验厂申请表，单号："+b.getWorkNum()+"，请及时处理。",bpmUser,user.getUserName());
+							}else{
+								saveApprvoalDetail(approvalDetail,"【验厂部经理】分配验厂员","fpycyTask",1,"回退");
+								backProcess(task1.getProcessInstanceId(),"fpycyTask","ywjlshTask","业务经理审核");
+								systemService.executeSql("delete from act_hi_actinst  where proc_inst_id_=? and act_id_=? ",task1.getProcessInstanceId(),"exclusivegateway2");
+								t.setState("4");
+								b.setStatus(4);
+								b.setBpmStatus("1");
+								saveSmsAndEmailForOne("【验厂部经理】分配验厂员","您有【"+user.getRealName()+"】回退的验厂申请表，单号："+b.getWorkNum()+"，请及时处理。",bpmUser,user.getUserName());
+							}
+						}
+						if(task1.getTaskDefinitionKey().equals("cyTask")) {
+							if (map.get("isPass").equals("0")){
+								taskService.complete(task1.getId(), variables);
+								b.setStatus(52);
+								approvalDetail.setBpmName("【验厂员】执行验厂");
+								t.setState("52");
+								approvalDetail.setApproveStatus(0);
+							}
+						}
+						if(task1.getTaskDefinitionKey().equals("bgTask")) {
+							if (map.get("isPass").equals("0")){
+								List<EmkCheckFactoryEntity> emkCheckFactoryEntityList = systemService.findHql("from EmkCheckFactoryEntity where state=1 and gysCode=?",t.getCompanyCode());
+								if(Utils.notEmpty(emkCheckFactoryEntityList)){
+									EmkCheckFactoryEntity emkCheckFactoryEntity = emkCheckFactoryEntityList.get(0);
+									emkCheckFactoryEntity.setFileName(map.get("fileName"));
+									emkCheckFactoryEntity.setFileNameUrl(map.get("fileNameUrl"));
+									systemService.saveOrUpdate(emkCheckFactoryEntity);
+								}
+								taskService.complete(task1.getId(), variables);
+								b.setStatus(53);
+								approvalDetail.setBpmName("验厂报告");
+								t.setState("53");
+								approvalDetail.setApproveStatus(0);
+
+								saveSmsAndEmailForMany("验厂经理","验厂报告","您有【"+b.getCreateName()+"】提交的的验厂报告，单号："+b.getWorkNum()+"，请及时审核。",user.getUserName());
+							}
+						}
+						if(task1.getTaskDefinitionKey().equals("ycbshTask")) {
+							if (map.get("isPass").equals("0")){
+								List<EmkCheckFactoryEntity> emkCheckFactoryEntityList = systemService.findHql("from EmkCheckFactoryEntity where state=1 and gysCode=?",t.getCompanyCode());
+								if(Utils.notEmpty(emkCheckFactoryEntityList)){
+									EmkCheckFactoryEntity emkCheckFactoryEntity = emkCheckFactoryEntityList.get(0);
+									emkCheckFactoryEntity.setState("2");
+									systemService.saveOrUpdate(emkCheckFactoryEntity);
+								}
+								variables.put("isPass2","0");
+								taskService.complete(task1.getId(), variables);
+								b.setStatus(2);
+								approvalDetail.setBpmName("【验厂部经理】验厂部审核");
+								t.setState("2");
+								approvalDetail.setApproveStatus(0);
+
+								bpmUser = systemService.findUniqueByProperty(TSUser.class,"userName",b.getNextBpmSherId());
+								saveSmsAndEmailForOne("【验厂部经理】验厂部审核","您有【"+user.getRealName()+"】审核通过的验厂报告，单号："+b.getWorkNum()+"，请及时处理。",bpmUser,user.getUserName());
+							}else{
+								saveApprvoalDetail(approvalDetail,"【验厂部经理】验厂部审核","ycbshTask",1,"回退");
+								backProcess(task1.getProcessInstanceId(),"ycbshTask","bgTask","验厂报告");
+								backProcess(task1.getProcessInstanceId(),"bgTask","cyTask","【验厂员】执行验厂");
+								t.setState("51");
+								b.setStatus(51);
+								b.setBpmStatus("1");
+								saveSmsAndEmailForOne("【验厂部经理】验厂部审核","您有【"+user.getRealName()+"】回退的验厂报告，单号："+b.getWorkNum()+"，请及时处理。",bpmUser,user.getUserName());
+							}
+						}
+						systemService.save(approvalDetail);
+
+					}else {
+						ProcessInstance pi = processEngine.getRuntimeService().startProcessInstanceByKey("checkfactory", "emkFactoryArchivesEntity", variables);
+						task = taskService.createTaskQuery().taskAssignee(id).list();
+						Task task1 = task.get(task.size() - 1);
+						taskService.complete(task1.getId(), variables);
+
+						t.setState("1");
+						b.setStatus(1);
+						b.setBpmStatus("0");
+						b.setProcessName("【业务员】工厂信息表");
+
+						saveApprvoalDetail(approvalDetail,"提交的【业务员】工厂信息表","checkfactoryTask",0,"提交【业务员】工厂信息表");
+						saveSmsAndEmailForMany("业务经理","【业务员】工厂信息表","您有【"+b.getCreateName()+"】提交的【业务员】工厂信息表，单号："+b.getWorkNum()+"，请及时审核。",user.getUserName());
+					}
+
+					systemService.saveOrUpdate(t);
+					systemService.saveOrUpdate(b);
+				}
+			}
+			systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			message = "验厂申请表提交失败";
+			throw new BusinessException(e.getMessage());
+		}
+		j.setMsg(message);
+		return j;
+	}
+
+	@RequestMapping(params="goWork")
+	public ModelAndView goWork(EmkFactoryArchivesEntity emkFactoryArchives, HttpServletRequest req) {
+		if (StringUtil.isNotEmpty(emkFactoryArchives.getId())) {
+			emkFactoryArchives = emkFactoryArchivesService.getEntity(EmkFactoryArchivesEntity.class, emkFactoryArchives.getId());
+			req.setAttribute("emkFactoryArchivesPage", emkFactoryArchives);
+		}
+		return new ModelAndView("com/emk/storage/factoryarchives/emkFactoryArchives-work");
+	}
+
+	@RequestMapping(params="goTime")
+	public ModelAndView goTime(EmkFactoryArchivesEntity emkFactoryArchives, HttpServletRequest req, DataGrid dataGrid) {
+		EmkApprovalEntity approvalEntity = systemService.findUniqueByProperty(EmkApprovalEntity.class,"formId",emkFactoryArchives.getId());
+		List<EmkApprovalDetailEntity> approvalDetailEntityList = systemService.findHql("from EmkApprovalDetailEntity where approvalId=?",approvalEntity.getId());
+		req.setAttribute("approvalDetailEntityList", approvalDetailEntityList);
+		req.setAttribute("approvalEntity", approvalEntity);
+		req.setAttribute("createDate", org.jeecgframework.core.util.DateUtils.date2Str(approvalEntity.getCreateDate(), org.jeecgframework.core.util.DateUtils.datetimeFormat));
+		return new ModelAndView("com/emk/storage/checkfactory/time");
 	}
 }

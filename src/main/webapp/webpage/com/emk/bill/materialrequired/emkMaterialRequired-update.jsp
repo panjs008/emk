@@ -265,7 +265,7 @@
 				</label>
 			</td>
 			<td class="value">
-				<input id="leaveDhjqDays" name="levelDays" value="${emkMaterialRequiredPage.leaveDhjqDays }"   datatype="n" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
+				<input id="leaveDhjqDays" name="leaveDhjqDays" value="${emkMaterialRequiredPage.leaveDhjqDays }"   datatype="n" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">距大货期剩余天数</label>
 			</td>

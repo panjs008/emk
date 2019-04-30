@@ -147,7 +147,7 @@ public class SendMailUtil
 			hemail.setAuthentication(username, password);
 			hemail.setSubject(subject);
 			hemail.setMsg(message);
-			hemail.send();
+			//hemail.send();
 			org.jeecgframework.core.util.LogUtil.info("email send true!");
 		} catch (Exception e) {
 		      e.printStackTrace();
@@ -275,7 +275,7 @@ public class SendMailUtil
 	      e.printStackTrace();
 	      org.jeecgframework.core.util.LogUtil.info("email send error!");
 	    }*/
-	  SendMailUtil.sendCommonMail("169054731@qq.com","意向询盘订单审核","您有【admin】提交的意向询盘订单，单号：Y0000000001，请及时审核");
+	  SendMailUtil.sendCommonMail("75185573@qq.com","意向询盘订单审核","您有【admin】提交的意向询盘订单，单号：Y0000000001，请及时审核");
 
 	  /*Map<String, Object> map = new HashMap<String, Object>();
 	  map.put("subject", "测试标题");

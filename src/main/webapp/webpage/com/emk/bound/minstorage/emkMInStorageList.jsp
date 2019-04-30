@@ -67,7 +67,7 @@
              node = processName.substring(processName.indexOf('-')+1);
          }
      }
-     if(createBy == "${CUR_USER.userName}" || ${ROLE.rolecode eq 'cky'}){
+     if(createBy == "${CUR_USER.userName}" || ${ROLE.rolecode eq 'cky'} || ${CUR_USER.userName eq 'admin'}){
          if(state == '0'){
              createwindow("流程进度--当前环节：入库申请单", "flowController.do?goProcess&node="+node+"&processUrl=com/emk/bound/minstorage/emkMInStorage-process&id=" + id, 1230, height);
          }else {

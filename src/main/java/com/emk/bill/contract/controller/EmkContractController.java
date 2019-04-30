@@ -1,51 +1,32 @@
 package com.emk.bill.contract.controller;
 
 import com.alibaba.fastjson.JSONArray;
+import com.emk.approval.approval.entity.EmkApprovalEntity;
 import com.emk.bill.contract.entity.EmkContractEntity;
 import com.emk.bill.contract.service.EmkContractServiceI;
 import com.emk.bill.proorder.entity.EmkProOrderEntity;
 import com.emk.bill.proorderdetail.entity.EmkProOrderDetailEntity;
-import com.emk.bound.minstorage.entity.EmkMInStorageEntity;
-import com.emk.bound.minstoragedetail.entity.EmkMInStorageDetailEntity;
+
+import com.emk.check.sizecheck.entity.EmkSizeEntity;
+import com.emk.check.sizecheck.entity.EmkSizeTotalEntity;
 import com.emk.storage.enquirydetail.entity.EmkEnquiryDetailEntity;
-import com.emk.storage.instorage.entity.EmkInStorageEntity;
-import com.emk.storage.storage.entity.EmkStorageEntity;
-import com.emk.storage.storagelog.entity.EmkStorageLogEntity;
-import com.emk.util.DateUtil;
-import com.emk.util.FlowUtil;
+
 import com.emk.util.ParameterUtil;
 import com.emk.util.Utils;
-import com.emk.workorder.workorder.entity.EmkWorkOrderEntity;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.*;
-import java.util.Map.Entry;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
-import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.*;
-import org.activiti.engine.history.HistoricActivityInstance;
-import org.activiti.engine.history.HistoricProcessInstance;
-import org.activiti.engine.history.HistoricTaskInstance;
-import org.activiti.engine.impl.RepositoryServiceImpl;
-import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
-import org.activiti.engine.impl.persistence.entity.TaskEntity;
-import org.activiti.engine.impl.pvm.PvmTransition;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
-import org.activiti.engine.impl.pvm.process.TransitionImpl;
+
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
-import org.activiti.image.ProcessDiagramGenerator;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.jeecgframework.core.beanvalidator.BeanValidators;
@@ -56,15 +37,12 @@ import org.jeecgframework.core.common.model.json.AjaxJson;
 import org.jeecgframework.core.common.model.json.DataGrid;
 import org.jeecgframework.core.constant.Globals;
 import org.jeecgframework.core.extend.hqlsearch.HqlGenerateUtil;
-import org.jeecgframework.core.util.ExceptionUtil;
 import org.jeecgframework.core.util.MyBeanUtils;
 import org.jeecgframework.core.util.ResourceUtil;
 import org.jeecgframework.core.util.StringUtil;
 import org.jeecgframework.jwt.util.ResponseMessage;
 import org.jeecgframework.jwt.util.Result;
-import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.entity.ExportParams;
-import org.jeecgframework.poi.excel.entity.ImportParams;
 import org.jeecgframework.tag.core.easyui.TagUtil;
 import org.jeecgframework.web.system.pojo.base.TSUser;
 import org.jeecgframework.web.system.service.SystemService;
@@ -73,8 +51,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
+
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -120,12 +97,13 @@ public class EmkContractController extends BaseController {
         Map map = ParameterUtil.getParamMaps(request.getParameterMap());
         List<Map<String, Object>> list = systemService.findForJdbc("select typecode,typename from t_s_type t2 left join t_s_typegroup t1 on t1.ID=t2.typegroupid where typegroupcode='color'");
         request.setAttribute("colorList", list);
-        list = systemService.findForJdbc("select typecode,typename from t_s_type t2 left join t_s_typegroup t1 on t1.ID=t2.typegroupid where typegroupcode='size'");
-        request.setAttribute("sizeList", list);
         if (Utils.notEmpty(map.get("proOrderId"))) {
             List<EmkProOrderDetailEntity> emkProOrderDetailEntities = systemService.findHql("from EmkProOrderDetailEntity where proOrderId=?", map.get("proOrderId"));
             request.setAttribute("emkProOrderDetailEntities", emkProOrderDetailEntities);
+            EmkSizeEntity emkSizeEntity = systemService.findUniqueByProperty(EmkSizeEntity.class,"formId",map.get("proOrderId"));
+            request.setAttribute("emkSizePage", emkSizeEntity);
         }
+
         return new ModelAndView("com/emk/bill/contract/detailMxList");
     }
 
@@ -175,9 +153,9 @@ public class EmkContractController extends BaseController {
         try {
             for (String id : ids.split(",")) {
                 EmkContractEntity emkContract = systemService.getEntity(EmkContractEntity.class, id);
-
                 systemService.executeSql("delete from emk_enquiry_detail where ENQUIRY_ID=?", id);
-
+                systemService.executeSql("delete from emk_size_total where FIND_IN_SET(p_id,(SELECT GROUP_CONCAT(id) FROM emk_pro_order_detail where PRO_ORDER_ID=?))", emkContract.getId());
+                systemService.executeSql("delete from emk_pro_order_detail where PRO_ORDER_ID=?",emkContract.getId());
                 emkContractService.delete(emkContract);
                 systemService.addLog(message, Globals.Log_Type_DEL, Globals.Log_Leavel_INFO);
             }
@@ -210,23 +188,40 @@ public class EmkContractController extends BaseController {
 
     @RequestMapping(params = "doUpdate")
     @ResponseBody
-    public AjaxJson doUpdate(EmkContractEntity emkContract, HttpServletRequest request) {
+    public AjaxJson doUpdate(EmkContractEntity emkContract,EmkSizeEntity emkSize, HttpServletRequest request) {
         String message = null;
         AjaxJson j = new AjaxJson();
         message = "购销合同更新成功";
         Map<String, String> map = ParameterUtil.getParamMaps(request.getParameterMap());
         EmkContractEntity t = emkContractService.get(EmkContractEntity.class, map.get("pactId"));
+        EmkSizeEntity t2 = systemService.findUniqueByProperty(EmkSizeEntity.class,"formId",t.getId());
+
         try {
             emkContract.setId(null);
             MyBeanUtils.copyBeanNotNull2Bean(emkContract, t);
             emkContractService.saveOrUpdate(t);
+
+            emkSize.setId(null);
+            if(Utils.notEmpty(t2)){
+                MyBeanUtils.copyBeanNotNull2Bean(emkSize, t2);
+                systemService.saveOrUpdate(t2);
+            }else{
+                t2 = new EmkSizeEntity();
+                MyBeanUtils.copyBeanNotNull2Bean(emkSize, t2);
+                t2.setFormId(t.getId());
+                systemService.save(t2);
+            }
+
             //保存明细数据
             String dataRows = (String) map.get("orderMxListIDSR");
             if (Utils.notEmpty(dataRows)) {
-                systemService.executeSql("delete from emk_pro_order_detail where pro_order_id = ? ",t.getId());
+                systemService.executeSql("delete from emk_size_total where FIND_IN_SET(p_id,(SELECT GROUP_CONCAT(id) FROM emk_pro_order_detail where PRO_ORDER_ID=?))", t.getId());
+                systemService.executeSql("delete from emk_pro_order_detail where PRO_ORDER_ID=?",t.getId());
 
                 int rows = Integer.parseInt(dataRows);
                 EmkProOrderDetailEntity proOrderDetailEntity = null;
+                EmkSizeTotalEntity emkSizeTotalEntity = null;
+
                 for (int i = 0; i < rows; i++) {
                     if (Utils.notEmpty(map.get("orderMxList["+i+"].color"))){
                         proOrderDetailEntity = new EmkProOrderDetailEntity();
@@ -237,31 +232,53 @@ public class EmkContractController extends BaseController {
 
                         proOrderDetailEntity.setColor(map.get("orderMxList["+i+"].color").toString());
                         proOrderDetailEntity.setSortDesc(String.valueOf(i+1));
-                        proOrderDetailEntity.setSize(map.get("orderMxList["+i+"].size00").toString());
-                        proOrderDetailEntity.setTotal(map.get("orderMxList["+i+"].signTotal00").toString());
+
                         proOrderDetailEntity.setPrice(map.get("orderMxList["+i+"].price00").toString());
                         proOrderDetailEntity.setSumMoney(map.get("orderMxList["+i+"].sumMoney00").toString());
                         proOrderDetailEntity.setHqDate(map.get("orderMxList["+i+"].hqDate00").toString());
+
                         systemService.save(proOrderDetailEntity);
+                        if (Utils.notEmpty(map.get("orderMxList["+i+"].color"))){
+                            emkSizeTotalEntity = new EmkSizeTotalEntity();
+                            emkSizeTotalEntity.setTotalA(map.get("orderMxList["+i+"].totalA"));
+                            emkSizeTotalEntity.setTotalB(map.get("orderMxList["+i+"].totalB"));
+                            emkSizeTotalEntity.setTotalC(map.get("orderMxList["+i+"].totalC"));
+                            emkSizeTotalEntity.setTotalD(map.get("orderMxList["+i+"].totalD"));
+                            emkSizeTotalEntity.setTotalE(map.get("orderMxList["+i+"].totalE"));
+                            emkSizeTotalEntity.setTotalF(map.get("orderMxList["+i+"].totalF"));
+                            emkSizeTotalEntity.setTotalG(map.get("orderMxList["+i+"].totalG"));
+                            emkSizeTotalEntity.setTotalH(map.get("orderMxList["+i+"].totalH"));
+                            emkSizeTotalEntity.setTotalI(map.get("orderMxList["+i+"].totalI"));
+                            emkSizeTotalEntity.setTotalJ(map.get("orderMxList["+i+"].totalJ"));
+                            emkSizeTotalEntity.setTotalK(map.get("orderMxList["+i+"].totalK"));
+                            emkSizeTotalEntity.setpId(proOrderDetailEntity.getId());
+                            systemService.save(emkSizeTotalEntity);
+                        }
                     }
                 }
             }
-           /* systemService.executeSql("delete from emk_enquiry_detail where ENQUIRY_ID=?", t.getId());
-            String dataRows = (String) map.get("dataRowsVal");
-            if ((dataRows != null) && (!dataRows.isEmpty())) {
-                int rows = Integer.parseInt(dataRows);
-                for (int i = 0; i < rows; i++) {
-                    EmkEnquiryDetailEntity orderMxEntity = new EmkEnquiryDetailEntity();
-                    if ((map.get("orderMxList[" + i + "].color") != null) && !map.get("orderMxList[" + i + "].color").isEmpty()) {
-                        orderMxEntity.setEnquiryId(t.getId());
-                        orderMxEntity.setColor((String) map.get("orderMxList[" + i + "].color"));
-                        orderMxEntity.setSize((String) map.get("orderMxList[" + i + "].size"));
-                        orderMxEntity.setTotal(Integer.valueOf(Integer.parseInt((String) map.get("orderMxList[" + i + "].signTotal"))));
-                        orderMxEntity.setPrice(Double.valueOf(Double.parseDouble((String) map.get("orderMxList[" + i + "].signPrice"))));
-                        systemService.save(orderMxEntity);
+
+            if("1".equals(map.get("isPass"))){
+                EmkProOrderEntity a = systemService.get(EmkProOrderEntity.class, map.get("orderId"));
+                EmkApprovalEntity b = systemService.findUniqueByProperty(EmkApprovalEntity.class,"formId",a.getId());
+
+                a.setState("46");
+                b.setStatus(46);
+
+                systemService.saveOrUpdate(a);
+                systemService.saveOrUpdate(b);
+                Map<String, Object> variables = new HashMap();
+                List<Task> task = taskService.createTaskQuery().taskAssignee(a.getId()).list();
+                if(Utils.notEmpty(task)){
+                    Task task1 = task.get(task.size() - 1);
+                    if(task1.getTaskDefinitionKey().equals("gxhtTask")) {
+                        variables.put("optUser",a.getId());
+                        taskService.complete(task1.getId(), variables);
+                        TSUser user = (TSUser)request.getSession().getAttribute("LOCAL_CLINET_USER");
+                        saveSmsAndEmailForMany("业务经理","【业务员】购销合同","您有【"+b.getCreateName()+"】审核过的订单表，单号："+b.getWorkNum()+"，请及时审核。",user.getUserName());
                     }
                 }
-            }*/
+            }
             systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
         } catch (Exception e) {
             e.printStackTrace();
@@ -283,8 +300,6 @@ public class EmkContractController extends BaseController {
 
     @RequestMapping(params = "goUpdate")
     public ModelAndView goUpdate(EmkContractEntity emkContract, HttpServletRequest req) {
-        List<Map<String, Object>> codeList = systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", "A03");
-        req.setAttribute("categoryEntityList", codeList);
         if (StringUtil.isNotEmpty(emkContract.getId())) {
             emkContract = emkContractService.getEntity(EmkContractEntity.class, emkContract.getId());
             req.setAttribute("emkContractPage", emkContract);
@@ -294,12 +309,17 @@ public class EmkContractController extends BaseController {
 
     @RequestMapping(params = "goUpdate2")
     public ModelAndView goUpdate2(EmkContractEntity emkContract, HttpServletRequest req) {
-        List<Map<String, Object>> codeList = systemService.findForJdbc("select code,name from t_s_category where PARENT_CODE=? order by code asc", "A03");
-        req.setAttribute("categoryEntityList", codeList);
-        if (StringUtil.isNotEmpty(emkContract.getId())) {
-            emkContract = emkContractService.getEntity(EmkContractEntity.class, emkContract.getId());
+        EmkProOrderEntity proOrderEntity = systemService.get(EmkProOrderEntity.class,emkContract.getId());
+        if(StringUtil.isNotEmpty(emkContract.getId())) {
+            emkContract = emkContractService.findUniqueByProperty(EmkContractEntity.class,"orderNo",proOrderEntity.getOrderNo());
             req.setAttribute("emkContractPage", emkContract);
         }
+        List<TSUser> userList = systemService.findHql("from TSUser where userKey='业务员'");
+        req.setAttribute("ywyList", userList);
+        userList = systemService.findHql("from TSUser where userKey='业务跟单员'");
+        req.setAttribute("ywgdyList", userList);
+        userList = systemService.findHql("from TSUser where userKey='生产跟单员'");
+        req.setAttribute("scgdyList", userList);
         return new ModelAndView("com/emk/bill/contract/emkContract-update2");
     }
 
@@ -440,10 +460,7 @@ public class EmkContractController extends BaseController {
                             taskService.complete(task1.getId(), variables);
                         }
                         if (task1.getTaskDefinitionKey().equals("checkTask")) {
-                            t.setLeader(user.getRealName());
-                            t.setLeadUserId(user.getId());
-                            t.setLeadAdvice(emkContractEntity.getLeadAdvice());
-                            if (emkContractEntity.getIsPass().equals("0")) {
+                            /*if (emkContractEntity.getIsPass().equals("0")) {
                                 variables.put("isPass", emkContractEntity.getIsPass());
                                 taskService.complete(task1.getId(), variables);
                                 t.setState("2");
@@ -476,7 +493,7 @@ public class EmkContractController extends BaseController {
                                     systemService.executeSql("delete from act_hi_actinst where ID_>=? and ID_<?", activitIdArr[0], activitIdArr[1] );
                                 }
                                 t.setState("0");
-                            }
+                            }*/
                         }
                     }else {
                         ProcessInstance pi = processEngine.getRuntimeService().startProcessInstanceByKey("ht", "emkContractEntity", variables);

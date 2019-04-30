@@ -10,8 +10,9 @@
    <t:dgCol title="创建日期"  field="createDate"  formatter="yyyy-MM-dd"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
    <t:dgCol title="所属部门"  field="sysOrgCode"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
       <t:dgCol title="操作" field="opt" width="100" frozenColumn="true"></t:dgCol>
+      <t:dgCol title="当前流程节点"  field="processName"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
 
-      <t:dgCol title="状态"  field="state"  formatterjs="formatColor"  queryMode="single"  dictionary="bpm_status"  width="60"></t:dgCol>
+      <%--<t:dgCol title="状态"  field="state"  formatterjs="formatColor"  queryMode="single"  dictionary="bpm_status"  width="60"></t:dgCol>--%>
    <t:dgCol title="订单号"  field="orderNo"  queryMode="single"  width="110"></t:dgCol>
       <t:dgCol title="订单日期"  field="orderTime"  queryMode="single"  width="80"></t:dgCol>
       <t:dgCol title="业务部门"  field="businesseDeptName"  queryMode="single"  width="80"></t:dgCol>
@@ -30,7 +31,10 @@
       <%--<t:dgFunOpt funname="queryDetail3(id,orderNo,state)" title="条码" urlStyle="background-color:#ec4758;" urlclass="ace_button" ></t:dgFunOpt>--%>
       <%--<t:dgFunOpt funname="queryDetail4(id,orderNo,state)" title="包装" urlStyle="background-color:#18a689;" urlclass="ace_button" ></t:dgFunOpt>--%>
       <%--<t:dgFunOpt funname="queryDetail5(id,orderNo,state)" title="纸箱" urlStyle="background-color:#ec4758;" urlclass="ace_button" ></t:dgFunOpt>--%>
-      <t:dgFunOpt funname="goToProcess(id,createBy,processName,state,state1,state2,state3)" title="流程进度" operationCode="process" urlclass="ace_button"  urlStyle="background-color:#ec4758;" urlfont="fa-tasks"></t:dgFunOpt>
+      <t:dgCol title="来源"  field="formType" replace="手工创建_0,询盘单生成_1" queryMode="single"  width="80"></t:dgCol>
+      <t:dgCol title="状态"  field="state" formatterjs="formatColor"  queryMode="single"  width="100"></t:dgCol>
+      <t:dgFunOpt funname="goToProcess(id,createBy,processName,state)" title="流程进度" operationCode="process" urlclass="ace_button"  urlStyle="background-color:#ec4758;" urlfont="fa-tasks"></t:dgFunOpt>
+      <%--<t:dgFunOpt funname="goToProcess(id,createBy,processName,state,state1,state2,state3)" title="流程进度" operationCode="process" urlclass="ace_button"  urlStyle="background-color:#ec4758;" urlfont="fa-tasks"></t:dgFunOpt>--%>
 
       <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkProOrderController.do?goAdd&winTitle=录入订单" funname="add" height="600" width="1000"></t:dgToolBar>
       <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkProOrderController.do?goUpdate&winTitle=编辑订单" funname="update" height="600" width="1000"></t:dgToolBar>
@@ -53,44 +57,42 @@
 
  function formatColor(val,row){
      if(row.state=="1"){
-         return '<span style="color:	#FF0000;">处理中</span>';
+         return '<span style="color:	#0000FF;">已提交</span>';
      }else if(row.state=="2"){
-         return '<span style="color:	#0000FF;">完成</span>';
+         return '<span style="color:	#00FF00;">完成</span>';
+     }else if(row.state=="3"){
+         return '<span style="color:	#0000FF;">业务经理通过</span>';
+     }else if(row.state=="35"){
+         return '<span style="color:	#0000FF;">业务员通过</span>';
+     }else if(row.state=="44"){
+         return '<span style="color:	#0000FF;">生成预购销合同</span>';
+     }else if(row.state=="46"){
+         return '<span style="color:	#0000FF;">正式购销合同生成</span>';
+     }else if(row.state=="49"){
+         return '<span style="color:	#0000FF;">回退正式购销合同</span>';
      }else{
          return '创建';
      }
  }
 
-/*
- function doSubmitV() {
-     var rowsData = $('#emkProOrderList').datagrid('getSelections');
-     var ids = [];
-     if (!rowsData || rowsData.length == 0) {
-         tip('请选择需要提交审核的订单');
-         return;
-     }
-     for ( var i = 0; i < rowsData.length; i++) {
-         ids.push(rowsData[i].id);
-     }
-     $.dialog.confirm('您是否确定提交审核订单?', function(r) {
-         if (r) {
-             $.ajax({
-                 url : "emkProOrderController.do?doSubmit&id="+ids,
-                 type : 'post',
-                 cache : false,
-                 data: null,
-                 success : function(data) {
-                     var d = $.parseJSON(data);
-                     tip(d.msg);
-                     if (d.success) {
-                         $('#emkProOrderList').datagrid('reload');
-                     }
-                 }
-             });
+
+ function goToProcess(id,createBy,processName,state){
+     var height =window.top.document.body.offsetHeight*0.85;
+     var processNameVal='',node='';
+     if(processName != null){
+         if(processName.indexOf('-') > 0){
+             processNameVal = processName.substring(0,processName.indexOf('-'));
+             node = processName.substring(processName.indexOf('-')+1);
          }
-     });
+     }
+     if(createBy == "${CUR_USER.userName}" || ${CUR_USER.userName eq 'admin'}){
+         if(state == '0'){
+             createwindow("流程进度--当前环节：原料面料需求开发申请单", "flowController.do?goProcess&node="+node+"&processUrl=com/emk/bill/proorder/emkProOrder-process&state="+state+"&id=" + id, 1300, height);
+         }else {
+             createdetailwindow("流程进度--当前环节：" + processNameVal, "flowController.do?goProcess&node="+node+"&processUrl=com/emk/bill/proorder/emkProOrder-process&state="+state+"&id=" + id, 1300, height);
+         }
+     }
  }
-*/
 
  function doSubmitV() {
      var rowsData = $('#emkProOrderList').datagrid('getSelections');
@@ -121,42 +123,6 @@
      });
  }
 
- function goToProcess(){
-     var height =window.top.document.body.offsetHeight*0.85;
-
-     var rowsData = $('#emkProOrderList').datagrid('getSelections');
-     if (!rowsData || rowsData.length == 0) {
-         tip('请选择需要提交的订单');
-         return;
-     }
-
-     $.ajax({
-         url : "emkProOrderController.do?getCurrentProcess&id="+rowsData[0].id,
-         type : 'post',
-         cache : false,
-         data: null,
-         success : function(data) {
-             var d = $.parseJSON(data);
-             if (d.success) {
-                 var msg = d.msg;
-                 if(rowsData[0].createBy == "${CUR_USER.userName}"){
-                     createdetailwindow('流程进度--当前环节：'+msg,'emkProOrderController.do?goProcess&id='+rowsData[0].id,1200,height);
-                 }else{
-                     if (msg == "完成") {
-                         createdetailwindow('流程进度--当前环节：'+msg,'emkProOrderController.do?goProcess&id='+rowsData[0].id,1200,height);
-                     } else {
-                         if("${ROLE.rolecode}" == "ywjl") {
-                             createwindow("流程进度--当前环节："+msg, "emkProOrderController.do?goProcess&id="+rowsData[0].id,1200,height);
-                         }else{
-                             createdetailwindow('流程进度--当前环节：'+msg,'emkProOrderController.do?goProcess&id='+rowsData[0].id,1200,height);
-                         }
-                     }
-                 }
-
-             }
-         }
-     });
- }
 
  function queryDetail1(id,eNo,state){
      var rowsData = $('#emkProOrderList').datagrid('getSelections');

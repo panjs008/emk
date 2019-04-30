@@ -15,22 +15,27 @@
        /* if(flag>1 || ${param.proOrderId ne null}){
             $("html,body").animate({scrollTop:400},1);
         }*/
-
+        $("#seqNum").html(flag+1);
         var tr =  $("#add_jeecgOrderProduct_table_template tr").clone();
         $("#add_jeecgOrderProduct_table").append(tr);
 
         $("#add_jeecgOrderProduct_table").find("[id='proZnName00']").attr("id","proZnName"+flag);
         $("#add_jeecgOrderProduct_table").find("[id='proNum00']").attr("id","proNum"+flag);
         $("#add_jeecgOrderProduct_table").find("[id='precent00']").attr("id","precent"+flag);
+        $("#add_jeecgOrderProduct_table").find("[id='brand00']").attr("id","brand"+flag);
+
+        $("#add_jeecgOrderProduct_table").find("[id='unit00']").attr("id","unit"+flag);
         $("#add_jeecgOrderProduct_table").find("[id='yongliang00']").attr("id","yongliang"+flag);
         $("#add_jeecgOrderProduct_table").find("[id='sunhaoPrecent00']").attr("id","sunhaoPrecent"+flag);
+        $("#add_jeecgOrderProduct_table").find("[id='signPrice00']").attr("id","signPrice"+flag);
+        $("#add_jeecgOrderProduct_table").find("[id='chengben00']").attr("id","chengben"+flag);
 
         /*$("#add_jeecgOrderProduct_table").find("[id='signPrice00']").attr("datatype","d");
         $("#add_jeecgOrderProduct_table").find("[id='signPrice00']").attr("id","signPrice"+flag);*/
         resetTrNum('add_jeecgOrderProduct_table');
         $("#proZnName"+flag).attr("onclick","productLook("+flag+")");
+        $("#signPrice"+flag).attr("onkeyup","setPrice("+flag+")");
         $("#orderMxListID").val($("#mxtb").find("tr").length-1);
-
         flag++;
 
     });
@@ -83,18 +88,29 @@
 <table style="width:100%;display: none;border: 1px;" cellpadding="0" cellspacing="2" border="0">
     <tbody id="add_jeecgOrderProduct_table_template">
     <tr>
-        <td align="center"><input style="width: 40px;" type="checkbox" name="ck" />
+        <td align="center"><input style="width: 40px;" type="checkbox" name="ck" /></td>
+        <td align="center" width="40"><span id="seqNum"></span></td>
+
         <td align="center"><input id="proZnName00" nullmsg="请输入原料面料名称！"  errormsg="请输入原料面料名称"  name="orderMxList[#index#].proZnName" maxlength="100" type="text" value=""
                                   style="width: 86%;" ignore="ignore"></td>
         <td align="center"><input id="proNum00" nullmsg="请输入原料面料代码！"  errormsg="请输入原料面料代码" name="orderMxList[#index#].proNum" maxlength="100" type="text" value=""
                                   style="width: 86%;" ignore="ignore"></td>
-        <td align="center"><input id="gysCode00" nullmsg="请输入原料面料供应商代码！"  errormsg="请输入原料面料供应商代码" name="orderMxList[#index#].gysCode" maxlength="100" type="text" value=""
-                                  style="width: 86%;" ignore="ignore"></td>
+        <td align="center">
+            <select name="orderMxList[#index#].gysCode" style="width: 86%;" nullmsg="请输入原料面料供应商代码！" errormsg="请输入原料面料供应商代码" datatype="*">
+                <c:forEach items="${gysList}" var="category">
+                    <option value="${category.gys}">${category.gys}</option>
+                </c:forEach>
+            </select>
+        </td>
         <td align="center"><input id="brand00" nullmsg="请输入规格！"   errormsg="请输入规格" name="orderMxList[#index#].brand" maxlength="100" type="text" value=""
                                   style="width: 86%;" ignore="ignore"></td>
+        <td align="center"><input id="precent00" nullmsg="请输入比例(%)！"  errormsg="请输入数值型" datatype="d" name="orderMxList[#index#].precent" maxlength="100" type="text" value=""
+                                  style="width: 86%;" ></td>
         <td align="center"><input id="yongliang00" nullmsg="请输入单件用量！"   errormsg="请输入单件用量" name="orderMxList[#index#].yongliang" maxlength="100" type="text" value=""
                                   style="width: 86%;" ignore="ignore"></td>
         <td align="center"><input id="signPrice00" nullmsg="请输入价格！" datatype="d" errormsg="请输入价格" name="orderMxList[#index#].signPrice" maxlength="100" type="text" value=""
+                                  style="width: 86%;" ignore="ignore"></td>
+        <td align="center"><input id="unit00" nullmsg="请输入单位！" errormsg="请输入单位" name="orderMxList[#index#].unit" maxlength="100" type="text" value=""
                                   style="width: 86%;" ignore="ignore"></td>
         <td align="center"><input id="sunhaoPrecent00" nullmsg="请输入损耗率！" datatype="d"  errormsg="请输入损耗率" name="orderMxList[#index#].sunhaoPrecent" maxlength="100" type="text" value=""
                                   style="width: 86%;" ignore="ignore"></td>
@@ -115,16 +131,12 @@
     <input id="proType" name="proType" type="text" />
     <input id="proTypeName" name="proTypeName" type="text" />
     <input id="proZnName" name="proZnName" type="text" />
-    <input id="precent" name="precent" type="text" />
     <input id="brand" name="brand" type="text" />
     <input id="unit" name="unit" type="text" />
-    <input id="yongliang" name="yongliang" type="text" />
-    <input id="sunhaoPrecent" name="sunhaoPrecent" type="text" />
-    <input id="chengben" name="chengben" type="text" />
 
     <input id="id" name="id" type="text" />
     <t:choose  hiddenName="id"  hiddenid="id" url="emkProductController.do?proSelect&selectType=0" name="emkProductList" width="820px" height="500px"
-               icon="icon-search" title="选择面料" textname="id,proNum,proType,proTypeName,proZnName,precent,brand,unit,yongliang,sunhaoPrecent,chengben" isclear="true" isInit="true"></t:choose>
+               icon="icon-search" title="选择面料" textname="id,proNum,proType,proTypeName,proZnName,brand,unit" isclear="true" isInit="true"></t:choose>
 </div>
 <div style="padding: 3px; height: 25px; width:100%;margin-bottom:4px " class="datagrid-toolbar"><a id="addBtn" href="#"></a> <a id="delBtn" href="#"></a></div>
 <%--<table border="0" cellpadding="2" cellspacing="0" id="jeecgOrderProduct_table">--%>
@@ -133,16 +145,19 @@
     <div class="table-c">
         <table id="mxtb" width="100%" border="0" cellspacing="0" cellpadding="0">
             <tr bgcolor="#F8F8F8" style="height: 32px;" >
-                <td align="center"  width="40">序号</td>
+                <td align="center"  width="40"><input type="checkbox" onclick="selectAll(this.checked)" /></td>
+                <td align="center" width="40">序号</td>
                 <td align="center"  width="150">原料面料名称</td>
                 <td align="center"  width="150">原料面料代码</td>
                 <td align="center"  width="150">原料面料供应商代码</td>
                 <td align="center"  width="150">规格</td>
+                <td align="center"  width="150">比例(%)</td>
                 <td align="center"  width="150">单件用量</td>
                 <td align="center"  width="150">价格</td>
+                <td align="center"  width="60">单位</td>
                 <td align="center"  width="150">损耗率</td>
                 <td align="center"  width="150">总用量</td>
-                <td align="center"  width="150">成本</td>
+                <td align="center"  width="150">成本(含损耗)</td>
                 <td align="center"  width="150">位置</td>
                 <td align="center"  width="150">入库状态</td>
 
@@ -151,24 +166,34 @@
             <c:if test="${fn:length(emkSampleDetailEntities)  > 0 }">
                 <c:forEach items="${emkSampleDetailEntities}" var="poVal" varStatus="status">
                     <tr>
-                        <td align="center"><input style="width: 40px;" type="checkbox" name="ck" value="${poVal.id}"/>
+                        <td align="center"><input style="width: 40px;" type="checkbox" name="ck" value="${poVal.id}"/></td>
+                        <td align="center" width="40">${status.index+1}</td>
                         <td align="center"><input  nullmsg="请输入原料面料名称！" id="proZnName${status.index}" onclick="productLook(${status.index});" errormsg="请输入原料面料名称" value="${poVal.proZnName}" name="orderMxList[${status.index}].proZnName" maxlength="100" type="text" value=""
                                                   style="width: 86%;" ignore="ignore"></td>
                         <td align="center"><input  nullmsg="请输入原料面料代码！"  id="proNum${status.index}" errormsg="请输入原料面料代码" value="${poVal.proNum}" name="orderMxList[${status.index}].proNum" maxlength="100" type="text" value=""
                                                   style="width: 86%;" ignore="ignore"></td>
-                        <td align="center"><input  nullmsg="请输入原料面料供应商代码！"  errormsg="请输入原料面料供应商代码"  value="${poVal.gysCode}" name="orderMxList[${status.index}].gysCode" maxlength="100" type="text" value=""
-                                                   style="width: 86%;" ignore="ignore"></td>
+                        <td align="center">
+                            <select name="orderMxList[${status.index}].gysCode" style="width: 86%;" nullmsg="请输入原料面料供应商代码！" errormsg="请输入原料面料供应商代码" datatype="*">
+                                <c:forEach items="${gysList}" var="category">
+                                    <option value="${category.gys}" ${category.typecode eq poVal.gysCode ? 'selected':''}>${category.gys}</option>
+                                </c:forEach>
+                            </select>
+                        </td>
                         <td align="center"><input  nullmsg="请输入规格！"  errormsg="请输入规格" id="brand${status.index}" value="${poVal.brand}" name="orderMxList[${status.index}].brand" maxlength="100" type="text" value=""
                                                    style="width: 86%;" ignore="ignore"></td>
-                        <td align="center"><input  nullmsg="请输入单件用量！"  errormsg="请输入单件用量" id="yongliang${status.index}"  value="${poVal.yongliang}" name="orderMxList[${status.index}].yongliang" maxlength="100" type="text" value=""
+                        <td align="center"><input  nullmsg="请输入比例(%)！" id="precent${status.index}"  errormsg="请输入数值型" value="${poVal.precent}" name="orderMxList[${status.index}].precent" maxlength="100" type="text"
+                                                   style="width: 86%;" ignore="ignore"></td>
+                        <td align="center"><input  nullmsg="请输入单件用量！"  errormsg="请输入单件用量" id="yongliang${status.index}"   value="${poVal.yongliang}" name="orderMxList[${status.index}].yongliang" maxlength="100" type="text" value=""
                                                   style="width: 86%;" ignore="ignore"></td>
-                        <td align="center"><input  nullmsg="请输入价格！"  errormsg="请输入价格" datatype="d" value="${poVal.signPrice}" name="orderMxList[${status.index}].signPrice" maxlength="100" type="text" value=""
+                        <td align="center"><input  nullmsg="请输入价格！" id="signPrice${status.index}"  onkeyup="setPrice(${status.index})"   errormsg="请输入价格" datatype="d"  value="${poVal.signPrice}" name="orderMxList[${status.index}].signPrice" maxlength="100" type="text" value=""
                                                   style="width: 86%;" ignore="ignore"></td>
-                        <td align="center"><input  nullmsg="请输入损耗率！"  errormsg="请输入损耗率" id="sunhaoPrecent${status.index}" datatype="d" value="${poVal.sunhaoPrecent}" name="orderMxList[${status.index}].sunhaoPrecent" maxlength="100" type="text" value=""
+                        <td align="center"><input  nullmsg="请输入单位！" id="unit${status.index}"   errormsg="请输入单位" value="${poVal.unit}" name="orderMxList[${status.index}].unit" maxlength="100" type="text"
+                                                   style="width: 86%;" ignore="ignore"></td>
+                        <td align="center"><input  nullmsg="请输入损耗率！"  id="sunhaoPrecent${status.index}" errormsg="请输入损耗率" datatype="d" value="${poVal.sunhaoPrecent}" name="orderMxList[${status.index}].sunhaoPrecent" maxlength="100" type="text" value=""
                                                   style="width: 86%;" ignore="ignore"></td>
                         <td align="center"><input  nullmsg="请输入总用量！"  errormsg="请输入总用量" value="${poVal.sumYongliang}" name="orderMxList[${status.index}].sumYongliang" maxlength="100" type="text" value=""
                                                    style="width: 86%;" ignore="ignore"></td>
-                        <td align="center"><input  nullmsg="请输入成本！"  errormsg="请输入成本" id="chengben${status.index}" datatype="d" value="${poVal.chengben}" name="orderMxList[${status.index}].chengben" maxlength="100" type="text" value=""
+                        <td align="center"><input  nullmsg="请输入成本(含损耗)！" id="chengben${status.index}"  errormsg="请输入成本(含损耗)" datatype="d" value="${poVal.chengben}" name="orderMxList[${status.index}].chengben" maxlength="100" type="text" value=""
                                                   style="width: 86%;" ignore="ignore"></td>
                         <td align="center"><input  nullmsg="请输入位置！"  errormsg="请输入位置" value="${poVal.position}" name="orderMxList[${status.index}].position" maxlength="100" type="text" value=""
                                                    style="width: 86%;" ignore="ignore"></td>
@@ -192,14 +217,10 @@
         $("#proName"+currentFlag).val($("#proTypeName").val());
         $("#proNum"+currentFlag).val($("#proNum").val());
         $("#proZnName"+currentFlag).val($("#proZnName").val());
+        $("#precent"+currentFlag).val($("#precent").val());
         $("#brand"+currentFlag).val($("#brand").val());
         $("#unit"+currentFlag).val($("#unit").val());
-        $("#proId"+currentFlag).val($("#id").val());
-
         $("#yongliang"+currentFlag).val($("#yongliang").val());
-        $("#sunhaoPrecent"+currentFlag).val($("#sunhaoPrecent").val());
-        $("#chengben"+currentFlag).val($("#chengben").val());
-
     }
     </script>
 

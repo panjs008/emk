@@ -6,7 +6,7 @@
 	<title>客户手册</title>
 	<t:base type="jquery,easyui,tools,DatePicker"></t:base>
 	<%@include file="/context/header2.jsp"%>
-	<script src="${webRoot}/context/gys.js"></script>
+	<script src="${webRoot}/context/gys2.js"></script>
 
 	<script type="text/javascript">
 		//编写自定义JS代码
@@ -159,7 +159,7 @@
 				</label>
 			</td>
 			<td class="value" colspan="3">
-				<t:dictSelect id="factoryCode" field="factoryCode" typeGroupCode="gongchang" datatype="*" defaultVal="${emkCheckFactoryPage.factoryCode }" hasLabel="false" title="工艺类型"></t:dictSelect>
+				<input id="factoryCode" name="factoryCode" value="${emkCheckFactoryPage.factoryCode }" type="text" style="width: 150px" class="inputxt"  ignore="ignore" />
 				<span class="Validform_checktip"></span>
 				<label class="Validform_label" style="display: none;">工厂名称</label>
 			</td>
@@ -305,6 +305,19 @@
 				<label class="Validform_label" style="display: none;">计划审核日期</label>
 			</td>
 		</tr>
+
+		<c:if test="${emkCheckFactoryPage.state eq '2'}">
+			<tr>
+				<td align="right">
+					<label class="Validform_label">
+						验厂报告:
+					</label>
+				</td>
+				<td class="value" colspan="3"><a href="javascript:downloadFile('${emkCheckFactoryPage.fileNameUrl}')">[${emkCheckFactoryPage.fileName}]</a>
+				</td>
+			</tr>
+		</c:if>
+
 
 	</table>
 </t:formvalid>

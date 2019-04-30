@@ -30,25 +30,36 @@
 	<div id="content">
 
 		<ul class="list">
-			<c:forEach items="${taskList}" var="task" varStatus="status">
+			<li>
+				<div class="liwrap">
+					<div class="lileft">
+						<div class="date">
+							<span class="year">${createDate}</span>
+						</div>
+					</div>
+					<div class="point"><b></b></div>
+					<div class="liright">
+						<div class="histt"><a style="font-size: 14px;">开发费付款申请单</a></div>
+						<div class="histt"><a style="font-size: 12px;">【${approvalEntity.createName}】发起开发费付款申请单，单号：${approvalEntity.workNum}
+						</a></div>
+					</div>
+				</div>
+			</li>
+			<c:forEach items="${approvalDetailEntityList}" var="task" varStatus="status">
 				<li>
 					<div class="liwrap">
 						<div class="lileft">
 							<div class="date">
-								<span class="year">${task.startTime}</span>
+								<span class="year">${task.approveDate}</span>
 							</div>
 						</div>
 						<div class="point"><b></b></div>
 						<div class="liright">
-							<div class="histt"><a style="font-size: 14px;">${task.NAME_}</a></div>
-							<div class="histt"><a style="font-size: 12px;"><c:if test="${task.TASK_DEF_KEY_ eq 'orderTask'}">【${task.workname}】发起采购订单，原料布料采购合同单号：${emkMaterialContract.htNum}</c:if>
-								<c:if test="${task.TASK_DEF_KEY_ eq 'checkTask'}">审核人【${emkMaterialContract.leader}】，指派给【${emkInStorage.yhtUserName}】,处理意见：${emkMaterialContract.leadAdvice}</c:if>
-								<c:if test="${task.TASK_DEF_KEY_ eq 'ycghtTask'}">审核人【${emkMaterialContract.yhtUserName}】，指派给【${emkInStorage.htUserName}】,处理意见：${emkMaterialContract.yhtAdvice}</c:if>
-								<c:if test="${task.TASK_DEF_KEY_ eq 'htTask'}">审核人【${emkMaterialContract.htUserName}】，指派给【${emkInStorage.rkUserName}】,处理意见：${emkMaterialContract.htAdvice}</c:if>
-								<c:if test="${task.TASK_DEF_KEY_ eq 'rkTask'}">处理人【${emkMaterialContract.rkUserName}】,处理意见：${emkMaterialContract.rkAdvice}</c:if>
-								<c:if test="${task.TASK_DEF_KEY_ eq 'ckTask'}">处理人【${emkMaterialContract.ckUserName}】,处理意见：${emkMaterialContract.ckAdvice}</c:if>
+							<div class="histt"><a style="font-size: 14px;">${task.bpmName}</a></div>
+							<div class="histt"><a style="font-size: 12px;">
+								审核人【${task.createName}】，处理意见：${task.approveAdvice}
 
-							</a></div>
+							</div>
 						</div>
 					</div>
 				</li>

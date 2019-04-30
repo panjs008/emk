@@ -64,6 +64,8 @@
          return '<span style="color:	#0000FF;">采购员执行</span>';
      }else if(row.state=="38"){
          return '<span style="color:	#0000FF;">采购员进度</span>';
+     }else if(row.state=="41"){
+         return '<span style="color:	#0000FF;">采购部经理通过</span>';
      }else{
          return '创建';
      }
@@ -81,9 +83,9 @@
      }
      if(createBy == "${CUR_USER.userName}" || ${CUR_USER.userName eq 'admin'}){
          if(state == '0'){
-             createwindow("流程进度--当前环节：原料面料需求开发申请单", "flowController.do?goProcess&node="+node+"&processUrl=com/emk/storage/material/emkMaterial-process&id=" + id, 1230, height);
+             createwindow("流程进度--当前环节：原料面料需求开发申请单", "flowController.do?goProcess&node="+node+"&processUrl=com/emk/storage/material/emkMaterial-process&id=" + id, 1300, height);
          }else {
-             createdetailwindow("流程进度--当前环节：" + processNameVal, "flowController.do?goProcess&node="+node+"&processUrl=com/emk/storage/material/emkMaterial-process&id=" + id, 1230, height);
+             createdetailwindow("流程进度--当前环节：" + processNameVal, "flowController.do?goProcess&node="+node+"&processUrl=com/emk/storage/material/emkMaterial-process&id=" + id, 1300, height);
          }
      }
  }

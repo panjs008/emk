@@ -324,18 +324,3 @@
 
 </t:formvalid>
 </body>
-<script>
-	$(document).ready(function() {
-
-		$('#proTypeTree').combotree({
-			url : 'emkProductTypeController.do?setPOfficeInfo&selfId=${emkProductTypePage.id}',
-			panelHeight: 200,
-			width: 157,
-			onClick: function(node){
-				$("#proType").val(node.id);
-				$("#proTypeName").val(node.text);
-
-			}
-		});
-	});
-</script>

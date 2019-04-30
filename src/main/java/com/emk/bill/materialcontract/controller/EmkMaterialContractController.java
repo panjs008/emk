@@ -1,64 +1,35 @@
 package com.emk.bill.materialcontract.controller;
 
 import com.alibaba.fastjson.JSONArray;
+import com.emk.approval.approval.entity.EmkApprovalEntity;
+import com.emk.approval.approvaldetail.entity.EmkApprovalDetailEntity;
 import com.emk.bill.materialcontract.entity.EmkMaterialContractEntity;
-import com.emk.bill.materialcontract.entity.EmkMaterialContractEntity2;
 import com.emk.bill.materialcontract.service.EmkMaterialContractServiceI;
 import com.emk.bill.materialcontractdetail.entity.EmkMaterialContractDetailEntity;
-import com.emk.storage.instorage.entity.EmkInStorageEntity;
+import com.emk.bill.materialrequired.entity.EmkMaterialRequiredEntity;
+import com.emk.caiwu.yfcheck.entity.EmkFinanceYfCheckEntity;
+import com.emk.storage.factoryarchives.entity.EmkFactoryArchivesEntity;
 import com.emk.storage.sampledetail.entity.EmkSampleDetailEntity;
-import com.emk.util.FlowUtil;
+import com.emk.util.ApprovalUtil;
 import com.emk.util.ParameterUtil;
 import com.emk.util.Utils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
-import org.activiti.bpmn.model.BpmnModel;
-import org.activiti.engine.HistoryService;
-import org.activiti.engine.ManagementService;
-import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.ProcessEngineConfiguration;
-import org.activiti.engine.RepositoryService;
-import org.activiti.engine.RuntimeService;
-import org.activiti.engine.TaskService;
-import org.activiti.engine.history.HistoricActivityInstance;
-import org.activiti.engine.history.HistoricActivityInstanceQuery;
-import org.activiti.engine.history.HistoricProcessInstance;
-import org.activiti.engine.history.HistoricProcessInstanceQuery;
-import org.activiti.engine.history.HistoricTaskInstance;
-import org.activiti.engine.history.HistoricTaskInstanceQuery;
-import org.activiti.engine.impl.RepositoryServiceImpl;
-import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
-import org.activiti.engine.impl.persistence.entity.TaskEntity;
-import org.activiti.engine.impl.pvm.PvmTransition;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
-import org.activiti.engine.impl.pvm.process.TransitionImpl;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
-import org.activiti.engine.task.TaskQuery;
-import org.activiti.image.ProcessDiagramGenerator;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.tools.ant.util.DateUtils;
@@ -70,18 +41,14 @@ import org.jeecgframework.core.common.model.json.AjaxJson;
 import org.jeecgframework.core.common.model.json.DataGrid;
 import org.jeecgframework.core.constant.Globals;
 import org.jeecgframework.core.extend.hqlsearch.HqlGenerateUtil;
-import org.jeecgframework.core.util.ExceptionUtil;
 import org.jeecgframework.core.util.MyBeanUtils;
 import org.jeecgframework.core.util.ResourceUtil;
 import org.jeecgframework.core.util.StringUtil;
 import org.jeecgframework.jwt.util.ResponseMessage;
 import org.jeecgframework.jwt.util.Result;
-import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.entity.ExportParams;
-import org.jeecgframework.poi.excel.entity.ImportParams;
 import org.jeecgframework.tag.core.easyui.TagUtil;
 import org.jeecgframework.web.system.pojo.base.TSUser;
-import org.jeecgframework.web.system.service.SystemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -91,8 +58,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -104,15 +69,8 @@ public class EmkMaterialContractController extends BaseController {
     @Autowired
     private EmkMaterialContractServiceI emkMaterialContractService;
     @Autowired
-    private SystemService systemService;
-    @Autowired
     private Validator validator;
-    @Autowired
-    ProcessEngine processEngine;
-    @Autowired
-    TaskService taskService;
-    @Autowired
-    HistoryService historyService;
+
 
     @RequestMapping(params = "list")
     public ModelAndView list(HttpServletRequest request) {
@@ -313,6 +271,7 @@ public class EmkMaterialContractController extends BaseController {
         AjaxJson j = new AjaxJson();
         message = "原料采购合同表更新成功";
         Map<String, String> map = ParameterUtil.getParamMaps(request.getParameterMap());
+
         EmkMaterialContractEntity t = emkMaterialContractService.get(EmkMaterialContractEntity.class, map.get("emkMaterialContractId"));
         try {
             emkMaterialContract.setId(null);
@@ -320,10 +279,16 @@ public class EmkMaterialContractController extends BaseController {
             this.emkMaterialContractService.saveOrUpdate(t);
 
             String dataRows = map.get("orderMxListID");
-            dataRows = map.get("orderMxListID");
+            if(t.getType().equals("0")){
+                dataRows = map.get("orderMxListID");
+            }else if(t.getType().equals("1")){
+                dataRows = map.get("orderMxListID2");
+            }else if(t.getType().equals("2")){
+                dataRows = map.get("orderMxListID3");
+            }
             //保存原料面料数据
             if (Utils.notEmpty(dataRows)) {
-                systemService.executeSql("delete from emk_sample_detail where sample_id = ? and type=0",t.getId());
+                systemService.executeSql("delete from emk_sample_detail where sample_id = ? and type=?",t.getId(),t.getType());
                 int rows = Integer.parseInt(dataRows);
                 for (int i = 0; i < rows; i++) {
                     EmkSampleDetailEntity emkSampleDetailEntity = new EmkSampleDetailEntity();
@@ -340,63 +305,12 @@ public class EmkMaterialContractController extends BaseController {
                         emkSampleDetailEntity.setSignPrice(map.get("orderMxList["+i+"].signPrice"));
                         emkSampleDetailEntity.setUnit(map.get("orderMxList["+i+"].unit"));
                         emkSampleDetailEntity.setSampleId(t.getId());
-                        emkSampleDetailEntity.setType("0");
+                        emkSampleDetailEntity.setType(t.getType());
                         systemService.save(emkSampleDetailEntity);
                     }
                 }
             }
-            dataRows = map.get("orderMxListID2");
-            //保存缝制辅料数据
-            if (Utils.notEmpty(dataRows)) {
-                systemService.executeSql("delete from emk_sample_detail where sample_id = ? and type=1",t.getId());
 
-                int rows = Integer.parseInt(dataRows);
-                for (int i = 0; i < rows; i++) {
-                    EmkSampleDetailEntity emkSampleDetailEntity = new EmkSampleDetailEntity();
-                    if (Utils.notEmpty(map.get("orderMxList["+i+"].proZnName"))) {
-                        emkSampleDetailEntity.setProZnName(map.get("orderMxList["+i+"].proZnName"));
-                        emkSampleDetailEntity.setProNum(map.get("orderMxList["+i+"].proNum"));
-                        emkSampleDetailEntity.setDirection(map.get("orderMxList["+i+"].direction"));
-                        emkSampleDetailEntity.setBetchNum(map.get("orderMxList["+i+"].betchNum"));
-                        emkSampleDetailEntity.setWidth(map.get("orderMxList["+i+"].width"));
-                        emkSampleDetailEntity.setColor(map.get("orderMxList["+i+"].color"));
-                        emkSampleDetailEntity.setWeight(map.get("orderMxList["+i+"].weight"));
-                        emkSampleDetailEntity.setChengf(map.get("orderMxList["+i+"].chengf"));
-                        emkSampleDetailEntity.setSumTotal(map.get("orderMxList["+i+"].sumTotal"));
-                        emkSampleDetailEntity.setSignPrice(map.get("orderMxList["+i+"].signPrice"));
-                        emkSampleDetailEntity.setUnit(map.get("orderMxList["+i+"].unit"));
-                        emkSampleDetailEntity.setSampleId(t.getId());
-                        emkSampleDetailEntity.setType("1");
-                        systemService.save(emkSampleDetailEntity);
-                    }
-                }
-            }
-            dataRows = map.get("orderMxListID3");
-            //保存包装辅料数据
-            if (Utils.notEmpty(dataRows)) {
-                systemService.executeSql("delete from emk_sample_detail where sample_id = ? and type=2",t.getId());
-
-                int rows = Integer.parseInt(dataRows);
-                for (int i = 0; i < rows; i++) {
-                    EmkSampleDetailEntity emkSampleDetailEntity = new EmkSampleDetailEntity();
-                    if (Utils.notEmpty(map.get("orderMxList["+i+"].proZnName"))) {
-                        emkSampleDetailEntity.setProZnName(map.get("orderMxList["+i+"].proZnName"));
-                        emkSampleDetailEntity.setProNum(map.get("orderMxList["+i+"].proNum"));
-                        emkSampleDetailEntity.setDirection(map.get("orderMxList["+i+"].direction"));
-                        emkSampleDetailEntity.setBetchNum(map.get("orderMxList["+i+"].betchNum"));
-                        emkSampleDetailEntity.setWidth(map.get("orderMxList["+i+"].width"));
-                        emkSampleDetailEntity.setColor(map.get("orderMxList["+i+"].color"));
-                        emkSampleDetailEntity.setWeight(map.get("orderMxList["+i+"].weight"));
-                        emkSampleDetailEntity.setChengf(map.get("orderMxList["+i+"].chengf"));
-                        emkSampleDetailEntity.setSumTotal(map.get("orderMxList["+i+"].sumTotal"));
-                        emkSampleDetailEntity.setSignPrice(map.get("orderMxList["+i+"].signPrice"));
-                        emkSampleDetailEntity.setUnit(map.get("orderMxList["+i+"].unit"));
-                        emkSampleDetailEntity.setSampleId(t.getId());
-                        emkSampleDetailEntity.setType("2");
-                        systemService.save(emkSampleDetailEntity);
-                    }
-                }
-            }
             this.systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
         } catch (Exception e) {
             e.printStackTrace();
@@ -442,8 +356,48 @@ public class EmkMaterialContractController extends BaseController {
         if (StringUtil.isNotEmpty(emkMaterialContract.getId())) {
             emkMaterialContract = emkMaterialContractService.getEntity(EmkMaterialContractEntity.class, emkMaterialContract.getId());
             req.setAttribute("emkMaterialContractPage", emkMaterialContract);
+
+            if(emkMaterialContract.getType().equals("0")){
+                req.setAttribute("pactTypeName", "原料面料");
+            }else if(emkMaterialContract.getType().equals("1")){
+                req.setAttribute("pactTypeName", "缝制辅料");
+            }else if(emkMaterialContract.getType().equals("2")){
+                req.setAttribute("pactTypeName", "包装辅料");
+            }
         }
+        req.getSession().setAttribute("orderFinish", "");
+
         return new ModelAndView("com/emk/bill/materialcontract/emkMaterialContract-update2");
+    }
+
+    @RequestMapping(params = "goUpdate3")
+    public ModelAndView goUpdate3(EmkMaterialContractEntity emkMaterialContract, HttpServletRequest req) {
+        if (StringUtil.isNotEmpty(emkMaterialContract.getId())) {
+            EmkMaterialRequiredEntity emkMaterialRequiredEntity = systemService.get(EmkMaterialRequiredEntity.class,emkMaterialContract.getId());
+            emkMaterialContract = emkMaterialContractService.findUniqueByProperty(EmkMaterialContractEntity.class, "caigouNo",emkMaterialRequiredEntity.getMaterialNo());
+            req.setAttribute("emkMaterialContractPage", emkMaterialContract);
+
+            if(emkMaterialContract.getType().equals("0")){
+                req.setAttribute("pactTypeName", "原料面料");
+            }else if(emkMaterialContract.getType().equals("1")){
+                req.setAttribute("pactTypeName", "缝制辅料");
+            }else if(emkMaterialContract.getType().equals("2")){
+                req.setAttribute("pactTypeName", "包装辅料");
+            }
+
+            List<TSUser> userList = systemService.findHql("from TSUser where userKey='业务员'");
+            req.setAttribute("ywyList", userList);
+            userList = systemService.findHql("from TSUser where userKey='业务跟单员'");
+            req.setAttribute("ywgdyList", userList);
+            userList = systemService.findHql("from TSUser where userKey='生产跟单员'");
+            req.setAttribute("scgdyList", userList);
+
+            List<EmkFactoryArchivesEntity> supplierEntities = systemService.findHql("from EmkFactoryArchivesEntity", null);
+            req.setAttribute("supplierEntities", supplierEntities);
+
+
+        }
+        return new ModelAndView("com/emk/bill/materialcontract/emkMaterialContract-update3");
     }
 
     @RequestMapping(params = "upload")
@@ -548,7 +502,7 @@ public class EmkMaterialContractController extends BaseController {
 
     @RequestMapping(params = "doSubmit")
     @ResponseBody
-    public AjaxJson doSubmit(EmkMaterialContractEntity2 emkMaterialContractEntity, HttpServletRequest request) {
+    public AjaxJson doSubmit(EmkMaterialContractEntity emkMaterialContractEntity, HttpServletRequest request) {
         String message = null;
         AjaxJson j = new AjaxJson();
         message = "原料布料采购单提交成功";
@@ -556,7 +510,7 @@ public class EmkMaterialContractController extends BaseController {
             int flag = 0;
 
             TSUser user = (TSUser) request.getSession().getAttribute("LOCAL_CLINET_USER");
-            Map map = ParameterUtil.getParamMaps(request.getParameterMap());
+            Map<String, String> map = ParameterUtil.getParamMaps(request.getParameterMap());
             if ((emkMaterialContractEntity.getId() == null) || (emkMaterialContractEntity.getId().isEmpty())) {
                 for (String id : map.get("ids").toString().split(",")) {
                     EmkMaterialContractEntity inStorageEntity = systemService.getEntity(EmkMaterialContractEntity.class, id);
@@ -574,68 +528,246 @@ public class EmkMaterialContractController extends BaseController {
             if (flag == 0) {
                 for (String id : map.get("ids").toString().split(",")) {
                     EmkMaterialContractEntity t = emkMaterialContractService.get(EmkMaterialContractEntity.class, id);
+                    EmkApprovalEntity b = systemService.findUniqueByProperty(EmkApprovalEntity.class,"formId",t.getId());
+                    if(Utils.isEmpty(b)){
+                        //type 工单类型，workNum 单号，formId 对应表单ID，bpmName 节点名称，bpmNode 节点代码，advice 处理意见，user 用户对象
+                        b = new EmkApprovalEntity();
+                        EmkApprovalDetailEntity approvalDetailEntity = new EmkApprovalDetailEntity();
+                        if(t.getType().equals("0")){
+                            ApprovalUtil.saveApproval(b,12,t.getPayNo(),t.getId(),user);
+                        }else if(t.getType().equals("1")){
+                            ApprovalUtil.saveApproval(b,13,t.getPayNo(),t.getId(),user);
+                        }else if(t.getType().equals("2")){
+                            ApprovalUtil.saveApproval(b,14,t.getPayNo(),t.getId(),user);
+                        }
+                        systemService.save(b);
+                        ApprovalUtil.saveApprovalDetail(approvalDetailEntity,b.getId(),"【生产跟单员】费用付款申请单","fyfksqdTask","提交",user);
+                        systemService.save(approvalDetailEntity);
+                    }
                     t.setState("1");
-                    variables.put("inputUser", t.getId());
+                    variables.put("optUser", t.getId());
 
                     List<Task> task = taskService.createTaskQuery().taskAssignee(id).list();
+                    TSUser makerUser = systemService.findUniqueByProperty(TSUser.class,"userName",t.getCreateBy());
+                    TSUser bpmUser = null;
+                    if (task.size() > 0) {
+                        bpmUser = systemService.get(TSUser.class,b.getBpmSherId());
+                    }else{
+                        bpmUser = systemService.get(TSUser.class,b.getCommitId());
+                    }
+                    //保存审批意见
+                    EmkApprovalDetailEntity approvalDetail = ApprovalUtil.saveApprovalDetail(b.getId(),user,b,map.get("advice"));
                     if (task.size() > 0) {
                         Task task1 = (Task) task.get(task.size() - 1);
-                        if (task1.getTaskDefinitionKey().equals("orderTask")) {
-                            this.taskService.complete(task1.getId(), variables);
+                        if (task1.getTaskDefinitionKey().equals("fyfksqdTask")) {
+                            taskService.complete(task1.getId(), variables);
+                            t.setState("1");
+                            b.setStatus(1);
+                            saveApprvoalDetail(approvalDetail,"重新提交的费用付款申请单","orderTask",0,"重新提交费用付款申请单");
+                            saveSmsAndEmailForMany("业务员","重新提交的费用付款申请单","您有【"+b.getCreateName()+"】重新提交的费用付款申请单，单号："+b.getWorkNum()+"，请及时审核。",user.getUserName());
                         }
-                        if (task1.getTaskDefinitionKey().equals("checkTask")) {
-                            t.setLeader(user.getRealName());
-                            t.setLeadUserId(user.getId());
-                            t.setLeadAdvice(emkMaterialContractEntity.getLeadAdvice());
-                            if (emkMaterialContractEntity.getIsPass().equals("0")) {
-                                t.setYhtUserId(map.get("userName").toString());
-                                t.setYhtUserName(map.get("realName").toString());
-
-                                variables.put("isPass", emkMaterialContractEntity.getIsPass());
-                                this.taskService.complete(task1.getId(), variables);
-                            } else {
-                                List<HistoricTaskInstance> hisTasks = ((HistoricTaskInstanceQuery) this.historyService.createHistoricTaskInstanceQuery().taskAssignee(emkMaterialContractEntity.getId())).list();
-
-                                List<Task> taskList = taskService.createTaskQuery().taskAssignee(emkMaterialContractEntity.getId()).list();
-                                if (taskList.size() > 0) {
-                                    Task taskH = (Task) taskList.get(taskList.size() - 1);
-                                    HistoricTaskInstance historicTaskInstance = (HistoricTaskInstance) hisTasks.get(hisTasks.size() - 2);
-                                    FlowUtil.turnTransition(taskH.getId(), historicTaskInstance.getTaskDefinitionKey(), variables);
-                                    Map activityMap = this.systemService.findOneForJdbc("SELECT GROUP_CONCAT(t0.ID_) ids,GROUP_CONCAT(t0.TASK_ID_) taskids FROM act_hi_actinst t0 WHERE t0.ASSIGNEE_=? AND t0.ACT_ID_=? ORDER BY ID_ ASC", new Object[]{t.getId(), historicTaskInstance.getTaskDefinitionKey()});
-                                    String[] activitIdArr = activityMap.get("ids").toString().split(",");
-                                    String[] taskIdArr = activityMap.get("taskids").toString().split(",");
-                                    this.systemService.executeSql("UPDATE act_hi_taskinst SET  NAME_=CONCAT('【驳回后】','',NAME_) WHERE ASSIGNEE_>=? AND ID_=?", new Object[]{t.getId(), taskIdArr[1]});
-                                    this.systemService.executeSql("delete from act_hi_actinst where ID_>=? and ID_<?", new Object[]{activitIdArr[0], activitIdArr[1]});
-                                }
+                        if(task1.getTaskDefinitionKey().equals("ywyTask")) {
+                            if (map.get("isPass").equals("0")) {
+                                taskService.complete(task1.getId(), variables);
+                                b.setStatus(35);
+                                approvalDetail.setBpmName("业务员复核");
+                                t.setState("35");
+                                approvalDetail.setApproveStatus(0);
+                                saveSmsAndEmailForMany("业务经理","业务员复核","您有【"+b.getCreateName()+"】审核通过的费用付款申请单，单号："+b.getWorkNum()+"，请及时审核。",user.getUserName());
+                            }else{
+                                saveApprvoalDetail(approvalDetail,"业务员复核","ywyTask",1,"回退");
+                                backProcess(task1.getProcessInstanceId(),"ywyTask","fyfksqdTask","用付款申请单");
                                 t.setState("0");
+                                b.setStatus(0);
+                                b.setBpmStatus("1");
+                                saveSmsAndEmailForOne("业务员复核","您有【"+user.getRealName()+"】回退的费用付款申请单，单号："+b.getWorkNum()+"，请及时处理。",bpmUser,user.getUserName());
                             }
-                        }else if(task1.getTaskDefinitionKey().equals("ycghtTask")) {
-                            t.setHtUserId(map.get("userName").toString());
-                            t.setHtUserName(map.get("realName").toString());
-                            t.setYhtAdvice(t.getLeadAdvice());
-                            this.taskService.complete(task1.getId(), variables);
-                        }else if(task1.getTaskDefinitionKey().equals("htTask")) {
-                            t.setRkUserId(t.getCreateBy());
-                            t.setRkUserName(t.getCreateName());
-                            t.setHtAdvice(t.getLeadAdvice());
-                            this.taskService.complete(task1.getId(), variables);
-                        }else if(task1.getTaskDefinitionKey().equals("rkTask")) {
-                            t.setCkUserId(t.getCreateBy());
-                            t.setCkUserName(t.getCreateName());
-                            t.setRkAdvice(t.getLeadAdvice());
-                            this.taskService.complete(task1.getId(), variables);
-                        }else if(task1.getTaskDefinitionKey().equals("ckTask")) {
-                            t.setState("2");
-                            this.taskService.complete(task1.getId(), variables);
                         }
-                    } else {
-                        ProcessInstance pi = this.processEngine.getRuntimeService().startProcessInstanceByKey("order", "emkOrder", variables);
+                        if(task1.getTaskDefinitionKey().equals("ywjlshTask")) {
+                            if (map.get("isPass").equals("0")) {
+                                taskService.complete(task1.getId(), variables);
+                                b.setStatus(3);
+                                approvalDetail.setBpmName("业务经理审核");
+                                t.setState("3");
+                                approvalDetail.setApproveStatus(0);
+                                saveSmsAndEmailForMany("技术员","业务经理审核","您有【"+b.getCreateName()+"】审核通过的费用付款申请单，单号："+b.getWorkNum()+"，请及时审核。",user.getUserName());
+                            }else{
+                                saveApprvoalDetail(approvalDetail,"业务经理审核","ywjlshTask",1,"回退");
+                                backProcess(task1.getProcessInstanceId(),"ywjlshTask","ywyTask","业务员复核");
+                                t.setState("21");
+                                b.setStatus(21);
+                                b.setBpmStatus("1");
+                                saveSmsAndEmailForOne("业务经理审核","您有【"+user.getRealName()+"】回退的费用付款申请单，单号："+b.getWorkNum()+"，请及时处理。",bpmUser,user.getUserName());
+                            }
+                        }
+                        if(task1.getTaskDefinitionKey().equals("jsyzsTask")) {
+                            if (map.get("isPass").equals("0")) {
+                                taskService.complete(task1.getId(), variables);
+                                b.setStatus(22);
+                                approvalDetail.setBpmName("技术员再审");
+                                t.setState("22");
+                                approvalDetail.setApproveStatus(0);
+                                saveSmsAndEmailForMany("采购员","技术员再审","您有【"+b.getCreateName()+"】审核通过的费用付款申请单，单号："+b.getWorkNum()+"，请及时审核。",user.getUserName());
+                            }else{
+                                saveApprvoalDetail(approvalDetail,"技术员再审","jsyzsTask",1,"回退");
+                                backProcess(task1.getProcessInstanceId(),"jsyzsTask","ywjlshTask","业务经理审核");
+                                t.setState("4");
+                                b.setStatus(4);
+                                b.setBpmStatus("1");
+                                saveSmsAndEmailForOne("技术员再审","您有【"+user.getRealName()+"】回退的费用付款申请单，单号："+b.getWorkNum()+"，请及时处理。",bpmUser,user.getUserName());
+                            }
+                        }
+                        if(task1.getTaskDefinitionKey().equals("cgyzsTask")) {
+                            if (map.get("isPass").equals("0")) {
+                                taskService.complete(task1.getId(), variables);
+                                b.setStatus(24);
+                                approvalDetail.setBpmName("采购员再审");
+                                t.setState("24");
+                                approvalDetail.setApproveStatus(0);
+                                saveSmsAndEmailForMany("采购经理","采购员再审","您有【"+b.getCreateName()+"】审核通过的费用付款申请单，单号："+b.getWorkNum()+"，请及时审核。",user.getUserName());
+                            }else{
+                                saveApprvoalDetail(approvalDetail,"采购员再审","cgyzsTask",1,"回退");
+                                backProcess(task1.getProcessInstanceId(),"cgyzsTask","jsyzsTask","技术员再审");
+                                t.setState("23");
+                                b.setStatus(23);
+                                b.setBpmStatus("1");
+                                saveSmsAndEmailForOne("采购员再审","您有【"+user.getRealName()+"】回退的费用付款申请单，单号："+b.getWorkNum()+"，请及时处理。",bpmUser,user.getUserName());
+                            }
+                        }
 
+                        if(task1.getTaskDefinitionKey().equals("cgjlzsTask")) {
+                            if (map.get("isPass").equals("0")) {
+                                taskService.complete(task1.getId(), variables);
+                                b.setStatus(41);
+                                approvalDetail.setBpmName("采购经理再审");
+                                t.setState("41");
+                                b.setNextBpmSher(map.get("realName"));
+                                b.setNextBpmSherId(map.get("userName"));
+                                approvalDetail.setApproveStatus(0);
+
+                                bpmUser = systemService.findUniqueByProperty(TSUser.class,"userName",b.getNextBpmSherId());
+                                saveSmsAndEmailForOne("采购经理再审","您有【"+user.getRealName()+"】审核通过的费用付款申请单，单号："+b.getWorkNum()+"，请及时处理。",bpmUser,user.getUserName());
+
+                                //采购需求单流程流转下一环节
+                                saveMaterialRequiredProcess(t,"审核通过的付款申请单",map.get("advice"),user);
+                            }else{
+                                saveApprvoalDetail(approvalDetail,"采购经理再审","cgjlzsTask",1,"回退");
+                                backProcess(task1.getProcessInstanceId(),"cgjlzsTask","cgyzsTask","采购员再审");
+                                t.setState("36");
+                                b.setStatus(36);
+                                b.setBpmStatus("1");
+                                saveSmsAndEmailForOne("采购经理再审","您有【"+user.getRealName()+"】回退的费用付款申请单，单号："+b.getWorkNum()+"，请及时处理。",bpmUser,user.getUserName());
+                            }
+                        }
+                        if(task1.getTaskDefinitionKey().equals("cwshTask")) {
+                            if (map.get("isPass").equals("0")) {
+                                taskService.complete(task1.getId(), variables);
+                                b.setStatus(25);
+                                approvalDetail.setBpmName("财务审核");
+                                t.setState("25");
+                                b.setNextBpmSher(map.get("realName"));
+                                b.setNextBpmSherId(map.get("userName"));
+                                approvalDetail.setApproveStatus(0);
+
+                                saveSmsAndEmailForMany("财务经理","财务审核","您有【"+b.getCreateName()+"】审核通过的费用付款申请单，单号："+b.getWorkNum()+"，请及时审核。",user.getUserName());
+                            }else{
+                                saveApprvoalDetail(approvalDetail,"财务审核","cwshTask",1,"回退");
+                                backProcess(task1.getProcessInstanceId(),"cwshTask","cgjlzsTask","采购经理再审");
+                                t.setState("16");
+                                b.setStatus(16);
+                                b.setBpmStatus("1");
+                                saveSmsAndEmailForOne("财务审核","您有【"+user.getRealName()+"】回退的费用付款申请单，单号："+b.getWorkNum()+"，请及时处理。",bpmUser,user.getUserName());
+                            }
+                        }
+                        if(task1.getTaskDefinitionKey().equals("cwjlshTask")) {
+                            if (map.get("isPass").equals("0")) {
+                                taskService.complete(task1.getId(), variables);
+                                b.setStatus(26);
+                                approvalDetail.setBpmName("财务经理审核");
+                                t.setState("26");
+                                approvalDetail.setApproveStatus(0);
+                                saveSmsAndEmailForOne("财务经理审核","您有【"+user.getRealName()+"】审核通过的费用付款申请单，单号："+b.getWorkNum()+"，请及时处理。",bpmUser,user.getUserName());
+
+                                //生成应付核准单
+                                EmkFinanceYfCheckEntity emkFinanceYfCheckEntity = new EmkFinanceYfCheckEntity();
+                                MyBeanUtils.copyBeanNotNull2Bean(t,emkFinanceYfCheckEntity);
+                                emkFinanceYfCheckEntity.setId(null);
+                                emkFinanceYfCheckEntity.setYlmldyfyfkNo(t.getPayNo());
+                                Map<String, Object> orderNum = systemService.findOneForJdbc("select CAST(ifnull(max(right(yhz_check_no, 6)),0)+1 AS signed) orderNum from emk_finance_yf_check");
+                                emkFinanceYfCheckEntity.setYfCheckNo("YF" + DateUtils.format(new Date(), "yyMMdd") + String.format("%06d", Integer.parseInt(orderNum.get("orderNum").toString())));
+                                systemService.save(emkFinanceYfCheckEntity);
+
+                                //采购需求单流程流转下一环节
+                                saveMaterialRequiredProcess(t,"财务审核通过的付款申请单",map.get("advice"),user);
+                            }else{
+                                saveApprvoalDetail(approvalDetail,"财务经理审核","cwjlshTask",1,"回退");
+                                backProcess(task1.getProcessInstanceId(),"cwjlshTask","cwshTask","财务审核");
+                                t.setState("27");
+                                b.setStatus(27);
+                                b.setBpmStatus("1");
+                                b.setNextBpmSher(bpmUser.getRealName());
+                                b.setNextBpmSherId(bpmUser.getUserName());
+                                saveSmsAndEmailForOne("财务经理审核","您有【"+user.getRealName()+"】回退的费用付款申请单，单号："+b.getWorkNum()+"，请及时处理。",bpmUser,user.getUserName());
+                            }
+                        }
+                        if(task1.getTaskDefinitionKey().equals("fkhzdTask")) {
+                            if (map.get("isPass").equals("0")) {
+                                taskService.complete(task1.getId(), variables);
+                                b.setStatus(47);
+                                approvalDetail.setBpmName("【财务员】付款核准单");
+                                t.setState("47");
+                                approvalDetail.setApproveStatus(0);
+                                saveSmsAndEmailForMany("总经理","【财务员】付款核准单","您有【"+b.getCreateName()+"】审核通过的费用付款申请单，单号："+b.getWorkNum()+"，请及时审核。",user.getUserName());
+
+                                //采购需求单流程流转下一环节
+                                saveMaterialRequiredProcess(t,"总经理审核通过的付款申请单",map.get("advice"),user);
+                            }
+                        }
+                        if(task1.getTaskDefinitionKey().equals("zjlpfTask")) {
+                            if (map.get("isPass").equals("0")) {
+                                taskService.complete(task1.getId(), variables);
+                                b.setStatus(48);
+                                approvalDetail.setBpmName("总经理批复");
+                                t.setState("48");
+                                approvalDetail.setApproveStatus(0);
+                                saveSmsAndEmailForOne("总经理批复","您有【"+user.getRealName()+"】审核通过的费用付款申请单，单号："+b.getWorkNum()+"，请及时处理。",bpmUser,user.getUserName());
+                            }else{
+                                saveApprvoalDetail(approvalDetail,"总经理批复","zjlpfTask",1,"回退");
+                                backProcess(task1.getProcessInstanceId(),"zjlpfTask","fkhzdTask","【财务员】付款核准单");
+                                t.setState("27");
+                                b.setStatus(27);
+                                b.setBpmStatus("1");
+                                saveSmsAndEmailForOne("总经理批复","您有【"+user.getRealName()+"】回退的费用付款申请单，单号："+b.getWorkNum()+"，请及时处理。",bpmUser,user.getUserName());
+                            }
+                        }
+                        if(task1.getTaskDefinitionKey().equals("cwzzTask")) {
+                            if (map.get("isPass").equals("0")) {
+                                taskService.complete(task1.getId(), variables);
+                                b.setStatus(2);
+                                approvalDetail.setBpmName("财务转账");
+                                t.setState("2");
+                                approvalDetail.setApproveStatus(0);
+                            }
+                        }
+                        systemService.save(approvalDetail);
+
+                    } else {
+                        ProcessInstance pi = this.processEngine.getRuntimeService().startProcessInstanceByKey("yf", "emkMaterialContractEntity", variables);
                         task = taskService.createTaskQuery().taskAssignee(id).list();
-                        Task task1 = (Task) task.get(task.size() - 1);
-                        this.taskService.complete(task1.getId(), variables);
+                        Task task1 = task.get(task.size() - 1);
+                        taskService.complete(task1.getId(), variables);
+
+                        saveSmsAndEmailForMany("业务员","【生产跟单员】费用付款申请单","您有【"+b.getCreateName()+"】提交的费用付款申请单，单号："+b.getWorkNum()+"，请及时审核。",user.getUserName());
+                        t.setState("1");
+                        b.setStatus(1);
+                        b.setBpmStatus("0");
+                        b.setProcessName("【生产跟单员】费用付款申请单");
+
+                        //采购需求单流程流转下一环节
+                        saveMaterialRequiredProcess(t,"提交审核的付款申请单",map.get("advice"),user);
                     }
-                    this.systemService.saveOrUpdate(t);
+                    systemService.saveOrUpdate(t);
+                    systemService.saveOrUpdate(b);
                 }
             }
             this.systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);
@@ -659,85 +791,14 @@ public class EmkMaterialContractController extends BaseController {
 
     @RequestMapping(params = "goTime")
     public ModelAndView goTime(EmkMaterialContractEntity emkMaterialContractEntity, HttpServletRequest req, DataGrid dataGrid) {
-        String sql = "";
-        String countsql = "";
-        Map map = ParameterUtil.getParamMaps(req.getParameterMap());
-
-        sql = "SELECT DATE_FORMAT(t1.START_TIME_, '%Y-%m-%d %H:%i:%s') startTime,t1.*,CASE \n" +
-                " WHEN t1.TASK_DEF_KEY_='orderTask' THEN t2.create_name \n" +
-                " WHEN t1.TASK_DEF_KEY_='checkTask' THEN t2.leader \n" +
-                " WHEN t1.TASK_DEF_KEY_='ycghtTask' THEN t2.yht_user_name \n" +
-                " WHEN t1.TASK_DEF_KEY_='htTask' THEN t2.ht_user_name \n" +
-                " WHEN t1.TASK_DEF_KEY_='rkTask' THEN t2.rk_user_name \n" +
-                " WHEN t1.TASK_DEF_KEY_='ckTask' THEN t2.ck_user_name \n" +
-
-                " END workname FROM act_hi_taskinst t1 \n" +
-                " LEFT JOIN emk_material_contract t2 ON t1.ASSIGNEE_ = t2.id where ASSIGNEE_='" + map.get("id") + "' ";
-
-        countsql = " SELECT COUNT(1) FROM act_hi_taskinst t1 where ASSIGNEE_='" + map.get("id") + "' ";
-
-        sql += " order by t1.START_TIME_ desc";
-        if (dataGrid.getPage() == 1) {
-            sql = sql + " limit 0, " + dataGrid.getRows();
-        } else {
-            sql = sql + "limit " + (dataGrid.getPage() - 1) * dataGrid.getRows() + "," + dataGrid.getRows();
+        EmkApprovalEntity approvalEntity = systemService.findUniqueByProperty(EmkApprovalEntity.class,"formId",emkMaterialContractEntity.getId());
+        if(Utils.notEmpty(approvalEntity)){
+            List<EmkApprovalDetailEntity> approvalDetailEntityList = systemService.findHql("from EmkApprovalDetailEntity where approvalId=? order by approveDate asc",approvalEntity.getId());
+            req.setAttribute("approvalDetailEntityList", approvalDetailEntityList);
+            req.setAttribute("approvalEntity", approvalEntity);
+            req.setAttribute("createDate", org.jeecgframework.core.util.DateUtils.date2Str(approvalEntity.getCreateDate(), org.jeecgframework.core.util.DateUtils.datetimeFormat));
         }
-        this.systemService.listAllByJdbc(dataGrid, sql, countsql);
-        req.setAttribute("taskList", dataGrid.getResults());
-        if (dataGrid.getResults().size() > 0) {
-            req.setAttribute("stepProcess", Integer.valueOf(dataGrid.getResults().size() - 1));
-        } else {
-            req.setAttribute("stepProcess", Integer.valueOf(0));
-        }
-        emkMaterialContractEntity = emkMaterialContractService.getEntity(EmkMaterialContractEntity.class, emkMaterialContractEntity.getId());
-        req.setAttribute("emkMaterialContract", emkMaterialContractEntity);
         return new ModelAndView("com/emk/bill/materialcontract/time");
     }
-
-    @RequestMapping(params = "goProcess")
-    public ModelAndView goProcess(EmkMaterialContractEntity emkMaterialContractEntity, HttpServletRequest req) {
-        EmkMaterialContractEntity t = systemService.get(EmkMaterialContractEntity.class, emkMaterialContractEntity.getId());
-        List<Task> task = taskService.createTaskQuery().taskAssignee(t.getId()).list();
-        if (task.size() > 0) {
-            Task task1 = (Task) task.get(task.size() - 1);
-            req.getSession().setAttribute("orderPorcess", task1);
-            req.getSession().setAttribute("orderFinish", "0");
-        } else if (t.getState().equals("4")) {
-            req.getSession().setAttribute("orderFinish", "1");
-        } else {
-            req.getSession().setAttribute("orderFinish", "0");
-            req.getSession().setAttribute("orderPorcess", null);
-        }
-        return new ModelAndView("com/emk/bill/materialcontract/emkMaterialContract-process");
-    }
-
-    @RequestMapping(params = "process")
-    public ModelAndView process(EmkInStorageEntity emkInStorage, HttpServletRequest req) {
-        return new ModelAndView("com/emk/bill/materialcontract/process");
-    }
-
-    @RequestMapping(params = "getCurrentProcess")
-    @ResponseBody
-    public AjaxJson getCurrentProcess(EmkMaterialContractEntity emkMaterialContractEntity, HttpServletRequest request) {
-        String message = null;
-        AjaxJson j = new AjaxJson();
-        EmkMaterialContractEntity t = systemService.get(EmkMaterialContractEntity.class, emkMaterialContractEntity.getId());
-        List<Task> task = taskService.createTaskQuery().taskAssignee(t.getId()).list();
-        if (task.size() > 0) {
-            Task task1 = (Task) task.get(task.size() - 1);
-            j.setMsg(task1.getName());
-            request.getSession().setAttribute("orderPorcess", task1);
-            request.getSession().setAttribute("orderFinish", "0");
-        } else if (t.getState().equals("2")) {
-            j.setMsg("完成");
-            request.getSession().setAttribute("orderFinish", "1");
-        } else {
-            j.setMsg("采购单申请");
-            request.getSession().setAttribute("orderFinish", "0");
-            request.getSession().setAttribute("orderPorcess", null);
-        }
-        return j;
-    }
-
 
 }

@@ -11,9 +11,9 @@
             <t:dgCol title="所属部门"  field="sysOrgCode"  hidden="true"  queryMode="single"  width="120"></t:dgCol>
             <t:dgCol title="操作" field="opt" frozenColumn="true"  width="100"></t:dgCol>
             <%--<t:dgCol title="预采购合同号"  field="yhtNum" queryMode="single" width="105"></t:dgCol>--%>
-            <t:dgCol title="包装辅料开发费付款申请单编号"  query="true"  field="payNo" queryMode="single" width="210"></t:dgCol>
-            <t:dgCol title="包装辅料需求单号"  query="true"  field="requireNo" queryMode="single" width="130"></t:dgCol>
-            <t:dgCol title="包装辅料采购单号"  query="true"  field="caigouNo" queryMode="single" width="130"></t:dgCol>
+            <t:dgCol title="包装辅料开发费付款申请单开发费付款申请单编号"  query="true"  field="payNo" queryMode="single" width="210"></t:dgCol>
+            <t:dgCol title="包装辅料开发费付款申请单需求单号"  query="true"  field="requireNo" queryMode="single" width="130"></t:dgCol>
+            <t:dgCol title="包装辅料开发费付款申请单采购单号"  query="true"  field="caigouNo" queryMode="single" width="130"></t:dgCol>
             <t:dgCol title="打样通知单号"  query="true"  field="dytzdNo" queryMode="single" width="130"></t:dgCol>
             <t:dgCol title="打样需求单号"  query="true"  field="dyxqdNo" queryMode="single" width="130"></t:dgCol>
 
@@ -27,10 +27,10 @@
             <%--<t:dgCol title="工艺种类"  field="gyzl"  dictionary="gylx" queryMode="single"  width="70"></t:dgCol>--%>
             <%--<t:dgCol title="款式大类"  field="proTypeName"  queryMode="single"  width="70"></t:dgCol>--%>
             <t:dgCol title="状态"  field="state" formatterjs="formatColor"  queryMode="single"  width="70"></t:dgCol>
-            <t:dgFunOpt funname="goToProcess(id,createBy,createName)" title="流程进度" operationCode="process" urlclass="ace_button"  urlStyle="background-color:#ec4758;" urlfont="fa-tasks"></t:dgFunOpt>
-            <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkMaterialContractController.do?goAdd&type=2&winTitle=录入包装辅料" funname="add" height="600" width="1200"></t:dgToolBar>
-            <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkMaterialContractController.do?goUpdate&type=2&winTitle=编辑包装辅料" funname="update" height="600" width="1200"></t:dgToolBar>
-            <t:dgToolBar title="查看" icon="fa fa-search" operationCode="look" url="emkMaterialContractController.do?goUpdate&type=2&winTitle=查看包装辅料" funname="detail" height="600" width="1200"></t:dgToolBar>
+            <%--<t:dgFunOpt funname="goToProcess(id,createBy,createName)" title="流程进度" operationCode="process" urlclass="ace_button"  urlStyle="background-color:#ec4758;" urlfont="fa-tasks"></t:dgFunOpt>--%>
+            <t:dgToolBar title="录入" icon="fa fa-plus" operationCode="add" url="emkMaterialContractController.do?goAdd&type=2&winTitle=录入包装辅料开发费付款申请单" funname="add" height="600" width="1200"></t:dgToolBar>
+            <t:dgToolBar title="编辑" icon="fa fa-edit" operationCode="edit" url="emkMaterialContractController.do?goUpdate&type=2&winTitle=编辑包装辅料开发费付款申请单" funname="update" height="600" width="1200"></t:dgToolBar>
+            <t:dgToolBar title="查看" icon="fa fa-search" operationCode="look" url="emkMaterialContractController.do?goUpdate&type=2&winTitle=查看包装辅料开发费付款申请单" funname="detail" height="600" width="1200"></t:dgToolBar>
 
             <t:dgToolBar title="提交" operationCode="submit" icon="fa fa-arrow-circle-right" funname="doSubmitV"></t:dgToolBar>
             <t:dgToolBar title="导出" operationCode="exp" icon="fa fa-arrow-circle-right" funname="ExportXls"></t:dgToolBar>

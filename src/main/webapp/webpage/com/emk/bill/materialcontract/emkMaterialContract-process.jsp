@@ -9,10 +9,10 @@
         $(document).ready(function(){
             var height =window.top.document.body.offsetHeight*0.79;
             //$("#proFrm").css("height",height);
-            $("#orderFrm").css("height",height);
+            $("#fksqdFrm").css("height",height);
 
         });
-        function setchooseUser(flag){
+        /*function setchooseUser(flag){
             if(flag==1){
                 $("#chooseUser").css("display","none");
                $("#userName").val("fwtadmin");
@@ -44,16 +44,15 @@
                 $("#spanId2").css("display","none");
                 $("#spanId3").css("display","");
             }
-        }
+        }*/
     </script>
 
 </head>
 <body>
-<t:tabs id="repairTabId" iframe="false" heigth="600px" tabPosition="top" fit="true" >
-    <t:tab title="基本信息" id="orderFrm"  heigth="600px"  width="100%" iframe="emkMaterialContractController.do?goUpdate2&id=${param.id}" icon="fa fa-calendar"></t:tab>
-    <t:tab title="任务处理" id="orderFrm"  heigth="600px"  width="100%" href="emkMaterialContractController.do?goWork&id=${param.id}" icon="fa fa-crosshairs"></t:tab>
-    <%--<t:tab title="任务处理" id="workFrm"  heigth="480px"  width="100%" icon="" href="uRepairController.do?goWork&id=${param.id}"></t:tab>--%>
-    <t:tab title="流程图" id="proFrm"  heigth="600px" width="100%" icon="fa fa-sitemap" iframe="emkMaterialContractController.do?process&id=${param.id}"></t:tab>
+<t:tabs id="mcTabId" iframe="false" heigth="${param.hVal}" tabPosition="top" fit="true" >
+    <t:tab title="任务处理" id="orderFrm"  heigth="600px"  width="100%" href="emkMaterialContractController.do?goWork&node=${param.node}&id=${param.id}" icon="fa fa-crosshairs"></t:tab>
+    <t:tab title="付款申请单" id="fksqdFrm"  heigth="${param.hVal}"  width="100%" iframe="emkMaterialContractController.do?goUpdate2&hVal2=${param.hVal2}&hVal=${param.hVal}&id=${param.id}" icon="fa fa-calendar"></t:tab>
+    <t:tab title="流程图" id="proFrm"  heigth="600px" width="100%" icon="fa fa-sitemap" iframe="flowController.do?process&processUrl=com/emk/bill/materialcontract/process&id=${param.id}"></t:tab>
 </t:tabs>
 
 </body>

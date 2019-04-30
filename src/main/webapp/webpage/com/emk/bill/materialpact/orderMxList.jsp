@@ -155,15 +155,15 @@
     <table id="mxtb" width="1450px"  border="0" cellspacing="0" cellpadding="0">
         <tr bgcolor="#F8F8F8" style="height: 32px;" >
             <td align="center"  width="40">序号</td>
-            <td align="center"  width="180">采购需求单号</td>
+            <td align="center"  width="230">采购需求单号</td>
             <c:if test="${param.flag eq 1}">
-                <td align="center"  width="200">订单号</td>
+                <td align="center"  width="190">订单号</td>
                 <td align="center"  width="100">款号</td>
             </c:if>
             <td align="center"  width="150">原料面料名称</td>
             <td align="center"  width="150">原料面料代码</td>
-            <td align="center"  width="120">供应商代码</td>
-            <td align="center"  width="150">规格</td>
+            <td align="center"  width="110">供应商代码</td>
+            <td align="center"  width="120">规格</td>
             <td align="center"  width="150">捻向</td>
             <td align="center"  width="150">批号</td>
             <td align="center"  width="100">幅宽</td>
@@ -212,11 +212,11 @@
                                                style="width: 86%;" ignore="ignore"></td>
                     <td align="center"><input  nullmsg="请输入成分！"  errormsg="请输入成分" value="${poVal.chengf}" name="orderMxList[${status.index}].chengf" maxlength="100" type="text" value=""
                                                style="width: 86%;" ignore="ignore"></td>
+                    <td align="center"><input  nullmsg="请输入损耗率！"  id="sunhaoPrecent${status.index}"  errormsg="请输入数值" datatype="d" value="${poVal.sunhaoPrecent}" name="orderMxList[${status.index}].sunhaoPrecent" maxlength="100" type="text" value=""
+                                               style="width: 86%;" ignore="ignore"></td>
                     <td align="center"><input  nullmsg="请输入单件用量！" id="yongliang${status.index}"   errormsg="请输入数值" datatype="d" value="${poVal.yongliang}" name="orderMxList[${status.index}].yongliang" maxlength="100" type="text" value=""
                                                style="width: 86%;" ignore="ignore"></td>
                     <td align="center"><input  nullmsg="请输入单价！"  errormsg="请输入数值" datatype="d" value="${poVal.signPrice}" name="orderMxList[${status.index}].signPrice" maxlength="100" type="text" value=""
-                                               style="width: 86%;" ignore="ignore"></td>
-                    <td align="center"><input  nullmsg="请输入损耗率！"  id="sunhaoPrecent${status.index}"  errormsg="请输入数值" datatype="d" value="${poVal.sunhaoPrecent}" name="orderMxList[${status.index}].sunhaoPrecent" maxlength="100" type="text" value=""
                                                style="width: 86%;" ignore="ignore"></td>
                     <td align="center"><input  nullmsg="请输入总用量！"  errormsg="请输入数值" datatype="d" value="${poVal.sumYongliang}" name="orderMxList[${status.index}].sumYongliang" maxlength="100" type="text" value=""
                                                style="width: 86%;" ignore="ignore"></td>
@@ -247,8 +247,6 @@
         $("#unit"+currentFlag).val($("#unit").val());
         $("#proId"+currentFlag).val($("#id").val());
         $("#remark"+currentFlag).val($("#remark").val());
-        $("#yongliang"+currentFlag).val($("#yongliang").val());
-        $("#sunhaoPrecent"+currentFlag).val($("#sunhaoPrecent").val());
 
     }
     </script>

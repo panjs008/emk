@@ -1,15 +1,11 @@
 package com.emk.bound.minstorage.controller;
 import com.emk.approval.approval.entity.EmkApprovalEntity;
 import com.emk.approval.approvaldetail.entity.EmkApprovalDetailEntity;
-import com.emk.bill.materialcontract.entity.EmkMaterialContractEntity;
-import com.emk.bill.materialcontractdetail.entity.EmkMaterialContractDetailEntity;
 import com.emk.bound.minstorage.entity.EmkMInStorageEntity;
 import com.emk.bound.minstorage.entity.EmkMInStorageEntity2;
 import com.emk.bound.minstorage.service.EmkMInStorageServiceI;
 
-import java.io.InputStream;
 import java.util.*;
-import java.text.SimpleDateFormat;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -17,32 +13,13 @@ import com.emk.bound.minstoragedetail.entity.EmkMInStorageDetailEntity;
 import com.emk.bound.moutstorage.entity.EmkMOutStorageEntity;
 import com.emk.product.product.entity.EmkProductEntity;
 import com.emk.storage.accessories.entity.EmkAccessoriesEntity;
-import com.emk.storage.instorage.entity.EmkInStorageEntity;
-import com.emk.storage.instoragedetail.entity.EmkInStorageDetailEntity;
 import com.emk.storage.material.entity.EmkMaterialEntity;
-import com.emk.storage.sampledetail.entity.EmkSampleDetailEntity;
 import com.emk.storage.storage.entity.EmkStorageEntity;
 import com.emk.storage.storagelog.entity.EmkStorageLogEntity;
 import com.emk.util.*;
-import org.activiti.bpmn.model.BpmnModel;
-import org.activiti.engine.*;
-import org.activiti.engine.history.HistoricActivityInstance;
-import org.activiti.engine.history.HistoricProcessInstance;
-import org.activiti.engine.history.HistoricTaskInstance;
-import org.activiti.engine.history.HistoricTaskInstanceQuery;
-import org.activiti.engine.impl.RepositoryServiceImpl;
-import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
-import org.activiti.engine.impl.persistence.entity.TaskEntity;
-import org.activiti.engine.impl.pvm.PvmTransition;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
-import org.activiti.engine.impl.pvm.process.TransitionImpl;
+
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
-import org.activiti.engine.task.TaskQuery;
-import org.activiti.image.ProcessDiagramGenerator;
 import org.apache.log4j.Logger;
 import org.apache.tools.ant.util.DateUtils;
 import org.jeecgframework.web.system.pojo.base.TSUser;
@@ -56,26 +33,19 @@ import org.springframework.web.servlet.ModelAndView;
 import org.jeecgframework.core.common.controller.BaseController;
 import org.jeecgframework.core.common.exception.BusinessException;
 import org.jeecgframework.core.common.hibernate.qbc.CriteriaQuery;
-import org.jeecgframework.core.common.model.common.TreeChildCount;
 import org.jeecgframework.core.common.model.json.AjaxJson;
 import org.jeecgframework.core.common.model.json.DataGrid;
 import org.jeecgframework.core.constant.Globals;
 import org.jeecgframework.core.util.StringUtil;
 import org.jeecgframework.tag.core.easyui.TagUtil;
-import org.jeecgframework.web.system.pojo.base.TSDepart;
-import org.jeecgframework.web.system.service.SystemService;
+
 import org.jeecgframework.core.util.MyBeanUtils;
 
 import java.io.OutputStream;
-import org.jeecgframework.core.util.BrowserUtils;
-import org.jeecgframework.poi.excel.ExcelExportUtil;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.entity.ExportParams;
 import org.jeecgframework.poi.excel.entity.ImportParams;
-import org.jeecgframework.poi.excel.entity.TemplateExportParams;
 import org.jeecgframework.poi.excel.entity.vo.NormalExcelConstants;
-import org.jeecgframework.poi.excel.entity.vo.TemplateExcelConstants;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.jeecgframework.core.util.ResourceUtil;
 import java.io.IOException;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -83,30 +53,21 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.jeecgframework.core.util.ExceptionUtil;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.jeecgframework.core.beanvalidator.BeanValidators;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
-import java.net.URI;
 import org.springframework.http.MediaType;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.apache.commons.lang3.StringUtils;
-import org.jeecgframework.jwt.util.GsonUtil;
 import org.jeecgframework.jwt.util.ResponseMessage;
 import org.jeecgframework.jwt.util.Result;
 import com.alibaba.fastjson.JSONArray;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
@@ -129,17 +90,9 @@ public class EmkMInStorageController extends BaseController {
 
 	@Autowired
 	private EmkMInStorageServiceI emkMInStorageService;
-	@Autowired
-	private SystemService systemService;
-	@Autowired
-	private Validator validator;
 
 	@Autowired
-	ProcessEngine processEngine;
-	@Autowired
-	TaskService taskService;
-	@Autowired
-	HistoryService historyService;
+	private Validator validator;
 
 
 	/**
@@ -759,6 +712,26 @@ public class EmkMInStorageController extends BaseController {
 			if (flag == 0) {
 				for (String id : map.get("ids").toString().split(",")) {
 					EmkMInStorageEntity t = emkMInStorageService.get(EmkMInStorageEntity.class, id);
+					if(t.getType().equals("0")){
+						EmkMaterialEntity e = systemService.findUniqueByProperty(EmkMaterialEntity.class,"materialNo",t.getMaterialNo());
+						if(Utils.notEmpty(e)){
+							if(!e.getState().equals("41")){
+								message = "提交入库单采购经理还未审核通过，无法提交！";
+								j.setSuccess(false);
+								return j;
+							}
+						}
+					}else if(t.getType().equals("1")){
+						EmkAccessoriesEntity e = systemService.findUniqueByProperty(EmkAccessoriesEntity.class,"materialNo",t.getMaterialNo());
+						if(Utils.notEmpty(e)){
+							if(!e.getState().equals("41")){
+								message = "提交入库单采购经理还未审核通过，无法提交！";
+								j.setSuccess(false);
+								return j;
+							}
+						}
+					}
+
 					t.setState("1");
 					variables.put("optUser", t.getId());
 					message = "操作成功";
@@ -928,12 +901,11 @@ public class EmkMInStorageController extends BaseController {
 						saveSmsAndEmailForOne("入库申请单","您有【"+user.getRealName()+"】提交的入库申请单，单号："+b.getWorkNum()+"，请及时审核。",bpmUser,user.getUserName());
 						t.setState("1");
 						b.setStatus(1);
-						b.setNextBpmSher(t.getAppler());
-						b.setNextBpmSherId(t.getApplerId());
 						b.setBpmStatus("0");
 						b.setProcessName("入库申请单【仓管员】");
 					}
 					systemService.saveOrUpdate(t);
+					systemService.saveOrUpdate(b);
 				}
 			}
 			systemService.addLog(message, Globals.Log_Type_UPDATE, Globals.Log_Leavel_INFO);

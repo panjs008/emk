@@ -83,48 +83,51 @@
 
 </table>
 <div style="padding: 3px; height: 25px; width:100%;margin-bottom:4px " class="datagrid-toolbar"><a id="addBtnBarCode2" href="#"></a> <a id="delBtnBarCode2" href="#"></a></div>
-<input id="orderMxListIDBarCode2" type="hidden" name="orderMxListIDBarCode2" value="${fn:length(emkProOrderBarcodeEntities)}"/>
-<div class="table-c">
-    <table id="mxtbBarCode2" width="50%" border="0" cellspacing="0" cellpadding="0">
-        <tr bgcolor="#F8F8F8" style="height: 32px;" >
-            <td align="center"  width="40" >序号</td>
-            <td align="center"  width="90">颜色</td>
-            <td align="center"  width="90">尺码</td>
-            <td align="center"  width="120">条码</td>
-            <td align="center"  width="120">数量</td>
+<form id="barCodeFrm2">
+    <input id="orderMxListIDBarCode2" type="hidden" name="orderMxListIDBarCode2" value="${fn:length(emkProOrderBarcodeEntities)}"/>
+    <div class="table-c">
+        <table id="mxtbBarCode2" width="50%" border="0" cellspacing="0" cellpadding="0">
+            <tr bgcolor="#F8F8F8" style="height: 32px;" >
+                <td align="center"  width="40" >序号</td>
+                <td align="center"  width="90">颜色</td>
+                <td align="center"  width="90">尺码</td>
+                <td align="center"  width="120">条码</td>
+                <td align="center"  width="120">数量</td>
 
-        </tr>
+            </tr>
 
-        <tbody id="add_jeecgOrderProduct_tableBarCode2">
-        <c:if test="${fn:length(emkProOrderBarcodeEntities)  > 0 }">
-            <c:forEach items="${emkProOrderBarcodeEntities}" var="poVal" varStatus="status">
-                <tr>
-                    <td align="center"><input style="width: 40px;" type="checkbox" name="ck" value="${poVal.id}"/>
-                    </td>
-                    <td align="center">
-                        <select name="orderMxList[${status.index}].ccolor00" style="width: 86%;" nullmsg="请输入颜色！" errormsg="请输入颜色" datatype="*">
-                            <c:forEach items="${colorList}" var="category">
-                                <option value="${category.typecode}" ${category.typecode eq poVal.color ? 'selected':''}>${category.typename}</option>
-                            </c:forEach>
-                        </select>
-                    </td>
-                    <td align="center">
-                        <select name="orderMxList[${status.index}].csize00" style="width: 86%;" nullmsg="请输入尺码！" errormsg="请输入尺码" datatype="*">
-                            <c:forEach items="${sizeList}" var="category">
-                                <option value="${category.typecode}" ${category.typecode eq poVal.size ? 'selected':''}>${category.typename}</option>
-                            </c:forEach>
-                        </select>
-                    </td>
-                    <td align="center"><input  nullmsg="请输入条码！"  errormsg="请输入条码" datatype="*"  value="${poVal.code}" name="orderMxList[${status.index}].ccode00" maxlength="100" type="text" value=""
-                                               style="width: 86%;" ignore="ignore"></td>
-                    <td align="center"><input  nullmsg="请输入数量！"  errormsg="请输入整数" datatype="n"  value="${poVal.total}" name="orderMxList[${status.index}].csignTotal00" maxlength="100" type="text" value=""
-                                               style="width: 86%;" ignore="ignore"></td>
+            <tbody id="add_jeecgOrderProduct_tableBarCode2">
+            <c:if test="${fn:length(emkProOrderBarcodeEntities)  > 0 }">
+                <c:forEach items="${emkProOrderBarcodeEntities}" var="poVal" varStatus="status">
+                    <tr>
+                        <td align="center"><input style="width: 40px;" type="checkbox" name="ck" value="${poVal.id}"/>
+                        </td>
+                        <td align="center">
+                            <select name="orderMxList[${status.index}].ccolor00" style="width: 86%;" nullmsg="请输入颜色！" errormsg="请输入颜色" datatype="*">
+                                <c:forEach items="${colorList}" var="category">
+                                    <option value="${category.typecode}" ${category.typecode eq poVal.color ? 'selected':''}>${category.typename}</option>
+                                </c:forEach>
+                            </select>
+                        </td>
+                        <td align="center">
+                            <select name="orderMxList[${status.index}].csize00" style="width: 86%;" nullmsg="请输入尺码！" errormsg="请输入尺码" datatype="*">
+                                <c:forEach items="${sizeList}" var="category">
+                                    <option value="${category.typecode}" ${category.typecode eq poVal.size ? 'selected':''}>${category.typename}</option>
+                                </c:forEach>
+                            </select>
+                        </td>
+                        <td align="center"><input  nullmsg="请输入条码！"  errormsg="请输入条码" datatype="*"  value="${poVal.code}" name="orderMxList[${status.index}].ccode00" maxlength="100" type="text" value=""
+                                                   style="width: 86%;" ignore="ignore"></td>
+                        <td align="center"><input  nullmsg="请输入数量！"  errormsg="请输入整数" datatype="n"  value="${poVal.total}" name="orderMxList[${status.index}].csignTotal00" maxlength="100" type="text" value=""
+                                                   style="width: 86%;" ignore="ignore"></td>
 
-                </tr>
+                    </tr>
 
-            </c:forEach>
-        </c:if>
-        </tbody>
-    </table>
-</div>
+                </c:forEach>
+            </c:if>
+            </tbody>
+        </table>
+    </div>
+</form>
+
 
